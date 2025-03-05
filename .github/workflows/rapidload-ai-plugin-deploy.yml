@@ -55,7 +55,7 @@ jobs:
           PLUGIN_NAME="unusedcss"
           mkdir -p "$PLUGIN_NAME"
           rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
+          zip -r "/github/workspace/${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
 
       - name: List Files
         run: |
