@@ -16,8 +16,9 @@ jobs:
 
       - name: Set version
         id: version
-        run: | 
-            echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: |
+            VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
             cat $GITHUB_ENV
 
       - name: Zip Plugin Files
@@ -35,7 +36,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: "."
-          DEST_DIR: "plugins/unusedcss/${{ env.VERSION }}"
+          DEST_DIR: "download/${{ env.VERSION }}"
 
       - name: Generate Update JSON
         run: |
@@ -43,7 +44,7 @@ jobs:
           cat <<EOF > plugin-update-check/update.json
           {
             "version": "${{ env.VERSION }}",
-            "download_url": "https://${{ secrets.AWS_BUCKET_NAME }}.s3.${{ secrets.AWS_REGION }}.amazonaws.com/plugins/unusedcss/${{ env.VERSION }}/unusedcss-${{ env.VERSION }}.zip",
+            "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/${{ env.VERSION }}.zip",
             "requires": "5.0",
             "tested": "6.4",
             "slug": "unusedcss"
@@ -60,7 +61,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: "./plugin-update-check"
-          DEST_DIR: "plugins/unusedcss/"
+          DEST_DIR: "/"
       
 
 
