@@ -5,21 +5,49 @@ on:
       - own-plugin-release
     tags-ignore:
       - "*beta"
+
 jobs:
   tag:
     name: New Release
     runs-on: ubuntu-latest
-    #if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set version
+      - name: Extract Plugin Version from `unusedcss.php`
         id: version
         run: |
-            VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-            cat $GITHUB_ENV
+          VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Extract Data from `readme.txt`
+        id: readme
+        run: |
+          # Extract required fields from readme.txt
+          DESCRIPTION=$(awk '/== Description ==/,/== Installation ==/' readme.txt | sed '1d;$d' | tr '\n' ' ' | sed 's/"/\\"/g')
+          TESTED_UPTO=$(grep -m 1 "Tested up to:" readme.txt | awk '{print $NF}')
+          REQUIRES_PHP=$(grep -m 1 "Requires PHP:" readme.txt | awk '{print $NF}')
+          HOMEPAGE=$(grep -m 1 "Plugin Homepage" readme.txt | awk '{print $NF}')
+          
+          # Extract Changelog
+          CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul>"
+          while read -r line; do
+            if [[ "$line" =~ ^\= ]]; then
+              break
+            fi
+            if [[ "$line" != "" ]]; then
+              CHANGELOG="$CHANGELOG<li>$line</li>"
+            fi
+          done < <(awk '/== Changelog ==/,0' readme.txt | grep -A 10 "= ${VERSION} =" | sed '1d' | sed 's/^[ \t]*//')
+
+          CHANGELOG="$CHANGELOG</ul>"
+
+          # Store extracted values in environment variables
+          echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
+          echo "TESTED_UPTO=$TESTED_UPTO" >> $GITHUB_ENV
+          echo "REQUIRES_PHP=$REQUIRES_PHP" >> $GITHUB_ENV
+          echo "HOMEPAGE=$HOMEPAGE" >> $GITHUB_ENV
+          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
 
       - name: Zip Plugin Files
         run: |
@@ -46,8 +74,22 @@ jobs:
             "version": "${{ env.VERSION }}",
             "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/unusedcss-${{ env.VERSION }}.zip",
             "requires": "5.0",
-            "tested": "6.4",
-            "slug": "unusedcss"
+            "tested": "${{ env.TESTED_UPTO }}",
+            "requires_php": "${{ env.REQUIRES_PHP }}",
+            "slug": "unusedcss",
+            "name": "RapidLoad AI - Optimize Web Vitals Automatically",
+            "author": "RapidLoad",
+            "author_homepage": "https://rapidload.ai",
+            "homepage": "${{ env.HOMEPAGE }}",
+            "license": "GPLv3",
+            "license_uri": "https://www.gnu.org/licenses/gpl-3.0.html",
+            "last_updated": "$(date +'%Y-%m-%d')",
+            "sections": {
+              "description": "${{ env.DESCRIPTION }}",
+              "installation": "1. Upload the plugin files to the `/wp-content/plugins/unusedcss` directory, or install the plugin through WordPress.\\n2. Activate the plugin.\\n3. Configure settings under 'RapidLoad AI'.",
+              "changelog": "${{ env.CHANGELOG }}",
+              "faq": "<strong>Q: How much does it cost?</strong><br>A: Starts at $10/month via [RapidLoad.io](https://rapidload.io).<br><br><strong>Q: Will this work with WooCommerce?</strong><br>A: Yes, it fully supports WooCommerce."
+            }
           }
           EOF
 
