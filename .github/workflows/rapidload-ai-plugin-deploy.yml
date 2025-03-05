@@ -63,9 +63,6 @@ jobs:
           ls -la
 
       - name: Upload Plugin ZIP to S3
-        run: |
-          cd unusedcss
-          zip -r unusedcss.zip .
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read
@@ -74,7 +71,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./unusedcss/unusedcss.zip"
+          SOURCE_DIR: "."
           DEST_DIR: "download/${{ env.VERSION }}"
 
       - name: Generate Update JSON
