@@ -57,13 +57,11 @@ jobs:
           rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
           cd "$PLUGIN_NAME"
           zip -r "../${PLUGIN_NAME}.zip" . 
-          cd ..
 
       - name: List Files
         run: ls -la
 
       - name: Upload Plugin ZIP to S3
-        run: ls -la
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read
@@ -72,7 +70,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "unusedcss.zip"
+          SOURCE_DIR: "./unusedcss.zip"
           DEST_DIR: "download/${{ env.VERSION }}"
 
       - name: Generate Update JSON
