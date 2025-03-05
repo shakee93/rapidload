@@ -55,7 +55,7 @@ jobs:
           PLUGIN_NAME="unusedcss"
           mkdir -p "$PLUGIN_NAME"
           rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "/github/workspace/${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
+          zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
 
       - name: List Files
         run: |
@@ -63,6 +63,9 @@ jobs:
           ls -la
 
       - name: Upload Plugin ZIP to S3
+        run: |
+          cd unusedcss
+          zip -r unusedcss.zip .
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read
@@ -71,7 +74,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./unusedcss.zip"   # ✅ Ensure this matches the created file
+          SOURCE_DIR: "./unusedcss/unusedcss.zip"
           DEST_DIR: "download/${{ env.VERSION }}"
 
       - name: Generate Update JSON
