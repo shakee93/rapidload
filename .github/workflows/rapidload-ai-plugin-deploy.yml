@@ -68,7 +68,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
+          SOURCE_DIR: "./unusedcss.zip"
           DEST_DIR: "download/${{ env.VERSION }}"
 
       - name: Generate Update JSON
@@ -77,7 +77,7 @@ jobs:
           cat <<EOF > plugin-update-check/update.json
           {
             "version": "${{ env.VERSION }}",
-            "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/unusedcss-${{ env.VERSION }}.zip",
+            "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/unusedcss.zip",
             "requires": "5.0",
             "tested": "${{ env.TESTED_UPTO }}",
             "requires_php": "${{ env.REQUIRES_PHP }}",
