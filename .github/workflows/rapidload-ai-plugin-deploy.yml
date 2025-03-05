@@ -63,6 +63,7 @@ jobs:
         run: ls -la
 
       - name: Upload Plugin ZIP to S3
+        run: ls -la
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read
