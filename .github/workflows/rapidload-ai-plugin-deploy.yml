@@ -55,7 +55,9 @@ jobs:
           PLUGIN_NAME="unusedcss"
           mkdir -p "$PLUGIN_NAME"
           rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "${PLUGIN_NAME}-${{ env.VERSION }}.zip" "$PLUGIN_NAME"
+          cd "$PLUGIN_NAME"
+          zip -r "../${PLUGIN_NAME}.zip" . 
+          cd ..
 
       - name: Upload Plugin ZIP to S3
         uses: jakejarvis/s3-sync-action@master
