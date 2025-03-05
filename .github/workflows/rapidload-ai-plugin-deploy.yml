@@ -44,7 +44,7 @@ jobs:
           cat <<EOF > plugin-update-check/update.json
           {
             "version": "${{ env.VERSION }}",
-            "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/${{ env.VERSION }}.zip",
+            "download_url": "https://plugin.rapidload.ai/download/${{ env.VERSION }}/unusedcss-${{ env.VERSION }}.zip",
             "requires": "5.0",
             "tested": "6.4",
             "slug": "unusedcss"
@@ -62,6 +62,3 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SOURCE_DIR: "./plugin-update-check"
           DEST_DIR: "download/"
-      
-
-
