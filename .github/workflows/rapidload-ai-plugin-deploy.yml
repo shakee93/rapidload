@@ -59,6 +59,9 @@ jobs:
           zip -r "../${PLUGIN_NAME}.zip" . 
           cd ..
 
+      - name: List Files
+        run: ls -la
+
       - name: Upload Plugin ZIP to S3
         uses: jakejarvis/s3-sync-action@master
         with:
