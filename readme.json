@@ -63,71 +63,7 @@
     <h3>3.0.2 - 12/02/2025</h3><ul><li>fix: license key nonce issue preventing users from accessing dashboard optimizer</li></ul>
     <h3>3.0.1 - 11/02/2025</h3><ul><li>feat: add AI support chat</li><li>feat: add AI diagnostics</li><li>feat: unified dashboard</li><li>feat: unified settings</li><li>feat: view cdn and image usage</li></ul>
     <h3>3.0.0 - 11/02/2025</h3><ul><li>feat: add AI support chat</li><li>feat: add AI diagnostics</li><li>feat: unified dashboard</li><li>feat: unified settings</li><li>feat: view cdn and image usage</li></ul>
-    <h3>2.4.5 - 31/01/2025</h3><ul><li>fix: critical security issues</li></ul>
-    <h3>2.4.4 - 06/12/2024</h3><ul><li>feat: add option to disable Bugsnag debug</li></ul>
-    <h3>2.4.3 - 05/12/2024</h3><ul><li>fix: improved security</li><li>fix: known bugs</li></ul>
-    <h3>2.4.2 - 27/11/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.4.1 - 24/10/2024</h3><ul><li>feat: add feat to disable WP-Emojis</li><li>fix: known bugs</li></ul>
-    <h3>2.4.0 - 24/10/2024</h3><ul><li>feat: add pre-rendering feature</li><li>feat: pre-render links on mouse move</li><li>feat: improve critical css generation (remove unused css no longer required)</li><li>fix: known bugs</li></ul>
-    <h3>2.3.5 - 18/10/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.3.4 - 24/09/2024</h3><ul><li>fix: flush cache not working in Titan Optimizer</li><li>fix: Unused CSS misc options save not working</li><li>fix: YouTube thumbnail style</li></ul>
-    <h3>2.3.3 - 12/09/2024</h3><ul><li>fix: Missing `@media` styles in chunked critical CSS files.</li></ul>
-    <h3>2.3.2 - 12/09/2024</h3><ul><li>fix: Titan crash</li></ul>
-    <h3>2.3.0 - 11/09/2024</h3><ul><li>feat: improve ui for better user experience</li><li>feat: improve critical css by chunking file</li><li>feat: merged the missing plugin settings to titan</li><li>fix: update cdn url cache files on cdn url changes</li><li>fix: known bugs</li></ul>
-    <h3>2.2.26 - 21/08/2024</h3><ul><li>fix: showing unused css optimization table when remove unused css option disabled</li><li>fix: titan crashes with Google Translate</li><li>fix: known bugs</li></ul>
-    <h3>2.2.25 - 13/08/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.18 - 05/08/2024</h3><ul><li>feat: boost optimization by adding speed gears in titan</li><li>feat: enable users to delay only selected js files</li><li>fix: known bugs</li></ul>
-    <h3>2.2.17 - 21/05/2024</h3><ul><li>feat: enable optimization gears in Titan</li><li>fix: known bugs</li></ul>
-    <h3>2.2.16 - 08/05/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.15 - 29/02/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.14 - 20/02/2024</h3><ul><li>feat: deferring the youtube videos by displaying the poster image until user interacts</li><li>feat: add delay exclusions with easy UI</li><li>fix: delay js legacy compatibility</li></ul>
-    <h3>2.2.13 - 31/01/2024</h3><ul><li>fix: broken Titan Optimizer for some users</li></ul>
-    <h3>2.2.12 - 31/01/2024</h3><ul><li>fix: vulnerable to SSRF</li></ul>
-    <h3>2.2.11 - 26/01/2024</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.10 - 24/01/2024</h3><ul><li>fix: vulnerable to SSRF</li></ul>
-    <h3>2.2.9 - 26/12/2023</h3><ul><li>fix: Fatal error when clearing product page cache</li></ul>
-    <h3>2.2.8 - 25/12/2023</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.7 - 21/12/2023</h3><ul><li>fix: set width and height not working for images</li></ul>
-    <h3>2.2.6 - 18/12/2023</h3><ul><li>fix: syntax error in rapidload dashboard</li></ul>
-    <h3>2.2.5 - 18/12/2023</h3><ul><li>fix: syntax error in rapidload dashboard</li></ul>
-    <h3>2.2.4 - 15/12/2023</h3><ul><li>improved: delay js event handling</li></ul>
-    <h3>2.2.3 - 13/12/2023</h3><ul><li>improved: delay js execution</li><li>improved: delay js event handling</li></ul>
-    <h3>2.2.2 - 13/12/2023</h3><ul><li>improved: delay js execution</li><li>improved: delay js event handling</li><li>fix: known bugs</li></ul>
-    <h3>2.2.1 - 05/12/2023</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.2.0 - 30/11/2023</h3><ul><li>feat: Improved defer javascript handling with inline-scripts</li><li>new: all the javascript files are delayed with new delay JS improvement</li><li>new: topologically batched delayed javascript execution</li></ul>
-    <h3>2.1.14 - 22/11/2023</h3><ul><li>feat: add debug mode to titan</li><li>fix: inline background images not optimizing</li><li>fix: known bugs</li></ul>
-    <h3>2.1.13 - 14/11/2023</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.1.12 - 14/11/2023</h3><ul><li>fix: known bugs</li></ul>
-    <h3>2.1.11 - 14/11/2023</h3><ul><li>improve: CDN option not working in Titan Optimizer</li><li>fix: known bugs</li></ul>
-    <h3>2.1.10 - 06/11/2023</h3><ul><li>improve: inline style minify</li></ul>
-    <h3>2.1.9 - 31/10/2023</h3><ul><li>fix: Dashboard UI</li></ul>
-    <h3>2.1.8 - 31/10/2023</h3><ul><li>fix: Dashboard UI</li><li>fix: CDN purging</li></ul>
-    <h3>2.1.7 - 27/10/2023</h3><ul><li>improve: Titan optimizer options update</li></ul>
-    <h3>2.1.6 - 27/10/2023</h3><ul><li>fix: media library section break</li></ul>
-    <h3>2.1.5 - 26/10/2023</h3><ul><li>fix: remove duplicate queries</li></ul>
-    <h3>2.1.4 - 26/10/2023</h3><ul><li>fix: Titan Optimizer not working for subpages</li></ul>
-    <h3>2.1.3 - 24/10/2023</h3><ul><li>feat: Introducing Titan Optimizer</li></ul>
-    <h3>2.1.0 - 24/10/2023</h3><ul><li>feat: integrate Titan Optimizer</li></ul>
-    <h3>2.0.28 - 11/09/2023</h3><ul><li>fix: google font stylesheet not removing</li></ul>
-    <h3>2.0.27 - 01/09/2023</h3><ul><li>fix: some inline style images not optimizing</li></ul>
-    <h3>2.0.26 - 31/08/2023</h3><ul><li>fix: skipping gtag js on optimization</li></ul>
-    <h3>2.0.25 - 29/08/2023</h3><ul><li>improve: add default exclusions for javascript optimizations</li></ul>
-    <h3>2.0.24 - 28/07/2023</h3><ul><li>fix: selector pack items being duplicate</li></ul>
-    <h3>2.0.23 - 20/07/2023</h3><ul><li>feat: switch cdn staging to live</li><li>fix: all jobs getting cleared when all rules cleared</li><li>fix: remove backslashes from additional critical css content</li><li>fix: original css files not loading if mobile critical css enabled</li><li>fix: extract image url with https</li></ul>
-    <h3>2.0.22 - 17/07/2023</h3><ul><li>feat: add filter to prevent load original css on user interaction</li><li>fix: exclude background images being lazy loaded not working</li><li>fix: display RapidLoad menu in admin bar only to users with manage options permission</li></ul>
-    <h3>2.0.21 - 11/07/2023</h3><ul><li>feat: improve inline js optimization</li></ul>
-    <h3>2.0.20 - 11/07/2023</h3><ul><li>feat: improve inline js optimization</li></ul>
-    <h3>2.0.19 - 03/07/2023</h3><ul><li>feat: load original css with relative path urls</li></ul>
-    <h3>2.0.18 - 03/07/2023</h3><ul><li>feat: load original css with relative path urls</li></ul>
-    <h3>2.0.17 - 03/07/2023</h3><ul><li>feat: add support for data-src tag on image optimization</li><li>feat: load original css with relative path urls</li><li>feat: update new documentation link</li><li>improve: mobile critical css to eliminate reduce unused css</li></ul>
-    <h3>2.0.16 - 15/06/2023</h3><ul><li>feat: improved iframe lazy-loading</li></ul>
-    <h3>2.0.15 - 12/06/2023</h3><ul><li>fix: migration tables not creating on update</li></ul>
-    <h3>2.0.14 - 09/06/2023</h3><ul><li>fix: minor UI improvements</li></ul>
-    <h3>2.0.13 - 06/06/2023</h3><ul><li>feat: add filter to change the RapidLoad root url</li><li>fix: minor UI improvements</li></ul>
-    <h3>2.0.12 - 02/06/2023</h3><ul><li>feat: add filter to change the RapidLoad root dir</li><li>fix: minor UI improvements</li><li>fix: typecast job limit to integer</li><li>fix: purge admin area styles and javascript on plugin update</li><li>chore: update WordPress compatibility</li></ul>
-    <h3>2.0.11 - 29/05/2023</h3><ul><li>fix: remove aggregate css option</li><li>fix: bug in loading selector packs</li><li>chore: updated banner</li></ul>
-    <h3>2.0.10 - 27/05/2023</h3><ul><li>Added JS optimization, image optimization, built-in CDN, page cache, and font optimization features for enhanced performance and bring you 95+ scores in page speed.</li><li>fix: rules are not showing up in the legacy dashboard</li></ul>
-    <h3>2.0.9 - 27/05/2023</h3><ul><li>Added JS optimization, image optimization, built-in CDN, page cache, and font optimization features for enhanced performance and bring you 95+ scores in page speed.</li></ul>",
+    <h3>2.4.5 - 31/01/2025</h3><ul><li>fix: critical security issues</li></ul>",
     "started": "1.0.5.1"
 }
 
