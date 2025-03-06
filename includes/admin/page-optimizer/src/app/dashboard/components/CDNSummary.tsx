@@ -133,12 +133,25 @@ const CDNSummary = ({className}: {className: string}) => {
                         style={{ width: `${allowedPercentage}%` }}
                     ></div>
                     
+                    {/* White Line at Additional Usage Start */}
+                    {additional_usage_gb > 0 && (
+                        <div
+                            className="absolute h-2.5 bg-white"
+                            style={{
+                                width: '2px',
+                                left: `${allowedPercentage}%`,
+                                top: 0,
+                                zIndex: 100,
+                            }}
+                        ></div>
+                    )}
+
                     {/* Additional Usage Progress (Red) */}
                     
                     {additional_usage_gb > 0 && (
                         <>
                         <div
-                            className="absolute h-2.5 bg-red-500 rounded-r right-0"
+                            className="absolute h-2.5 bg-brand-950/70 dark:bg-brand-300/70 rounded-r right-0"
                             style={{ width: `${additionalPercentage}%` }}
                         ></div>
                         
@@ -150,7 +163,11 @@ const CDNSummary = ({className}: {className: string}) => {
                     
                     
                 </div>
-    
+                {additional_usage_gb > 0 && (
+                <span className="text-brand-400 text-xs">
+                            {additionalPercentage + 100}% of included limit
+                        </span>
+                )}
             </div>
         );
     };
