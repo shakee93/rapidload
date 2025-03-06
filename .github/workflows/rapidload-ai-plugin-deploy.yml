@@ -27,14 +27,19 @@ jobs:
           DESCRIPTION=$(jq -r '.description' readme.json | sed 's/["\$\\]/\\&/g')
           TESTED_UPTO=$(jq -r '.pluginInfo.testedUpTo' readme.json)
           REQUIRES_PHP=$(jq -r '.pluginInfo.requiresPHP' readme.json)
+          STABLE_TAG=$(jq -r '.pluginInfo.stableTag' readme.json)
+          REQUIRES_AT_LEAST=$(jq -r '.pluginInfo.requiresAtLeast' readme.json)
           
           # Get latest changelog entry for current version with proper escaping
-          CHANGELOG=$(jq -r --arg VERSION "${{ env.VERSION }}" '.changelog | capture("(?s)<h3>" + $VERSION + ".*?</h3>\\s*<ul>.*?</ul>")' readme.json | sed 's/["\$\\]/\\&/g')
+          CHANGELOG=$(jq -r --arg VERSION "${{ env.VERSION }}" '.changelog | match("(?s)<h3>" + $VERSION + ".*?</h3>\\s*<ul>.*?</ul>").string' readme.json | sed 's/["\$\\]/\\&/g')
           
           if [ -z "$CHANGELOG" ]; then
             echo "Warning: No changelog found for version ${{ env.VERSION }}"
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
           fi
+
+          # Get FAQ section
+          FAQ=$(jq -r '.faq.questions[] | "<h4>" + .question + "</h4><p>" + .answer + "</p>"' readme.json | sed 's/["\$\\]/\\&/g')
 
           # Store extracted values in environment variables with proper escaping
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
@@ -43,10 +48,16 @@ jobs:
           
           echo "TESTED_UPTO=$TESTED_UPTO" >> $GITHUB_ENV
           echo "REQUIRES_PHP=$REQUIRES_PHP" >> $GITHUB_ENV
+          echo "STABLE_TAG=$STABLE_TAG" >> $GITHUB_ENV
+          echo "REQUIRES_AT_LEAST=$REQUIRES_AT_LEAST" >> $GITHUB_ENV
           echo "HOMEPAGE=https://rapidload.io" >> $GITHUB_ENV
           
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+          echo "FAQ<<EOF" >> $GITHUB_ENV
+          echo "$FAQ" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - name: Zip Plugin Files
