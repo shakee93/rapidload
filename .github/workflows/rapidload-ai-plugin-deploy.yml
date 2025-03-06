@@ -23,33 +23,18 @@ jobs:
       - name: Extract Data from `readme.json`
         id: readme
         run: |
-          # Function to extract version info from readme.json
-          extract_version_info() {
-            local version=$1
-            jq -r --arg ver "$version" '
-              .changelog[$ver] | 
-              if . then
-                .[] | "<li>\(.)</li>"
-              else
-                empty
-              end
-            ' readme.json
-          }
-
           # Extract metadata from readme.json
           TESTED_UPTO=$(jq -r '.tested_up_to' readme.json)
           REQUIRES_PHP=$(jq -r '.requires_php' readme.json) 
           STABLE_TAG=$(jq -r '.stable_tag' readme.json)
           REQUIRES_AT_LEAST=$(jq -r '.requires_at_least' readme.json)
 
-          # Get changelog for current version
-          CHANGELOG=$(extract_version_info "${{ env.VERSION }}")
+          # Get changelog directly from changelog key
+          CHANGELOG=$(jq -r '.changelog' readme.json)
           
           if [ -z "$CHANGELOG" ]; then
-            echo "Warning: No changelog found for version ${{ env.VERSION }}"
+            echo "Warning: No changelog found"
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
-          else
-            CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul>$CHANGELOG</ul>"
           fi
 
           # Extract description from readme.json
