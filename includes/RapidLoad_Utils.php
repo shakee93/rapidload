@@ -575,7 +575,12 @@ trait RapidLoad_Utils {
         $options = RapidLoad_Base::fetch_options();
 
         if ( isset( $options['uucss_excluded_links'] ) && ! empty( $options['uucss_excluded_links'] ) ) {
-            $exploded = explode( ',', $options['uucss_excluded_links'] );
+
+            if(is_string($options['uucss_excluded_links'])){
+                $exploded = explode( ',', $options['uucss_excluded_links'] );
+            }else{
+                $exploded = $options['uucss_excluded_links'];
+            }
 
             foreach ( $exploded as $pattern ) {
 
