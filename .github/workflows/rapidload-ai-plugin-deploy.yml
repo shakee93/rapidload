@@ -56,6 +56,8 @@ jobs:
           mkdir -p "$PLUGIN_NAME"
           rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
           zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
+          rm -rf "$PLUGIN_NAME"
+          find . -mindepth 1 -maxdepth 1 ! -name "${PLUGIN_NAME}.zip" -exec rm -rf {} +
 
       - name: List Files
         run: |
