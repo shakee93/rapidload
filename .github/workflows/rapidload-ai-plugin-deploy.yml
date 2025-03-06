@@ -20,16 +20,21 @@ jobs:
           VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract Data from `readme.json`
+      - name: Extract Data from `readme.json` (Debugging)
         id: readme
         run: |
           # Function to escape control characters for JSON
           escape_json_control_chars() {
+            # Debug: Print the input to the function
+            echo "DEBUG: Input to escape_json_control_chars: $1"
+
             sed 's/[\x00-\x1F\x7F-\xFF]/\\u$(printf "%04X" $(printf "%d" $(printf "%d" $(echo "$1" | od -An -tu1))))/g'
           }
 
           # Extract data from readme.json using jq and properly escape special characters
           DESCRIPTION=$(jq -r '.description.content' readme.json | escape_json_control_chars | sed 's/["\$\\]/\\&/g')
+          echo "DEBUG: DESCRIPTION after escaping: $DESCRIPTION"
+
           TESTED_UPTO=$(jq -r '.pluginInfo.testedUpTo' readme.json)
           REQUIRES_PHP=$(jq -r '.pluginInfo.requiresPHP' readme.json)
           STABLE_TAG=$(jq -r '.pluginInfo.stableTag' readme.json)
@@ -42,9 +47,12 @@ jobs:
             echo "Warning: No changelog found for version ${{ env.VERSION }}"
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
           fi
+          echo "DEBUG: CHANGELOG after escaping: $CHANGELOG"
+
 
           # Get FAQ section
           FAQ=$(jq -r '.faq.questions[] | "<h4>" + (.question | escape_json_control_chars) + "</h4><p>" + (.answer | escape_json_control_chars) + "</p>"' readme.json | escape_json_control_chars | sed 's/["\$\\]/\\&/g')
+          echo "DEBUG: FAQ after escaping: $FAQ"
 
           # Store extracted values in environment variables with proper escaping
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
