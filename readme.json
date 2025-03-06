@@ -54,17 +54,7 @@
         }
       ]
     },
-    "changelog": "<h2>Changelog 📝</h2>
-    <h3>3.1.1 - 02/03/2025</h3><ul><li>fix: minor improvements and stability updates</li></ul>
-    <h3>3.1.0 - 02/03/2025</h3><ul><li>feat: removed paywall for free users - in-server optimization features now available for all users</li><li>feat: enhanced accessibility to optimization features for the WordPress community</li></ul>
-    <h3>3.0.5 - 25/02/2025</h3><ul><li>fix: known bugs</li><li>fix: license key nonce issue preventing users from accessing dashboard optimizer</li></ul>
-    <h3>3.0.4 - 25/02/2025</h3><ul><li>fix: known bugs</li><li>fix: license key nonce issue preventing users from accessing dashboard optimizer</li></ul>
-    <h3>3.0.3 - 19/02/2025</h3><ul><li>fix: known bugs</li><li>fix: license key nonce issue preventing users from accessing dashboard optimizer</li></ul>
-    <h3>3.0.2 - 12/02/2025</h3><ul><li>fix: license key nonce issue preventing users from accessing dashboard optimizer</li></ul>
-    <h3>3.0.1 - 11/02/2025</h3><ul><li>feat: add AI support chat</li><li>feat: add AI diagnostics</li><li>feat: unified dashboard</li><li>feat: unified settings</li><li>feat: view cdn and image usage</li></ul>
-    <h3>3.0.0 - 11/02/2025</h3><ul><li>feat: add AI support chat</li><li>feat: add AI diagnostics</li><li>feat: unified dashboard</li><li>feat: unified settings</li><li>feat: view cdn and image usage</li></ul>
-    <h3>2.4.5 - 31/01/2025</h3><ul><li>fix: critical security issues</li></ul>
-    ",
+    
     "started": "1.0.5.1"
 }
 
