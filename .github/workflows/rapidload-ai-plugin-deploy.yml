@@ -31,7 +31,7 @@ jobs:
           REQUIRES_AT_LEAST=$(jq -r '.pluginInfo.requiresAtLeast' readme.json)
           
           # Get latest changelog entry for current version with proper escaping
-          CHANGELOG=$(jq -r --arg VERSION "${{ env.VERSION }}" '.changelog | match("(?s)<h3>" + $VERSION + ".*?</h3>\\s*<ul>.*?</ul>").string' readme.json | sed 's/["\$\\]/\\&/g')
+          CHANGELOG=$(jq -r --arg VERSION "${{ env.VERSION }}" '.changelog | match("(?s)<h3>" + $VERSION + ".*?</h3>\\s*<ul>.*?logo added</li></ul>").string' readme.json | sed 's/["\$\\]/\\&/g')
           
           if [ -z "$CHANGELOG" ]; then
             echo "Warning: No changelog found for version ${{ env.VERSION }}"
