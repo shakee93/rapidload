@@ -20,38 +20,27 @@ jobs:
           VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract Data from `readme.txt`
+      - name: Extract Data from `readme.json`
         id: readme
         run: |
-          # Function to extract version info from readme.txt
+          # Function to extract version info from readme.json
           extract_version_info() {
             local version=$1
-            awk -v ver="$version" '
-              $0 ~ "^= " ver " =$" {
-                in_version = 1
-                next
-              }
-              in_version && /^= [0-9]+\.[0-9]+\.[0-9]+ =/ && $0 !~ "^= " ver " =$" {
-                in_version = 0
-              }
-              in_version && /^ \* / {
-                gsub(/^ \* /, "")
-                print "<li>" $0 "</li>"
-              }
-            ' readme.txt
+            jq -r --arg ver "$version" '
+              .changelog[$ver] | 
+              if . then
+                .[] | "<li>\(.)</li>"
+              else
+                empty
+              end
+            ' readme.json
           }
 
-          # Extract Tested up to version
-          TESTED_UPTO=$(grep "Tested up to:" readme.txt | awk '{print $4}')
-          
-          # Extract Requires PHP version
-          REQUIRES_PHP=$(grep "Requires PHP:" readme.txt | awk '{print $3}')
-          
-          # Extract Stable tag
-          STABLE_TAG=$(grep "Stable tag:" readme.txt | awk '{print $3}')
-          
-          # Extract Requires at least version
-          REQUIRES_AT_LEAST=$(grep "Requires at least:" readme.txt | awk '{print $4}')
+          # Extract metadata from readme.json
+          TESTED_UPTO=$(jq -r '.tested_up_to' readme.json)
+          REQUIRES_PHP=$(jq -r '.requires_php' readme.json) 
+          STABLE_TAG=$(jq -r '.stable_tag' readme.json)
+          REQUIRES_AT_LEAST=$(jq -r '.requires_at_least' readme.json)
 
           # Get changelog for current version
           CHANGELOG=$(extract_version_info "${{ env.VERSION }}")
@@ -63,8 +52,8 @@ jobs:
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul>$CHANGELOG</ul>"
           fi
 
-          # Extract description from readme.txt
-          DESCRIPTION=$(awk '/^== Description ==/,/^==/ {if (!/^== Description ==/ && !/^==/) print}' readme.txt)
+          # Extract description from readme.json
+          DESCRIPTION=$(jq -r '.description' readme.json)
 
           # Store extracted values in environment variables
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
