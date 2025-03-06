@@ -779,7 +779,7 @@
 <li>feat: add support to LS Cache plugin</li>
 <li>feat: allow users to add custom URLs</li>
 <li>feat: allow users to add optimizations through sitemap</li>
-<li>feat: add "Clear page cache" action to supported plugins in the optimization table</li>
+<li>feat: add 'Clear page cache' action to supported plugins in the optimization table</li>
 <li>fix: some CDN URLs are firing warnings</li>
 </ul>
 
@@ -876,7 +876,7 @@
 
 <h3>1.2.3</h3>
 <ul>
-<li>fix: reduce varchar length to fix "The maximum column size is 767 bytes" error</li>
+<li>fix: reduce varchar length to fix 'The maximum column size is 767 bytes' error</li>
 <li>fix: adds a wrong warning about excluded files as not found.</li>
 <li>fix: run first job immediately without adding to the queue.</li>
 </ul>
