@@ -20,34 +20,27 @@ jobs:
           VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract Data from `readme.txt` and Convert Markdown to HTML
+      - name: Extract Data from `readme.json`
         id: readme
         run: |
-          # Extract and format description
-          DESCRIPTION=$(awk '/== Description ==/,/== Installation ==/' readme.txt | sed '1d;$d' | sed 's/"/\\"/g' | sed 's/\*\*\(.*\)\*\*/<strong>\1<\/strong>/g' | sed 's/#\{1,6\} \(.*\)/<h3>\1<\/h3>/g' | tr '\n' ' ')
+          # Extract data from readme.json using jq
+          DESCRIPTION=$(jq -r '.description' readme.json | sed 's/"/\\"/g')
+          TESTED_UPTO=$(jq -r '.pluginInfo.testedUpTo' readme.json)
+          REQUIRES_PHP=$(jq -r '.pluginInfo.requiresPHP' readme.json)
           
-          # Extract required fields from readme.txt
-          TESTED_UPTO=$(grep -m 1 "Tested up to:" readme.txt | awk '{print $NF}')
-          REQUIRES_PHP=$(grep -m 1 "Requires PHP:" readme.txt | awk '{print $NF}')
-          HOMEPAGE=$(grep -m 1 "Plugin Homepage" readme.txt | awk '{print $NF}')
-
-          # Extract Changelog (latest version only)
-          CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul>"
-          while read -r line; do
-            if [[ "$line" =~ ^\= ]]; then
-              break
-            fi
-            if [[ "$line" != "" ]]; then
-              CHANGELOG="$CHANGELOG<li>$line</li>"
-            fi
-          done < <(awk '/== Changelog ==/,0' readme.txt | grep -A 10 "= ${VERSION} =" | sed '1d' | sed 's/^[ \t]*//')
-          CHANGELOG="$CHANGELOG</ul>"
+          # Get latest changelog entry for current version
+          CHANGELOG=$(jq -r --arg VERSION "${{ env.VERSION }}" '.changelog | capture("(?s)<h3>" + $VERSION + ".*?</h3>\\s*<ul>.*?</ul>")' readme.json)
+          
+          if [ -z "$CHANGELOG" ]; then
+            echo "Warning: No changelog found for version ${{ env.VERSION }}"
+            CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
+          fi
 
           # Store extracted values in environment variables
           echo "DESCRIPTION=$DESCRIPTION" >> $GITHUB_ENV
           echo "TESTED_UPTO=$TESTED_UPTO" >> $GITHUB_ENV
           echo "REQUIRES_PHP=$REQUIRES_PHP" >> $GITHUB_ENV
-          echo "HOMEPAGE=$HOMEPAGE" >> $GITHUB_ENV
+          echo "HOMEPAGE=https://rapidload.io" >> $GITHUB_ENV
           echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
 
       - name: Zip Plugin Files
