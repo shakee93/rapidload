@@ -2,7 +2,7 @@ name: Deploy to WordPress.org
 on:
   push:
     branches:
-      - own-plugin-release
+      - master
     tags-ignore:
       - "*beta"
 
