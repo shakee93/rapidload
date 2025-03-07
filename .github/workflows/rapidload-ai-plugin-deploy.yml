@@ -81,7 +81,7 @@ jobs:
           SOURCE_DIR: "."
           DEST_DIR: "download/${{ env.VERSION }}"
 
-      - name: Upload Plugin ZIP to S3
+      - name: Upload Plugin ZIP to S3 latest
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read
