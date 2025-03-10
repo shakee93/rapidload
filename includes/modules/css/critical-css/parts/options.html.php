@@ -1,5 +1,5 @@
 <tr>
-    <th scope="row"><?php _e( 'Enable Critical CSS', 'unusedcss' ); ?></th>
+    <th scope="row"><?php esc_html_e( 'Enable Critical CSS', 'unusedcss' ); ?></th>
     <td>
         <label><input id='uucss_enable_cpcss' type='checkbox'
                       name='autoptimize_uucss_settings[uucss_enable_cpcss]' <?php if ( ! empty( $options['uucss_enable_cpcss'] ) && '1' === $options['uucss_enable_cpcss'] ) {
@@ -14,15 +14,15 @@
 
             ?>
                 <p style="color: #FFC107"> <span style="line-height: 20px" class="dashicons dashicons-info-outline"></span>
-                    CSS render blocking handled by <strong><?php echo CriticalCSS::$cpcss_other_plugins[0]?></strong>.
-                    Disable option in <strong><?php echo CriticalCSS::$cpcss_other_plugins[0]?></strong> to use RapidLoad critical css.
+                    CSS render blocking handled by <strong><?php echo esc_html( CriticalCSS::$cpcss_other_plugins[0] ); ?></strong>.
+                    Disable option in <strong><?php echo esc_html( CriticalCSS::$cpcss_other_plugins[0] ); ?></strong> to use RapidLoad critical css.
                 </p>
             <?php endif; ?>
         </label>
     </td>
 </tr>
 <tr>
-    <th scope="row"><?php _e( 'Mobile Critical CSS', 'unusedcss' ); ?></th>
+    <th scope="row"><?php esc_html_e( 'Mobile Critical CSS', 'unusedcss' ); ?></th>
     <td>
         <label><input id='uucss_enable_cpcss_mobile' type='checkbox'
                       name='autoptimize_uucss_settings[uucss_enable_cpcss_mobile]' <?php if ( ! empty( $options['uucss_enable_cpcss_mobile'] ) && '1' === $options['uucss_enable_cpcss_mobile'] ) {
@@ -35,7 +35,7 @@
     </td>
 </tr>
 <tr>
-    <th scope="row"><?php _e( 'Additional CSS', 'unusedcss' ); ?></th>
+    <th scope="row"><?php esc_html_e( 'Additional CSS', 'unusedcss' ); ?></th>
     <td>
                                     <textarea style="max-width: 390px; width: 100%; height: 150px" id="uucss_additional_css"
                                               name="autoptimize_uucss_settings[uucss_additional_css]" <?php if(!empty(CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
