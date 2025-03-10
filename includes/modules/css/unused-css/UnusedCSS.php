@@ -133,7 +133,7 @@ class UnusedCSS
 
     public function save_meta_box_options($post_id, $post)
     {
-        if ( !isset( $_POST['uucss_nonce'] ) || !wp_verify_nonce( $_POST['uucss_nonce'], 'uucss_option_save' ) ) {
+        if ( !isset( $_POST['uucss_nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['uucss_nonce'] ) ), 'uucss_option_save' ) ) {
             return;
         }
 

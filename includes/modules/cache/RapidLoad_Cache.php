@@ -653,7 +653,7 @@ class RapidLoad_Cache
             return;
         }
 
-        if ( empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'rapidload_cache_clear_cache_nonce' ) ) {
+        if ( empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'rapidload_cache_clear_cache_nonce' ) ) {
             return;
         }
 
@@ -663,7 +663,7 @@ class RapidLoad_Cache
 
         if ( $_GET['_action'] === 'clearurl' ) {
 
-            $url = isset($_GET['_url']) ? $_GET['_url'] : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
+            $url = isset($_GET['_url']) ? esc_url_raw($_GET['_url']) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
 
             self::clear_page_cache_by_url( $url );
         } elseif ( $_GET['_action'] === 'clear' ) {

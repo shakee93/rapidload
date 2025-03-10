@@ -205,9 +205,9 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('Required fields missing');
         }
 
-        $rule = $_REQUEST['rule'];
-        $url = $_REQUEST['url'];
-        $regex = isset($_REQUEST['regex']) ? $_REQUEST['regex'] : '/';
+        $rule = sanitize_text_field( $_REQUEST['rule'] );
+        $url = esc_url_raw( $_REQUEST['url'] );
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field( $_REQUEST['regex'] ) : '/';
 
         $url = $this->transform_url($url);
 
@@ -223,8 +223,8 @@ class RapidLoad_Admin_Frontend
 
         if(isset($_REQUEST['old_rule']) && isset($_REQUEST['old_regex'])){
 
-            $old_rule = $_REQUEST['old_rule'];
-            $old_regex = $_REQUEST['old_regex'];
+            $old_rule = sanitize_text_field( $_REQUEST['old_rule'] );
+            $old_regex = sanitize_text_field( $_REQUEST['old_regex'] );
 
             $rule_exist = new RapidLoad_Job([
                 'rule' => $old_rule,
@@ -246,9 +246,9 @@ class RapidLoad_Admin_Frontend
                 $rule_exist->regex = $regex;
                 $rule_exist->save(true);
 
-                if(isset($_REQUEST['old_url']) && $_REQUEST['old_url'] != $url ||
-                    $_REQUEST['old_rule'] != $rule || $_REQUEST['old_regex'] != $regex){
-                    if(isset($_REQUEST['requeue']) && $_REQUEST['requeue'] == "1"){
+                if(isset($_REQUEST['old_url']) && sanitize_text_field($_REQUEST['old_url']) != $url ||
+                    sanitize_text_field($_REQUEST['old_rule']) != $rule || sanitize_text_field($_REQUEST['old_regex']) != $regex){
+                    if(isset($_REQUEST['requeue']) && sanitize_text_field($_REQUEST['requeue']) == "1"){
                         RapidLoad_DB::requeueJob($rule_exist->id);
                     }
                 }
@@ -335,11 +335,11 @@ class RapidLoad_Admin_Frontend
         $default = [
             [
                 "title" => "I enabled RapidLoad and now my site is broken. What do I do?",
-                "message" => "If you are encountering layout or styling issues on a RapidLoad optimized page, try enabling the “Load Original CSS Files” option or <a href='https://rapidload.zendesk.com/hc/en-us/articles/360063292673-Sitewide-Safelists-Blocklists'>adding safelist rules</a> for affected elements in the plugin Advanced Settings. Always remember to requeue affected pages after making plugin changes. Need more help? Head over to the RapidLoad docs for more information or to submit a Support request: <a href='https://rapidload.zendesk.com/hc/en-us'>https://rapidload.zendesk.com/hc/en-us</a>",
+                "message" => "If you are encountering layout or styling issues on a RapidLoad optimized page, try enabling the \"Load Original CSS Files\" option or <a href='https://rapidload.zendesk.com/hc/en-us/articles/360063292673-Sitewide-Safelists-Blocklists'>adding safelist rules</a> for affected elements in the plugin Advanced Settings. Always remember to requeue affected pages after making plugin changes. Need more help? Head over to the RapidLoad docs for more information or to submit a Support request: <a href='https://rapidload.zendesk.com/hc/en-us'>https://rapidload.zendesk.com/hc/en-us</a>",
             ],
             [
-                "title" => "Why am I still seeing the “Removed unused CSS” flag in Google Page Speed Insights?",
-                "message" => "It’s possible that the RapidLoad optimized version of the page is not yet being served. Try clearing your page cache and running the GPSI test again.",
+                "title" => "Why am I still seeing the \"Removed unused CSS\" flag in Google Page Speed Insights?",
+                "message" => "It's possible that the RapidLoad optimized version of the page is not yet being served. Try clearing your page cache and running the GPSI test again.",
             ],
             [
                 "title" => "Will this plugin work with other caching plugins?",
@@ -351,7 +351,7 @@ class RapidLoad_Admin_Frontend
             ],
             [
                 "title" => "Do you offer support if I need it?",
-                "message" => "Yes, our team is standing by to assist you! Submit a support ticket any time from the Support tab in the plugin and we’ll be happy to help.",
+                "message" => "Yes, our team is standing by to assist you! Submit a support ticket any time from the Support tab in the plugin and we'll be happy to help.",
             ]
         ];
 
@@ -815,7 +815,7 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('rules required');
         }
 
-        $rules = json_decode(stripslashes($_REQUEST['rules']));
+        $rules = json_decode(sanitize_text_field(stripslashes($_REQUEST['rules'])));
 
         if(!$rules){
             wp_send_json_error('rules required');

@@ -431,8 +431,8 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : site_url();
-        $types = isset($_REQUEST['types']) ? explode(",", $_REQUEST['types']) : [];
+        $url = isset($_REQUEST['url']) ? esc_url_raw($_REQUEST['url']) : site_url();
+        $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field($_REQUEST['types'])) : [];
 
         $url = $this->transform_url($url);
 
@@ -654,7 +654,8 @@ class RapidLoad_Optimizer
             unset(self::$merged_options['uucss_api_key']);
         }
 
-        $body = json_decode(file_get_contents('php://input'));
+        $raw_body = file_get_contents('php://input');
+        $body = json_decode(sanitize_text_field($raw_body));
 
         if(!isset($body) || !isset($body->settings) || !isset($body->settings->performance)){
             wp_send_json_error('Missing required data to save the settings!');

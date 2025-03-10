@@ -86,7 +86,7 @@ class RapidLoad_Admin
 
         $image_url_status = [];
 
-        $image_urls = json_decode(stripslashes($_REQUEST['image_urls']), true);
+        $image_urls = json_decode(sanitize_text_field(stripslashes($_REQUEST['image_urls'])), true);
 
         if (!is_array($image_urls)) {
             wp_send_json_error('Invalid image URLs format');
