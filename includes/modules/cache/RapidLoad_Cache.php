@@ -616,7 +616,7 @@ class RapidLoad_Cache
             return;
         }
 
-        $title = ( is_multisite() && is_network_admin() ) ? esc_html__( 'Clear Network Cache', 'rapidload-cache' ) : esc_html__( 'Clear Site Cache', 'rapidload-cache' );
+        $title = ( is_multisite() && is_network_admin() ) ? esc_html__( 'Clear Network Cache', 'unusedcss' ) : esc_html__( 'Clear Site Cache', 'unusedcss' );
 
         $wp_admin_bar->add_menu(
             array(
@@ -640,8 +640,8 @@ class RapidLoad_Cache
                         '_action' => 'clearurl',
                     ) ), 'rapidload_cache_clear_cache_nonce' ),
                     'parent' => 'rapidload',
-                    'title'  => '<span class="ab-label">' . esc_html__( 'Clear Page Cache', 'rapidload-cache' ) . '</span>',
-                    'meta'   => array( 'title' => esc_html__( 'Clear Page Cache', 'rapidload-cache' ) ),
+                    'title'  => '<span class="ab-label">' . esc_html__( 'Clear Page Cache', 'unusedcss' ) . '</span>',
+                    'meta'   => array( 'title' => esc_html__( 'Clear Page Cache', 'unusedcss' ) ),
                 )
             );
         }
