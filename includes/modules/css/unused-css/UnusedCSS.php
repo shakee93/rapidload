@@ -68,7 +68,6 @@ class UnusedCSS
 
             $this->cache_trigger_hooks();
 
-            //add_action( 'admin_notices', [ $this, 'first_uucss_job' ] );
             add_action( 'add_meta_boxes', [$this, 'add_meta_boxes'] );
             add_action( 'save_post', [$this, 'save_meta_box_options'] , 10, 2);
         }
@@ -188,72 +187,6 @@ class UnusedCSS
         }
 
     }
-
-    public function first_uucss_job() {
-
-        if ( class_exists('PAnD') && ! PAnD::is_admin_notice_active( 'first-uucss-job-forever' ) ) {
-            return;
-        }
-
-        if(get_current_screen() && (get_current_screen()->base == 'settings_page_uucss_legacy' || get_current_screen()->base == 'toplevel_page_rapidload')){
-            return;
-        }
-
-        $first_link = RapidLoad_DB::get_first_link();
-
-        $job = false;
-
-        if($first_link){
-
-            $first_link = new RapidLoad_Job([
-                'url' => $first_link['url']
-            ]);
-
-            $job = new RapidLoad_Job_Data($first_link, 'uucss');
-        }
-
-        if ( $job && isset($job->id) && $job->status == 'success' ) : ?>
-            <div data-dismissible="first-uucss-job-forever"
-                 class="updated notice uucss-notice notice-success is-dismissible">
-                <h4><span class="dashicons dashicons-yes-alt"></span> RapidLoad successfully ran your first job!</h4>
-                <p><?php _e( 'You slashed <strong>' . $job->get_stats()->reductionSize . ' </strong> of unused CSS - that\'s <strong>' . $job->get_stats()->reduction . '% </strong> of your total CSS file size. Way to go 👏', 'sample-text-domain' ); ?></p>
-            </div>
-        <?php endif;
-
-        if ( $job && isset($job->id) && $job->status == 'failed' ) : ?>
-            <div data-dismissible="first-uucss-job-forever"
-                 class="error notice uucss-notice notice-error is-dismissible">
-                <h4><span class="dashicons dashicons-no-alt"></span> RapidLoad : We were unable to remove unused css
-                    from
-                    your site 🤕</h4>
-
-                <div>
-                    <p> Our team can help. Get in touch with support <a target="_blank"
-                                                                        href="https://rapidload.zendesk.com/hc/en-us/requests/new">here</a>
-                    </p>
-                    <blockquote class="error notice">
-                        <strong>Link :</strong> <?php echo $job->job->url ?> <br>
-
-                        <?php
-                            $error = $job->get_error();
-
-                            if(isset($error['code'])) :
-                        ?>
-
-                        <strong>Error :</strong> <?php echo $error['code'] ?> <br>
-                        <strong>Message :</strong> <?php echo $error['message'] ?>
-
-                        <?php
-                            endif;
-                        ?>
-
-                    </blockquote>
-                </div>
-
-            </div>
-        <?php endif;
-    }
-
 
     function update_link($link){
 
