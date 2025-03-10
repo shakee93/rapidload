@@ -330,25 +330,6 @@ class RapidLoad_Base
         if(self::is_api_key_verified()) {
             return true;
         }else {
-
-            $url = $this->get_current_url();
-
-            if(strpos($url, 'page=uucss_legacy') !== false || strpos($url, 'page=rapidload') !== false){
-                return false;
-            }
-
-            $notice = [
-                'action'  => 'on-board',
-                'title'   => 'RapidLoad Power Up',
-                'message' => 'Complete on-boarding steps, it only takes 2 minutes.',
-
-                'main_action' => [
-                    'key'   => 'Get Started',
-                    'value' => admin_url( 'options-general.php?page=rapidload' )
-                ],
-                'type'        => 'warning'
-            ];
-            self::add_advanced_admin_notice($notice);
             self::display_get_start_link();
         }
 
