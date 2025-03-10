@@ -451,7 +451,7 @@ class RapidLoad_Base
                 if($index == 3){
                     break;
                 }
-                echo '<li style="margin-bottom: 0">' . preg_replace("/\r|\n/","",$log) . '</li>';
+                echo '<li style="margin-bottom: 0">' . esc_html(preg_replace("/\r|\n/","",$log)) . '</li>';
             }
 
             if(count($changelog) > 0){

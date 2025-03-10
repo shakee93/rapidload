@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <h2>Slash load times and boost PageSpeed scores by loading only CSS you need.</h2>
 <div class="content"
-     style="background-image: url('<?php echo UUCSS_PLUGIN_URL . 'assets/images/intro.svg' ?>')">
+     style="background-image: url('<?php echo esc_url(UUCSS_PLUGIN_URL . 'assets/images/intro.svg') ?>')">
     <div class="uucss-row">
         <div class="left-section">
             <p>
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="uucss-row flex-direction-column">
         <a href="https://rapidload.io/?utm_source=rapidload_plugin&utm_medium=plugin_onboard" class="uucss-activate" target="_blank">Get RapidLoad</a>
         <div class="connect-action-buttons">
-            <a href="<?php echo RapidLoad_Base::activation_url( 'authorize' ) ?>" class="connect">Connect</a>
+            <a href="<?php echo esc_url(RapidLoad_Base::activation_url( 'authorize' )) ?>" class="connect">Connect</a>
             <a href="#" class="connect-with-license">Connect with License Key</a>
         </div>
     </div>

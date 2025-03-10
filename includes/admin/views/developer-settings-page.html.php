@@ -14,7 +14,7 @@ $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugi
 
 ?>
 
-<form id='ao_settings_form' action='<?php echo admin_url( 'options.php' ); ?>' method='post'>
+<form id='ao_settings_form' action='<?php echo esc_url(admin_url( 'options.php' )); ?>' method='post'>
     <?php settings_fields( 'autoptimize_uucss_settings' );
 
     $api_key_verified = isset( $options['uucss_api_key_verified'] ) && $options['uucss_api_key_verified'] == '1';
@@ -127,7 +127,7 @@ do_action('uucss/options/after_render_form');
 
                     foreach ($rules_by_category as $key => $category){
 
-                        echo sprintf('<optgroup label="%s">', $key);
+                        echo sprintf('<optgroup label="%s">', esc_html($key));
 
                         foreach ($category as $rule){
 
@@ -135,7 +135,7 @@ do_action('uucss/options/after_render_form');
 
                                 $permalink = isset($rule['permalink']) ? $rule['permalink'] : trailingslashit(get_site_url());
 
-                                echo sprintf('<option data-type="%s" data-permalink="%s" value="%s">%s</option>', $rule['rule'], $permalink,$rule['rule'], $rule['rule']);
+                                echo sprintf('<option data-type="%s" data-permalink="%s" value="%s">%s</option>', esc_attr($rule['rule']), esc_url($permalink), esc_attr($rule['rule']), esc_attr($rule['rule']));
 
                             }
 
@@ -154,7 +154,7 @@ do_action('uucss/options/after_render_form');
                 <strong>Base URL</strong>
             </label>
             <input type="text" class="rule-base-url"
-                   placeholder="<?php echo trailingslashit(get_site_url())?>" value="<?php echo trailingslashit(get_site_url())?>">
+                   placeholder="<?php echo esc_attr(trailingslashit(get_site_url()))?>" value="<?php echo esc_attr(trailingslashit(get_site_url()))?>">
         </div>
         <div>
             <label for="rule-url-regex">
@@ -188,7 +188,7 @@ do_action('uucss/options/after_render_form');
 
                         if($post_object){
 
-                            echo sprintf('<option value="%s">%s</option>', $value, $post_object->label);
+                            echo sprintf('<option value="%s">%s</option>', esc_attr($value), esc_html($post_object->label));
 
                         }
 
@@ -199,14 +199,14 @@ do_action('uucss/options/after_render_form');
             </select>
         </div>
         <div>
-            <input type="text" class="site-map-url show" value="<?php echo trailingslashit(get_site_url())?>" placeholder="<?php echo trailingslashit(get_site_url())?>" data-site_url="<?php echo trailingslashit(get_site_url())?>" data-sitemap_url="<?php
+            <input type="text" class="site-map-url show" value="<?php echo esc_url(trailingslashit(get_site_url()))?>" placeholder="<?php echo esc_url(trailingslashit(get_site_url()))?>" data-site_url="<?php echo esc_url(trailingslashit(get_site_url()))?>" data-sitemap_url="<?php
             /*$robots = UnusedCSS_Admin::get_robots_text(get_site_url());
             if($robots && isset($robots->sitemap)){
                 echo apply_filters('uucss/sitemap-path', $robots->sitemap);
             }else{
                 echo apply_filters('uucss/sitemap-path', home_url('/sitemap_index.xml'));
             }*/
-            echo apply_filters('uucss/sitemap-path', home_url('/sitemap_index.xml'));
+            echo esc_url(apply_filters('uucss/sitemap-path', home_url('/sitemap_index.xml')));
             ?>">
         </div>
         <div class="add-action-wrap">

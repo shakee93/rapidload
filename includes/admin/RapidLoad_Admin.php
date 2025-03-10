@@ -1668,7 +1668,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-api-key">Api Token</label>
                         </td>
                         <td>
-                            <input type="text" name='autoptimize_uucss_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo $options['cf_token']; endif; ?>">
+                            <input type="text" name='autoptimize_uucss_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo esc_attr($options['cf_token']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1676,7 +1676,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-account-email" >Account Email</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo $options['cf_email']; endif; ?>">
+                            <input type="text" name="autoptimize_uucss_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo esc_attr($options['cf_email']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1684,7 +1684,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-zone-id">Zone ID</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo $options['cf_zone_id']; endif; ?>">
+                            <input type="text" name="autoptimize_uucss_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo esc_attr($options['cf_zone_id']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
