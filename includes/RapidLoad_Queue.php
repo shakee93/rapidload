@@ -109,7 +109,7 @@ class RapidLoad_Queue
     function uucss_process_queue_schedule($schedules){
         $schedules['uucss_cron_interval'] = array(
             'interval' => self::$interval,
-            'display'  => __( 'uucss cron interval' ),
+            'display'  => __( 'uucss cron interval', 'unusedcss' ),
         );
         return $schedules;
     }

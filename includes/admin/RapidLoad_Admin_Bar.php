@@ -241,7 +241,7 @@ class RapidLoad_Admin_Bar {
                                     <span class="rl-icon">
                                         <img src="'. UUCSS_PLUGIN_URL .'/assets/images/logo-icon-light.svg" alt="" style="max-width: 100%">
                                     </span>
-                                    <span class="rl-label">'.__( 'RapidLoad', 'rapidload' ) . '</span>
+                                    <span class="rl-label">'.__( 'RapidLoad', 'unusedcss' ) . '</span>
                                     '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',
                     'href'  => admin_url( 'admin.php?page=rapidload' ),
                     'meta'  => array( 'class' => '' ),
@@ -249,7 +249,7 @@ class RapidLoad_Admin_Bar {
 
                 $wp_admin_bar->add_node( array(
                     'id'    => 'rapidload-clear-cache',
-                    'title' => '<span class="ab-label">' . __( 'Clear CSS/JS/Font Optimizations', 'clear_optimization' ) . '</span>',
+                    'title' => '<span class="ab-label">' . __( 'Clear CSS/JS/Font Optimizations', 'unusedcss' ) . '</span>',
                     //'href'  => admin_url( 'admin.php?page=rapidload&action=rapidload_purge_all' ),
                     'href'   => wp_nonce_url( add_query_arg( array(
                         'action' => 'rapidload_purge_all',
