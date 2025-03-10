@@ -6,6 +6,8 @@ Description: Supercharge your website with RapidLoad AI, featuring cutting-edge 
 Version:     3.1.2
 Author:      RapidLoad
 Author URI:  https://rapidload.ai/
+License:     GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 
