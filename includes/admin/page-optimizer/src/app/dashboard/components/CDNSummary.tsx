@@ -126,8 +126,7 @@ const CDNSummary = ({className}: {className: string}) => {
                         {note}
                     </div>
                 </div>
-                {/* {JSON.stringify(allowedPercentage)}
-                {JSON.stringify(progressWidth)} */}
+                
                 <div className="relative w-full h-2.5 bg-brand-100 overflow-hidden rounded outline outline-1 outline-brand-200 dark:bg-brand-600/40 dark:outline-brand-600/40">
                     {/* Allowed Usage Progress */}
                     
@@ -196,9 +195,7 @@ const CDNSummary = ({className}: {className: string}) => {
                 <SectionHeader title="CDN and Image Summary" tooltip="Comprehensive breakdown of CDN and Image CDN usage allocated through RapidLoad." />
 
                 <UsageBar label="CDN" usage={cdnUsage.used_gb} allowedUsage={cdnUsage.allowed_gb} note={`Renews on ${nextBillingDate}`} used_gb_formatted={cdnUsage.used_gb_formatted} additional_usage_gb={cdnUsage.additional_usage_gb}/>
-                {/* {cdnUsage.additional_usage_gb > 0 &&
-                    <UsageBar label="Additional Usage" usage={cdnUsage.additional_usage_gb} />
-                } */}
+               
 
                 {/* <UsageBar label="CDN" usage={50} allowedUsage={cdnUsage.allowed_gb} note={`Renews on ${nextBillingDate}`} used_gb_formatted={cdnUsage.used_gb_formatted} additional_usage_gb={20}/> */}
 
