@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <p><textarea name="autoptimize_uucss_settings[uucss_excluded_js_files]"
                                  style="max-width: 390px; width: 100%; height: 100px"
                                  class="the-tags"
-                                 aria-describedby="new-tag-post_tag-desc"><?php echo empty( $options['uucss_excluded_js_files'] ) ? '' : $options['uucss_excluded_js_files'] ?></textarea>
+                                 aria-describedby="new-tag-post_tag-desc"><?php echo empty( $options['uucss_excluded_js_files'] ) ? '' : esc_textarea($options['uucss_excluded_js_files']) ?></textarea>
                     </p>
                 </div>
                 <p class="howto">

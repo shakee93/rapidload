@@ -39,7 +39,7 @@
     <td>
                                     <textarea style="max-width: 390px; width: 100%; height: 150px" id="uucss_additional_css"
                                               name="autoptimize_uucss_settings[uucss_additional_css]" <?php if(!empty(CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
-                                        <?php echo empty( $options['uucss_additional_css'] ) ? '' : $options['uucss_additional_css'] ?></textarea>
+                                        <?php echo empty( $options['uucss_additional_css'] ) ? '' : esc_textarea($options['uucss_additional_css']) ?></textarea>
 
     </td>
 </tr>

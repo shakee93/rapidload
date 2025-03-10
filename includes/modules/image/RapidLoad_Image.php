@@ -87,15 +87,15 @@ class RapidLoad_Image
             ?>
             (function(w, d){
                 w.rapidload_io_data = {
-                    nonce : "<?php echo self::create_nonce('rapidload_image') ?>",
-                    image_endpoint : "<?php echo RapidLoad_Image::$image_indpoint ?>",
-                    optimize_level : "<?php echo ( isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null' ) ?>" ,
-                    adaptive_image_delivery : <?php echo ( isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false' ) ?> ,
-                    support_next_gen_format : <?php echo ( isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false' ) ?>
+                    nonce : "<?php echo esc_js(self::create_nonce('rapidload_image')) ?>",
+                    image_endpoint : "<?php echo esc_js(RapidLoad_Image::$image_indpoint) ?>",
+                    optimize_level : "<?php echo esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null') ?>" ,
+                    adaptive_image_delivery : <?php echo esc_js(isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false') ?> ,
+                    support_next_gen_format : <?php echo esc_js(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false') ?>
                 };
             }(window, document));
 
-            <?php echo $image_handler_script ?>
+            <?php echo esc_js($image_handler_script) ?>
         </script>
         <?php
 

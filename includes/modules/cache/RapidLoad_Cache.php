@@ -113,9 +113,9 @@ class RapidLoad_Cache
             $type = "error";
 
             add_action('admin_notices', function () use ($message, $type) {
-                echo "<div class=\"notice notice-$type is-dismissible rapidload-cache-notice\">
-                    <p>$message</p>
-                 </div>";
+                echo '<div class="notice notice-' . esc_attr($type) . ' is-dismissible rapidload-cache-notice">
+                    <p>' . esc_html($message) . '</p>
+                 </div>';
             });
         }
     }

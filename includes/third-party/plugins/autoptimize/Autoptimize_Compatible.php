@@ -137,7 +137,7 @@ class Autoptimize_Compatible extends RapidLoad_ThirdParty {
 
         if(class_exists('autoptimizeConfig')){
 
-            echo autoptimizeConfig::ao_admin_tabs();
+            echo esc_html(autoptimizeConfig::ao_admin_tabs());
 
         }
 
