@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+?>
 <tr>
     <th class="sub-heading">
         <h4>JS Optimization</h4>

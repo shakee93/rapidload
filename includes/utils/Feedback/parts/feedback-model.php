@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
 ?>
 
 <div class="uucss-plugin-uninstall-feedback-popup uucss-feedback" id="uucss_uninstall_feedback_popup">

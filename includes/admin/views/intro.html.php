@@ -1,3 +1,9 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+?>
+
 <h2>Slash load times and boost PageSpeed scores by loading only CSS you need.</h2>
 <div class="content"
      style="background-image: url('<?php echo UUCSS_PLUGIN_URL . 'assets/images/intro.svg' ?>')">
@@ -12,7 +18,7 @@
             <p>
                 Up to 95% of each CSS file in Wordpress themes and plugins is loaded and never used.
                 That translates to anywhere from 1 to 4 additional seconds of load time.
-                <strong>That’s up to 4 additional seconds to load completely unnecessary
+                <strong>That's up to 4 additional seconds to load completely unnecessary
                     code!</strong>
             </p>
             <p>
@@ -20,7 +26,7 @@
                 load
                 times by <strong> up to 50%, boosts Boosts Google PageSpeed scores,</strong> and
                 <strong>improves user
-                    experience.</strong> Best of all, it’s totally automated. No combing through
+                    experience.</strong> Best of all, it's totally automated. No combing through
                 countless files, no matching up styles to elements - just enable RapidLoad and see
                 the
                 benefits immediately!
