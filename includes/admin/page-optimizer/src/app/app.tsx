@@ -145,7 +145,7 @@ const App = ({ popup, _showOptimizer = false }: {
         }
         const storedLicense = localStorage.getItem('rapidLoadLicense');
 
-        console.log(license, storedLicense);
+       // console.log(license, storedLicense);
 
         if (storedLicense) {
             setShowStepTwo(false)
