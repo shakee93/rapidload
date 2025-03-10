@@ -107,8 +107,10 @@ const CDNSummary = ({className}: {className: string}) => {
     const UsageBar = ({label, usage = 0, allowedUsage = 0, note, used_gb_formatted, additional_usage_gb = 0}: UsageBarProps) => {
 
         const totalUsage = usage;
+        const progressWidth = allowedUsage ? `${Math.min((usage / allowedUsage) * 100, 100)}` : "0";
         const allowedPercentage = allowedUsage ? Math.min((allowedUsage / totalUsage) * 100, 100) : 0;
         const additionalPercentage = totalUsage > allowedUsage ? Math.min(((totalUsage - allowedUsage) / totalUsage) * 100, 100) : 0;
+        const finalprogressWidth = allowedPercentage - 100;
     
         return (
             <div className={cn("flex flex-col gap-2.5 py-2", className)}>
@@ -124,13 +126,14 @@ const CDNSummary = ({className}: {className: string}) => {
                         {note}
                     </div>
                 </div>
-                
+                {/* {JSON.stringify(allowedPercentage)}
+                {JSON.stringify(progressWidth)} */}
                 <div className="relative w-full h-2.5 bg-brand-100 overflow-hidden rounded outline outline-1 outline-brand-200 dark:bg-brand-600/40 dark:outline-brand-600/40">
                     {/* Allowed Usage Progress */}
-
+                    
                     <div
                         className={`absolute h-2.5 bg-brand-950 dark:bg-brand-300 rounded ${(additional_usage_gb ?? 0) > 0 ? 'rounded-r-none' : ''}`}
-                        style={{ width: `${allowedPercentage}%` }}
+                        style={{ width: `${progressWidth}%` }}
                     ></div>
                     
                     {/* White Line at Additional Usage Start */}
@@ -151,7 +154,7 @@ const CDNSummary = ({className}: {className: string}) => {
                     {additional_usage_gb > 0 && (
                         <>
                         <div
-                            className="absolute h-2.5 bg-brand-950/70 dark:bg-brand-300/70 rounded-r right-0"
+                            className="absolute h-2.5 bg-brand-600 dark:bg-brand-200 rounded-r right-0"
                             style={{ width: `${additionalPercentage}%` }}
                         ></div>
                         
