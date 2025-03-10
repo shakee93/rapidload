@@ -83,7 +83,7 @@ class RapidLoad_Admin_Bar {
             echo '<link id="rapidload-page-optimizer-css" rel="preload" href="' . esc_url($package . $indexCSS) . '" as="style" type="text/css"/>';
         });
 
-        wp_register_script( 'rapidload_page_optimizer', $package . $indexJS,[], UUCSS_VERSION);
+        wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
 
         $current_url = isset($_SERVER['REQUEST_URI']) ? home_url($_SERVER['REQUEST_URI']) : $this->get_current_url();
 
@@ -239,7 +239,7 @@ class RapidLoad_Admin_Bar {
                     'id'    => 'rapidload',
                     'title' => '<div id="rl-node-wrapper" class="'. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1" ? 'rl-node-wrapper rl-test-mode-on' : 'rl-node-wrapper') .'" >
                                     <span class="rl-icon">
-                                        <img src="'. UUCSS_PLUGIN_URL .'/assets/images/logo-icon-light.svg" alt="" style="max-width: 100%">
+                                        <img src="'. esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
                                     </span>
                                     <span class="rl-label">'.__( 'RapidLoad', 'unusedcss' ) . '</span>
                                     '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',
