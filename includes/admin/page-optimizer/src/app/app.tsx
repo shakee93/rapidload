@@ -352,8 +352,9 @@ const App = ({ popup, _showOptimizer = false }: {
                                 <InitTour mode={mode} />
                             </AppTour>
                         </Suspense>
-
-                        {activeRoute !== "/onboard" && !showStepTwo && (
+                        {/* this is temp fix this need to be fixed */}
+                        {/* {activeRoute !== "/onboard" && !showStepTwo && ( */}
+                        {activeRoute !== "/onboard" && (
                             <div className='justify-center flex container'>
                                 <header
                                     className={cn('container px-2 py-2 flex gap-3 mt-4 justify-between dark:bg-brand-800 bg-brand-0 rounded-2xl', testMode && 'ring-2 ring-[#f7b250] ring-offset-0')}>
