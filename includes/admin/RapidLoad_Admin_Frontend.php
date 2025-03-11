@@ -83,7 +83,6 @@ class RapidLoad_Admin_Frontend
         if(is_admin()){
 
             add_action( 'admin_menu', array( $this, 'add_developer_settings_page' ) );
-            add_action( 'admin_menu', array( $this, 'add_rapidload_onboard_page' ) );
             add_action( 'admin_menu', array( $this, 'add_page_optimizer_page' ) );
             add_action('uucss/rule/saved', [$this, 'update_rule'], 10, 2);
             add_action('admin_menu', [$this, 'remove_rapidload_legacey_dashboard_menu'], 999);
@@ -115,7 +114,9 @@ class RapidLoad_Admin_Frontend
             <?php
         });
 
-        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings');
+        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings', function($value) {
+            return is_array($value) ? $value : [];
+        });
 
         $key = null;
 
@@ -842,36 +843,6 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function add_rapidload_onboard_page(){
-
-        global $submenu;
-
-        add_submenu_page( 'options-general.php', 'RapidLoad', 'RapidLoad', 'manage_options', 'rapidload-on-board', function () {
-            wp_enqueue_script( 'post' );
-
-            ?>
-            <div id="rapidload-on-board">
-
-            </div>
-
-            <?php
-        });
-
-        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings');
-
-        $key = null;
-
-        if(!isset($submenu['options-general.php'])){
-            return;
-        }
-
-        $key = array_search(["RapidLoad","manage_options","rapidload-on-board","RapidLoad"], $submenu['options-general.php']);
-
-        if(isset($submenu['options-general.php'][$key])){
-            unset($submenu['options-general.php'][$key]);
-        }
-    }
-
     public function add_page_optimizer_page() {
 
         global $submenu;
@@ -887,7 +858,9 @@ class RapidLoad_Admin_Frontend
             <?php
         });
 
-        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings');
+        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings', function($value) {
+            return is_array($value) ? $value : [];
+        });
 
         $key = null;
 
