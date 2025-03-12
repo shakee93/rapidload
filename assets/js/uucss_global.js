@@ -193,83 +193,6 @@
             updateInput();
         }
 
-        function updateLicenseInfo() {
-
-            if(window.uucss && uucss.api_key_verified === ""){
-                return;
-            }
-
-            var container = $('.license-info')
-
-            if(container.length){
-                container.addClass('loading');
-            }
-
-            // TODO fix this
-            wp.ajax?.post('uucss_license', { nonce : window.uucss_global.nonce }).then(function (i) {
-                if(container.length){
-                    $('.license-info ul').show();
-
-                    $('#license-name').text(i.name)
-                    $('#license-email').text(i.email)
-                    $('#license-next_billing').text(new Date(i.next_billing * 1000).toLocaleDateString())
-                    $('#license-plan').text(i.plan)
-                    $('#license-domain').text(i.siteUrl)
-
-                    container.removeClass('loading');
-                }
-
-                var seconds = Math.floor((new Date(i.next_billing * 1000) - new Date() ) / 1000);
-                var interval = seconds / 86400;
-                if(interval < 0){
-                    var content = `<div class="uucss-notice-action notice notice-action notice-action-on-board notice-info">
-                                  <div class="notice-action-inner">
-                                    <div class="notice-icon">
-                                        <div class="logo-wrapper">
-                                            <img src="http://dev.rapidload.local/wp-content/plugins/autoptimize-unusedcss/assets/images/logo-icon.svg" width="40" alt="RapidLoad logo">
-                                        </div>
-                                    </div>
-                                    <div class="notice-icon-content">
-                                       <h2 class="uucss-notice-title">You are missing out RapidLoad benefits</h2>
-                                        <p>RapidLoad is not working on your site anymore, which means you will have larger CSS files, overall a larger page size and lower page-speed scores. </p>
-                                    </div>
-                                        <div class="notice-main-action">
-                                        <p>
-                                            <a target="_blank" class="button button-primary" href="https://app.rapidload.io/auth/sign-in/?goto=https://app.rapidload.io/subscription">Activate</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>`
-
-                    var $wrap = $('#wpbody-content .wrap');
-
-                    if($wrap.length){
-                        $wrap.prepend(content)
-                    }
-                }
-            }).fail(function (i) {
-                if(container.length){
-                    $('.license-info ul').hide()
-                    $('.license-info #license-message').show().html('Sorry, we couldn\'t collect license information of yours.')
-                    container.removeClass('loading');
-                }
-            })
-
-            tippy('.uucss-support a', {
-                allowHTML: true,
-                arrow: false,
-                appendTo: 'parent',
-                animation: 'shift-toward',
-                placement: 'top-end',
-                content: function () {
-                    var el = document.getElementById('uucss-support-tooltip');
-                    el.style.display = 'inline-block';
-                    return el
-                }
-            });
-
-        }
-
         $('.notice-action-rapidload-db-update .notice-main-action a.button').click(function (e) {
             var $target = $(this);
 
@@ -329,7 +252,6 @@
 
         });
 
-        updateLicenseInfo();
     });
 
 }(jQuery))
