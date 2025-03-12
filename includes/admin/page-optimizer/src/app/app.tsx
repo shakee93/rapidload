@@ -13,7 +13,7 @@ import { AnimatePresence, m, motion } from "framer-motion";
 import { useRootContext } from "../context/root";
 import Header from "app/page-optimizer/components/Header";
 import { cn, hasQueryParam } from "lib/utils";
-import { setCommonState } from "../store/common/commonActions";
+import { setCommonRootState, setCommonState } from "../store/common/commonActions";
 import useCommonDispatch from "hooks/useCommonDispatch";
 import { toBoolean, isDev, disableDebugReport, isAdminPage, getOptimizeUrl } from "lib/utils";
 import Bugsnag from "@bugsnag/js";
@@ -103,7 +103,7 @@ const App = ({ popup, _showOptimizer = false }: {
 
     useEffect(() => {
         const optimizeUrl = getOptimizeUrl();
-        dispatch(setCommonState('headerUrl', optimizeUrl));
+        //dispatch(setCommonRootState('headerUrl', optimizeUrl));
 
         // load initial data
         dispatch(fetchReport(options, headerUrl ? headerUrl : options.optimizer_url, false, true));

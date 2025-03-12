@@ -488,7 +488,7 @@ export const fetchPosts = (options: WordPressOptions): ThunkAction<void, RootSta
     };
 };
 
-export const fetchReport = (options: WordPressOptions, url: string, reload = false,  fetchBoth?: boolean, abortController?: AbortController): ThunkAction<void, RootState, unknown, AnyAction> => {
+export const fetchReport = (options: WordPressOptions, url: string, reload = false,  fetchBoth?: boolean, abortController?: AbortController, noRapidLoad?: boolean): ThunkAction<void, RootState, unknown, AnyAction> => {
 
     const api = new ApiService(options);
 
@@ -501,7 +501,7 @@ export const fetchReport = (options: WordPressOptions, url: string, reload = fal
            // If `fetchBoth` is true, fetch for both `mobile` and `desktop`
            const reportTypes: ReportType[] = fetchBoth ? ['mobile', 'desktop'] : [currentState.app.activeReport];
 
-          
+           
             // TODO: don't let people bam on keyboard while waiting to laod the page speed
             // if(activeReportData.loading && activeReportData.data ) {
             //     console.log('don\'t bam the mouse! we are loading your page speed details 😉');
@@ -519,13 +519,16 @@ export const fetchReport = (options: WordPressOptions, url: string, reload = fal
                 return;
             }
 
+           // console.log("coming upto this point", reportType)
+
             dispatch({ type: FETCH_REPORT_REQUEST, activeReport: reportType  });
 
             const response = await api.fetchPageSpeed(
                 url,
                 reportType,
                 reload,
-                abortController
+                abortController,
+                noRapidLoad
             );
 
             dispatch({

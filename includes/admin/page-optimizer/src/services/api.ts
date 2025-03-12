@@ -78,15 +78,15 @@ class ApiService {
         });
     }
 
-    async fetchPageSpeed(url: string, activeReport: string, reload: boolean, abortController?: AbortController): Promise<any> {
-
+    async fetchPageSpeed(url: string, activeReport: string, reload: boolean, abortController?: AbortController, noRapidLoad?: boolean): Promise<any> {
+       
         try {
             let fresh = reload
             let data = null
 
             if (reload) {
 
-                data = await this.analyzeViaAPI(url, activeReport, abortController);
+                data = await this.analyzeViaAPI(url, activeReport, abortController, noRapidLoad);
 
                 if (data?.errors) {
                     if (Array.isArray(data?.errors)) {
@@ -204,7 +204,7 @@ class ApiService {
         }
     }
 
-    async analyzeViaAPI(url: string, strategy: string, abortController?: AbortController) {
+    async analyzeViaAPI(url: string, strategy: string, abortController?: AbortController, noRapidLoad?: boolean) {
 
        // console.log('analyzeViaAPI', abortController);
 
@@ -214,12 +214,13 @@ class ApiService {
             const data = state.app.report[state.app.activeReport]
             const settings = state.app.settings.performance[state.app.activeReport]
             const testModeStatus = state.app.testMode?.status ?? state.app.settings.general.test_mode ?? false;
-            const previewUrl = testModeStatus ? '?rapidload_preview' : '';
+            const previewUrl = testModeStatus || !noRapidLoad ? '?rapidload_preview' : '';
 
             const api_root = this.options?.api_root || 'https://api.rapidload.io/api/v1';
             const pageSpeedURL = new URL(`${api_root}/page-speed`);
 
             pageSpeedURL.searchParams.append('url', url + previewUrl)
+            // pageSpeedURL.searchParams.append('strategy', state.app.activeReport)
             pageSpeedURL.searchParams.append('strategy', state.app.activeReport)
             pageSpeedURL.searchParams.append('plugin_version', this.options.rapidload_version)
             pageSpeedURL.searchParams.append('titan_version', __OPTIMIZER_VERSION__)
