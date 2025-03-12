@@ -1687,7 +1687,7 @@ class RapidLoad_Optimizer
                     case 'number' :{
                         if(isset($input->value) && isset($input->key)){
                             if($input->key == "uucss_safelist"){
-                                $rulesArray = explode("\n",$input->value);
+                                $rulesArray = explode("\n",sanitize_text_field($input->value));
                                 $transformedRulesArray = [];
                                 foreach ($rulesArray as $rule) {
                                     $transformedRulesArray[] = [
@@ -1700,14 +1700,14 @@ class RapidLoad_Optimizer
                                 $rapidload_cache_args['cache_expiry_time'] = (float)$input->value;
                             }else if($input->key == "excluded_page_paths"){
                                 if(!empty($input->value)){
-                                    $paths = explode("\n",$input->value);
+                                    $paths = explode("\n",sanitize_text_field($input->value));
                                     $rapidload_cache_args['excluded_page_paths'] = $this->transformPathsToRegex($paths);
                                 }else{
                                     $rapidload_cache_args['excluded_page_paths'] = "";
                                 }
                             }else{
                                 if($input->key != "uucss_cdn_url"){
-                                    self::$options[$input->key] = $input->value;
+                                    self::$options[$input->key] = sanitize_text_field($input->value);
                                 }
                             }
                         }else if(isset($new_options[$input->key])){
