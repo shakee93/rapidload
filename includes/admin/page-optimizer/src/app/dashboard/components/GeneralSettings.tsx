@@ -267,7 +267,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                     <Button  
                         className='flex gap-2 dark:bg-brand-800/40 dark:text-brand-300 dark:hover:bg-brand-800/50' 
                         onClick={() => {
-                            window.location.href = '/wp-admin/admin.php?page=rapidload-legacy-dashboard#/';
+                            window.open('/wp-admin/admin.php?page=rapidload-legacy-dashboard#/', '_blank');
                         }}
                         variant='outline'>
                         Dashboard 2.0

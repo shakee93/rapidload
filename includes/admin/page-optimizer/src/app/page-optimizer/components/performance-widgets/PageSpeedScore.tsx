@@ -187,7 +187,7 @@ const PageSpeedScore = ({ pagespeed, priority = true }: PageSpeedScoreProps) => 
                         </TooltipText>
                     </div>
                     
-
+                        
                     <div className="pl-2 pr-2 content-center">
                         <div className="flex overflow-hidden ">
                             <div className=' rounded-xl transition-all delay-100' data-tour="current-url">
@@ -203,10 +203,12 @@ const PageSpeedScore = ({ pagespeed, priority = true }: PageSpeedScoreProps) => 
                                     onClick={() => {
 
                                         if (!inProgress || !loading) {
-                                            dispatch(fetchReport(options, url, true))
+                                            dispatch(fetchReport(options, url, true, false, undefined, true))
+                                             
                                         }
                                         commonDispatch(setCommonState('openAudits', []))
-
+                                        
+                                      
                                     }}>
                                     <TooltipText
                                         text='Analyze the page'>

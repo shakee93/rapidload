@@ -5,6 +5,7 @@ export type CommonState = {
     isTourOpen: boolean
     onboardCompleted: boolean
     aiPredictionResult: any | null,
+    headerUrl: string,
     mobile : {
         activeTab: AuditTypes;
         activeMetric?: Metric | null;
@@ -18,7 +19,6 @@ export type CommonState = {
         testModeLoading: boolean;
         auditsReturn: boolean;
         uucssError: boolean;
-        headerUrl: string;
         diagnosticLoading: boolean;
         
     }
@@ -35,7 +35,6 @@ export type CommonState = {
         testModeLoading: boolean;
         auditsReturn: boolean;
         uucssError: boolean;
-        headerUrl: string;
         diagnosticLoading: boolean;
     
     }
