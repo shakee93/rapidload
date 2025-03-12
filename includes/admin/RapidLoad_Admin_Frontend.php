@@ -858,10 +858,6 @@ class RapidLoad_Admin_Frontend
             <?php
         });
 
-        register_setting('autoptimize_uucss_settings', 'autoptimize_uucss_settings', function($value) {
-            return is_array($value) ? $value : [];
-        });
-
         $key = null;
 
         if(!isset($submenu['options-general.php'])){

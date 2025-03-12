@@ -638,15 +638,15 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
+        $url = esc_url_raw($_REQUEST['url']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? $_REQUEST['strategy'] : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
 
-        self::$global = isset($_REQUEST['global']) && $_REQUEST['global'] || rtrim(site_url(), "/") == rtrim($url, "/");
+        self::$global = isset($_REQUEST['global']) && (sanitize_text_field($_REQUEST['global']) == 'true') || rtrim(site_url(), "/") == rtrim($url, "/");
 
         $this->pre_optimizer_function($url, $strategy, self::$global);
 
