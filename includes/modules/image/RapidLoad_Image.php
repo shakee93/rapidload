@@ -71,6 +71,10 @@ class RapidLoad_Image
 
     public function enqueue_frontend_js(){
 
+        if(!RapidLoad_Base::is_api_key_verified()){
+            return;
+        }
+
         ?>
         <script id="rapidload-image-handler" type="text/javascript" norapidload>
             <?php
@@ -113,6 +117,11 @@ class RapidLoad_Image
 
     public static function get_replaced_url($url, $cdn = null, $width = false, $height = false, $args = [])
     {
+
+        if(!RapidLoad_Base::is_api_key_verified()){
+            return $url;
+        }
+
         if(strpos( $url, self::$image_indpoint ) !== false){
             return $url;
         }
