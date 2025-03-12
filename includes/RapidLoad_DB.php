@@ -872,6 +872,8 @@ abstract class RapidLoad_DB
             $wpdb->query($wpdb->prepare("DELETE FROM $option_table WHERE option_name = %s", $option_name));
         }
 
+        delete_option('rapidload_license_data');
+
     }
 
     static function get_optimization_count(){
