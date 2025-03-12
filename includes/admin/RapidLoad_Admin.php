@@ -44,6 +44,7 @@ class RapidLoad_Admin
             add_action('wp_ajax_titan_checklist_plugins', [$this, 'titan_checklist_plugins']);
             add_action('wp_ajax_titan_checklist_status', [$this, 'titan_checklist_status']);
             add_action('wp_ajax_rapidload_switch_test_mode', [$this, 'rapidload_switch_test_mode']);
+            add_action('wp_ajax_rapidload_onboard_skipped', [$this, 'rapidload_onboard_skipped']);
             
 
             if (defined('RAPIDLOAD_DEV_MODE')) {
@@ -74,6 +75,12 @@ class RapidLoad_Admin
         add_filter('uucss/rules', [$this, 'rapidload_rule_types'], 90 , 1);
         add_action('add_sitemap_to_jobs', [$this, 'add_sitemap_to_jobs'], 10, 1);
 
+    }
+
+    public function rapidload_onboard_skipped(){
+        self::verify_nonce();
+        update_option('rapidload_onboard_skipped', true);
+        wp_send_json_success(true);
     }
 
     function rapidload_image_optimization_status(){

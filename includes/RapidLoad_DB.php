@@ -873,7 +873,7 @@ abstract class RapidLoad_DB
         }
 
         delete_option('rapidload_license_data');
-
+        delete_option('rapidload_onboard_skipped');
     }
 
     static function get_optimization_count(){

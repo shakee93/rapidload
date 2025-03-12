@@ -83,7 +83,7 @@ class RapidLoad_Onboard{
     }
 
     public static function on_board_completed(){
-        return RapidLoad_Base::is_api_key_verified();
+        return RapidLoad_Base::is_api_key_verified() || RapidLoad_Base::get_option('rapidlaod_onboard_skipped', false);
     }
 
     function redirect() {
