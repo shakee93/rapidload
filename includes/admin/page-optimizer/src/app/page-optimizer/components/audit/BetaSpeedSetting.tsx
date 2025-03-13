@@ -345,14 +345,23 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                             <>
                                 {mainInput.control_type === 'checkbox' && (
                                     <>
-
-                                        <Checkbox disabled={['onboard', 'preview'].includes(mode) || isProFeatureBlocked}
+                                        {isProFeatureBlocked ? (
+                                            <Mode >
+                                        <TooltipText
+                                            text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
+                                        <Lock className='w-4 text-brand-400'/>
+                                    </TooltipText>
+                                    </Mode>
+                                        ):(
+                                            <Checkbox disabled={['onboard', 'preview'].includes(mode) || isProFeatureBlocked}
                                             className={actionRequired ? '' : 'border-dashed'}
                                             checked={isProFeatureBlocked ? false : mainInput.value}
                                             onCheckedChange={(c: boolean) => {
                                                 updateValue(settings, c, mainInput.key);
                                                 dispatch(changeGear('custom'));
                                             }} />
+                                        )}
+                                        
 
                                     </>
                                 )}
@@ -434,14 +443,14 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                         <Lock className='w-4 text-brand-400'/>
                                     </TooltipText>
                                 </Mode> */}
-                                {isProFeatureBlocked && (
+                                {/* {isProFeatureBlocked && (
                                     <Mode >
                                         <TooltipText
                                             text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
                                         <Lock className='w-4 text-brand-400'/>
                                     </TooltipText>
                                     </Mode>
-                                )}
+                                )} */}
                             </>
 
                         )}
