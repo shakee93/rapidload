@@ -58,10 +58,9 @@ jobs:
       - name: Zip Plugin Files
         run: |
           PLUGIN_NAME="unusedcss"
-          mkdir -p "$PLUGIN_NAME"
-          rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
-          rm -rf "$PLUGIN_NAME"
+          # Create zip directly without wrapping folder
+          zip -r "${PLUGIN_NAME}.zip" . -x ".git/*" ".github/*" "*.zip"
+          # Remove everything except the zip
           find . -mindepth 1 -maxdepth 1 ! -name "${PLUGIN_NAME}.zip" -exec rm -rf {} +
 
       - name: List Files
