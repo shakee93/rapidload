@@ -6,6 +6,7 @@ export type CommonState = {
     onboardCompleted: boolean
     aiPredictionResult: any | null,
     headerUrl: string,
+    licenseConnected: boolean,
     mobile : {
         activeTab: AuditTypes;
         activeMetric?: Metric | null;

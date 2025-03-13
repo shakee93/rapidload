@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Loader, PlugIcon } from "lucide-react";
 import { Button } from 'components/ui/button';
 import AppButton from 'components/ui/app-button';
+import { setCommonRootState } from '../../../store/common/commonActions';
 
 type InputChangeHandler = React.ChangeEventHandler<HTMLInputElement>;
 
@@ -52,6 +53,10 @@ const LicenseWidget = () => {
             setLicenseInfo(license);
         }
     }, [license]);
+
+    useEffect(() => {
+        dispatch(setCommonRootState('licenseConnected', !!licenseInfo));
+    }, [licenseInfo]);
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -162,10 +167,10 @@ const LicenseWidget = () => {
                         {/* !licenseInfo */}
                         {!licenseInfo ? (
                             <>
-                                {/* <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
+                                {/* <span>You're currently using just 30% of RapidLoad AI's potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
                                 </span> */}
                                 
-                                <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
+                                <span>You're currently using just 30% of RapidLoad AI's potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
                                 {showInput && renderLicenseInput() }
                             
                             </>
