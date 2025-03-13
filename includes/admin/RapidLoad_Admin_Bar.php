@@ -24,7 +24,7 @@ class RapidLoad_Admin_Bar {
 //        wp_enqueue_script( 'rapidload-speed-popover-js', UUCSS_PLUGIN_URL .  'includes/admin/assets/js/speed-popover/build/static/js/main.js', null, 'xx.xx', true);
 //        wp_enqueue_style( 'rapidload-speed-popover-css', UUCSS_PLUGIN_URL .  'includes/admin/assets/js/speed-popover/build/static/css/main.css', null, 'xx.xx');
 
-        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
 
         if (
             (!is_admin() && is_user_logged_in() && defined('RAPIDLOAD_PAGE_OPTIMIZER_ENABLED')) ||
@@ -47,7 +47,7 @@ class RapidLoad_Admin_Bar {
     {
         $options = RapidLoad_Base::fetch_options();
 
-        $page = isset($_REQUEST['page']) ? $_REQUEST['page'] : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
 
         $tag = apply_filters('rapidload/titan/tag', 'latest');
 
@@ -267,7 +267,7 @@ class RapidLoad_Admin_Bar {
     }
 
     function is_admin_url($url){
-        $_url = parse_url(untrailingslashit(admin_url()));
+        $_url = wp_parse_url(untrailingslashit(admin_url()));
         if(isset($_url['path']) && $this->str_contains($url, $_url['path'])){
             return true;
         }
