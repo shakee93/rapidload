@@ -1,4 +1,8 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 define('RAPIDLOAD_ASSET_MAP', [
     'assets/inter-cyrillic-ext-wght-normal.woff2' => 'assets/inter-cyrillic-ext-wght-normal.woff2',
     'assets/inter-cyrillic-wght-normal.woff2' => 'assets/inter-cyrillic-wght-normal.woff2',
