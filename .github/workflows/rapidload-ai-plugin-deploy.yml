@@ -68,29 +68,41 @@ jobs:
           pwd
           ls -la
 
-      - name: Upload Plugin ZIP to S3
-        uses: jakejarvis/s3-sync-action@master
+      - name: Delete existing files from S3 version folder
+        uses: aws-actions/aws-cli-action@v1
         with:
-          args: --acl public-read --delete --overwrite
+          args: s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }} --recursive
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "download/${{ env.VERSION }}"
 
-      - name: Upload Plugin ZIP to S3 latest
-        uses: jakejarvis/s3-sync-action@master
+      - name: Delete existing files from S3 latest folder  
+        uses: aws-actions/aws-cli-action@v1
         with:
-          args: --acl public-read --delete --overwrite
+          args: s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/latest --recursive
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "latest"
+
+      - name: Upload Plugin ZIP to S3 version folder
+        uses: aws-actions/aws-cli-action@v1
+        with:
+          args: s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }}/unusedcss.zip --acl public-read
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Upload Plugin ZIP to S3 latest folder
+        uses: aws-actions/aws-cli-action@v1
+        with:
+          args: s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/latest/unusedcss.zip --acl public-read
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
 
       - name: Generate Update JSON
         run: |
