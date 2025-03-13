@@ -79,9 +79,9 @@ const LicenseWidget = () => {
         { label: 'Email', value: licenseInfo?.email },
         {
             label: 'Next Billing',
-            value: licenseInfo?.next_billing
+            value: licenseInfo?.plan === 'cancelled or not found' ? 'Expired': licenseInfo?.next_billing
                 ? new Date(licenseInfo.next_billing * 1000).toLocaleDateString()
-                : ''
+                :''
         },
         { label: 'Plan', value: licenseInfo?.plan },
         { label: 'Active Domain', value: licenseInfo?.licensedDomain ? licenseInfo?.licensedDomain : options.optimizer_url }
@@ -89,20 +89,6 @@ const LicenseWidget = () => {
 
     const renderLicenseDetails = () => (
         <div className="relative space-y-3">
-            {/* <button 
-                onClick={toggleVisibility}
-                className="absolute right-0 -top-4 p-1.5 rounded-full transition-colors"
-                aria-label={isVisible ? "Hide details" : "Show details"}
-            >
-                {isVisible ? (
-                    <EyeIcon className="h-4 w-4 text-violet-400" />
-                ) : (
-                    <EyeSlashIcon className="h-4 w-4 text-violet-400" />
-                )}
-            </button> */}
-
-
-
             {licenseFields.map(({ label, value }, index) => (
                 <div
                     key={label}
@@ -167,10 +153,10 @@ const LicenseWidget = () => {
                         {/* !licenseInfo */}
                         {!licenseInfo ? (
                             <>
-                                {/* <span>You're currently using just 30% of RapidLoad AI's potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
+                                {/* <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
                                 </span> */}
                                 
-                                <span>You're currently using just 30% of RapidLoad AI's potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
+                                <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
                                 {showInput && renderLicenseInput() }
                             
                             </>
@@ -206,7 +192,7 @@ const LicenseWidget = () => {
                                     </button>
 
                                     <AppButton
-                                        className={`bg-[#09090b] flex gap-2 items-center cursor-pointer px-4 rounded-lg ${showInput && inputLicense.length <= 0 ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}
+                                        className={`bg-[#09090b] flex gap-2 items-center dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 dark:text-brand-300 cursor-pointer px-4 rounded-lg ${showInput && inputLicense.length <= 0 ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}
                                         onClick={() => (showInput ? connectRapidloadLicense() :  uucssGlobal?.activation_url ? window.location.href = uucssGlobal?.activation_url
                                          : window.open('https://rapidload.ai/', '_blank'))}
                                     >
