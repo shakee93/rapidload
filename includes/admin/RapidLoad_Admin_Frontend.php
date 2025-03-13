@@ -179,7 +179,7 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $notice_id = isset($_REQUEST['notice_id']) ? $_REQUEST['notice_id'] : false;
+        $notice_id = isset($_REQUEST['notice_id']) ? sanitize_text_field($_REQUEST['notice_id']) : false;
 
         if($notice_id){
             RapidLoad_Base::update_option('uucss_notice_' . $notice_id . '_read', true);
@@ -370,8 +370,8 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
-        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'path';
+        $url = esc_url_raw($_REQUEST['url']);
+        $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'path';
 
         if($type == 'rule'){
 
@@ -383,7 +383,7 @@ class RapidLoad_Admin_Frontend
 
         $uucss_api = new RapidLoad_Api();
 
-        $link = $type == 'path' ? new RapidLoad_Job(['url' => $_REQUEST['url']]) : new RapidLoad_Job(['rule' => $_REQUEST['rule'], 'regex' => $_REQUEST['regex']]);
+        $link = $type == 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field($_REQUEST['rule']), 'regex' => sanitize_text_field($_REQUEST['regex'])]);
 
         $result = $this->get_gpsi_test_result(new RapidLoad_Job_Data($link, 'uucss'));
 
@@ -402,11 +402,11 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'path';
+        $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'path';
 
-        $start = isset($_REQUEST['start']) ? $_REQUEST['start'] : 0;
-        $length = isset($_REQUEST['length']) ? $_REQUEST['length'] : 10;
-        $draw = isset($_REQUEST['draw']) ? $_REQUEST['draw'] : 1;
+        $start = isset($_REQUEST['start']) ? absint($_REQUEST['start']) : 0;
+        $length = isset($_REQUEST['length']) ? absint($_REQUEST['length']) : 10;
+        $draw = isset($_REQUEST['draw']) ? absint($_REQUEST['draw']) : 1;
 
         $status_filter = isset($_REQUEST['columns']) &&
         isset($_REQUEST['columns'][0]) &&
@@ -590,8 +590,8 @@ class RapidLoad_Admin_Frontend
             return;
         }
 
-        $job_type = isset($_GET['_job_type']) ? $_GET['_job_type'] : 'all';
-        $url = isset($_GET['_url']) ? $_GET['_url'] : false;
+        $job_type = isset($_GET['_job_type']) ? sanitize_text_field($_GET['_job_type']) : 'all';
+        $url = isset($_GET['_url']) ? esc_url_raw($_GET['_url']) : false;
         $clear = isset($_GET['_clear']) && boolval($_GET['_clear'] == 'true') ? true : false;
 
         if($clear){
@@ -616,13 +616,13 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $job_type = isset($_REQUEST['job_type']) ? $_REQUEST['job_type'] : 'all';
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : false;
-        $rule = isset($_REQUEST['rule']) ? $_REQUEST['rule'] : false;
-        $regex = isset($_REQUEST['regex']) ? $_REQUEST['regex'] : false;
+        $job_type = isset($_REQUEST['job_type']) ? sanitize_text_field($_REQUEST['job_type']) : 'all';
+        $url = isset($_REQUEST['url']) ? esc_url_raw($_REQUEST['url']) : false;
+        $rule = isset($_REQUEST['rule']) ? sanitize_text_field($_REQUEST['rule']) : false;
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field($_REQUEST['regex']) : false;
         $clear = isset($_REQUEST['clear']) && boolval($_REQUEST['clear'] == 'true' || $_REQUEST['clear'] == '1') ? true : false;
         $url_list = isset($_REQUEST['url_list']) ? $_REQUEST['url_list'] : [];
-        $immediate = isset($_REQUEST['immediate']) ? $_REQUEST['immediate'] : false;
+        $immediate = isset($_REQUEST['immediate']) ? boolval($_REQUEST['immediate']) : false;
 
         if($clear){
 

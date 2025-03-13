@@ -1,23 +1,27 @@
 <?php
-define('RAPIDLOAD_ASSET_MAP', [
+                    if (!defined('ABSPATH')) {
+                        exit;
+                    }
+                    define('RAPIDLOAD_ASSET_MAP', [
+                        'assets/inter-greek-wght-normal.woff2' => 'assets/inter-greek-wght-normal.woff2',
     'assets/inter-cyrillic-ext-wght-normal.woff2' => 'assets/inter-cyrillic-ext-wght-normal.woff2',
-    'assets/inter-cyrillic-wght-normal.woff2' => 'assets/inter-cyrillic-wght-normal.woff2',
-    'assets/inter-greek-ext-wght-normal.woff2' => 'assets/inter-greek-ext-wght-normal.woff2',
-    'assets/inter-greek-wght-normal.woff2' => 'assets/inter-greek-wght-normal.woff2',
     'assets/inter-vietnamese-wght-normal.woff2' => 'assets/inter-vietnamese-wght-normal.woff2',
     'assets/inter-latin-ext-wght-normal.woff2' => 'assets/inter-latin-ext-wght-normal.woff2',
+    'assets/inter-cyrillic-wght-normal.woff2' => 'assets/inter-cyrillic-wght-normal.woff2',
     'assets/inter-latin-wght-normal.woff2' => 'assets/inter-latin-wght-normal.woff2',
-    'assets/index.css' => 'assets/index.mf-ziYJ0.css',
-    'assets/InitTour.js' => 'assets/InitTour.CYkIuPsB.js',
+    'assets/inter-greek-ext-wght-normal.woff2' => 'assets/inter-greek-ext-wght-normal.woff2',
+    'assets/index.css' => 'assets/index.DpNaxNEt.css',
+    'assets/index.js' => 'assets/index.Ces1_cfZ.js',
+    'assets/InitTour.js' => 'assets/InitTour.gXRXUgKS.js',
     'assets/animations.js' => 'assets/animations.CVpoelRy.js',
-    'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js',
-    'assets/index.js' => 'assets/index.C8WSFdzI.js',
     'assets/core-vendor.js' => 'assets/core-vendor.V80Ff32-.js',
-    'assets/InitTour.CYkIuPsB.map' => 'assets/InitTour.CYkIuPsB.js.map',
-    'assets/animations.CVpoelRy.map' => 'assets/animations.CVpoelRy.js.map',
-    'assets/vendor.T3CYoFTJ.map' => 'assets/vendor.T3CYoFTJ.js.map',
+    'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js',
+    'assets/index.BEDQIXm5.map' => 'assets/index.BEDQIXm5.js.map',
+    'assets/InitTour.gXRXUgKS.map' => 'assets/InitTour.gXRXUgKS.js.map',
     'assets/index.Be5yF97N.map' => 'assets/index.Be5yF97N.js.map',
-    'assets/index.qek0ZtgR.map' => 'assets/index.qek0ZtgR.js.map',
+    'assets/animations.CVpoelRy.map' => 'assets/animations.CVpoelRy.js.map',
     'assets/core-vendor.V80Ff32-.map' => 'assets/core-vendor.V80Ff32-.js.map',
-    'assets/index.C8WSFdzI.map' => 'assets/index.C8WSFdzI.js.map'
-]);
+    'assets/vendor.T3CYoFTJ.map' => 'assets/vendor.T3CYoFTJ.js.map',
+    'assets/index.Ces1_cfZ.map' => 'assets/index.Ces1_cfZ.js.map'
+                    ]);
+                    
