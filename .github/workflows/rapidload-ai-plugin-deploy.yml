@@ -114,14 +114,8 @@ jobs:
           }
           EOF
 
+      - name: Delete existing Update JSON from S3
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json
+
       - name: Upload Update JSON to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./plugin-update-check"
-          DEST_DIR: "download/"
+        run: aws s3 cp plugin-update-check/update.json s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json --acl public-read
