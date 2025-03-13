@@ -55,6 +55,7 @@ import useCommonDispatch from "hooks/useCommonDispatch";
 import { setCommonState } from "../../../../store/common/commonActions";
 import { optimizerData } from "../../../../store/app/appSelector";
 
+
 interface SettingItemProps {
     updateValue: (setting: AuditSetting, value: any, key: any) => void
     settings?: AuditSetting;
@@ -151,7 +152,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
         return <></>
     }
 
-    const { dispatch, uucssError } = useCommonDispatch()
+    const { dispatch, uucssError, licenseConnected } = useCommonDispatch()
     const { mode, options } = useAppContext()
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = useState(false)
@@ -163,6 +164,14 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
 
 
     const [mainInput, ...additionalInputs] = useMemo(() => settings.inputs, [settings])
+
+    const isProFeature = useMemo(() => 
+        mainInput.key === 'uucss_enable_uucss' || mainInput.key === 'uucss_enable_cpcss' || mainInput.key === 'uucss_support_next_gen_formats' || mainInput.key === 'uucss_enable_cdn',
+    [mainInput.key]);
+
+    const isProFeatureBlocked = useMemo(() => 
+        isProFeature && !licenseConnected,
+    [isProFeature, licenseConnected]);
 
     const [updates, setUpdates] = useState<{
         key: string,
@@ -337,9 +346,9 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                 {mainInput.control_type === 'checkbox' && (
                                     <>
 
-                                        <Checkbox disabled={['onboard', 'preview'].includes(mode)}
+                                        <Checkbox disabled={['onboard', 'preview'].includes(mode) || isProFeatureBlocked}
                                             className={actionRequired ? '' : 'border-dashed'}
-                                            checked={mainInput.value}
+                                            checked={isProFeatureBlocked ? false : mainInput.value}
                                             onCheckedChange={(c: boolean) => {
                                                 updateValue(settings, c, mainInput.key);
                                                 dispatch(changeGear('custom'));
@@ -379,7 +388,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                 <Mode>
                                     {showPopover && (
                                         <Dialog open={open} onOpenChange={setOpen}>
-                                            <DialogTrigger disabled asChild className={`${!mainInput.value ? 'cursor-not-allowed opacity-50 pointer-events-none' : ''}`}>
+                                            <DialogTrigger disabled asChild className={`${!mainInput.value || isProFeatureBlocked ? 'cursor-not-allowed opacity-50 pointer-events-none' : ''}`}>
                                                 <div >
                                                     <TooltipText text={`${settings.name} Settings`}>
                                                         <Cog6ToothIcon className='w-5 text-brand-400' />
@@ -411,7 +420,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                     )}
                                 </Mode>
 
-                                {showStatus && (
+                                {showStatus && licenseConnected && (
                                     <div className='px-1'>
                                         {!(mainInput.key === 'uucss_enable_uucss' && uucssError) && (
                                             <Status status={settingsStatus} mainInput={mainInput} activeReport={activeReport}/>
@@ -419,12 +428,20 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                     </div>
                                 )}
 
-                                <Mode mode='onboard'>
+                                {/* <Mode mode={'onboard'}>
                                     <TooltipText
                                         text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
                                         <Lock className='w-4 text-brand-400'/>
                                     </TooltipText>
-                                </Mode>
+                                </Mode> */}
+                                {isProFeatureBlocked && (
+                                    <Mode >
+                                        <TooltipText
+                                            text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
+                                        <Lock className='w-4 text-brand-400'/>
+                                    </TooltipText>
+                                    </Mode>
+                                )}
                             </>
 
                         )}
