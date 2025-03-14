@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowPathIcon, CheckCircleIcon, Cog8ToothIcon, XCircleIcon  } from "@heroicons/react/24/solid";
-import { InformationCircleIcon  } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, CheckCircleIcon, Cog8ToothIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 import {
     CSSDelivery,
@@ -19,7 +19,7 @@ import { Checkbox } from "components/ui/checkbox";
 import { ThunkDispatch } from "redux-thunk";
 import { AppAction, AppState, RootState } from "../../../../store/app/appTypes";
 import { useDispatch, useSelector } from "react-redux";
-import {changeGear, getCSSStatus, updateSettings} from "../../../../store/app/appActions";
+import { changeGear, getCSSStatus, updateSettings } from "../../../../store/app/appActions";
 
 import AppButton from "components/ui/app-button"
 
@@ -54,7 +54,7 @@ import { AnimatePresence } from "framer-motion";
 import useCommonDispatch from "hooks/useCommonDispatch";
 import { setCommonState } from "../../../../store/common/commonActions";
 import { optimizerData } from "../../../../store/app/appSelector";
-
+import { ProTooltip } from "components/ProTooltip";
 
 interface SettingItemProps {
     updateValue: (setting: AuditSetting, value: any, key: any) => void
@@ -135,7 +135,7 @@ export const Status = React.memo(({ status, mainInput, activeReport }: { status:
                 <div className=' flex gap-1.5 items-center text-xs w-fit rounded-lg'>
                     <Circle className={cn(
                         'animate-pulse w-2.5 fill-green-600 stroke-0 -mt-[1px]'
-                    )} />{status?.message || status.status === 'Hit'? 'Hit' : 'Optimized'}
+                    )} />{status?.message || status.status === 'Hit' ? 'Hit' : 'Optimized'}
                 </div>
             </>
         )
@@ -165,13 +165,13 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
 
     const [mainInput, ...additionalInputs] = useMemo(() => settings.inputs, [settings])
 
-    const isProFeature = useMemo(() => 
+    const isProFeature = useMemo(() =>
         mainInput.key === 'uucss_enable_uucss' || mainInput.key === 'uucss_enable_cpcss' || mainInput.key === 'uucss_support_next_gen_formats' || mainInput.key === 'uucss_enable_cdn',
-    [mainInput.key]);
+        [mainInput.key]);
 
-    const isProFeatureBlocked = useMemo(() => 
+    const isProFeatureBlocked = useMemo(() =>
         isProFeature && !licenseConnected,
-    [isProFeature, licenseConnected]);
+        [isProFeature, licenseConnected]);
 
     const [updates, setUpdates] = useState<{
         key: string,
@@ -276,11 +276,11 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
     const [showStatus, setShowStatus] = useState(false);
     useEffect(() => {
         if (!settings.status) return;
-        
+
         if (settings.name === 'Cache Policy') {
             return;
         }
-        
+
         if (mainInput.value || mainInput.control_type === 'button') {
             setShowStatus(true);
         } else {
@@ -291,7 +291,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
     const [settingsStatus, setSettingsStatus] = useState(settings.status);
 
     useEffect(() => {
-    
+
         if (!settings.status || !mainInput.value) return;
 
         const isStatusValid = ['processing', 'queued', 'success', 'waiting'].includes(settings.status.status as string);
@@ -302,7 +302,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
             'Cache Policy': 'cache_policy',
         }[settings.name];
 
-        if (!isStatusValid || !cssStatusKey ) return;
+        if (!isStatusValid || !cssStatusKey) return;
         if (cssStatusKey === 'uucss' && uucssError) return;
 
         const fetchStatus = async () => {
@@ -326,7 +326,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
         const intervalId = setInterval(fetchStatus, 5000);
         return () => clearInterval(intervalId);
 
-        
+
     }, [settings, options, dispatch, open, uucssError]);
 
     return (
@@ -347,21 +347,23 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                     <>
                                         {isProFeatureBlocked ? (
                                             <Mode >
-                                        <TooltipText
-                                            text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
-                                        <Lock className='w-4 text-brand-400'/>
-                                    </TooltipText>
-                                    </Mode>
-                                        ):(
+                                                <div className='mr-2'>
+                                                    <ProTooltip
+                                                       >
+                                                        <Lock className='w-4 text-brand-400' />
+                                                    </ProTooltip>
+                                                </div>
+                                            </Mode>
+                                        ) : (
                                             <Checkbox disabled={['onboard', 'preview'].includes(mode) || isProFeatureBlocked}
-                                            className={actionRequired ? '' : 'border-dashed'}
-                                            checked={isProFeatureBlocked ? false : mainInput.value}
-                                            onCheckedChange={(c: boolean) => {
-                                                updateValue(settings, c, mainInput.key);
-                                                dispatch(changeGear('custom'));
-                                            }} />
+                                                className={actionRequired ? '' : 'border-dashed'}
+                                                checked={isProFeatureBlocked ? false : mainInput.value}
+                                                onCheckedChange={(c: boolean) => {
+                                                    updateValue(settings, c, mainInput.key);
+                                                    dispatch(changeGear('custom'));
+                                                }} />
                                         )}
-                                        
+
 
                                     </>
                                 )}
@@ -377,9 +379,9 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                 {mainInput && (
                                     <>
                                         {mainInput.control_type === 'button' && (
-                                            <Button 
-                                                loading={loading} 
-                                                disabled={loading} 
+                                            <Button
+                                                loading={loading}
+                                                disabled={loading}
                                                 onClick={async (e) => {
                                                     await buttonAction(mainInput);
                                                     if (settings.name === 'Cache Policy') {
@@ -432,7 +434,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                 {showStatus && licenseConnected && (
                                     <div className='px-1'>
                                         {!(mainInput.key === 'uucss_enable_uucss' && uucssError) && (
-                                            <Status status={settingsStatus} mainInput={mainInput} activeReport={activeReport}/>
+                                            <Status status={settingsStatus} mainInput={mainInput} activeReport={activeReport} />
                                         )}
                                     </div>
                                 )}
