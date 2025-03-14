@@ -16,7 +16,7 @@
 
         <p>
             <textarea hidden id="uucss_safelist"
-                      name="uucss_safelist"><?php echo empty( $options['safelist'] ) ? '' : $options['safelist'] ?></textarea>
+                      name="uucss_safelist"><?php echo empty( $options['safelist'] ) ? '' : esc_textarea($options['safelist']) ?></textarea>
         <div class="safelist-add">
             <label class="" for="Safelist">Safelist</label>
             <div class="input-wrap-flex">
@@ -37,7 +37,7 @@
         </p>
         <p>
             <textarea hidden id="uucss_blocklist"
-                      name="uucss_blocklist"><?php echo empty( $options['blocklist'] ) ? '' : $options['blocklist'] ?></textarea>
+                      name="uucss_blocklist"><?php echo empty( $options['blocklist'] ) ? '' : esc_textarea($options['blocklist']) ?></textarea>
         <div class="blocklist-add uucss-tag">
             <label class="" for="Blocklist">Blocklist</label>
             <input id="blocklist-add" type="text" size="27" class="newtag"

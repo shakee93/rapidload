@@ -160,7 +160,7 @@
     "ts-jest": "^29.2.3",
     "typescript": "^5.5.4",
     "unplugin-tailwindcss-mangle": "^3.0.1",
-    "vite": "^5.3.5",
+    "vite": "^5.4.14",
     "vite-plugin-dynamic-base": "^1.1.0"
   },
   "main": "dist/assets/index.js"

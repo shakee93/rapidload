@@ -36,10 +36,13 @@ export default defineConfig((configEnv) => {
                         .join(",\n");
                     
                     const phpContent = `<?php
-define('RAPIDLOAD_ASSET_MAP', [
-${phpArray}
-]);
-`;
+                    if (!defined('ABSPATH')) {
+                        exit;
+                    }
+                    define('RAPIDLOAD_ASSET_MAP', [
+                    ${phpArray}
+                    ]);
+                    `;
                     
                     this.emitFile({
                         type: 'asset',

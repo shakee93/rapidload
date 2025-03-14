@@ -43,7 +43,7 @@ import { RootState } from "../../../store/app/appTypes";
 import DateComponent from "components/DateComponent";
 import PercentageIndicator from "components/PercentageIndicator";
 import TableSkeleton from "components/ui/TableSkeleton";
-import { setCommonState } from "../../../store/common/commonActions";
+import { setCommonRootState } from "../../../store/common/commonActions";
 import { toast, useToast } from "components/ui/use-toast";
 
 interface Settings {
@@ -93,9 +93,9 @@ const OptimizerPagesTable: React.FC<OptimizerPagesTableProps> = ({ settings, onO
     };
 
     const handleOptimizeClick = (url: string) => {
-        dispatch(setCommonState('headerUrl', url));
+        dispatch(setCommonRootState('headerUrl', url));
+        dispatch(fetchReport(options, url, false, true));
         dispatch(fetchSettings(options, url, false));
-        dispatch(fetchReport(options, url, false));
         window.location.hash = '#/optimize';
         onOpenChange(false);
     };

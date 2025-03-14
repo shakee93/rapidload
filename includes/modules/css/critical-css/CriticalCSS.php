@@ -33,7 +33,7 @@ class CriticalCSS
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_enable_cpcss'] != "1" || !empty(self::$cpcss_other_plugins)){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_enable_cpcss'] != "1" || !empty(self::$cpcss_other_plugins) || !RapidLoad_Base::is_api_key_verified()){
             return;
         }
 
@@ -77,7 +77,7 @@ class CriticalCSS
     public function add_admin_clear_action($wp_admin_bar){
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-css-cache',
-            'title' => '<span class="ab-label">' . __( 'Clear CSS Optimizations', 'clear_optimization' ) . '</span>',
+            'title' => '<span class="ab-label">' . __( 'Clear CSS Optimizations', 'unusedcss' ) . '</span>',
             //'href'  => admin_url( 'admin.php?page=rapidload&action=rapidload_purge_all' ),
             'href'   => wp_nonce_url( add_query_arg( array(
                 '_action' => 'rapidload_purge_all',

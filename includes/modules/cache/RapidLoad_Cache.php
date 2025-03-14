@@ -113,9 +113,9 @@ class RapidLoad_Cache
             $type = "error";
 
             add_action('admin_notices', function () use ($message, $type) {
-                echo "<div class=\"notice notice-$type is-dismissible rapidload-cache-notice\">
-                    <p>$message</p>
-                 </div>";
+                echo '<div class="notice notice-' . esc_attr($type) . ' is-dismissible rapidload-cache-notice">
+                    <p>' . esc_html($message) . '</p>
+                 </div>';
             });
         }
     }
@@ -616,7 +616,7 @@ class RapidLoad_Cache
             return;
         }
 
-        $title = ( is_multisite() && is_network_admin() ) ? esc_html__( 'Clear Network Cache', 'rapidload-cache' ) : esc_html__( 'Clear Site Cache', 'rapidload-cache' );
+        $title = ( is_multisite() && is_network_admin() ) ? esc_html__( 'Clear Network Cache', 'unusedcss' ) : esc_html__( 'Clear Site Cache', 'unusedcss' );
 
         $wp_admin_bar->add_menu(
             array(
@@ -640,8 +640,8 @@ class RapidLoad_Cache
                         '_action' => 'clearurl',
                     ) ), 'rapidload_cache_clear_cache_nonce' ),
                     'parent' => 'rapidload',
-                    'title'  => '<span class="ab-label">' . esc_html__( 'Clear Page Cache', 'rapidload-cache' ) . '</span>',
-                    'meta'   => array( 'title' => esc_html__( 'Clear Page Cache', 'rapidload-cache' ) ),
+                    'title'  => '<span class="ab-label">' . esc_html__( 'Clear Page Cache', 'unusedcss' ) . '</span>',
+                    'meta'   => array( 'title' => esc_html__( 'Clear Page Cache', 'unusedcss' ) ),
                 )
             );
         }
@@ -653,7 +653,7 @@ class RapidLoad_Cache
             return;
         }
 
-        if ( empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'rapidload_cache_clear_cache_nonce' ) ) {
+        if ( empty( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'rapidload_cache_clear_cache_nonce' ) ) {
             return;
         }
 
@@ -663,7 +663,7 @@ class RapidLoad_Cache
 
         if ( $_GET['_action'] === 'clearurl' ) {
 
-            $url = isset($_GET['_url']) ? $_GET['_url'] : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
+            $url = isset($_GET['_url']) ? esc_url_raw($_GET['_url']) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
 
             self::clear_page_cache_by_url( $url );
         } elseif ( $_GET['_action'] === 'clear' ) {

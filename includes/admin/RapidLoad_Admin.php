@@ -44,6 +44,7 @@ class RapidLoad_Admin
             add_action('wp_ajax_titan_checklist_plugins', [$this, 'titan_checklist_plugins']);
             add_action('wp_ajax_titan_checklist_status', [$this, 'titan_checklist_status']);
             add_action('wp_ajax_rapidload_switch_test_mode', [$this, 'rapidload_switch_test_mode']);
+            add_action('wp_ajax_rapidload_onboard_skipped', [$this, 'rapidload_onboard_skipped']);
             
 
             if (defined('RAPIDLOAD_DEV_MODE')) {
@@ -76,6 +77,12 @@ class RapidLoad_Admin
 
     }
 
+    public function rapidload_onboard_skipped(){
+        self::verify_nonce();
+        update_option('rapidload_onboard_skipped', true);
+        wp_send_json_success(true);
+    }
+
     function rapidload_image_optimization_status(){
 
         self::verify_nonce();
@@ -86,7 +93,7 @@ class RapidLoad_Admin
 
         $image_url_status = [];
 
-        $image_urls = json_decode(stripslashes($_REQUEST['image_urls']), true);
+        $image_urls = json_decode(sanitize_text_field(stripslashes($_REQUEST['image_urls'])), true);
 
         if (!is_array($image_urls)) {
             wp_send_json_error('Invalid image URLs format');
@@ -520,47 +527,47 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_minify'])){
 
-            $options['uucss_minify'] = ($_REQUEST['uucss_minify'] == 'true' ? "1" : null);
+            $options['uucss_minify'] = (sanitize_text_field($_REQUEST['uucss_minify']) == 'true' ? "1" : null);
 
         }
 
         if(isset($_REQUEST['uucss_minify_excluded_files'])){
 
-            $options['uucss_minify_excluded_files'] = $_REQUEST['uucss_minify_excluded_files'];
+            $options['uucss_minify_excluded_files'] = sanitize_textarea_field($_REQUEST['uucss_minify_excluded_files']);
 
         }
 
         if(isset($_REQUEST['rapidload_aggregate_css'])){
 
-            $options['rapidload_aggregate_css'] = ($_REQUEST['rapidload_aggregate_css'] == 'true' ? "1" : null);
+            $options['rapidload_aggregate_css'] = sanitize_text_field($_REQUEST['rapidload_aggregate_css']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_inline_css'])){
 
-            $options['uucss_inline_css'] = ($_REQUEST['uucss_inline_css'] == 'true' ? "1" : null);
+            $options['uucss_inline_css'] = sanitize_text_field($_REQUEST['uucss_inline_css']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_cpcss'])){
 
-            $options['uucss_enable_cpcss'] = ($_REQUEST['uucss_enable_cpcss'] == 'true' ? "1" : null);
+            $options['uucss_enable_cpcss'] = sanitize_text_field($_REQUEST['uucss_enable_cpcss']) == 'true' ? "1" : null;
 
             if(isset($_REQUEST['remove_cpcss_on_user_interaction'])){
 
-                $options['remove_cpcss_on_user_interaction'] = ($_REQUEST['remove_cpcss_on_user_interaction'] == 'true' ? "1" : null);
+                $options['remove_cpcss_on_user_interaction'] = sanitize_text_field($_REQUEST['remove_cpcss_on_user_interaction']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_additional_css'])){
 
-                $options['uucss_additional_css'] = $_REQUEST['uucss_additional_css'];
+                $options['uucss_additional_css'] = sanitize_textarea_field($_REQUEST['uucss_additional_css']);
 
             }
 
             if(isset($_REQUEST['rapidload_cpcss_file_character_length'])){
 
-                $options['rapidload_cpcss_file_character_length'] = $_REQUEST['rapidload_cpcss_file_character_length'];
+                $options['rapidload_cpcss_file_character_length'] = intval($_REQUEST['rapidload_cpcss_file_character_length']);
 
             }
 
@@ -568,7 +575,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_excluded_files'])){
 
-            $value = explode("\r\n", $_REQUEST['uucss_excluded_files']);
+            $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_excluded_files']));
 
             $value = array_filter($value, function ($v){
                 return !empty($v);
@@ -582,41 +589,41 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_uucss'])){
 
-            $options['uucss_enable_uucss'] = ($_REQUEST['uucss_enable_uucss'] == 'true' ? "1" : null);
+            $options['uucss_enable_uucss'] = sanitize_text_field($_REQUEST['uucss_enable_uucss']) == 'true' ? "1" : null;
 
             if(isset($_REQUEST['uucss_variables'])){
 
-                $options['uucss_variables'] = ($_REQUEST['uucss_variables'] == 'true' ? "1" : null);
+                $options['uucss_variables'] = sanitize_text_field($_REQUEST['uucss_variables']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_keyframes'])){
 
-                $options['uucss_keyframes'] = ($_REQUEST['uucss_keyframes'] == 'true' ? "1" : null);
+                $options['uucss_keyframes'] = sanitize_text_field($_REQUEST['uucss_keyframes']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_fontface'])){
 
-                $options['uucss_fontface'] = ($_REQUEST['uucss_fontface'] == 'true' ? "1" : null);
+                $options['uucss_fontface'] = sanitize_text_field($_REQUEST['uucss_fontface']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_include_inline_css'])){
 
-                $options['uucss_include_inline_css'] = ($_REQUEST['uucss_include_inline_css'] == 'true' ? "1" : null);
+                $options['uucss_include_inline_css'] = sanitize_text_field($_REQUEST['uucss_include_inline_css']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_cache_busting_v2'])){
 
-                $options['uucss_cache_busting_v2'] = ($_REQUEST['uucss_cache_busting_v2'] == 'true' ? "1" : null);
+                $options['uucss_cache_busting_v2'] = sanitize_text_field($_REQUEST['uucss_cache_busting_v2']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_safelist'])){
 
-                $value = explode("\r\n", $_REQUEST['uucss_safelist']);
+                $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_safelist']));
 
                 $value = array_filter($value, function ($v){
                     return !empty($v);
@@ -635,7 +642,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_blocklist'])){
 
-                $value = explode("\r\n", $_REQUEST['uucss_blocklist']);
+                $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_blocklist']));
 
                 $value = array_filter($value, function ($v){
                    return !empty($v);
@@ -647,7 +654,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['whitelist_packs'])){
 
-                $options['whitelist_packs'] = $_REQUEST['whitelist_packs'];
+                $options['whitelist_packs'] = sanitize_textarea_field($_REQUEST['whitelist_packs']);
 
             }else{
 
@@ -660,7 +667,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_rules'])){
 
-            $options['uucss_enable_rules'] = ($_REQUEST['uucss_enable_rules'] == 'true' ? "1" : null);
+            $options['uucss_enable_rules'] = sanitize_text_field($_REQUEST['uucss_enable_rules']) == 'true' ? "1" : null;
 
         }
 
@@ -668,67 +675,67 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_load_js_method'])){
 
-            $options['uucss_load_js_method'] = $_REQUEST['uucss_load_js_method'];
+            $options['uucss_load_js_method'] = sanitize_text_field($_REQUEST['uucss_load_js_method']);
 
         }
 
         if(isset($_REQUEST['defer_inline_js'])){
 
-            $options['defer_inline_js'] = ($_REQUEST['defer_inline_js'] == 'true' ? "1" : null);
+            $options['defer_inline_js'] = sanitize_text_field($_REQUEST['defer_inline_js']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['minify_js'])){
 
-            $options['minify_js'] = ($_REQUEST['minify_js'] == 'true' ? "1" : null);
+            $options['minify_js'] = sanitize_text_field($_REQUEST['minify_js']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['preload_internal_links'])){
 
-            $options['preload_internal_links'] = ($_REQUEST['preload_internal_links'] == 'true' ? "1" : null);
+            $options['preload_internal_links'] = sanitize_text_field($_REQUEST['preload_internal_links']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['delay_javascript'])){
 
-            $options['delay_javascript'] = ($_REQUEST['delay_javascript'] == 'true' ? "1" : null);
+            $options['delay_javascript'] = sanitize_text_field($_REQUEST['delay_javascript']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_excluded_js_files'])){
 
-            $options['uucss_excluded_js_files'] = $_REQUEST['uucss_excluded_js_files'];
+            $options['uucss_excluded_js_files'] = sanitize_textarea_field($_REQUEST['uucss_excluded_js_files']);
 
         }
 
         if(isset($_REQUEST['delay_javascript_callback'])){
 
-            $options['delay_javascript_callback'] = $_REQUEST['delay_javascript_callback'];
+            $options['delay_javascript_callback'] = sanitize_textarea_field($_REQUEST['delay_javascript_callback']);
 
         }
 
         if(isset($_REQUEST['uucss_excluded_js_files_from_defer'])){
 
-            $options['uucss_excluded_js_files_from_defer'] = $_REQUEST['uucss_excluded_js_files_from_defer'];
+            $options['uucss_excluded_js_files_from_defer'] = sanitize_textarea_field($_REQUEST['uucss_excluded_js_files_from_defer']);
 
         }
 
         if(isset($_REQUEST['uucss_load_scripts_on_user_interaction'])){
 
-            $options['uucss_load_scripts_on_user_interaction'] = $_REQUEST['uucss_load_scripts_on_user_interaction'];
+            $options['uucss_load_scripts_on_user_interaction'] = sanitize_textarea_field($_REQUEST['uucss_load_scripts_on_user_interaction']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_exclude_files_from_delay_js'])){
 
-            $options['uucss_exclude_files_from_delay_js'] = $_REQUEST['uucss_exclude_files_from_delay_js'];
+            $options['uucss_exclude_files_from_delay_js'] = sanitize_textarea_field($_REQUEST['uucss_exclude_files_from_delay_js']);
 
         }
 
         if(isset($_REQUEST['uucss_exclude_files_from_minify_js'])){
 
-            $options['uucss_exclude_files_from_minify_js'] = $_REQUEST['uucss_exclude_files_from_minify_js'];
+            $options['uucss_exclude_files_from_minify_js'] = sanitize_textarea_field($_REQUEST['uucss_exclude_files_from_minify_js']);
 
         }
 
@@ -736,55 +743,55 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_query_string'])){
 
-            $options['uucss_query_string'] = ($_REQUEST['uucss_query_string'] == 'true' ? "1" : null);
+            $options['uucss_query_string'] = sanitize_text_field($_REQUEST['uucss_query_string']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['rapidload_minify_html'])){
 
-            $options['rapidload_minify_html'] = ($_REQUEST['rapidload_minify_html'] == 'true' ? "1" : null);
+            $options['rapidload_minify_html'] = sanitize_text_field($_REQUEST['rapidload_minify_html']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_debug'])){
 
-            $options['uucss_enable_debug'] = ($_REQUEST['uucss_enable_debug'] == 'true' ? "1" : null);
+            $options['uucss_enable_debug'] = sanitize_text_field($_REQUEST['uucss_enable_debug']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_queue'])){
 
-            $options['uucss_disable_add_to_queue'] = ($_REQUEST['uucss_disable_add_to_queue'] == 'true' ? "1" : null);
+            $options['uucss_disable_add_to_queue'] = sanitize_text_field($_REQUEST['uucss_disable_add_to_queue']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_re_queue'])){
 
-            $options['uucss_disable_add_to_re_queue'] = ($_REQUEST['uucss_disable_add_to_re_queue'] == 'true' ? "1" : null);
+            $options['uucss_disable_add_to_re_queue'] = sanitize_text_field($_REQUEST['uucss_disable_add_to_re_queue']) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_jobs_per_queue'])){
 
-            $options['uucss_jobs_per_queue'] = $_REQUEST['uucss_jobs_per_queue'];
+            $options['uucss_jobs_per_queue'] = intval($_REQUEST['uucss_jobs_per_queue']);
 
         }
 
         if(isset($_REQUEST['uucss_queue_interval'])){
 
-            $options['uucss_queue_interval'] = $_REQUEST['uucss_queue_interval'];
+            $options['uucss_queue_interval'] = intval($_REQUEST['uucss_queue_interval']);
 
         }
 
         if(isset($_REQUEST['uucss_excluded_links'])){
 
-            $options['uucss_excluded_links'] = $_REQUEST['uucss_excluded_links'];
+            $options['uucss_excluded_links'] = sanitize_textarea_field($_REQUEST['uucss_excluded_links']);
 
         }
 
         if(isset($_REQUEST['uucss_disable_error_tracking'])){
 
-            $options['uucss_disable_error_tracking'] = ($_REQUEST['uucss_disable_error_tracking'] == 'true' ? "1" : null);
+            $options['uucss_disable_error_tracking'] = sanitize_text_field($_REQUEST['uucss_disable_error_tracking']) == 'true' ? "1" : null;
 
         }
 
@@ -794,73 +801,73 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_image_optimize_level'])){
 
-                $options['uucss_image_optimize_level'] = $_REQUEST['uucss_image_optimize_level'];
+                $options['uucss_image_optimize_level'] = sanitize_text_field($_REQUEST['uucss_image_optimize_level']);
 
             }
 
             if(isset($_REQUEST['uucss_exclude_above_the_fold_image_count'])){
 
-                $options['uucss_exclude_above_the_fold_image_count'] = $_REQUEST['uucss_exclude_above_the_fold_image_count'];
+                $options['uucss_exclude_above_the_fold_image_count'] = intval($_REQUEST['uucss_exclude_above_the_fold_image_count']);
 
             }
 
             if(isset($_REQUEST['uucss_support_next_gen_formats'])){
 
-                $options['uucss_support_next_gen_formats'] = ($_REQUEST['uucss_support_next_gen_formats'] == 'true' ? "1" : null);
+                $options['uucss_support_next_gen_formats'] = sanitize_text_field($_REQUEST['uucss_support_next_gen_formats']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_adaptive_image_delivery'])){
 
-                $options['uucss_adaptive_image_delivery'] = ($_REQUEST['uucss_adaptive_image_delivery'] == 'true' ? "1" : null);
+                $options['uucss_adaptive_image_delivery'] = sanitize_text_field($_REQUEST['uucss_adaptive_image_delivery']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_set_width_and_height'])){
 
-                $options['uucss_set_width_and_height'] = ($_REQUEST['uucss_set_width_and_height'] == 'true' ? "1" : null);
+                $options['uucss_set_width_and_height'] = sanitize_text_field($_REQUEST['uucss_set_width_and_height']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_images'])){
 
-                $options['uucss_lazy_load_images'] = ($_REQUEST['uucss_lazy_load_images'] == 'true' ? "1" : null);
+                $options['uucss_lazy_load_images'] = sanitize_text_field($_REQUEST['uucss_lazy_load_images']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_iframes'])){
 
-                $options['uucss_lazy_load_iframes'] = ($_REQUEST['uucss_lazy_load_iframes'] == 'true' ? "1" : null);
+                $options['uucss_lazy_load_iframes'] = sanitize_text_field($_REQUEST['uucss_lazy_load_iframes']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_generate_blurry_place_holder'])){
 
-                $options['uucss_generate_blurry_place_holder'] = ($_REQUEST['uucss_generate_blurry_place_holder'] == 'true' ? "1" : null);
+                $options['uucss_generate_blurry_place_holder'] = sanitize_text_field($_REQUEST['uucss_generate_blurry_place_holder']) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images'])){
 
-                $options['uucss_exclude_images'] = $_REQUEST['uucss_exclude_images'];
+                $options['uucss_exclude_images'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images']);
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images_from_lazy_load'])){
 
-                $options['uucss_exclude_images_from_lazy_load'] = $_REQUEST['uucss_exclude_images_from_lazy_load'];
+                $options['uucss_exclude_images_from_lazy_load'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images_from_lazy_load']);
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images_from_modern_images'])){
 
-                $options['uucss_exclude_images_from_modern_images'] = $_REQUEST['uucss_exclude_images_from_modern_images'];
+                $options['uucss_exclude_images_from_modern_images'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images_from_modern_images']);
 
             }
 
             if(isset($_REQUEST['uucss_preload_lcp_image'])){
 
-                $options['uucss_preload_lcp_image'] = $_REQUEST['uucss_preload_lcp_image'];
+                $options['uucss_preload_lcp_image'] = sanitize_text_field($_REQUEST['uucss_preload_lcp_image']) == 'true' ? "1" : null;
 
             }
 
@@ -872,13 +879,13 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_preload_font_urls'])){
 
-                $options['uucss_preload_font_urls'] = $_REQUEST['uucss_preload_font_urls'];
+                $options['uucss_preload_font_urls'] = sanitize_textarea_field($_REQUEST['uucss_preload_font_urls']);
 
             }
 
             if(isset($_REQUEST['uucss_self_host_google_fonts'])){
 
-                $options['uucss_self_host_google_fonts'] = ($_REQUEST['uucss_self_host_google_fonts'] == 'true' ? "1" : null);
+                $options['uucss_self_host_google_fonts'] = sanitize_text_field($_REQUEST['uucss_self_host_google_fonts']) == 'true' ? "1" : null;
 
             }
         }
@@ -889,19 +896,19 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_cdn_url'])){
 
-                $options['uucss_cdn_url'] = $_REQUEST['uucss_cdn_url'];
+                $options['uucss_cdn_url'] = sanitize_text_field($_REQUEST['uucss_cdn_url']);
 
             }
 
             if(isset($_REQUEST['uucss_cdn_dns_id'])){
 
-                $options['uucss_cdn_dns_id'] = $_REQUEST['uucss_cdn_dns_id'];
+                $options['uucss_cdn_dns_id'] = sanitize_text_field($_REQUEST['uucss_cdn_dns_id']);
 
             }
 
             if(isset($_REQUEST['uucss_cdn_zone_id'])){
 
-                $options['uucss_cdn_zone_id'] = $_REQUEST['uucss_cdn_zone_id'];
+                $options['uucss_cdn_zone_id'] = sanitize_text_field($_REQUEST['uucss_cdn_zone_id']);
 
             }
 
@@ -921,43 +928,43 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['cache_expires'])){
 
-                $args['cache_expires'] = ($_REQUEST['cache_expires'] == 'true' ? 1 : 0);
+                $args['cache_expires'] = sanitize_text_field($_REQUEST['cache_expires']) == 'true' ? 1 : 0;
 
             }
 
             if(isset($_REQUEST['cache_expiry_time'])){
 
-                $args['cache_expiry_time'] = (float)$_REQUEST['cache_expiry_time'];
+                $args['cache_expiry_time'] = floatval($_REQUEST['cache_expiry_time']);
 
             }
 
             if(isset($_REQUEST['mobile_cache'])){
 
-                $args['mobile_cache'] = ($_REQUEST['mobile_cache'] == 'true' ? 1 : 0);
+                $args['mobile_cache'] = sanitize_text_field($_REQUEST['mobile_cache']) == 'true' ? 1 : 0;
 
             }
 
             if(isset($_REQUEST['excluded_post_ids']) && !empty($_REQUEST['excluded_post_ids'])){
 
-                $args['excluded_post_ids'] = $_REQUEST['excluded_post_ids'];
+                $args['excluded_post_ids'] = sanitize_textarea_field($_REQUEST['excluded_post_ids']);
 
             }
 
             if(isset($_REQUEST['excluded_page_paths']) && !empty($_REQUEST['excluded_page_paths'])){
 
-                $args['excluded_page_paths'] = $_REQUEST['excluded_page_paths'];
+                $args['excluded_page_paths'] = sanitize_textarea_field($_REQUEST['excluded_page_paths']);
 
             }
 
             if(isset($_REQUEST['excluded_query_strings']) && !empty($_REQUEST['excluded_query_strings'])){
 
-                $args['excluded_query_strings'] = $_REQUEST['excluded_query_strings'];
+                $args['excluded_query_strings'] = sanitize_textarea_field($_REQUEST['excluded_query_strings']);
 
             }
 
             if(isset($_REQUEST['excluded_cookies']) && !empty($_REQUEST['excluded_cookies'])){
 
-                $args['excluded_cookies'] = $_REQUEST['excluded_cookies'];
+                $args['excluded_cookies'] = sanitize_textarea_field($_REQUEST['excluded_cookies']);
 
             }
 
@@ -967,7 +974,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['rapidload_test_mode'])){
 
-            $options['rapidload_test_mode'] = ($_REQUEST['rapidload_test_mode'] == 'true' ? 1 : 0);
+            $options['rapidload_test_mode'] = sanitize_text_field($_REQUEST['rapidload_test_mode']) == 'true' ? 1 : 0;
         }
 
         RapidLoad_Base::update_option('autoptimize_uucss_settings',$options);
@@ -1668,7 +1675,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-api-key">Api Token</label>
                         </td>
                         <td>
-                            <input type="text" name='autoptimize_uucss_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo $options['cf_token']; endif; ?>">
+                            <input type="text" name='autoptimize_uucss_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo esc_attr($options['cf_token']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1676,7 +1683,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-account-email" >Account Email</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo $options['cf_email']; endif; ?>">
+                            <input type="text" name="autoptimize_uucss_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo esc_attr($options['cf_email']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1684,7 +1691,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-zone-id">Zone ID</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo $options['cf_zone_id']; endif; ?>">
+                            <input type="text" name="autoptimize_uucss_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo esc_attr($options['cf_zone_id']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
