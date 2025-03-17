@@ -16,6 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if(class_exists('RapidLoad_Base')){
+    return;
+}
+
 if(isset($_REQUEST['no_rapidload'])){
     return;
 }
