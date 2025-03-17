@@ -145,9 +145,9 @@ trait RapidLoad_Utils {
 
         add_action('admin_notices', function () use ($message, $type) {
 
-            echo "<div class=\"notice notice-$type is-dismissible\">
-                    <p>$message</p>
-                 </div>";
+            echo '<div class="notice notice-' . esc_attr($type) . ' is-dismissible">
+                    <p>' . esc_html($message) . '</p>
+                 </div>';
 
         });
 
@@ -185,26 +185,26 @@ trait RapidLoad_Utils {
 	        }
 
 	        ?>
-            <div class="uucss-notice-action notice notice-action notice-action-<?php echo $notice['action']; ?> notice-<?php echo $notice['type']; ?>">
+            <div class="uucss-notice-action notice notice-action notice-action-<?php echo esc_attr($notice['action']); ?> notice-<?php echo esc_attr($notice['type']); ?>">
                 <div class="notice-action-inner">
                     <div class="notice-icon">
                         <div class="logo-wrapper">
                             <img
-                                    src="<?php echo UUCSS_PLUGIN_URL . 'assets/images/logo-icon.svg' ?>" width="40"
+                                    src="<?php echo esc_url(UUCSS_PLUGIN_URL . 'assets/images/logo-icon.svg') ?>" width="40"
                                     alt="RapidLoad logo">
                         </div>
                     </div>
                     <div class="notice-icon-content">
 		                <?php if ( isset( $notice['title'] ) ) : ?>
-                            <h2 class="uucss-notice-title"><?php echo $notice['title'] ?></h2>
+                            <h2 class="uucss-notice-title"><?php echo esc_html($notice['title']) ?></h2>
 				        <?php endif; ?>
                         <p>
-					        <?php echo $notice['message']; ?>
+					        <?php echo esc_html($notice['message']); ?>
                         </p>
                         <?php if(!empty($notice['actions'])): ?>
                             <p>
                                 <?php foreach ($notice['actions'] as $key => $value) : ?>
-                                    <a class="button button-primary" href="<?php echo $value?>"><?php echo $key?></a>
+                                    <a class="button button-primary" href="<?php echo esc_url($value)?>"><?php echo esc_html($key)?></a>
                                 <?php endforeach; ?>
                             </p>
                         <?php endif;  ?>
@@ -213,7 +213,7 @@ trait RapidLoad_Utils {
                     <?php if(!empty($notice['main_action'])): ?>
                     <div class="notice-main-action">
                         <p>
-                            <a class="button button-primary" href="<?php echo $notice['main_action']['value'] ?>"><?php echo $notice['main_action']['key']?></a>
+                            <a class="button button-primary" href="<?php echo esc_url($notice['main_action']['value']) ?>"><?php echo esc_html($notice['main_action']['key'])?></a>
                         </p>
                     </div>
                     <?php endif; ?>
@@ -575,7 +575,12 @@ trait RapidLoad_Utils {
         $options = RapidLoad_Base::fetch_options();
 
         if ( isset( $options['uucss_excluded_links'] ) && ! empty( $options['uucss_excluded_links'] ) ) {
-            $exploded = explode( ',', $options['uucss_excluded_links'] );
+
+            if(is_string($options['uucss_excluded_links'])){
+                $exploded = explode( ',', $options['uucss_excluded_links'] );
+            }else{
+                $exploded = $options['uucss_excluded_links'];
+            }
 
             foreach ( $exploded as $pattern ) {
 
@@ -677,7 +682,7 @@ trait RapidLoad_Utils {
             return true;
         }
 
-        if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( $_REQUEST['nonce'], $nonce ) || !current_user_can('manage_options')) {
+        if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), $nonce ) || !current_user_can('manage_options')) {
             wp_send_json_error( 'RapidLoad - Malformed Request Detected, Contact Support.' );
         }
     }

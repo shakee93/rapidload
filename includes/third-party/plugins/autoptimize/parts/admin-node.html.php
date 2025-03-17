@@ -63,17 +63,17 @@ global $post;
             window.uucss = {}
         }
 
-        window.uucss.nonce = '<?php echo (current_user_can('manage_options') ? wp_create_nonce( 'uucss_nonce' ) : ''); ?>';
+        window.uucss.nonce = '<?php echo esc_js(current_user_can('manage_options') ? wp_create_nonce( 'uucss_nonce' ) : ''); ?>';
     </script>
-    <a class="rapidload" href="<?php echo admin_url( 'options-general.php?page=rapidload' ) ?>">RapidLoad</a>
+    <a class="rapidload" href="<?php echo esc_url(admin_url( 'options-general.php?page=rapidload' )) ?>">RapidLoad</a>
     <div class="uucss-stats__stats">
-        <span class="uucss-stats__size">Size: <?php echo $this->size(); ?></span>
+        <span class="uucss-stats__size">Size: <?php echo esc_html($this->size()); ?></span>
     </div>
     <div class="uucss-stats__actions">
 
         <?php if ( $post ) {
             $exists =  new RapidLoad_Job([
-                'url' => get_permalink( $post )
+                'url' => esc_url(get_permalink( $post ))
             ]);
             ?>
             <div id="button-uucss-clear" <?php if ( ! isset($exists->id) ) echo 'class="hidden"' ?> title="clear page cache">remove
@@ -100,10 +100,10 @@ global $post;
             $this.text('loading...');
 
             var data = {
-                url: '<?php echo get_permalink($post) ?>',
+                url: '<?php echo esc_url(get_permalink($post)) ?>',
                 nonce: window.uucss.nonce,
                 args: {
-                    post_id: <?php echo $post->ID ?>
+                    post_id: <?php echo esc_js($post->ID) ?>
                 }
             }
 
@@ -124,10 +124,10 @@ global $post;
             $this.text('loading...');
             wp.ajax.post('rapidload_purge_all', {
                 clear: true,
-                url: '<?php echo get_permalink($post) ?>',
+                url: '<?php echo esc_url(get_permalink($post)) ?>',
                 nonce: window.uucss.nonce,
                 args: {
-                    post_id: <?php echo $post->ID ?>
+                    post_id: <?php echo esc_js($post->ID) ?>
                 }
             }).done(function (d) {
                 $this.text('clear')

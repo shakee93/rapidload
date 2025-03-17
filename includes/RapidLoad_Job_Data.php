@@ -201,7 +201,14 @@ class RapidLoad_Job_Data{
         global $wpdb;
         $job_data = false;
 
-        $exist = $wpdb->get_row("SELECT job_id FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = '". $job_type ."' AND id = '" . $id . "' ORDER BY id LIMIT 1", OBJECT);
+        $exist = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT job_id FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = %s AND id = %s ORDER BY id LIMIT 1",
+                $job_type,
+                $id
+            ),
+            OBJECT
+        );
 
         if($exist){
             $job = RapidLoad_Job::find_or_fail($exist->job_id);

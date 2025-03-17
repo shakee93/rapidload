@@ -575,15 +575,29 @@ class RapidLoad_Job{
             ];
         }
 
-        $first_data = $wpdb->get_results("SELECT id, data FROM {$wpdb->prefix}rapidload_job_optimizations 
-                                  WHERE strategy = '" . esc_sql($strategy) . "' 
-                                  AND job_id = " . intval($job_id) . " 
-                                  ORDER BY id ASC LIMIT 1", OBJECT);
+        $first_data = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, data FROM {$wpdb->prefix}rapidload_job_optimizations 
+                WHERE strategy = %s 
+                AND job_id = %d 
+                ORDER BY id ASC LIMIT 1",
+                $strategy,
+                $job_id
+            ),
+            OBJECT
+        );
 
-        $last_data = $wpdb->get_results("SELECT id, data FROM {$wpdb->prefix}rapidload_job_optimizations 
-                                 WHERE strategy = '" . esc_sql($strategy) . "' 
-                                 AND job_id = " . intval($job_id) . " 
-                                 ORDER BY id DESC LIMIT 1", OBJECT);
+        $last_data = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, data FROM {$wpdb->prefix}rapidload_job_optimizations 
+                WHERE strategy = %s 
+                AND job_id = %d 
+                ORDER BY id DESC LIMIT 1",
+                $strategy,
+                $job_id
+            ),
+            OBJECT
+        );
 
         $first_entry = isset($first_data[0]) ? $first_data[0] : false;
         $last_entry = isset($last_data[0]) && $first_entry && $first_data[0]->id != $last_data[0]->id ? $last_data[0] : false;

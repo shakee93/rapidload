@@ -285,7 +285,7 @@ jobs:
           ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa bitnami@${{ secrets.SSH_HOST }} << 'EOF'
             INSTANCE_ID=${{ github.event.number }}
             WP_CONTAINER=$(sudo docker ps -q --filter "name=wordpress_${INSTANCE_ID}")
-            PLUGIN_PATH=/bitnami/wordpress/wp-content/plugins/autoptimize-unusedcss
+            PLUGIN_PATH=/bitnami/wordpress/wp-content/plugins/rapidload
             TITAN_PATH=includes/admin/page-optimizer
             PLUGIN_DIR=/bitnami/wordpress/wp-content/plugins
             sudo docker exec -u root -i ${WP_CONTAINER} sh -c "
@@ -297,7 +297,7 @@ jobs:
                 cd ${PLUGIN_DIR}
                 echo 'Cloning plugin repository...'
                 git config --global http.postBuffer 524288000
-                git clone --depth 1 -b ${{ github.head_ref }} --single-branch https://github.com/shakee93/autoptimize-unusedcss.git ${PLUGIN_PATH}
+                git clone --depth 1 -b ${{ github.head_ref }} --single-branch https://github.com/shakee93/rapidload.git ${PLUGIN_PATH}
               fi
             "
             if [ $? -eq 0 ]; then
@@ -312,7 +312,7 @@ jobs:
           ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa bitnami@${{ secrets.SSH_HOST }} << 'EOF'
             INSTANCE_ID=${{ github.event.number }}
             WP_CONTAINER=$(sudo docker ps -q --filter "name=wordpress_${INSTANCE_ID}")
-            PLUGIN_PATH=/bitnami/wordpress/wp-content/plugins/autoptimize-unusedcss/includes/admin/page-optimizer
+            PLUGIN_PATH=/bitnami/wordpress/wp-content/plugins/rapidload/includes/admin/page-optimizer
             sudo docker exec -u root -i ${WP_CONTAINER} sh -c "
               cd ${PLUGIN_PATH}
               if [ -f package.json ]; then
@@ -338,7 +338,7 @@ jobs:
             INSTANCE_ID=${{ github.event.number }}
             WP_CONTAINER=$(sudo docker ps -q --filter "name=wordpress_${INSTANCE_ID}")
             if [ -n "${WP_CONTAINER}" ]; then
-              sudo docker exec -i ${WP_CONTAINER} sh -c "wp plugin activate autoptimize-unusedcss --allow-root"
+              sudo docker exec -i ${WP_CONTAINER} sh -c "wp plugin activate rapidload --allow-root"
               if [ $? -eq 0 ]; then
                 echo "Plugin unusedcss activated successfully in ${WP_CONTAINER}"
               else

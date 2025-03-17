@@ -81,9 +81,9 @@ const LicenseWidget = () => {
         { label: 'Email', value: licenseInfo?.email },
         {
             label: 'Next Billing',
-            value: licenseInfo?.plan === 'cancelled or not found' ? 'Expired': licenseInfo?.next_billing
+            value: licenseInfo?.plan === 'cancelled or not found' ? 'Expired' : licenseInfo?.next_billing
                 ? new Date(licenseInfo.next_billing * 1000).toLocaleDateString()
-                :''
+                : ''
         },
         { label: 'Plan', value: licenseInfo?.plan },
         { label: 'Active Domain', value: licenseInfo?.licensedDomain ? licenseInfo?.licensedDomain : options.optimizer_url }
@@ -113,7 +113,7 @@ const LicenseWidget = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="relative pt-2" 
+            className="relative pt-2"
         >
             {licenseMessage && (
                 <h3 className="text-sm font-medium text-amber-700 absolute -top-4 right-0 dark:text-brand-300">{licenseMessage}</h3>
@@ -157,17 +157,17 @@ const LicenseWidget = () => {
                             <>
                                 {/* <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
                                 </span> */}
-                                
+
                                 <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
-                                {showInput && renderLicenseInput() }
-                            
+                                {showInput && renderLicenseInput()}
+
                             </>
                         ) : renderLicenseDetails()}
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <div
-                            className="flex gap-6 justify-end p-6 text-sm font-semibold relative before:absolute before:left-0 before:right-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-white before:via-brand-200 before:to-white dark:before:bg-gradient-to-r dark:before:from-brand-800 dark:before:via-brand-900 dark:before:to-brand-800">
+                            className="flex flex-col gap-2 justify-end px-6 py-3 pb-6 text-sm font-semibold relative before:absolute before:left-0 before:right-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-white before:via-brand-200 before:to-white dark:before:bg-gradient-to-r dark:before:from-brand-800 dark:before:via-brand-900 dark:before:to-brand-800">
                             {/* licenseInfo */}
                             {licenseInfo ? (
                                 <>
@@ -195,8 +195,8 @@ const LicenseWidget = () => {
 
                                     <AppButton
                                         className={`bg-[#09090b] flex gap-2 items-center dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 dark:text-brand-300 cursor-pointer px-4 rounded-lg ${showInput && inputLicense.length <= 0 ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}
-                                        onClick={() => (showInput ? connectRapidloadLicense() :  uucssGlobal?.activation_url ? window.location.href = uucssGlobal?.activation_url
-                                         : window.open('https://rapidload.ai/', '_blank'))}
+                                        onClick={() => (showInput ? connectRapidloadLicense() : uucssGlobal?.activation_url ? window.location.href = uucssGlobal?.activation_url
+                                            : window.open('https://rapidload.ai/', '_blank'))}
                                     >
                                         <PlugIcon className="w-4 h-4" />
                                         {loading && <Loader className='w-4 animate-spin' />} Connect to Boost
