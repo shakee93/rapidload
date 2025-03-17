@@ -61,8 +61,14 @@ class RapidLoad_Cache_Store
 
         $cache_dir = self::get_cache_dir( $url );
 
-        if ( ! is_dir( $cache_dir ) || !is_writable( $cache_dir )) {
+        $cache_dir_root = dirname($cache_dir);
+
+        if ( ! is_dir( $cache_dir_root ) || !is_writable( $cache_dir_root )) {
             return 'no permission for cache directory';
+        }
+
+        if(!is_dir($cache_dir)){
+            return 'no page cache directory found';
         }
 
         if(defined('DONOTCACHEPAGE') && DONOTCACHEPAGE){
