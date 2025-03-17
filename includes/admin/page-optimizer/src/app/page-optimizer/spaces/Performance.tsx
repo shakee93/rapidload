@@ -197,7 +197,7 @@ const Performance = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
-                                    className='flex flex-col gap-8 items-center px-8 pt-40 w-full'>
+                                    className='flex flex-col gap-8 items-center px-8 pt-40 pb-20 w-full'>
 
                                     <div>
                                         <img alt='Good Job!' className='w-64'

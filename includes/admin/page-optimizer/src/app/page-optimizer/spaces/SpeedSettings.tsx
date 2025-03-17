@@ -266,7 +266,7 @@ const SpeedSettings = ({ }) => {
             firstRender.current = false;
             return;
         }
-        console.log(activeGear, baseMode)
+        console.log('activeGear: ',activeGear)
         if(activeGear !== 'custom' && activeGear !== baseMode ){
             setBaseMode(tempMode);
             submitSettings(true);
@@ -497,10 +497,10 @@ const SpeedSettings = ({ }) => {
                     {mouseOnSettingsGear ? (
                         <h3 className="font-semibold dark:text-brand-300 capitalize">{mouseOnSettingsGear} {activeGear === mouseOnSettingsGear && 'Activated'}</h3>
                     ) : (
-                        <h3 className="font-semibold dark:text-brand-300 capitalize">{activeGear} Activated</h3>
+                        <h3 className="font-semibold dark:text-brand-300 capitalize">{activeGear ? activeGear : baseMode} Activated</h3>
                     )}
                     <span
-                        className="font-normal text-sm text-zinc-600 dark:text-brand-300">{settingsDescriptions[currentMode]}</span>
+                        className="font-normal text-sm text-zinc-600 dark:text-brand-300">{settingsDescriptions[currentMode ? currentMode : baseMode]}</span>
                 </div>
             </div>
 
@@ -521,12 +521,12 @@ const SpeedSettings = ({ }) => {
                             className={cn(
                                 `select-none w-fit transition-all rounded-2xl cursor-pointer  
           flex items-center gap-2 px-4 py-2 -ml-1 text-sm font-medium dark:hover:border-purple-700 dark:border-brand-700/70 hover:border-purple-700 border border-brand-200 border-[3px] dark:hover:bg-brand-950 bg-brand-0 dark:bg-brand-950 `,
-                                activeGear === 'custom' && 'border-purple-700',
+                                activeGear ? activeGear === 'custom' : baseMode === 'custom' && 'border-purple-700',
                                 (savingData || invalidatingCache || loading) && 'cursor-not-allowed opacity-90 pointer-events-none'
                             )}
                             data-tour="customize-settings"
                         >
-                            {activeGear === 'custom' &&
+                            {activeGear? activeGear === 'custom' : baseMode === 'custom' &&
                                 <div className="">
                                     <CheckCircleIcon className="w-6 h-6 text-purple-800" />
                                 </div>
