@@ -49,9 +49,11 @@ const LicenseWidget = () => {
     };
 
     useEffect(() => {
-        if (license && !licenseInfo) {
+        // if (license && !licenseInfo) {
+        if (license) {
             setLicenseInfo(license);
         }
+        console.log('license', license, 'licenseInfo', licenseInfo)
     }, [license]);
 
     useEffect(() => {
