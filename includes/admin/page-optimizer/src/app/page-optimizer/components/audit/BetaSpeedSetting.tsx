@@ -437,20 +437,7 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true, 
                                     </div>
                                 )}
 
-                                {/* <Mode mode={'onboard'}>
-                                    <TooltipText
-                                        text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
-                                        <Lock className='w-4 text-brand-400'/>
-                                    </TooltipText>
-                                </Mode> */}
-                                {/* {isProFeatureBlocked && (
-                                    <Mode >
-                                        <TooltipText
-                                            text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
-                                        <Lock className='w-4 text-brand-400'/>
-                                    </TooltipText>
-                                    </Mode>
-                                )} */}
+                              
                             </>
 
                         )}

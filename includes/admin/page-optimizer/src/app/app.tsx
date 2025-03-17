@@ -499,9 +499,9 @@ const App = ({ popup, _showOptimizer = false }: {
                         )}
                     </div>
 
-                    {!isDev && (
+                    {/* {!isDev && (
                         <div className="dark:bg-brand-900 absolute bottom-0 left-0 right-0 h-[8%] bg-[#F0F0F1]" />
-                    )}
+                    )} */}
                 </>
             }
 
