@@ -99,7 +99,7 @@ class RapidLoad_Image
                 };
             }(window, document));
 
-            <?php echo esc_js($image_handler_script) ?>
+            <?php echo $image_handler_script ?>
         </script>
         <?php
 
