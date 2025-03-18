@@ -12,7 +12,8 @@ interface ProTooltipProps {
 
 interface TooltipTextProps {
     children: React.ReactNode;
-    text: React.ReactNode;
+    text?: React.ReactNode;
+    className?: string;
 }
 
 const ProTooltipContent = () => {
@@ -42,13 +43,16 @@ const ProTooltipContent = () => {
     )
 }
 
-export const ProTooltip: React.FC<TooltipTextProps> = ({ children }) => {
+export const ProTooltip: React.FC<TooltipTextProps> = ({ children, className }) => {
     return (
         <TooltipText
-            className='cursor-pointer max-w-[300px]'
+            asChild
+            className={`cursor-pointer max-w-[300px] ${className}`}
             text={<ProTooltipContent />}
         >
-            {children}
+            <div className="w-full">
+                {children}
+            </div>
         </TooltipText>
     );
 };

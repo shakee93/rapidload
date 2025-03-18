@@ -32,7 +32,7 @@ import { Dialog, DialogDescription, DialogHeader, DialogContent, DialogTitle, Di
 import { Checkbox } from "components/ui/checkbox";
 import { isDev } from "lib/utils";
 import Mode from "../components/Mode";
-
+import ProTooltip from "components/ProTooltip";
 
 const DiagnosticSchema = z.object({
     // active_settings_inputs: z.array(z.object({
@@ -677,10 +677,10 @@ const Optimizations = ({ }) => {
                                         <div className={cn('flex justify-end items-center mt-2 gap-2')}>
                                             {!licenseConnected && (
                                                 <Mode >
-                                                    <TooltipText
-                                                        text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
-                                                        <Lock className='w-4 text-brand-400'/>
-                                                    </TooltipText>
+                                                    <ProTooltip
+                                                       >
+                                                        <Lock className='w-4 text-brand-400' />
+                                                    </ProTooltip>
                                                 </Mode>
                                             )}
                                             <AppButton

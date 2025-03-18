@@ -43,6 +43,7 @@ import {
     JavascriptDelivery,
     PageCache
 } from "app/page-optimizer/components/icons/category-icons";
+import ProTooltip from "components/ProTooltip";
 
 interface SettingItemProps {
     updateValue?: (setting: AuditSetting, value: any, key: any) => void
@@ -277,9 +278,10 @@ const Setting = ({ updateValue, settings, index, hideActions, showIcons = true }
                     </Mode>
 
                     <Mode mode='onboard'>
-                        <TooltipText text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
-                            <Lock className='w-4 text-brand-400' />
-                        </TooltipText>
+                    <ProTooltip
+                                                       >
+                                                        <Lock className='w-4 text-brand-400' />
+                                                    </ProTooltip>
                     </Mode>
                 </>
             )}
