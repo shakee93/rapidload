@@ -17,6 +17,7 @@ import { Loader } from "lucide-react";
 import ComparisonDialog from "app/dashboard/components/ComparisonDialog";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import LettersPullUp from "components/ui/letterUpAnimation";
+import ApiService from '../../../services/api';
 
 // type PerformanceGear = 'starter' | 'accelerate' | 'turboMax';
 
@@ -351,7 +352,16 @@ const StepTwo: React.FC<StepTwoProps> = ({ reconnect, onNext }) => {
                                 </div>
 
 
-                                <div onClick={onNext} className='text-sm text-brand-500 mt-2 cursor-pointer hover:underline'>
+                                <div onClick={async () => {
+                                    try{
+                                        const api = new ApiService(options);
+                                        await api.post('rapidload_onboard_skipped');
+                                       
+                                    }catch(error){
+                                        console.error(error)
+                                    }
+                                    onNext?.()
+                                    }} className='text-sm text-brand-500 mt-2 cursor-pointer hover:underline'>
                                     Skip without connecting to RapidLoad AI
                                 </div>
 

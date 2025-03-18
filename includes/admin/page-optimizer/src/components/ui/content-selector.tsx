@@ -3,7 +3,7 @@ import { ArrowRightIcon, PlusIcon, ArrowLeftIcon } from "@heroicons/react/24/out
 import {fetchReport, fetchSettings, searchData} from "../../store/app/appActions";
 import useCommonDispatch from "hooks/useCommonDispatch";
 import {useAppContext} from "../../context/app";
-import {setCommonState} from "../../store/common/commonActions";
+import {setCommonRootState, setCommonState} from "../../store/common/commonActions";
 import TableSkeleton from "components/ui/TableSkeleton";
 import {Skeleton} from "components/ui/skeleton";
 
@@ -55,9 +55,9 @@ const ContentSelector: React.FC<ContentSelectorProps> = ({ data, onOpenChange })
     };
 
     const handleItemClick = (item: any) => {
-        dispatch(setCommonState('headerUrl', item.permalink));
+        dispatch(setCommonRootState('headerUrl', item.permalink));
+        dispatch(fetchReport(options, item.permalink, true, true));
         dispatch(fetchSettings(options, item.permalink, true));
-        dispatch(fetchReport(options, item.permalink, true));
         window.location.hash = '#/optimize';
         onOpenChange(false);
     };

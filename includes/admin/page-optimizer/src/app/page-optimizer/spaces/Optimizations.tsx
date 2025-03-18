@@ -31,6 +31,7 @@ import TimeAgo from "components/TimeAgo";
 import { Dialog, DialogDescription, DialogHeader, DialogContent, DialogTitle, DialogTrigger } from "components/ui/dialog";
 import { Checkbox } from "components/ui/checkbox";
 import { isDev } from "lib/utils";
+import Mode from "../components/Mode";
 
 
 const DiagnosticSchema = z.object({
@@ -118,7 +119,7 @@ const Optimizations = ({ }) => {
         currentStep: 0
     });
 
-    const { headerUrl, diagnosticLoading } = useCommonDispatch();
+    const { headerUrl, diagnosticLoading, licenseConnected } = useCommonDispatch();
     const [remainingTime, setRemainingTime] = useState(0);
     const [serverDetails, setServerDetails] = useState(null);
     const [input, setInput] = useState(null);
@@ -673,10 +674,18 @@ const Optimizations = ({ }) => {
                             <Dialog open={showDialog} onOpenChange={setShowDialog}>
                                 <DialogTrigger asChild>
                                     <TooltipText text={loading ? "Please wait while applying optimizations" : null}>
-                                        <div className={cn('flex justify-end items-center mt-2')}>
+                                        <div className={cn('flex justify-end items-center mt-2 gap-2')}>
+                                            {!licenseConnected && (
+                                                <Mode >
+                                                    <TooltipText
+                                                        text={<><span className='text-purple-750 font-medium'>PRO</span> feature</>}>
+                                                        <Lock className='w-4 text-brand-400'/>
+                                                    </TooltipText>
+                                                </Mode>
+                                            )}
                                             <AppButton
-                                                disabled={aiLoading}
-                                                className={cn("rounded-xl px-8 py-6 whitespace-nowrap dark:bg-brand-950 dark:hover:bg-brand-900 dark:text-brand-300", loading && 'cursor-not-allowed opacity-60 pointer-events-none')}
+                                                disabled={aiLoading || !licenseConnected}
+                                                className={cn("rounded-xl px-8 py-6 whitespace-nowrap dark:bg-brand-950 dark:hover:bg-brand-900 dark:text-brand-300", loading || !licenseConnected && 'cursor-not-allowed opacity-60 pointer-events-none')}
                                                 onClick={() => {
 
                                                     if (!privacyPolicy) {

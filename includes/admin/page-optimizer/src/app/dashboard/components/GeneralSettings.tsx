@@ -119,9 +119,30 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
         );
     };
 
-    const renderTextarea = (label: string, description: string, key: keyof GeneralSettings) => {
-        const value = Array.isArray(settingsData[key]) ? settingsData[key].join('\n') : '';
+    // const renderTextarea = (label: string, description: string, key: keyof GeneralSettings) => {
+    //     const value = Array.isArray(settingsData[key]) ? settingsData[key].join('\n') : '';
 
+    //     return (
+    //         <div className="grid items-center my-4">
+    //             <div className="text-sm font-semibold dark:text-brand-300">{label}</div>
+    //             <div className="text-xs font-normal dark:text-brand-300 text-brand-500 mt-1">
+    //                 {description}
+    //             </div>
+    //             <Textarea
+    //                 className="mt-1 focus:outline-none focus-visible:ring-0 dark:text-brand-300 rounded-2xl"
+    //                 value={value} // Use the value derived above
+    //                 onChange={(e) =>
+    //                     setSettingsData({ ...settingsData, [key]: e.target.value.split('\n') })
+    //                 }
+    //             />
+    //         </div>
+    //     );
+    // };
+
+    
+    const renderTextarea = (label: string, description: string, key: keyof GeneralSettings) => {
+        const value = typeof settingsData[key] === 'string' ? settingsData[key] : '';
+    
         return (
             <div className="grid items-center my-4">
                 <div className="text-sm font-semibold dark:text-brand-300">{label}</div>
@@ -130,14 +151,20 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                 </div>
                 <Textarea
                     className="mt-1 focus:outline-none focus-visible:ring-0 dark:text-brand-300 rounded-2xl"
-                    value={value} // Use the value derived above
+                    value={value.replace(/,/g, '\n')}  
                     onChange={(e) =>
-                        setSettingsData({ ...settingsData, [key]: e.target.value.split('\n') })
+                        setSettingsData({
+                            ...settingsData,
+                            [key]: e.target.value.replace(/\n/g, ',') // Replace newlines with commas when saving
+                        })
                     }
                 />
             </div>
         );
     };
+    
+    
+
 
     const [isOpen, setIsOpen] = useState(false);
     const toggleIsOpen = () => {
@@ -240,7 +267,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                     <Button  
                         className='flex gap-2 dark:bg-brand-800/40 dark:text-brand-300 dark:hover:bg-brand-800/50' 
                         onClick={() => {
-                            window.location.href = '/wp-admin/admin.php?page=rapidload-legacy-dashboard#/';
+                            window.open('/wp-admin/admin.php?page=rapidload-legacy-dashboard#/', '_blank');
                         }}
                         variant='outline'>
                         Dashboard 2.0
