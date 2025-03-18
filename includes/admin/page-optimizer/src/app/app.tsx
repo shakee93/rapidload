@@ -92,6 +92,14 @@ const App = ({ popup, _showOptimizer = false }: {
     }, []);
 
     useEffect(() => {
+        if (isDark) {
+          document.body.style.backgroundColor = "rgb(24, 24, 27)"; 
+        } else {
+          document.body.style.backgroundColor = ""; 
+        }
+      }, [isDark]);
+
+    useEffect(() => {
 
         if (showOptimizer) {
             !isDev && !disableDebugReport && Bugsnag.leaveBreadcrumb('Titan Opened');

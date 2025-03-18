@@ -109,6 +109,7 @@ const AIBot = ({ className }: { className: string }) => {
                                 <div className='absolute right-4 top-1/2 transform -translate-y-1/2 dark:text-brand-300'>
                                     <Lock className='w-4 text-brand-400' />
                                 </div>
+                               
                             </ProTooltip>
                         ) : (
                             <>
@@ -119,7 +120,7 @@ const AIBot = ({ className }: { className: string }) => {
                                     placeholder="Ask about anything..."
                                     className="w-full p-2 border border-brand-200 dark:bg-brand-600/40 dark:text-brand-300 dark:border-brand-700 rounded-full focus:outline-none focus:border-black bg-brand-100 pr-10 pl-4"
                                 />
-                                <div className='absolute right-4 top-1/2 transform -translate-y-1/2 dark:text-brand-300'>
+                                <div className='absolute right-1 top-1/2 transform -translate-y-1/2 dark:text-brand-300'>
                                     <ArrowUpCircleIcon
                                         className="cursor-pointer h-10 w-10 text-brand-950 absolute right-0 top-1/2 transform -translate-y-1/2 dark:text-brand-300" />
                                 </div>
