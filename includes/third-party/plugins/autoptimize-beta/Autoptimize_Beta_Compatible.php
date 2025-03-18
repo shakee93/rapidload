@@ -118,26 +118,23 @@ class Autoptimize_Beta_Compatible extends RapidLoad_ThirdParty {
     }
 
     public function handle($args){
-
-        if(function_exists('autoptimize') ){
-
+        if(function_exists('autoptimize')){
             $tab = 'RapidLoad';
-
-            $args = array_merge( $args, array(
-                'rapidload' => __( '<span class="uucss-tab-title"><img src="' . UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg' . '" width="15" alt="RapidLoad.io logo"><span>' . $tab . '</span></span>', 'autoptimize' ),
-            ) );
-
+            
+            $args = array_merge($args, array(
+                'rapidload' => __('<span class="uucss-tab-title"><img src="' . esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg') . '" width="15" alt="RapidLoad.io logo"><span>' . esc_html($tab) . '</span></span>', 'unusedcss')
+            ));
+            
             return $args;
-
         }
-
+        return $args;
     }
 
     public function render_option_page_ao_admin_tabs(){
 
         if(class_exists('autoptimizeConfig')){
 
-            echo autoptimizeConfig::ao_admin_tabs();
+            echo esc_html(autoptimizeConfig::ao_admin_tabs());
 
         }
 

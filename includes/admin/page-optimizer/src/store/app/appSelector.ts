@@ -55,6 +55,7 @@ export const optimizerData = createSelector(
         const cssStatus = state.cssStatus
         const diagnosticResults = state.diagnosticResults
         const diagnosticProgress = state.diagnosticProgress
+        const generalSettings = state.settings.general.options
 
         return {
             ...report,
@@ -73,6 +74,7 @@ export const optimizerData = createSelector(
             cssStatus,
             diagnosticResults,
             diagnosticProgress,
+            generalSettings,
             touched: !equal(settings.original, settings.state) || !!optimizeChangesFiles(report.changes).find(i => i?.changed),
             fresh : report?.state?.fresh,
             reanalyze: report.data !== null && report.loading

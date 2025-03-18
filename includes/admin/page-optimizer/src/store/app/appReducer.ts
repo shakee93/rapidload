@@ -17,7 +17,7 @@ import {
     FETCH_POSTS,
     GET_CDN_USAGE,
     GET_IMAGE_USAGE,
-    GET_CACHE_USAGE, LICENSE_INFORMATION, HOME_PAGE_PERFORMANCE, SET_DIAGNOSTIC_RESULTS, SET_DIAGNOSTIC_PROGRESS
+    GET_CACHE_USAGE, LICENSE_INFORMATION, HOME_PAGE_PERFORMANCE, SET_DIAGNOSTIC_RESULTS, SET_DIAGNOSTIC_PROGRESS, UPDATE_GENERAL_SETTINGS
 } from "./appTypes";
 
 const blankReport =  {
@@ -71,6 +71,17 @@ const initialState: AppState = {
         general: {
             test_mode: false,
             performance_gear: null,
+            options: {
+                uucss_excluded_links: [],
+                rapidload_minify_html: false,
+                uucss_query_string: false,
+                preload_internal_links: false,
+                uucss_enable_debug: false,
+                uucss_jobs_per_queue: 1,
+                uucss_queue_interval: 600,
+                uucss_disable_add_to_queue: false,
+                uucss_disable_add_to_re_queue: false
+            }
         },
         actions: []
     },
@@ -355,6 +366,17 @@ const appReducer = (state = initialState, action: AppAction): AppState => {
                 [state.activeReport]: {
                     ...activeReport,
                 },
+            };
+        case UPDATE_GENERAL_SETTINGS:
+            return {
+                ...state,
+                settings: {
+                    ...state.settings,
+                    general: {
+                        ...state.settings.general,
+                        options: action.payload
+                    }
+                }
             };
         default:
             return state;

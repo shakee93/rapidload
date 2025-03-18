@@ -49,9 +49,11 @@ const LicenseWidget = () => {
     };
 
     useEffect(() => {
-        if (license && !licenseInfo) {
+        // if (license && !licenseInfo) {
+        if (license) {
             setLicenseInfo(license);
         }
+        console.log('license', license, 'licenseInfo', licenseInfo)
     }, [license]);
 
     useEffect(() => {
@@ -79,9 +81,9 @@ const LicenseWidget = () => {
         { label: 'Email', value: licenseInfo?.email },
         {
             label: 'Next Billing',
-            value: licenseInfo?.plan === 'cancelled or not found' ? 'Expired': licenseInfo?.next_billing
+            value: licenseInfo?.plan === 'cancelled or not found' ? 'Expired' : licenseInfo?.next_billing
                 ? new Date(licenseInfo.next_billing * 1000).toLocaleDateString()
-                :''
+                : ''
         },
         { label: 'Plan', value: licenseInfo?.plan },
         { label: 'Active Domain', value: licenseInfo?.licensedDomain ? licenseInfo?.licensedDomain : options.optimizer_url }
@@ -111,7 +113,7 @@ const LicenseWidget = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="relative pt-2" 
+            className="relative pt-2"
         >
             {licenseMessage && (
                 <h3 className="text-sm font-medium text-amber-700 absolute -top-4 right-0 dark:text-brand-300">{licenseMessage}</h3>
@@ -145,36 +147,29 @@ const LicenseWidget = () => {
                     </div>
 
                     <div className="grid gap-4 px-8 text-sm relative">
-                        {/* Stored License:
-                        {JSON.stringify(parsedStoredLicense?.licensedDomain)}
-                        <div className="h-1 bg-brand-950 border-b border-brand-950 border-2" />
-                        License Info:
-                        {JSON.stringify(licenseInfo?.licensedDomain)} */}
+                        
                         {/* !licenseInfo */}
                         {!licenseInfo ? (
                             <>
-                                {/* <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.
-                                </span> */}
-                                
+                               
                                 <span>You're currently using just 30% of RapidLoad AI’s potential. While the free version speeds up your site, the real power unlocks at 100%—with advanced optimizations like CriticalCSS injection, real-time image compression, and a high-speed global CDN.</span>
-                                {showInput && renderLicenseInput() }
-                            
+                                {showInput && renderLicenseInput()}
+
                             </>
                         ) : renderLicenseDetails()}
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    
                         <div
-                            className="flex gap-6 justify-end p-6 text-sm font-semibold relative before:absolute before:left-0 before:right-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-white before:via-brand-200 before:to-white dark:before:bg-gradient-to-r dark:before:from-brand-800 dark:before:via-brand-900 dark:before:to-brand-800">
+                            className="px-6 py-6 text-sm font-semibold relative before:absolute before:left-0 before:right-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-white before:via-brand-200 before:to-white dark:before:bg-gradient-to-r dark:before:from-brand-800 dark:before:via-brand-900 dark:before:to-brand-800">
                             {/* licenseInfo */}
                             {licenseInfo ? (
-                                <>
+                                <div className='flex gap-2 justify-end '>
                                     <button className="cursor-pointer text-brand-500 py-1.5" onClick={() => window.open('https://app.rapidload.io/', 'blank')}>View My Account</button>
                                     <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => window.open('https://app.rapidload.io/subscription', 'blank')}>Upgrade</button>
-                                </>
+                                </div>
                             ) : (
-                                <>
-                                    {/*<button className="cursor-pointer text-brand-500 py-1.5" onClick={() => setShowInput(!showInput)}>{showInput ? "Cancel" : "Connect with License key"}</button>*/}
+                                <div className='flex gap-4 justify-end '>
                                     <button
                                         className="cursor-pointer text-brand-500 py-1.5"
                                         onClick={() => setShowInput(!showInput)}
@@ -193,16 +188,15 @@ const LicenseWidget = () => {
 
                                     <AppButton
                                         className={`bg-[#09090b] flex gap-2 items-center dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 dark:text-brand-300 cursor-pointer px-4 rounded-lg ${showInput && inputLicense.length <= 0 ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}
-                                        onClick={() => (showInput ? connectRapidloadLicense() :  uucssGlobal?.activation_url ? window.location.href = uucssGlobal?.activation_url
-                                         : window.open('https://rapidload.ai/', '_blank'))}
+                                        onClick={() => (showInput ? connectRapidloadLicense() : uucssGlobal?.activation_url ? window.location.href = uucssGlobal?.activation_url
+                                            : window.open('https://rapidload.ai/', '_blank'))}
                                     >
-                                        <PlugIcon className="w-4 h-4" />
-                                        {loading && <Loader className='w-4 animate-spin' />} Connect to Boost
+                                        {loading ? <Loader className='w-4 animate-spin' /> : <PlugIcon className="w-4 h-4" />} Connect to Boost
                                     </AppButton>
-                                </>
+                                </div>
                             )}
                         </div>
-                    </div>
+                   
                 </Card>
             </div>
         </AnimatePresence>

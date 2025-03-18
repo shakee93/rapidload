@@ -208,7 +208,7 @@ class RapidLoad_Cache_Store
             return $cache;
         }
 
-        $url       = esc_url_raw( $url, array( 'http', 'https' ) );
+        $url       = filter_var($url, FILTER_SANITIZE_URL);
         $cache_dir = self::get_cache_dir( $url );
 
         if ( ! is_dir( $cache_dir ) ) {
@@ -644,6 +644,8 @@ class RapidLoad_Cache_Store
         if ( empty ( $url ) ) {
             $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false );
         }
+
+        $url = filter_var($url, FILTER_SANITIZE_URL);
 
         $url_host = parse_url( $url, PHP_URL_HOST );
         if ( ! is_string( $url_host ) ) {

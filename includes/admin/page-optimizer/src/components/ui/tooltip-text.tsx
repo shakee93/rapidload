@@ -11,10 +11,11 @@ interface TooltipTextProps {
     onClick?: () => void,
     asChild?: boolean
     delay?: number
+    leftOffset?: string
 }
 
 const TooltipText = forwardRef<HTMLButtonElement, TooltipTextProps>(
-    ({ text, children, onClick, className, asChild = false, delay = 500}, ref) => {
+    ({ text, children, onClick, className, asChild = false, delay = 500, leftOffset }, ref) => {
     return (
         text != null ? (
         <TooltipProvider disableHoverableContent={false} delayDuration={delay}>
@@ -24,7 +25,9 @@ const TooltipText = forwardRef<HTMLButtonElement, TooltipTextProps>(
                 )}>
                     {children}
                 </TooltipTrigger>
-                <TooltipContent className={className}>{text}</TooltipContent>
+                <TooltipContent className={cn(
+                    className
+                )}>{text}</TooltipContent>
             </Tooltip>
         </TooltipProvider>
     ):(children)

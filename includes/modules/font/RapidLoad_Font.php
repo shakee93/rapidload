@@ -50,7 +50,7 @@ class RapidLoad_Font
     public function add_admin_clear_action($wp_admin_bar){
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-font-cache',
-            'title' => '<span class="ab-label">' . __( 'Clear Font Optimizations', 'clear_optimization' ) . '</span>',
+            'title' => '<span class="ab-label">' . __( 'Clear Font Optimizations', 'unusedcss' ) . '</span>',
             //'href'  => admin_url( 'admin.php?page=rapidload&action=rapidload_purge_all' ),
             'href'   => wp_nonce_url( add_query_arg( array(
                 '_action' => 'rapidload_purge_all',

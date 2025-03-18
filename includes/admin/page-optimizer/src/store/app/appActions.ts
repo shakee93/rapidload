@@ -16,7 +16,8 @@ import {
     UPDATE_SETTINGS,
     UPDATE_TEST_MODE,
     SET_DIAGNOSTIC_RESULTS,
-    SET_DIAGNOSTIC_PROGRESS
+    SET_DIAGNOSTIC_PROGRESS,
+    UPDATE_GENERAL_SETTINGS
 } from "./appTypes";
 import ApiService from "../../services/api";
 import Audit from "app/page-optimizer/components/audit/Audit";
@@ -775,19 +776,6 @@ export const updateDiagnosticResults = (options: WordPressOptions, url: string, 
     };
 };
 
-
-// export const setDiagnosticProgress = (
-//    progress: DiagnosticProgress
-// ): ThunkAction<void, RootState, unknown, AnyAction> => {
-//     return async (dispatch: ThunkDispatch<RootState, unknown, AppAction>, getState) => {
-
-//         dispatch({
-//             type: SET_DIAGNOSTIC_PROGRESS, 
-//             payload: progress,
-//         })
-//     }
-// }
-
 export const setDiagnosticProgress = (
     progress: Partial<DiagnosticProgress>
  ): ThunkAction<void, RootState, unknown, AnyAction> => {
@@ -803,3 +791,14 @@ export const setDiagnosticProgress = (
          });
      }
  }
+
+export const updateGeneralSettings = (
+    settings: GeneralSettings
+): ThunkAction<void, RootState, unknown, AnyAction> => {
+    return (dispatch) => {
+        dispatch({
+            type: UPDATE_GENERAL_SETTINGS,
+            payload: settings
+        });
+    }
+}

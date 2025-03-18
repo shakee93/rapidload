@@ -45,6 +45,7 @@ export interface AppState {
         general: {
             test_mode: boolean | TestMode
             performance_gear: PerformanceGear | null
+            options: GeneralSettings
         },
         actions: AuditSettingInput[]
     },
@@ -78,6 +79,7 @@ export const LICENSE_INFORMATION = 'LICENSE_INFORMATION';
 export const HOME_PAGE_PERFORMANCE = 'HOME_PAGE_PERFORMANCE';
 export const SET_DIAGNOSTIC_RESULTS = 'SET_DIAGNOSTIC_RESULTS';
 export const SET_DIAGNOSTIC_PROGRESS = 'SET_DIAGNOSTIC_PROGRESS';
+export const UPDATE_GENERAL_SETTINGS = 'UPDATE_GENERAL_SETTINGS';
 
 
 interface SetDiagnosticProgress {
@@ -99,14 +101,17 @@ interface LicenseInformation {
     type: typeof LICENSE_INFORMATION,
     payload : License,
 }
+
 interface CacheUsage {
     type: typeof GET_CACHE_USAGE,
     payload : cacheUsage,
 }
+
 interface ImageUsage {
     type: typeof GET_IMAGE_USAGE,
     payload : imageUsage,
 }
+
 interface GetCDNUsage {
     type: typeof GET_CDN_USAGE,
     payload : cdnUsage,
@@ -173,6 +178,7 @@ interface FetchSettingsFailureAction {
     type: typeof FETCH_SETTING_FAILURE;
     error: string;
 }
+
 interface UpdateSettingsAction {
     type: typeof UPDATE_SETTINGS;
     payload : {
@@ -203,9 +209,13 @@ interface UpdateFileActionAction {
     }
 }
 
+interface UpdateGeneralSettings {
+    type: typeof UPDATE_GENERAL_SETTINGS,
+    payload: GeneralSettings
+}
 
 // Define the combined action type
 export type AppAction = FetchDataRequestAction | FetchDataSuccessAction | FetchDataFailureAction |
     FetchSettingsRequestAction | FetchSettingsSuccessAction | FetchSettingsFailureAction | ChangeGearAction|
-    UpdateSettingsAction | ChangeReportTypeAction | UpdateFileActionAction | GetCSSStatusSuccess | UpdateTestMode | UpdateOptimizeTable | FetchPosts | GetCDNUsage | ImageUsage | CacheUsage | LicenseInformation | homePagePerformance | SetDiagnosticResults | SetDiagnosticProgress;
+    UpdateSettingsAction | ChangeReportTypeAction | UpdateFileActionAction | GetCSSStatusSuccess | UpdateTestMode | UpdateOptimizeTable | FetchPosts | GetCDNUsage | ImageUsage | CacheUsage | LicenseInformation | homePagePerformance | SetDiagnosticResults | SetDiagnosticProgress | UpdateGeneralSettings;
 

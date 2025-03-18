@@ -30,7 +30,7 @@ import { cn, isDev } from "lib/utils";
 import { setCommonState } from "../../../store/common/commonActions";
 import useCommonDispatch from "hooks/useCommonDispatch";
 import { BoltIcon, CheckCircleIcon, ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import {changeGear, getCSSStatus, updateSettings} from "../../../store/app/appActions";
+import { changeGear, getCSSStatus, updateSettings } from "../../../store/app/appActions";
 import { m, AnimatePresence } from 'framer-motion';
 import AuditSettingsItem from './AuditSettingsItem';
 import { useAppContext } from "../../../context/app";
@@ -184,7 +184,7 @@ const SpeedSettings = ({ }) => {
         ));
     }, []);
 
-    
+
     const [passedAudits, setPassedAudits] = useState<AuditSetting[]>([]);
     const [notPassedAudits, setNotPassedAudits] = useState<AuditSetting[]>([]);
     const isInitialRender = useRef(true);
@@ -251,7 +251,7 @@ const SpeedSettings = ({ }) => {
                 mode as BasePerformanceGear
             ))
 
-          //  submitSettings(true);
+            //  submitSettings(true);
 
             if (!notPassedAudits) {
                 return;
@@ -266,7 +266,7 @@ const SpeedSettings = ({ }) => {
             firstRender.current = false;
             return;
         }
-        console.log(activeGear, baseMode)
+        console.log('activeGear: ',activeGear)
         if(activeGear !== 'custom' && activeGear !== baseMode ){
             setBaseMode(tempMode);
             submitSettings(true);
@@ -382,12 +382,12 @@ const SpeedSettings = ({ }) => {
     const [enableFlags, setEnableFlags] = useState({ cpcss: false, uucss: false, cpcssuucss: false });
 
     const updateEnableFlags = useCallback(() => {
-        if(!settings) return;
+        if (!settings) return;
         const cpcssEnabled = settings.some(item => item.inputs.find(input => input.key === 'uucss_enable_cpcss')?.value);
         const uucssEnabled = settings.some(item => item.inputs.find(input => input.key === 'uucss_enable_uucss')?.value);
         const cpcssuucssEnabled = settings.some(item => item.inputs.find(input => input.key === 'enable_uucss_on_cpcss')?.value);
 
-        setEnableFlags({ cpcss: cpcssEnabled, uucss: uucssEnabled, cpcssuucss: !cpcssuucssEnabled});
+        setEnableFlags({ cpcss: cpcssEnabled, uucss: uucssEnabled, cpcssuucss: !cpcssuucssEnabled });
     }, [settings]);
 
     useEffect(() => {
@@ -407,77 +407,74 @@ const SpeedSettings = ({ }) => {
         >
             <div className='border-b border-brand-300 px-11 py-4 dark:border-brand-600/40'>
                 <div className="pb-4">
-                    {settingsLoading &&
-                        <div>Loading...</div>
-                    }
                     <h3 className="font-semibold text-lg">Performance Gears</h3>
                     <span className="font-normal text-sm text-zinc-600 dark:text-brand-300">Select your Performance Mode: Starter, Accelerate, TurboMax, or Customize, to fine-tune your site's speed.</span>
                 </div>
 
-                
-                
+
+
                 <div className={`flex gap-4 `} data-tour="settings-gear">
                     {modes.map((mode, index) => (
-                        <TooltipText key={`tooltip-${mode}`} text={loading ? "Analyzing your site performance" : savingData || invalidatingCache ? "Please wait while applying optimizations" : null }>
-                        <div
-                            key={index}
-                            className={`${(savingData || invalidatingCache || loading) && 'cursor-not-allowed opacity-90 pointer-events-none'} cursor-pointer transition-all flex px-4 py-4 min-w-[166px] min-h-[166px] items-center justify-center w-fit rounded-3xl dark:bg-brand-950 bg-brand-0 dark:hover:border-purple-700 dark:border-brand-700/70 hover:border-purple-700 border border-brand-200 border-[3px]  ${mode === (activeGear || tempMode) ? ' border-purple-700 dark:border-purple-700' : ''}`}
-                            onClick={e => {
-                                settingsModeOnChange(mode);
-                            }}
-                            onMouseEnter={() => setMouseOnSettingsGear(mode)}
-                            onMouseLeave={() => setMouseOnSettingsGear('')}
-                        >
-
+                        <TooltipText key={`tooltip-${mode}`} text={loading ? "Analyzing your site performance" : savingData || invalidatingCache ? "Please wait while applying optimizations" : null}>
                             <div
-                                className={`flex flex-col gap-1 items-center text-center ${mode === 'turboMax' ? ' pt-1.5' : ''}`}>
+                                key={index}
+                                className={`${(savingData || invalidatingCache || loading) && 'cursor-not-allowed opacity-90 pointer-events-none'} cursor-pointer transition-all flex px-4 py-4 min-w-[166px] min-h-[166px] items-center justify-center w-fit rounded-3xl dark:bg-brand-950 bg-brand-0 dark:hover:border-purple-700 dark:border-brand-700/70 hover:border-purple-700 border border-brand-200 border-[3px]  ${mode === (activeGear || tempMode) ? ' border-purple-700 dark:border-purple-700' : ''}`}
+                                onClick={e => {
+                                    settingsModeOnChange(mode);
+                                }}
+                                onMouseEnter={() => setMouseOnSettingsGear(mode)}
+                                onMouseLeave={() => setMouseOnSettingsGear('')}
+                            >
 
-                                {['starter', 'accelerate', 'turboMax'].includes(mode) && activeGear === mode && (
-                                    <div className="absolute ml-28 -mt-4">
-                                        {(savingData || invalidatingCache) ? (
-                                            // <Loader className='w-24 animate-spin'/>
-                                            <></>
-                                        ) : (
-                                            <CheckCircleIcon className="w-6 h-6 text-purple-800" />
-                                        )}
+                                <div
+                                    className={`flex flex-col gap-1 items-center text-center ${mode === 'turboMax' ? ' pt-1.5' : ''}`}>
 
-                                    </div>
-                                )}
+                                    {['starter', 'accelerate', 'turboMax'].includes(mode) && activeGear === mode && (
+                                        <div className="absolute ml-28 -mt-4">
+                                            {(savingData || invalidatingCache) ? (
+                                                // <Loader className='w-24 animate-spin'/>
+                                                <></>
+                                            ) : (
+                                                <CheckCircleIcon className="w-6 h-6 text-purple-800" />
+                                            )}
 
-                                {activeGear === mode && (savingData || invalidatingCache) ? (
+                                        </div>
+                                    )}
+
+                                    {activeGear === mode && (savingData || invalidatingCache) ? (
                                         <div className="w-16 h-16 border-4 border-t-transparent border-[#7E22CE] rounded-full animate-spin"></div>
                                     ) : (
-                                    <>
-                                {mode === 'starter' && <Starter cls={'px-2 py-2'} isDark={isDark}/>}
-                                        {mode === 'accelerate' && <Accelerate cls={'px-2 py-2'} isDark={isDark}/>}
-                                        {mode === 'turboMax' && <TurboMax cls={'px-2 py-2'} isDark={isDark}/>}
-                                    </>
-                                )}
-
-
-                                <div>
-                                    {activeGear === mode && (savingData || invalidatingCache) ? (
-                                        <p className="font-semibold capitalize z-[110000] mt-2"
-
-                                        >Applying...</p>
-                                    ) : (
                                         <>
-                                            <p className="font-semibold capitalize"
-                                            >{mode}</p>
-                                            {mode === 'turboMax' && (
-                                                <p className="font-normal text-[10px] leading-none">Test Mode Recommended</p>
-                                            )}
+                                            {mode === 'starter' && <Starter cls={'px-2 py-2'} isDark={isDark} />}
+                                            {mode === 'accelerate' && <Accelerate cls={'px-2 py-2'} isDark={isDark} />}
+                                            {mode === 'turboMax' && <TurboMax cls={'px-2 py-2'} isDark={isDark} />}
                                         </>
                                     )}
 
-                                </div>
 
+                                    <div>
+                                        {activeGear === mode && (savingData || invalidatingCache) ? (
+                                            <p className="font-semibold capitalize z-[110000] mt-2"
+
+                                            >Applying...</p>
+                                        ) : (
+                                            <>
+                                                <p className="font-semibold capitalize"
+                                                >{mode}</p>
+                                                {mode === 'turboMax' && (
+                                                    <p className="font-normal text-[10px] leading-none">Test Mode Recommended</p>
+                                                )}
+                                            </>
+                                        )}
+
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
                         </TooltipText>
                     ))}
                 </div>
-                
+
 
                 <UnsavedChanges
                     title='Modified Customize Settings changes'
@@ -497,10 +494,10 @@ const SpeedSettings = ({ }) => {
                     {mouseOnSettingsGear ? (
                         <h3 className="font-semibold dark:text-brand-300 capitalize">{mouseOnSettingsGear} {activeGear === mouseOnSettingsGear && 'Activated'}</h3>
                     ) : (
-                        <h3 className="font-semibold dark:text-brand-300 capitalize">{activeGear} Activated</h3>
+                        <h3 className="font-semibold dark:text-brand-300 capitalize">{activeGear ? activeGear : baseMode} Activated</h3>
                     )}
                     <span
-                        className="font-normal text-sm text-zinc-600 dark:text-brand-300">{settingsDescriptions[currentMode]}</span>
+                        className="font-normal text-sm text-zinc-600 dark:text-brand-300">{settingsDescriptions[currentMode ? currentMode : baseMode]}</span>
                 </div>
             </div>
 
@@ -521,12 +518,12 @@ const SpeedSettings = ({ }) => {
                             className={cn(
                                 `select-none w-fit transition-all rounded-2xl cursor-pointer  
           flex items-center gap-2 px-4 py-2 -ml-1 text-sm font-medium dark:hover:border-purple-700 dark:border-brand-700/70 hover:border-purple-700 border border-brand-200 border-[3px] dark:hover:bg-brand-950 bg-brand-0 dark:bg-brand-950 `,
-                                activeGear === 'custom' && 'border-purple-700',
+                                activeGear ? activeGear === 'custom' : baseMode === 'custom' && 'border-purple-700',
                                 (savingData || invalidatingCache || loading) && 'cursor-not-allowed opacity-90 pointer-events-none'
                             )}
                             data-tour="customize-settings"
                         >
-                            {activeGear === 'custom' &&
+                            {activeGear? activeGear === 'custom' : baseMode === 'custom' &&
                                 <div className="">
                                     <CheckCircleIcon className="w-6 h-6 text-purple-800" />
                                 </div>

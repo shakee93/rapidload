@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Textarea } from 'components/ui/textarea';
 import { Checkbox } from 'components/ui/checkbox';
 import useCommonDispatch from 'hooks/useCommonDispatch';
-import { saveGeneralSettings } from '../../../store/app/appActions';
+import { saveGeneralSettings, updateGeneralSettings } from '../../../store/app/appActions';
 import { useAppContext } from '../../../context/app';
 import AppButton from "components/ui/app-button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from 'components/ui/select';
@@ -12,6 +12,8 @@ import {Label} from "components/ui/label";
 import { Button } from 'components/ui/button';
 import { useToast } from "components/ui/use-toast"
 import { Loader } from 'lucide-react';
+import { optimizerData } from '../../../store/app/appSelector';
+import { useSelector } from 'react-redux';
 
 
 interface GeneralSettingsProps {
@@ -51,12 +53,26 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
     });
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
+    const { generalSettings } = useSelector(optimizerData);
+
+    useEffect(() => {
+        if (generalSettings) {
+            const generalOptions = generalSettings;
+            const hasChanges = (Object.keys(generalOptions) as Array<keyof GeneralSettings>)
+                .some(key => generalOptions[key] !== settingsData[key]);
+            
+            if (hasChanges) {
+                setSettingsData(generalOptions);
+            }
+        }
+    }, [generalSettings]);
 
     useEffect(() => {
         if (settingsData) {
             setJobCount(settingsData.uucss_jobs_per_queue?.toString() || '1');
             setTimeInterval(settingsData.uucss_queue_interval?.toString() || '600');
         }
+        
     }, [settingsData]);
 
     const handleCheckboxChange = (key: keyof GeneralSettings) => {
@@ -71,9 +87,12 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                 uucss_jobs_per_queue: parseInt(jobCount),
                 uucss_queue_interval: parseInt(timeInterval)
             };
+            // dispatch(updateGeneralSettings(updatedSettings));
+            // console.log(generalSettings);
             const response = await dispatch(saveGeneralSettings(options, updatedSettings));
             
             if (response.success) {
+                dispatch(updateGeneralSettings(updatedSettings));
                 toast({
                     description: (
                         <div className='flex w-full gap-2 text-center'>
@@ -119,25 +138,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
         );
     };
 
-    // const renderTextarea = (label: string, description: string, key: keyof GeneralSettings) => {
-    //     const value = Array.isArray(settingsData[key]) ? settingsData[key].join('\n') : '';
 
-    //     return (
-    //         <div className="grid items-center my-4">
-    //             <div className="text-sm font-semibold dark:text-brand-300">{label}</div>
-    //             <div className="text-xs font-normal dark:text-brand-300 text-brand-500 mt-1">
-    //                 {description}
-    //             </div>
-    //             <Textarea
-    //                 className="mt-1 focus:outline-none focus-visible:ring-0 dark:text-brand-300 rounded-2xl"
-    //                 value={value} // Use the value derived above
-    //                 onChange={(e) =>
-    //                     setSettingsData({ ...settingsData, [key]: e.target.value.split('\n') })
-    //                 }
-    //             />
-    //         </div>
-    //     );
-    // };
 
     
     const renderTextarea = (label: string, description: string, key: keyof GeneralSettings) => {
@@ -208,9 +209,11 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                                     <SelectTrigger className="w-[130px] capitalize bg-brand-0 dark:text-brand-300 dark:bg-brand-950">
                                         <SelectValue placeholder="1 Job" />
                                     </SelectTrigger>
+                                    
                                     <SelectContent className="z-[100001]">
                                         <SelectGroup>
                                             <SelectLabel>Jobs</SelectLabel>
+                                            
                                             {JOB_OPTIONS.map((option, index) => (
                                                 <SelectItem
                                                     className="capitalize cursor-pointer"

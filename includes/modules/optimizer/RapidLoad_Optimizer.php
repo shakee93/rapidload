@@ -431,8 +431,8 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : site_url();
-        $types = isset($_REQUEST['types']) ? explode(",", $_REQUEST['types']) : [];
+        $url = isset($_REQUEST['url']) ? esc_url_raw($_REQUEST['url']) : site_url();
+        $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field($_REQUEST['types'])) : [];
 
         $url = $this->transform_url($url);
 
@@ -638,15 +638,15 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
+        $url = esc_url_raw($_REQUEST['url']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? $_REQUEST['strategy'] : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
 
-        self::$global = isset($_REQUEST['global']) && $_REQUEST['global'] || rtrim(site_url(), "/") == rtrim($url, "/");
+        self::$global = isset($_REQUEST['global']) && (sanitize_text_field($_REQUEST['global']) == 'true') || rtrim(site_url(), "/") == rtrim($url, "/");
 
         $this->pre_optimizer_function($url, $strategy, self::$global);
 
@@ -654,7 +654,8 @@ class RapidLoad_Optimizer
             unset(self::$merged_options['uucss_api_key']);
         }
 
-        $body = json_decode(file_get_contents('php://input'));
+        $raw_body = file_get_contents('php://input');
+        $body = json_decode(sanitize_text_field($raw_body));
 
         if(!isset($body) || !isset($body->settings) || !isset($body->settings->performance)){
             wp_send_json_error('Missing required data to save the settings!');
@@ -1686,7 +1687,7 @@ class RapidLoad_Optimizer
                     case 'number' :{
                         if(isset($input->value) && isset($input->key)){
                             if($input->key == "uucss_safelist"){
-                                $rulesArray = explode("\n",$input->value);
+                                $rulesArray = explode("\n",sanitize_text_field($input->value));
                                 $transformedRulesArray = [];
                                 foreach ($rulesArray as $rule) {
                                     $transformedRulesArray[] = [
@@ -1699,14 +1700,14 @@ class RapidLoad_Optimizer
                                 $rapidload_cache_args['cache_expiry_time'] = (float)$input->value;
                             }else if($input->key == "excluded_page_paths"){
                                 if(!empty($input->value)){
-                                    $paths = explode("\n",$input->value);
+                                    $paths = explode("\n",sanitize_text_field($input->value));
                                     $rapidload_cache_args['excluded_page_paths'] = $this->transformPathsToRegex($paths);
                                 }else{
                                     $rapidload_cache_args['excluded_page_paths'] = "";
                                 }
                             }else{
                                 if($input->key != "uucss_cdn_url"){
-                                    self::$options[$input->key] = $input->value;
+                                    self::$options[$input->key] = sanitize_text_field($input->value);
                                 }
                             }
                         }else if(isset($new_options[$input->key])){
