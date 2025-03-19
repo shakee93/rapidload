@@ -58,10 +58,9 @@ jobs:
       - name: Zip Plugin Files
         run: |
           PLUGIN_NAME="unusedcss"
-          mkdir -p "$PLUGIN_NAME"
-          rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
-          rm -rf "$PLUGIN_NAME"
+          # Create zip directly without wrapping folder
+          zip -r "${PLUGIN_NAME}.zip" . -x ".git/*" ".github/*" "*.zip"
+          # Remove everything except the zip
           find . -mindepth 1 -maxdepth 1 ! -name "${PLUGIN_NAME}.zip" -exec rm -rf {} +
 
       - name: List Files
@@ -69,29 +68,24 @@ jobs:
           pwd
           ls -la
 
-      - name: Upload Plugin ZIP to S3
-        uses: jakejarvis/s3-sync-action@master
+      - name: Delete existing files from S3 version folder
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "download/${{ env.VERSION }}"
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload Plugin ZIP to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "latest"
+      - name: Delete existing files from S3 version folder
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }} --recursive
+
+      - name: Delete existing files from S3 latest folder
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/latest --recursive
+
+      - name: Upload Plugin ZIP to S3 version folder
+        run: aws s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }}/unusedcss.zip --acl public-read
+
+      - name: Upload Plugin ZIP to S3 latest folder
+        run: aws s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/latest/unusedcss.zip --acl public-read
 
       - name: Generate Update JSON
         run: |
@@ -120,14 +114,8 @@ jobs:
           }
           EOF
 
+      - name: Delete existing Update JSON from S3
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json
+
       - name: Upload Update JSON to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./plugin-update-check"
-          DEST_DIR: "download/"
+        run: aws s3 cp plugin-update-check/update.json s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json --acl public-read
