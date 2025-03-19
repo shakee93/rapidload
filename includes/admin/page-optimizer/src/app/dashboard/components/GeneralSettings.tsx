@@ -65,7 +65,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                 setSettingsData(generalOptions);
             }
         }
-    }, [generalSettings]);
+    }, [uucssGlobal, generalSettings]);
 
     useEffect(() => {
         if (settingsData) {
