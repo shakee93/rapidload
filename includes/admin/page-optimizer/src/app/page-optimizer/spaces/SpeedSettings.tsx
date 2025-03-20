@@ -518,17 +518,17 @@ const SpeedSettings = ({ }) => {
                             className={cn(
                                 `select-none w-fit transition-all rounded-2xl cursor-pointer  
           flex items-center gap-2 px-4 py-2 -ml-1 text-sm font-medium dark:hover:border-purple-700 dark:border-brand-700/70 hover:border-purple-700 border border-brand-200 border-[3px] dark:hover:bg-brand-950 bg-brand-0 dark:bg-brand-950 `,
-                                activeGear ? activeGear === 'custom' : baseMode === 'custom' && 'border-purple-700',
+                        (activeGear === 'custom' || baseMode === 'custom') && 'border-purple-700',
                                 (savingData || invalidatingCache || loading) && 'cursor-not-allowed opacity-90 pointer-events-none'
                             )}
                             data-tour="customize-settings"
                         >
-                            {activeGear? activeGear === 'custom' : baseMode === 'custom' &&
+                            {(activeGear === 'custom' || baseMode === 'custom') &&
                                 <div className="">
                                     <CheckCircleIcon className="w-6 h-6 text-purple-800" />
                                 </div>
                             }
-
+                            
                             Customize Settings <ChevronDownIcon className={cn(
                                 'w-4 rounded-[15px] transition-transform',
                                 customMode && '-rotate-180'
