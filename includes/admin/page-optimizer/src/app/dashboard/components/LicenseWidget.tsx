@@ -42,23 +42,21 @@ const LicenseWidget = () => {
 
         if (response.success) {
             dispatch(updateLicense(options));
-            setTimeout(() => (window.location.hash = '#/'), 300);
+            dispatch(setCommonRootState('licenseConnected', true));
+            localStorage.setItem('rapidLoadLicense', JSON.stringify(response.data));
         } else {
             setLicenseMessage(response.error || '');
+            localStorage.removeItem('rapidLoadLicense');
         }
     };
 
     useEffect(() => {
-        // if (license && !licenseInfo) {
         if (license) {
             setLicenseInfo(license);
         }
-        console.log('license', license, 'licenseInfo', licenseInfo)
     }, [license]);
 
-    useEffect(() => {
-        dispatch(setCommonRootState('licenseConnected', !!licenseInfo));
-    }, [licenseInfo]);
+  
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
