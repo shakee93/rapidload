@@ -813,9 +813,8 @@ const Optimizations = ({ }) => {
                                     </button>
                                 </div>
                                 <iframe
-                                    
-                                 //   src={showIframe ? `${optimizerUrl.endsWith('/') ? `${optimizerUrl}?` : `${optimizerUrl}/?`}rapidload_preview` : ''}
-                                    src={showIframe ? `${optimizerUrl}/?rapidload_preview` : ''}
+                                    //src={showIframe ? `${optimizerUrl}/?rapidload_preview` : ''}
+                                    src={showIframe ? `${optimizerUrl.replace(/\/$/, '')}/?rapidload_preview` : ''}
                                   //  src={showIframe ? 'http://rapidload.local/?rapidload_preview' : ''}
                                     className="w-full h-[600px] border-0"
                                     title="Optimization Test"
