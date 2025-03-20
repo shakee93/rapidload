@@ -800,6 +800,10 @@ class RapidLoad_Optimizer
             self::$options['uucss_preload_lcp_image'] = implode("\n",$preload_images);
         }
 
+        if(isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] == "1"){
+            unset(self::$options['rapidload_test_mode']);
+        }
+
         if(self::$strategy == "desktop"){
             self::$job->set_desktop_options(self::$options);
         }else{
