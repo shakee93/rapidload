@@ -49,7 +49,9 @@ class RapidLoad_Image_Enqueue
             $this->options['uucss_exclude_above_the_fold_image_count'] = 3;
         }
 
-        $this->preload_images();
+        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] == "1"){
+            $this->preload_images();
+        }
 
         $this->set_width_and_height();
 

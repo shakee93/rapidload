@@ -146,7 +146,6 @@ class RapidLoad_Admin_Bar {
             'license_key' => RapidLoad_Base::get_license_key(),
             'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"),
             'uucss_disable_error_tracking' => boolval(isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] == "1"),
-            'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"),
             'rapidload_titan_gear' => get_option('rapidload_titan_gear', 'trurboMax'),
             'rapidload_license_data' => $rapidload_license_data,
             'rapidload_privacy_policy_accepted' => get_option('rapidload_privacy_policy_accepted', false),

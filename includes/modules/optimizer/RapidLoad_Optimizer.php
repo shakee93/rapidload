@@ -800,6 +800,10 @@ class RapidLoad_Optimizer
             self::$options['uucss_preload_lcp_image'] = implode("\n",$preload_images);
         }
 
+        if(isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] == "1"){
+            unset(self::$options['rapidload_test_mode']);
+        }
+
         if(self::$strategy == "desktop"){
             self::$job->set_desktop_options(self::$options);
         }else{
@@ -946,7 +950,7 @@ class RapidLoad_Optimizer
             $optimization->save();
         }
 
-        $preload_images = [];
+        /*$preload_images = [];
 
         if (isset($result->audits) && is_array($result->audits)) {
 
@@ -976,7 +980,7 @@ class RapidLoad_Optimizer
                 self::$job->set_mobile_options(self::$options);
                 self::$job->save();
             }
-        }
+        }*/
 
         return[
             'url' => $url,
@@ -1358,6 +1362,19 @@ class RapidLoad_Optimizer
                 'control_description' => 'These images will be excluded from inserting a width and height.',
                 'default' => ''
             ),
+            'preload_lcp_images' => array(
+                'control_type' => 'checkbox',
+                'control_label' => 'Preload LCP image',
+                'control_description' => 'Lazy load all iframes in your website.',
+                'control_values' => array('1', '0'),
+                'default' => '0'
+            ),
+            'uucss_preload_lcp_image' => array(
+                'control_type' => 'textarea',
+                'control_label' => 'Preload LCP Image List',
+                'control_description' => 'These images will be preloaded.',
+                'default' => ''
+            ),
 
             // Fonts settings starts here
             'uucss_self_host_google_fonts' => array(
@@ -1606,7 +1623,8 @@ class RapidLoad_Optimizer
             ['keys' => ['third-party-facades'], 'name' => 'Lazy Load Iframes', 'description' => 'Delay loading of iframes until needed.', 'category' => 'image', 'inputs' => ['uucss_lazy_load_iframes', 'uucss_exclude_iframes_from_lazy_load']],
             ['keys' => ['uses-long-cache-ttl'], 'name' => 'RapidLoad CDN', 'description' => 'Load resource files faster by using 112 edge locations with only 27ms latency.', 'category' => 'cdn', 'inputs' => ['uucss_enable_cdn','uucss_cdn_url', 'validate_cdn_url', 'clear_cdn_cache']],
             ['keys' => ['uses-long-cache-ttl'], 'name' => 'Cache Policy', 'description' => 'Set up cache-control header to increase the browser cache expiration', 'category' => 'cache', 'inputs' => ['update_htaccess_file',]],
-            ['keys' => ['unsized-images'], 'name' => 'Add Width and Height Attributes', 'description' => 'Include width and height attributes for these images.', 'category' => 'image', 'inputs' => ['uucss_set_width_and_height','uucss_exclude_images_from_set_width_and_height']]
+            ['keys' => ['unsized-images'], 'name' => 'Add Width and Height Attributes', 'description' => 'Include width and height attributes for these images.', 'category' => 'image', 'inputs' => ['uucss_set_width_and_height','uucss_exclude_images_from_set_width_and_height']],
+            ['keys' => ['preload-lcp-image'], 'name' => 'Preload LCP Image', 'description' => 'Preload LCP image to improve page load time.', 'category' => 'image', 'inputs' => ['preload_lcp_images', 'uucss_preload_lcp_image']]
         ];
 
         foreach ($audits as $audit) {
