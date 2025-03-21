@@ -111,7 +111,7 @@ window.onresize = function (event) {
 var lazyElements = document.querySelectorAll("[data-rapidload-lazy-method=\"viewport\"]");
 if(lazyElements && lazyElements.length){
     lazyElements.forEach(function (element) {
-        observer_bg.observe(element);
+        rapidload_image_observer_bg.observe(element);
     });
 }
 // youtube handler part
