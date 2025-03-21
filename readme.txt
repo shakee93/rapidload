@@ -4,7 +4,7 @@ Contributors: shakee93, futtta
 Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.7.2
 Stable tag: 3.1.4
 Requires PHP: 5.4
 License: GPLv3
