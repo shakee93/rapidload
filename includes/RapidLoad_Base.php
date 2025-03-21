@@ -156,9 +156,9 @@ class RapidLoad_Base
 
         $this->enqueue_diagnose_script();
 
-        //add_filter('site_transient_update_plugins', [$this, 'rapidload_plugin_check_for_update']);
+        add_filter('site_transient_update_plugins', [$this, 'rapidload_plugin_check_for_update']);
 
-        //add_filter('plugins_api', [$this, 'rapidload_plugin_update_info'], 10, 3);
+        add_filter('plugins_api', [$this, 'rapidload_plugin_update_info'], 10, 3);
 
     }
 
