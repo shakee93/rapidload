@@ -106,7 +106,7 @@ jobs:
             "license_uri": "https://www.gnu.org/licenses/gpl-3.0.html",
             "last_updated": "$(date +'%Y-%m-%d')",
             "sections": {
-              "description": "# RapidLoad AI\n\nOptimize your WordPress site's performance automatically with AI-powered optimization.\n\n## Key Features\n\n- AI-powered CSS, JS, and image optimization\n- Automated critical CSS generation\n- Smart caching and CDN integration\n- Font optimization and preloading\n- Real-time performance monitoring\n\nFor detailed documentation and setup instructions, visit [RapidLoad Docs](https://docs.rapidload.ai)",
+              "description": "For more details, please visit https://docs.rapidload.ai",
             }
           }
           EOF
