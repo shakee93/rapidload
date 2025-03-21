@@ -20,25 +20,25 @@ jobs:
           VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract Data from `readme.json`
+      - name: Extract Data from `readme.txt`
         id: readme
         run: |
-          # Extract metadata from readme.json
-          TESTED_UPTO=$(jq -r '.tested_up_to' readme.json)
-          REQUIRES_PHP=$(jq -r '.requires_php' readme.json) 
-          STABLE_TAG=$(jq -r '.stable_tag' readme.json)
-          REQUIRES_AT_LEAST=$(jq -r '.requires_at_least' readme.json)
-
-          # Get changelog directly from changelog key
-          CHANGELOG=$(jq -r '.changelog' readme.json)
+          # Extract metadata from readme.txt using grep and sed
+          TESTED_UPTO=$(grep "Tested up to:" readme.txt | sed 's/Tested up to: *//')
+          REQUIRES_PHP=$(grep "Requires PHP:" readme.txt | sed 's/Requires PHP: *//')
+          STABLE_TAG=$(grep "Stable tag:" readme.txt | sed 's/Stable tag: *//')
+          REQUIRES_AT_LEAST=$(grep "Requires at least:" readme.txt | sed 's/Requires at least: *//')
+          
+          # Extract description section
+          DESCRIPTION=$(sed -n '/== Description ==/,/==/{/== Description ==/d;/==/q;p}' readme.txt)
+          
+          # Extract changelog section
+          CHANGELOG=$(sed -n '/== Changelog ==/,/==/{/== Changelog ==/d;/==/q;p}' readme.txt)
           
           if [ -z "$CHANGELOG" ]; then
             echo "Warning: No changelog found"
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
           fi
-
-          # Extract description from readme.json
-          DESCRIPTION=$(jq -r '.description' readme.json)
 
           # Store extracted values in environment variables
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
