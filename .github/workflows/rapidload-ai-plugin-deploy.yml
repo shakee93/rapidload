@@ -106,10 +106,6 @@ jobs:
             "license_uri": "https://www.gnu.org/licenses/gpl-3.0.html",
             "last_updated": "$(date +'%Y-%m-%d')",
             "sections": {
-              "description": "${{ env.DESCRIPTION }}",
-              "installation": "1. Upload the plugin files to the `/wp-content/plugins/unusedcss` directory, or install the plugin through WordPress.\\n2. Activate the plugin.\\n3. Configure settings under 'RapidLoad AI'.",
-              "changelog": "${{ env.CHANGELOG }}",
-              "faq": "<strong>Q: How much does it cost?</strong><br>A: Starts at $10/month via [RapidLoad.io](https://rapidload.io).<br><br><strong>Q: Will this work with WooCommerce?</strong><br>A: Yes, it fully supports WooCommerce."
             }
           }
           EOF
