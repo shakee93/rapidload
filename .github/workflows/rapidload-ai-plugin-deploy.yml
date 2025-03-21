@@ -106,7 +106,7 @@ jobs:
             "license_uri": "https://www.gnu.org/licenses/gpl-3.0.html",
             "last_updated": "$(date +'%Y-%m-%d')",
             "sections": {
-              "description": "For more details, please visit https://docs.rapidload.ai",
+              
             }
           }
           EOF
