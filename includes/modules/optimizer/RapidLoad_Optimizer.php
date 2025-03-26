@@ -1725,7 +1725,7 @@ class RapidLoad_Optimizer
                                 }
                             }else{
                                 if($input->key != "uucss_cdn_url"){
-                                    self::$options[$input->key] = sanitize_text_field($input->value);
+                                    self::$options[$input->key] = $input->value;
                                 }
                             }
                         }else if(isset($new_options[$input->key])){

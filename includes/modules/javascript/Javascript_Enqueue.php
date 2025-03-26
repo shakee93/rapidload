@@ -273,10 +273,6 @@ class Javascript_Enqueue
 
         $_frontend_data = [];
 
-        if(defined('SCRIPT_DEBUG') && boolval(SCRIPT_DEBUG) == true){
-            return;
-        }
-
         if(!self::is_js($link) || self::is_file_excluded($link->src, 'uucss_exclude_files_from_minify_js')){
             return;
         }

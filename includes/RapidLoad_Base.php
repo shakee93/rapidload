@@ -389,6 +389,12 @@ class RapidLoad_Base
             wp_enqueue_style( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
             wp_enqueue_script( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
 
+            $rapidload_license_data = get_option('rapidload_license_data', null);   
+
+            if($rapidload_license_data){
+                $rapidload_license_data = unserialize($rapidload_license_data);
+            }
+
             wp_register_script( 'uucss_global_admin_script', UUCSS_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], UUCSS_VERSION );
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
@@ -405,7 +411,8 @@ class RapidLoad_Base
                 //'total_jobs' => RapidLoad_DB::get_total_job_count(),
                 'db_tobe_updated' => RapidLoad_DB::$current_version < 1.6,
                 "test_mode" => isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] == "1",
-                "uucss_disable_error_tracking" => isset(self::$options['uucss_disable_error_tracking']) && self::$options['uucss_disable_error_tracking'] == "1"
+                "uucss_disable_error_tracking" => isset(self::$options['uucss_disable_error_tracking']) && self::$options['uucss_disable_error_tracking'] == "1",
+                "rapidload_license_data" => $rapidload_license_data
             );
             wp_localize_script( 'uucss_global_admin_script', 'uucss_global', $data );
             wp_enqueue_script( 'uucss_global_admin_script' );
