@@ -25,7 +25,7 @@ if ( ! defined( 'RAPIDLOAD_INDEX_FILE' ) ) {
 }
 
 if ( ! defined( 'UUCSS_VERSION' ) ) {
-    define( 'UUCSS_VERSION', '3.1.5' );
+    define( 'UUCSS_VERSION', '3.1.6' );
 }
 
 if ( ! defined( 'UUCSS_CACHE_CHILD_DIR' ) ) {
