@@ -7,7 +7,7 @@ import { useAppContext } from "../context/app";
 import { ThunkDispatch } from "redux-thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { AppAction, RootState } from "../store/app/appTypes";
-import { fetchPosts, fetchReport, fetchSettings, getTestModeStatus, updateDiagnosticResults, updateLicense } from "../store/app/appActions";
+import { fetchPosts, fetchReport, fetchSettings, getTestModeStatus, updateDiagnosticResults, updateGeneralSettings, updateLicense } from "../store/app/appActions";
 import { Toaster } from "components/ui/toaster";
 import { AnimatePresence, m, motion } from "framer-motion";
 import { useRootContext } from "../context/root";
@@ -67,8 +67,13 @@ const App = ({ popup, _showOptimizer = false }: {
     });
     const { headerUrl, onboardCompleted, diagnosticLoading } = useCommonDispatch();
     const { changeTheme } = useRootContext()
-    const { testMode, license, data } = useSelector(optimizerData);
+    const { testMode, license, data, generalSettings } = useSelector(optimizerData);
     const [licenseInfo, setLicenseInfo] = useState<License | null>(() => options.rapidload_license_data || null);
+
+    useEffect(() => {
+        dispatch(updateGeneralSettings(uucssGlobal?.active_modules.general.options));
+        console.log("update global settings")
+    }, []);
 
     useEffect(() => {
 
