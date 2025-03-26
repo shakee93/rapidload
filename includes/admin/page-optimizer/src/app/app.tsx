@@ -72,7 +72,7 @@ const App = ({ popup, _showOptimizer = false }: {
 
     useEffect(() => {
         dispatch(updateGeneralSettings(uucssGlobal?.active_modules.general.options));
-        console.log("update global settings")
+        //console.log("update global settings")
     }, []);
 
     useEffect(() => {
