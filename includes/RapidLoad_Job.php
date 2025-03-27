@@ -77,12 +77,21 @@ class RapidLoad_Job{
         }
 
         if($id){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = " . $id, OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = %d", $id),
+                OBJECT
+            );
         }
         else if($this->rule == 'is_url'){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE url = '" . $this->url . "' LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $this->url),
+                OBJECT
+            );
         }else{
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = '" . $this->rule . "' AND regex = '" . $this->regex . "' LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s LIMIT 1", $this->rule, $this->regex),
+                OBJECT
+            );
         }
 
         return $exist;
@@ -150,7 +159,13 @@ class RapidLoad_Job{
 
         global $wpdb;
 
-        $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = '" . $id . "'", OBJECT);
+        $exist = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = %d",
+                $id
+            ),
+            OBJECT
+        );
 
         if(!$exist){
             return null;
@@ -169,9 +184,23 @@ class RapidLoad_Job{
         $exist = false;
 
         if(!$include_failed){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url' AND url = '" . $url . "' AND status IN('cached','rule-based') LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND url = %s AND status IN('cached','rule-based') LIMIT 1",
+                    'is_url',
+                    $url
+                ),
+                OBJECT
+            );
         }else{
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url' AND url = '" . $url . "' LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND url = %s LIMIT 1",
+                    'is_url', 
+                    $url
+                ),
+                OBJECT
+            );
         }
 
         if(!$exist){
@@ -397,7 +426,9 @@ class RapidLoad_Job{
     function delete_all_revisions(){
         global $wpdb;
         $id = $this->id;
-        $wpdb->query("DELETE FROM {$wpdb->prefix}rapidload_job_optimizations WHERE job_id = $id");
+        $wpdb->query(
+            $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_optimizations WHERE job_id = %d", $id)
+        );
     }
 
     function transform_individual_file_actions($options){
@@ -564,7 +595,7 @@ class RapidLoad_Job{
     public static function get_first_and_last_optimization_score($url, $strategy) {
         global $wpdb;
 
-        $job_id = $wpdb->get_var("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = '" . esc_sql($url) . "' LIMIT 1");
+        $job_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $url));
 
         if (!$job_id) {
             return (object)[
