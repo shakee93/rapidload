@@ -79,7 +79,13 @@ class RapidLoad_Job_Optimization
         global $wpdb;
 
         if(isset($this->id)){
-            return $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job_optimizations WHERE id = " . $this->id . " LIMIT 1", OBJECT);
+            return $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}rapidload_job_optimizations WHERE id = %d LIMIT 1",
+                    $this->id
+                ),
+                OBJECT
+            );
         }
 
         return false;
