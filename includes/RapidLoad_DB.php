@@ -44,7 +44,8 @@ abstract class RapidLoad_DB
         ];
 
         foreach ($tableArray as $tablename) {
-            $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $tablename));
+            $tablename = sanitize_key($tablename);
+            $wpdb->query( "DROP TABLE IF EXISTS {$tablename}" );
         }
 
         if(empty($wpdb->last_error)){
@@ -68,7 +69,7 @@ abstract class RapidLoad_DB
 
         if(self::$current_version < 1.1 && in_array($blog_id . 'rapidload_uucss_job', $wpdb->tables)){
             $index = 'url';
-            $wpdb->query( $wpdb->prepare( "ALTER TABLE `%i` DROP INDEX `%i`", $rapidload_uucss_job, $index ) );
+            $wpdb->query("ALTER TABLE `" . esc_sql($rapidload_uucss_job) . "` DROP INDEX `" . esc_sql($index) . "`");
         }
 
         $sql = "CREATE TABLE $rapidload_uucss_job (
@@ -337,8 +338,7 @@ abstract class RapidLoad_DB
             $where = " WHERE rule != %s ";
         }
 
-        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job {$where} ORDER BY id DESC", 'is_url');
-        $rules = $wpdb->get_results($sql, OBJECT);
+        $rules = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job {$where} ORDER BY id DESC", 'is_url'), OBJECT);
 
         $error = $wpdb->last_error;
 
@@ -352,8 +352,7 @@ abstract class RapidLoad_DB
     static function rule_exists_with_error($rule, $regex = '/'){
         global $wpdb;
 
-        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s", $rule, $regex);
-        $result = $wpdb->get_results($sql, OBJECT);
+        $result = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s", $rule, $regex), OBJECT);
 
         $error = $wpdb->last_error;
 
@@ -488,27 +487,6 @@ abstract class RapidLoad_DB
 
     }
 
-    static function get_jobs_where($where = ''){
-
-        global $wpdb;
-
-        if (!empty($where)) {
-            $sql = "SELECT * FROM {$wpdb->prefix}rapidload_job {$where} ORDER BY id DESC";
-        } else {
-            $sql = "SELECT * FROM {$wpdb->prefix}rapidload_job ORDER BY id DESC";
-        }
-
-        $jobs = $wpdb->get_results($wpdb->prepare($sql), OBJECT);
-
-        $error = $wpdb->last_error;
-
-        if(!empty($error)){
-            self::show_db_error($error);
-        }
-
-        return $jobs;
-    }
-
     static function get_total_job_count($where = ''){
 
         global $wpdb;
@@ -527,6 +505,7 @@ abstract class RapidLoad_DB
         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss') AS uucss ON job.id = uucss.job_id
         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss') AS cpcss ON job.id = cpcss.job_id) AS derived_table) AS derived_table_2 {$where}", '');
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $where is safe and manually constructed
         $count = $wpdb->get_var($wpdb->prepare($sql));
 
         $error = $wpdb->last_error;
@@ -621,6 +600,7 @@ abstract class RapidLoad_DB
         LIMIT %d, %d", $start_from, $limit
         );
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $where is safe and manually constructed
         $data = $wpdb->get_results($query, OBJECT);
 
         $data = array_map(function ($job) {
@@ -668,8 +648,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job SET rule = %s, regex = %s, status = %s";
-        $wpdb->query( $wpdb->prepare( $query, 'is_url', null, 'processing' ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job SET rule = %s, regex = %s, status = %s", 'is_url', null, 'processing' ) );
 
         $error = $wpdb->last_error;
 
@@ -684,8 +663,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id = %d";
-        $wpdb->query( $wpdb->prepare( $query, 'queued', $id ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id = %d", 'queued', $id ) );
 
         $error = $wpdb->last_error;
 
