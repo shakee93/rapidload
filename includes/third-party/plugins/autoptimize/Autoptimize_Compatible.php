@@ -117,20 +117,21 @@ class Autoptimize_Compatible extends RapidLoad_ThirdParty {
         return $output;
     }
 
-    public function handle($args){
-
-        if(function_exists('autoptimize') ){
-
+    public function handle($args) {
+        if (function_exists('autoptimize')) {
             $tab = 'RapidLoad';
-
-            $args = array_merge( $args, array(
-                'rapidload' => __( '<span class="uucss-tab-title"><img src="' . esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg') . '" width="15" alt="RapidLoad.io logo"><span>' . esc_html( $tab ) . '</span></span>', 'unusedcss' ),
-            ) );
-
+    
+            $args = array_merge($args, array(
+                'rapidload' => sprintf(
+                    __('<span class="uucss-tab-title"><img src="%s" width="15" alt="RapidLoad.io logo"><span>%s</span></span>', 'unusedcss'),
+                    esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg'),
+                    esc_html($tab)
+                )
+            ));
+    
             return $args;
-
         }
-
+        return $args;
     }
 
     public function render_option_page_ao_admin_tabs(){

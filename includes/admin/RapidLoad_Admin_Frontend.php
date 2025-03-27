@@ -586,7 +586,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_purge_all_process_request(){
 
-        if ( empty( $_GET['_nonce'] ) || ! wp_verify_nonce( $_GET['_nonce'], 'uucss_nonce' ) ) {
+        if ( empty( $_GET['_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_nonce'] ) ), 'uucss_nonce' ) || !current_user_can('manage_options')) {
             return;
         }
 
