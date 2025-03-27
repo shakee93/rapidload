@@ -20,7 +20,7 @@ class RapidLoad_Image
 
         self::$image_indpoint = "https://images.rapidload-cdn.io/spai/";
 
-        add_action('wp_footer', [$this, 'enqueue_frontend_js'], 90);
+        add_action('init', [$this, 'enqueue_frontend_js'], 90);
 
         /*add_filter('wp_calculate_image_srcset', function ($a, $b, $c, $d, $e){
             foreach ($a as $index => $src){
@@ -69,38 +69,36 @@ class RapidLoad_Image
         }, $css);
     }
 
-    public function enqueue_frontend_js(){
-
-        if(!RapidLoad_Base::is_api_key_verified()){
+    public function enqueue_frontend_js() {
+        if (!RapidLoad_Base::is_api_key_verified()) {
             return;
         }
+    
+        $handle = 'rapidload-image-handler';
 
-        ?>
-        <script id="rapidload-image-handler" type="text/javascript" norapidload>
-            <?php
-                $image_handler_script = file_get_contents(RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js');
-                if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE === true) {
-                    $filePath = RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.js';
+        wp_register_script($handle,'', [], null, true);
+        wp_enqueue_script($handle);
 
-                    if (file_exists($filePath)) {
-                        $image_handler_script = file_get_contents($filePath);
-                    }
-                }
-            ?>
-            (function(w, d){
-                w.rapidload_io_data = {
-                    nonce : "<?php echo esc_js(self::create_nonce('rapidload_image')) ?>",
-                    image_endpoint : "<?php echo esc_js(RapidLoad_Image::$image_indpoint) ?>",
-                    optimize_level : "<?php echo esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null') ?>" ,
-                    adaptive_image_delivery : <?php echo esc_js(isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false') ?> ,
-                    support_next_gen_format : <?php echo esc_js(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false') ?>
-                };
-            }(window, document));
+        $inline_data = sprintf(
+            '(function(w,d){w.rapidload_io_data={nonce:"%s",image_endpoint:"%s",optimize_level:"%s",adaptive_image_delivery:%s,support_next_gen_format:%s};',
+            esc_js(self::create_nonce('rapidload_image')),
+            esc_js(RapidLoad_Image::$image_indpoint),
+            esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null'),
+            isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false',
+            isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false'
+        );
 
-            <?php echo $image_handler_script ?>
-        </script>
-        <?php
-
+        $image_handler_script = file_get_contents(RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js');
+    
+        if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE === true) {
+            $dev_script_path = RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js';
+            if (file_exists($dev_script_path)) {
+                $image_handler_script = file_get_contents($dev_script_path);
+            }
+        }
+    
+        wp_add_inline_script($handle, $inline_data . $image_handler_script . '}(window,document));', 'after');
+    
     }
 
     public function optimize_image($job, $args){

@@ -94,6 +94,10 @@ class Javascript_Enqueue
                 continue;
             }
 
+            if(isset($link->id) && in_array($link->id, ['rapidload-image-handler','rapidload-diagnose-script-js-after'])){
+                continue;
+            }
+
             $original_src = self::is_js($link) ? $link->src : null;
 
             if(isset($link->src) && self::is_file_excluded($link->src)){
