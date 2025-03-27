@@ -44,7 +44,7 @@ abstract class RapidLoad_DB
         ];
 
         foreach ($tableArray as $tablename) {
-            $wpdb->query("DROP TABLE IF EXISTS $tablename");
+            $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $tablename));
         }
 
         if(empty($wpdb->last_error)){
@@ -68,7 +68,7 @@ abstract class RapidLoad_DB
 
         if(self::$current_version < 1.1 && in_array($blog_id . 'rapidload_uucss_job', $wpdb->tables)){
             $index = 'url';
-            $wpdb->query( "ALTER TABLE `$rapidload_uucss_job` DROP INDEX `$index`" );
+            $wpdb->query( $wpdb->prepare( "ALTER TABLE `%i` DROP INDEX `%i`", $rapidload_uucss_job, $index ) );
         }
 
         $sql = "CREATE TABLE $rapidload_uucss_job (
@@ -385,7 +385,7 @@ abstract class RapidLoad_DB
 
                 case 'url':{
                     if(isset($args['url'])){
-                        $url = sanitize_text_field($args['url']); // Sanitize URL input
+                        $url = esc_url($args['url']); // Sanitize URL input
                         $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job WHERE url = %s AND rule = 'is_url'", $url));
                     }else{
                         $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url'");
@@ -440,7 +440,7 @@ abstract class RapidLoad_DB
             switch ($type){
 
                 case 'all':{
-                    $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data");
+                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data" ) );
                     break;
                 }
 
@@ -449,7 +449,7 @@ abstract class RapidLoad_DB
                         $url = sanitize_text_field($args['url']); // Sanitize URL input
                         $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s)", $url));
                     }else{
-                        $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url')");
+                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url')" ) );
                     }
                     break;
                 }
@@ -461,18 +461,18 @@ abstract class RapidLoad_DB
 
                         $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s)", $rule, $regex));
                     }else{
-                        $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != 'is_url')");
+                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != 'is_url')" ) );
                     }
                     break;
                 }
 
                 case 'uucss':{
-                    $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'");
+                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'" ) );
                     break;
                 }
 
                 case 'cpcss':{
-                    $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'");
+                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'" ) );
                     break;
                 }
             }
@@ -498,7 +498,7 @@ abstract class RapidLoad_DB
             $sql = "SELECT * FROM {$wpdb->prefix}rapidload_job ORDER BY id DESC";
         }
 
-        $jobs = $wpdb->get_results($sql, OBJECT);
+        $jobs = $wpdb->get_results($wpdb->prepare($sql), OBJECT);
 
         $error = $wpdb->last_error;
 
@@ -527,7 +527,7 @@ abstract class RapidLoad_DB
         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss') AS uucss ON job.id = uucss.job_id
         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss') AS cpcss ON job.id = cpcss.job_id) AS derived_table) AS derived_table_2 {$where}", '');
 
-        $count = $wpdb->get_var($sql);
+        $count = $wpdb->get_var($wpdb->prepare($sql));
 
         $error = $wpdb->last_error;
 
@@ -814,7 +814,7 @@ abstract class RapidLoad_DB
                     ) as derived_table
                     WHERE rule = 'is_url' LIMIT 1";
 
-        $link = $wpdb->get_results( $query, OBJECT );
+        $link = $wpdb->get_results( $wpdb->prepare( $query ), OBJECT );
 
         $error = $wpdb->last_error;
 
@@ -850,7 +850,7 @@ abstract class RapidLoad_DB
 
         foreach ($tableArray as $tablename) {
             $tablename = sanitize_key($tablename);
-            $wpdb->query("DELETE FROM {$tablename}");
+            $wpdb->query( $wpdb->prepare( "DELETE FROM {$tablename}" ) );
         }
 
         $option_table = $table_prefix . "options";
@@ -880,7 +880,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}rapidload_job");
+        $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}rapidload_job" ) );
 
         $error = $wpdb->last_error;
 
