@@ -9,9 +9,9 @@ class CriticalCSS_DB extends RapidLoad_DB{
         global $wpdb;
 
         if($soft){
-            $wpdb->query( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = 'queued', queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 WHERE job_type='cpcss'");
+            $wpdb->query( $wpdb->prepare("UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s, queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 WHERE job_type = %s", 'queued', 'cpcss'));
         }else{
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type='cpcss'");
+            $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = %s", 'cpcss'));
         }
 
         $error = $wpdb->last_error;
@@ -25,7 +25,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
         global $wpdb;
 
-        $count = $wpdb->get_var("SELECT COUNT(id) FROM {$wpdb->prefix}rapidload_job_data WHERE data = '" . $data . "' AND id !=" . $id);
+        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM {$wpdb->prefix}rapidload_job_data WHERE data = %s AND id != %d", $data, $id));
 
         $error = $wpdb->last_error;
 
@@ -46,7 +46,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
             $where .= " AND job_type='cpcss' ";
         }
 
-        $wpdb->query( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = 'queued', queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 {$where}");
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s, queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 {$where}", 'queued', 'cpcss' ) );
 
         $error = $wpdb->last_error;
 
@@ -66,7 +66,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
             $where .= " AND job_type='cpcss' ";
         }
 
-        $data = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}rapidload_job_data {$where} ", OBJECT);
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}rapidload_job_data {$where}" ), OBJECT );
 
         $error = $wpdb->last_error;
 
@@ -87,7 +87,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
             $where .= " AND job_type='cpcss' ";
         }
 
-        $data = $wpdb->get_results( "SELECT {$select} FROM {$wpdb->prefix}rapidload_job_data {$where} ORDER BY {$order_by} LIMIT " . round($limit, 0), OBJECT);
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} FROM {$wpdb->prefix}rapidload_job_data {$where} ORDER BY {$order_by} LIMIT " . round($limit, 0)), OBJECT );
 
         $error = $wpdb->last_error;
 
@@ -106,7 +106,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
         $status = str_replace('"', '', $status);
 
-        $data = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss' AND status IN(" . $status . ") ORDER BY {$order_by} LIMIT " . $limit, OBJECT);
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss' AND status IN(%s) ORDER BY {$order_by} LIMIT " . $limit, $status ), OBJECT );
 
         $error = $wpdb->last_error;
 
@@ -137,7 +137,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
         global $wpdb;
 
-        $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type='cpcss' AND job_id = " . $id);
+        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type='cpcss' AND job_id = %d", $id ) );
 
         if(!empty($error)){
             self::show_db_error($error);
@@ -148,7 +148,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
         global $wpdb;
 
-        $count = $wpdb->get_var("SELECT COUNT(id) FROM {$wpdb->prefix}rapidload_job_data {$where} ");
+        $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$wpdb->prefix}rapidload_job_data {$where} " ) );
 
         $error = $wpdb->last_error;
 

@@ -123,7 +123,7 @@ class Autoptimize_Beta_Compatible extends RapidLoad_ThirdParty {
     
             $args = array_merge($args, array(
                 'rapidload' => sprintf(
-                    __('<span class="uucss-tab-title"><img src="%s" width="15" alt="RapidLoad.io logo"><span>%s</span></span>', 'unusedcss'),
+                    '<span class="uucss-tab-title"><img src="%s" width="15" alt="RapidLoad.io logo"><span>%s</span></span>',
                     esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg'),
                     esc_html($tab)
                 )
