@@ -45,7 +45,7 @@ abstract class RapidLoad_DB
 
         foreach ($tableArray as $tablename) {
             $tablename = sanitize_key($tablename);
-            $wpdb->query( "DROP TABLE IF EXISTS {$tablename}" );
+            $wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS %s", $tablename ) );
         }
 
         if(empty($wpdb->last_error)){
