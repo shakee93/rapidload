@@ -64,22 +64,6 @@ class RapidLoad_Admin_Frontend
 
         $this->load_legacy_ajax();
 
-        /*if($this->is_rapidload_page_optimizer()){
-
-            //$this->load_optimizer_scripts();
-
-            // TODO: temporary should be removed so it supports all the browsers
-            add_filter('script_loader_tag', function ($tag, $handle) {
-
-                if ( 'rapidload_page_optimizer' !== $handle )
-                    return $tag;
-
-                return str_replace( ' src', ' type="module" src', $tag );
-
-            }, 10, 2);
-
-        }*/
-
         if(is_admin()){
 
             add_action( 'admin_menu', array( $this, 'add_developer_settings_page' ) );
@@ -207,7 +191,7 @@ class RapidLoad_Admin_Frontend
         }
 
         $rule = sanitize_text_field( $_REQUEST['rule'] );
-        $url = esc_url_raw( $_REQUEST['url'] );
+        $url = sanitize_url( $_REQUEST['url'] );
         $regex = isset($_REQUEST['regex']) ? sanitize_text_field( $_REQUEST['regex'] ) : '/';
 
         $url = $this->transform_url($url);
@@ -370,7 +354,7 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('url required');
         }
 
-        $url = esc_url_raw($_REQUEST['url']);
+        $url = sanitize_url($_REQUEST['url']);
         $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'path';
 
         if($type == 'rule'){
@@ -591,7 +575,7 @@ class RapidLoad_Admin_Frontend
         }
 
         $job_type = isset($_GET['_job_type']) ? sanitize_text_field($_GET['_job_type']) : 'all';
-        $url = isset($_GET['_url']) ? esc_url_raw($_GET['_url']) : false;
+        $url = isset($_GET['_url']) ? sanitize_url($_GET['_url']) : false;
         $clear = isset($_GET['_clear']) && boolval($_GET['_clear'] == 'true') ? true : false;
 
         if($clear){
@@ -617,7 +601,7 @@ class RapidLoad_Admin_Frontend
         self::verify_nonce();
 
         $job_type = isset($_REQUEST['job_type']) ? sanitize_text_field($_REQUEST['job_type']) : 'all';
-        $url = isset($_REQUEST['url']) ? esc_url_raw($_REQUEST['url']) : false;
+        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : false;
         $rule = isset($_REQUEST['rule']) ? sanitize_text_field($_REQUEST['rule']) : false;
         $regex = isset($_REQUEST['regex']) ? sanitize_text_field($_REQUEST['regex']) : false;
         $clear = isset($_REQUEST['clear']) && boolval($_REQUEST['clear'] == 'true' || $_REQUEST['clear'] == '1') ? true : false;
