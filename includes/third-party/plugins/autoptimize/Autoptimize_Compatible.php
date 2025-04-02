@@ -119,13 +119,12 @@ class Autoptimize_Compatible extends RapidLoad_ThirdParty {
 
     public function handle($args) {
         if (function_exists('autoptimize')) {
-            $tab = 'RapidLoad';
     
             $args = array_merge($args, array(
                 'rapidload' => sprintf(
                     '<span class="uucss-tab-title"><img src="%s" width="15" alt="RapidLoad.io logo"><span>%s</span></span>',
                     esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon.svg'),
-                    esc_html($tab)
+                    __("RapidLoad", "unusedcss")
                 )
             ));
     
