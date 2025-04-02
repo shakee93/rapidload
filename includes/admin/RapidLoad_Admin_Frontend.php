@@ -673,7 +673,7 @@ class RapidLoad_Admin_Frontend
                     break;
                 }
                 case 'requeue_all_rule_failed':{
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", "AND status = 'failed'");
+                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", "AND status = `failed`");
                     break;
                 }
                 case 'requeue_all_url':{

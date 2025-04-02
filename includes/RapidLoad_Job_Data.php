@@ -48,7 +48,7 @@ class RapidLoad_Job_Data{
             $this->attempts = 0;
             $this->hits = 0;
             $this->status = 'queued';
-            $this->created_at = date( "Y-m-d H:m:s", time() );
+            $this->created_at = gmdate( "Y-m-d H:m:s", time() );
 
         }
 
@@ -120,7 +120,7 @@ class RapidLoad_Job_Data{
         $this->stats = null;
         $this->warnings = null;
         $this->error = null;
-        $this->created_at = date( "Y-m-d H:m:s", time() );
+        $this->created_at = gmdate( "Y-m-d H:m:s", time() );
         $this->clearFiles();
     }
 

@@ -45,7 +45,7 @@ abstract class RapidLoad_DB
 
         foreach ($tableArray as $tablename) {
             $tablename = sanitize_key($tablename);
-            $wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS %s", $tablename ) );
+            $wpdb->query( "DROP TABLE IF EXISTS {$tablename}" );
         }
 
         if(empty($wpdb->last_error)){
@@ -678,10 +678,14 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $ids = !empty($ids) ? implode(",", array_map('intval', $ids)) : "SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url'";
+        if (!empty($ids)) {
+            $ids = implode(",", array_map('intval', $ids));
+        } else {
+            $ids = $wpdb->get_col($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = %s", 'is_url'));
+            $ids = implode(',', array_map('intval', $ids));
+        }
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (" . $ids . ") " . $where;
-        $wpdb->query( $wpdb->prepare( $query, $status ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (%5s) {$where}", $status, $ids));
 
         $error = $wpdb->last_error;
 
@@ -696,10 +700,14 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $ids = !empty($ids) ? implode(",", array_map('intval', $ids)) : "SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != 'is_url'";
+        if (!empty($ids)) {
+            $ids = implode(",", array_map('intval', $ids));
+        } else {
+            $ids = $wpdb->get_col($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != %s", 'is_url'));
+            $ids = implode(',', array_map('intval', $ids));
+        }
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (" . $ids . ") " . $where;
-        $wpdb->query( $wpdb->prepare( $query, $status ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (%5s) {$where}", $status, $ids));
 
         $error = $wpdb->last_error;
 
@@ -714,8 +722,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s)";
-        $wpdb->query( $wpdb->prepare( $query, $url ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s)", $url ) );
 
         $error = $wpdb->last_error;
 
@@ -730,8 +737,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE job_id = %d";
-        $wpdb->query( $wpdb->prepare( $query, $id ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE job_id = %d", $id ) );
 
         $error = $wpdb->last_error;
 
@@ -746,8 +752,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE status = %s AND warnings IS NOT NULL";
-        $wpdb->query( $wpdb->prepare( $query, 'success' ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET hits = 0 WHERE status = %s AND warnings IS NOT NULL", 'success' ) );
 
         $error = $wpdb->last_error;
 
@@ -762,8 +767,7 @@ abstract class RapidLoad_DB
 
         global $wpdb;
 
-        $query = "SELECT url FROM {$wpdb->prefix}rapidload_job WHERE id IN (SELECT job_id FROM {$wpdb->prefix}rapidload_job_data WHERE status = %s AND warnings IS NOT NULL)";
-        $data = $wpdb->get_results( $wpdb->prepare( $query, 'success' ), ARRAY_A );
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT url FROM {$wpdb->prefix}rapidload_job WHERE id IN (SELECT job_id FROM {$wpdb->prefix}rapidload_job_data WHERE status = %s AND warnings IS NOT NULL)", 'success' ), ARRAY_A );
 
         if(!empty($data))
         {
@@ -779,7 +783,7 @@ abstract class RapidLoad_DB
 
         $first_link = false;
 
-        $query = "SELECT * FROM (
+        $link = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM (
                         SELECT 
                             job.id, job.url, job.rule, job.regex, job.rule_id, job.rule_note, job.status as job_status, job.created_at as job_created_at,
                             uucss.data as files, uucss.stats, uucss.warnings, uucss.attempts, uucss.hits, 
@@ -790,9 +794,7 @@ abstract class RapidLoad_DB
                         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss') as uucss ON job.id = uucss.job_id
                         LEFT JOIN (SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss') as cpcss ON job.id = cpcss.job_id
                     ) as derived_table
-                    WHERE rule = 'is_url' LIMIT 1";
-
-        $link = $wpdb->get_results( $wpdb->prepare( $query ), OBJECT );
+                    WHERE rule = %s LIMIT 1", 'is_url' ), OBJECT );
 
         $error = $wpdb->last_error;
 
