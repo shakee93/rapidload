@@ -67,10 +67,10 @@ class RapidLoad_Enqueue {
         if(wp_doing_ajax()){
             return false;
         }
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'favicon.ico') !== false) {
+        if (isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), 'favicon.ico') !== false) {
             return false;
         }
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'robots.txt') !== false) {
+        if (isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), 'robots.txt') !== false) {
             return false;
         }
         return true;
@@ -167,7 +167,7 @@ class RapidLoad_Enqueue {
             foreach ($matches[1] as $url) {
                 if(filter_var($url, FILTER_VALIDATE_URL)){
                     if(isset($url) && !empty($url)){
-                        $_parsed_url = parse_url($url);
+                        $_parsed_url = wp_parse_url($url);
                         if(isset($_parsed_url['host'])){
                             array_push($domains, $_parsed_url['host']);
                         }
@@ -245,7 +245,7 @@ class RapidLoad_Enqueue {
 
                 if ( filter_var( $pattern, FILTER_VALIDATE_URL ) ) {
 
-                    $pattern = parse_url( $pattern );
+                    $pattern = wp_parse_url( $pattern );
 
                     $path = $pattern['path'];
                     $query = isset($pattern['query']) ? '?' . $pattern['query'] : '';
@@ -265,7 +265,7 @@ class RapidLoad_Enqueue {
             }
         }
 
-        $url_parts = parse_url( $url );
+        $url_parts = wp_parse_url( $url );
 
         if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
             $this->log( 'skipped query contains: ' . $url );

@@ -62,7 +62,7 @@ class RapidLoad_Job{
 
         }else{
 
-            $this->created_at = date( "Y-m-d H:m:s", time() );
+            $this->created_at = gmdate( "Y-m-d H:m:s", time() );
         }
 
     }
@@ -418,9 +418,7 @@ class RapidLoad_Job{
     function get_revision_ids($strategy) {
         global $wpdb;
 
-        $query = $wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id);
-
-        return $wpdb->get_results($query, ARRAY_N);
+        return $wpdb->get_results($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id), ARRAY_N);
     }
 
     function delete_all_revisions(){
@@ -468,7 +466,7 @@ class RapidLoad_Job{
 
     function generateUrlRegex($url) {
         // Escape characters with special meanings in regex
-        $urlParts = parse_url($url);
+        $urlParts = wp_parse_url($url);
         if (isset($urlParts['path'])) {
             $path = $urlParts['path'];
         } else {

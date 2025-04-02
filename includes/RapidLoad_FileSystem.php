@@ -8,68 +8,134 @@ defined( 'ABSPATH' ) or die();
 class RapidLoad_FileSystem
 {
     public function put_contents( $file_location, $css , $mode = null){
-        return @file_put_contents($file_location, $css, $mode);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->put_contents($file_location, $css, $mode);
     }
 
     public function exists( $dir ){
-        return file_exists($dir);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->exists( $dir );
     }
 
-    public function mkdir( $dir , $mode = 0755, $recursive = true){
-        if($this->exists($dir)) {
+    public function mkdir( $dir, $mode = 0755, $recursive = true ) {
+
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+    
+        if ( $wp_filesystem->exists( $dir ) ) {
             return true;
         }
-        try{
-            return @mkdir($dir, 0755, true);
-        }catch(Exception $exception){
+    
+        try {
+            return $wp_filesystem->mkdir( $dir, $mode );
+        } catch ( Exception $exception ) {
             return false;
         }
     }
 
-    public function is_writable( $dir ){
-        return is_writeable($dir);
+    public function is_writable( $dir ) {
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->is_writable( $dir );
     }
 
-    public function is_readable( $dir ){
-        return is_readable($dir);
+    public function is_readable( $dir ) {
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->is_readable( $dir );
     }
 
     public function delete($path, $recursive = true){
-        if(is_dir($path)){
-            array_map('unlink', glob("$path/*.*"));
-            rmdir($path);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        if($wp_filesystem->is_dir($path)){
+            $wp_filesystem->delete($path, true);
         }else{
-            if($this->exists($path)){
-                unlink($path);
+            if($wp_filesystem->exists($path)){
+                $wp_filesystem->delete($path);
             }
         }
         return true;
     }
 
     public function size($file){
-        return filesize($file);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->size($file);
     }
 
     public function get_contents($file){
-        return file_get_contents($file);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->get_contents($file);
     }
 
     public function delete_folder($dir){
-        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new RecursiveIteratorIterator($it,
-            RecursiveIteratorIterator::CHILD_FIRST);
-        foreach($files as $file) {
-            if ($file->isDir()){
-                rmdir($file->getRealPath());
-            } else {
-                unlink($file->getRealPath());
-            }
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
-        rmdir($dir);
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        if($wp_filesystem->is_dir($dir)){
+            // Second parameter true means recursive delete
+            return $wp_filesystem->delete($dir, true); 
+        }
+        
+        return false;
     }
 
     public function copy($source, $destination){
-        @copy($source, $destination);
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+    
+        global $wp_filesystem;
+
+        return $wp_filesystem->copy($source, $destination);
     }
 
     public function format_size_units($bytes) {

@@ -107,7 +107,7 @@ class RapidLoad_Cache_Engine
 
         // Page path exclusions.
         if ( ! empty( self::$settings['excluded_page_paths'] ) ) {
-            $page_path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+            $page_path = wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
             if ( preg_match( self::$settings['excluded_page_paths'], $page_path ) ) {
                 return true;
@@ -122,7 +122,7 @@ class RapidLoad_Cache_Engine
                 $query_string_regex = '/^(?!(fbclid|ref|mc_(cid|eid)|utm_(source|medium|campaign|term|content|expid)|gclid|fb_(action_ids|action_types|source)|age-verified|usqp|cn-reloaded|_ga|_ke)).+$/';
             }
 
-            $query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
+            $query_string = wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
 
             if ( preg_match( "/^rapidload_preview$/", $query_string ) ) {
                 return false;
