@@ -484,8 +484,8 @@ class RapidLoad_Admin
             wp_send_json_error(false);
         }
 
-        $version = $_REQUEST['smiley'];
-        $reason = isset($_REQUEST['detail']) ? $_REQUEST['detail'] : '';
+        $version = sanitize_text_field($_REQUEST['smiley']);
+        $reason = isset($_REQUEST['detail']) ? sanitize_textarea_field($_REQUEST['detail']) : '';
 
         $api = new RapidLoad_Api();
 
@@ -1106,13 +1106,11 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : false;
-        $rule = isset($_REQUEST['rule']) ? $_REQUEST['rule'] : false;
-        $regex = isset($_REQUEST['regex']) ? $_REQUEST['regex'] : false;
+        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : false;
+        $rule = isset($_REQUEST['rule']) ? sanitize_text_field($_REQUEST['rule']) : false;
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field($_REQUEST['regex']) : false;
 
-        $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : false;
-
-        $type = isset($_REQUEST['type']) ? $_REQUEST['status'] : 'path';
+        $status = isset($_REQUEST['status']) ? sanitize_text_field($_REQUEST['status']) : false;
 
         if($url){
 
@@ -1167,7 +1165,7 @@ class RapidLoad_Admin
             wp_send_json_error( 'License Key required' );
         }
 
-        $license_key = $_REQUEST['license_key'];
+        $license_key = sanitize_text_field($_REQUEST['license_key']);
 
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = $license_key;

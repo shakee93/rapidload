@@ -1874,7 +1874,7 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
+        $url = sanitize_url($_REQUEST['url']);
 
         if(self::$global_options['rapidload_test_mode'] && self::$global_options['rapidload_test_mode'] == "1"){
             $url = add_query_arg('rapidload_preview', 'true', $url);

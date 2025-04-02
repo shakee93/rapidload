@@ -75,10 +75,10 @@ class RapidLoad_Cache_Engine
     private static function is_wrong_permalink_structure() {
 
         if ( self::$settings['use_trailing_slashes'] ) {
-            if ( preg_match( '/\/[^\.\/\?]+(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
+            if ( preg_match( '/\/[^\.\/\?]+(\?.*)?$/', sanitize_url( $_SERVER['REQUEST_URI'] ) ) ) {
                 return true;
             }
-        } elseif ( preg_match( '/\/[^\.\/\?]+\/(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
+        } elseif ( preg_match( '/\/[^\.\/\?]+\/(\?.*)?$/', sanitize_url( $_SERVER['REQUEST_URI'] ) ) ) {
             return true;
         }
 
