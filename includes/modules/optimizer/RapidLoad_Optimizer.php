@@ -75,7 +75,7 @@ class RapidLoad_Optimizer
 
     public function rapidload_privacy_policy_acceptance(){
         self::verify_nonce();
-        $accepted = isset($_REQUEST['accepted']) && $_REQUEST['accepted'] ? true : false;
+        $accepted = isset($_REQUEST['accepted']) && boolval(sanitize_text_field($_REQUEST['accepted'])) ? true : false;
         update_option('rapidload_privacy_policy_accepted', $accepted);
         wp_send_json_success('success');
     }
@@ -162,8 +162,8 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) && $_REQUEST['url'] ? $_REQUEST['url'] : $this->transform_url(site_url());
-        $strategy = isset($_REQUEST['strategy']) && $_REQUEST['strategy'] ? $_REQUEST['strategy'] : 'desktop';
+        $url = isset($_REQUEST['url']) && $_REQUEST['url'] ? sanitize_url($_REQUEST['url']) : $this->transform_url(site_url());
+        $strategy = isset($_REQUEST['strategy']) && $_REQUEST['strategy'] ? sanitize_text_field($_REQUEST['strategy']) : 'desktop';
 
         $body = file_get_contents('php://input');
 
@@ -407,7 +407,7 @@ class RapidLoad_Optimizer
         // Check if the SERVER_SOFTWARE key exists
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
             // Get the server software information
-            $server_software = $_SERVER['SERVER_SOFTWARE'];
+            $server_software = sanitize_text_field($_SERVER['SERVER_SOFTWARE']);
 
             // Check if the server is Apache
             if (stripos($server_software, 'Apache') !== false) {
@@ -431,7 +431,7 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? esc_url_raw($_REQUEST['url']) : site_url();
+        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : site_url();
         $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field($_REQUEST['types'])) : [];
 
         $url = $this->transform_url($url);
@@ -539,14 +539,14 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
-        $titan_gear = $_REQUEST['titan_gear'];
+        $url = sanitize_url($_REQUEST['url']);
+        $titan_gear = sanitize_text_field($_REQUEST['titan_gear']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? $_REQUEST['strategy'] : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
 
         $global = isset($_REQUEST['global']) && $_REQUEST['global'] || rtrim(strtolower($url),"/") == rtrim(strtolower(site_url()), "/");
 
@@ -593,13 +593,13 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
+        $url = sanitize_url($_REQUEST['url']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? $_REQUEST['strategy'] : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
 
         $this->pre_optimizer_function($url, $strategy, null, false);
 
@@ -638,7 +638,7 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = esc_url_raw($_REQUEST['url']);
+        $url = sanitize_url($_REQUEST['url']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
@@ -889,13 +889,13 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = $_REQUEST['url'];
+        $url = sanitize_url($_REQUEST['url']);
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? $_REQUEST['strategy'] : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
         $global = isset($_REQUEST['global']) && $_REQUEST['global'];
 
         $this->pre_optimizer_function($url, $strategy, $global, true);
@@ -949,38 +949,6 @@ class RapidLoad_Optimizer
             $optimization->set_data($result);
             $optimization->save();
         }
-
-        /*$preload_images = [];
-
-        if (isset($result->audits) && is_array($result->audits)) {
-
-            $lcp_audit = array_filter($result->audits, function($audit) {
-                return $audit->id === 'prioritize-lcp-image';
-            });
-
-            if (!empty($lcp_audit)) {
-                $lcp_audit = reset($lcp_audit);
-
-                if (isset($lcp_audit->files) && isset($lcp_audit->files->debugData) && !empty($lcp_audit->files->debugData->initiatorPath)) {
-                    foreach ($lcp_audit->files->debugData->initiatorPath as $path) {
-                        if (isset($path->url) && preg_match('/\.(jpg|jpeg|jpg|png|gif)$/i', $path->url)) {
-                            $preload_images[] = $path->url;
-                        }
-                    }
-                }
-            }
-        }
-
-        if(!empty($preload_images)){
-            self::$options['uucss_preload_lcp_image'] = implode("\n",$preload_images);
-            if(self::$strategy == "desktop"){
-                self::$job->set_desktop_options(self::$options);
-                self::$job->save();
-            }else{
-                self::$job->set_mobile_options(self::$options);
-                self::$job->save();
-            }
-        }*/
 
         return[
             'url' => $url,
@@ -1648,25 +1616,6 @@ class RapidLoad_Optimizer
             }
         }
 
-//        $settings["Performance Gears"] = [
-//            'name' => "Performance Gears",
-//            "description" => "Include width and height attributes for these images.",
-//            "category" => "gear",
-//            "inputs"=> [
-//                [
-//                    "control_type" => "gear",
-//                    "control_label" => "Select performance gear",
-//                    "control_values" => [
-//                        "starter",
-//                        "accelerate",
-//                        "turbo-max"
-//                    ],
-//                    "value" => get_option('rapidload_titan_gear', false),
-//                    "key" => "active_gear"
-//                ]
-//            ]
-//        ];
-
         return array_values($settings);
     }
 
@@ -1725,7 +1674,7 @@ class RapidLoad_Optimizer
                                 }
                             }else{
                                 if($input->key != "uucss_cdn_url"){
-                                    self::$options[$input->key] = $input->value;
+                                    self::$options[$input->key] = sanitize_textarea_field($input->value);
                                 }
                             }
                         }else if(isset($new_options[$input->key])){
@@ -1880,7 +1829,7 @@ class RapidLoad_Optimizer
             $url = add_query_arg('rapidload_preview', 'true', $url);
         }
 
-        $agent = isset($_REQUEST['user_agent']) ? $_REQUEST['user_agent'] : null;
+        $agent = isset($_REQUEST['user_agent']) ? sanitize_text_field($_REQUEST['user_agent']) : null;
 
         $response = wp_remote_get( $url, array( 'timeout' => 30, 'headers' => [
             'User-Agent' => $agent
