@@ -261,13 +261,13 @@ class RapidLoad_Admin
         $s = null;
 
         if(isset($_REQUEST['start_from'])){
-            $start_from = $_REQUEST['start_from'];
+            $start_from = absint($_REQUEST['start_from']);
         }
         if(isset($_REQUEST['limit'])){
-            $limit = $_REQUEST['limit'];
+            $limit = absint($_REQUEST['limit']);
         }
         if(isset($_REQUEST['s']) && !empty($_REQUEST['s'])){
-            $s = $_REQUEST['s'];
+            $s = sanitize_text_field($_REQUEST['s']);
         }
 
         wp_send_json_success(RapidLoad_Job::get_all_optimizations_data_for('desktop', $start_from, $limit, $s));
@@ -280,7 +280,7 @@ class RapidLoad_Admin
             wp_send_json_error('url required');
         }
 
-        $url = $this->transform_url($_REQUEST['url']);
+        $url = $this->transform_url(sanitize_url($_REQUEST['url']));
 
         if($url == $this->transform_url(site_url())){
             wp_send_json_error('cannot delete home page optimizations');
@@ -377,7 +377,7 @@ class RapidLoad_Admin
         self::verify_nonce();
 
         if(isset($_REQUEST['status'])){
-            RapidLoad_Base::update_option('titan_checklist_status', $_REQUEST['status']);
+            RapidLoad_Base::update_option('titan_checklist_status', sanitize_text_field($_REQUEST['status']));
             wp_send_json_success(true);
         }
 
@@ -436,7 +436,7 @@ class RapidLoad_Admin
 
         // Create server array first
         $server_info = array(
-            'software' => $_SERVER['SERVER_SOFTWARE'],
+            'software' => sanitize_text_field($_SERVER['SERVER_SOFTWARE']),
             'php_version' => PHP_VERSION,
             'cron_status' => 0
         );
@@ -723,7 +723,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_load_scripts_on_user_interaction'])){
 
-            $options['uucss_load_scripts_on_user_interaction'] = sanitize_textarea_field($_REQUEST['uucss_load_scripts_on_user_interaction']) == 'true' ? "1" : null;
+            $options['uucss_load_scripts_on_user_interaction'] = sanitize_text_field($_REQUEST['uucss_load_scripts_on_user_interaction']) == 'true' ? "1" : null;
 
         }
 
@@ -997,9 +997,9 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : false;
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : false;
-        $rule_id = isset($_REQUEST['rule_id']) ? $_REQUEST['rule_id'] : false;
+        $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : false;
+        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : false;
+        $rule_id = isset($_REQUEST['rule_id']) ? sanitize_text_field($_REQUEST['rule_id']) : false;
 
         if(!$type || !$url){
             wp_send_json_error('Required field missing');
@@ -1588,9 +1588,9 @@ class RapidLoad_Admin
 
         $args = [];
 
-        $args['type'] = isset($_REQUEST['type']) && !empty($_REQUEST['type']) ? $_REQUEST['type'] : 'frontend';
-        $args['log'] = isset($_REQUEST['log']) && !empty($_REQUEST['log']) ? $_REQUEST['log'] : '';
-        $args['url'] = isset($_REQUEST['url']) && !empty($_REQUEST['url']) ? $_REQUEST['url'] : '';
+        $args['type'] = isset($_REQUEST['type']) && !empty($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'frontend';
+        $args['log'] = isset($_REQUEST['log']) && !empty($_REQUEST['log']) ? sanitize_text_field($_REQUEST['log']) : '';
+        $args['url'] = isset($_REQUEST['url']) && !empty($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : '';
 
         self::log($args);
 
