@@ -148,9 +148,9 @@ class RapidLoad_Module
 
         self::verify_nonce();
 
-        $module = isset($_REQUEST['module']) ? $_REQUEST['module'] : false;
-        $active = isset($_REQUEST['active']) ? $_REQUEST['active'] : 'off';
-        $onboard = isset($_REQUEST['onboard']) ? $_REQUEST['onboard'] : false;
+        $module = isset($_REQUEST['module']) ? sanitize_text_field($_REQUEST['module']) : false;
+        $active = isset($_REQUEST['active']) ? sanitize_text_field($_REQUEST['active']) : 'off';
+        $onboard = isset($_REQUEST['onboard']) ? boolval($_REQUEST['onboard']) : false;
 
         if(!$module){
             wp_send_json_error('Rapidload module required');
