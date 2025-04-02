@@ -1,6 +1,22 @@
 Changelog
 ==========
 
+#### 1.17.0
+* Implemented ES2025 parser with import attributes
+
+#### 1.16.3
+* Removed implicitly nullable parameter declarations for PHP 8.4 compatibility
+
+#### 1.16.2
+* Fixed bug where a regex that started with `/=` raised a syntax error
+
+#### 1.16.1
+* Fixed bug where, in some situations, scanner allowed invalid characters after a slash
+
+#### 1.16.0
+* Implemented ES2024 parser, no new syntax features have been introduced
+* Fixed bug when parsing sequence expressions using older ES versions
+
 #### 1.15.4
 * Fixed rendering of `let` and `const` inside `switch` cases that always require brackets
 

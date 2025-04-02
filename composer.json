@@ -5,9 +5,22 @@
         "sabberworm/php-css-parser": "^8.4",
         "mck89/peast": "^1.15"
     },
+    "scripts": {
+        "lint": "./vendor/bin/phpcs",
+        "lint-fix": "./vendor/bin/phpcbf"
+    },
     "autoload": {
         "classmap": [
             "includes/"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1"
     }
 }

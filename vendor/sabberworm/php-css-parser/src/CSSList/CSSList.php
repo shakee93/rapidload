@@ -24,25 +24,31 @@ use Sabberworm\CSS\Value\URL;
 use Sabberworm\CSS\Value\Value;
 
 /**
- * A `CSSList` is the most generic container available. Its contents include `RuleSet` as well as other `CSSList`
- * objects.
+ * This is the most generic container available. It can contain `DeclarationBlock`s (rule sets with a selector),
+ * `RuleSet`s as well as other `CSSList` objects.
  *
- * Also, it may contain `Import` and `Charset` objects stemming from at-rules.
+ * It can also contain `Import` and `Charset` objects stemming from at-rules.
  */
 abstract class CSSList implements Renderable, Commentable
 {
     /**
      * @var array<array-key, Comment>
+     *
+     * @internal since 8.8.0
      */
     protected $aComments;
 
     /**
      * @var array<int, RuleSet|CSSList|Import|Charset>
+     *
+     * @internal since 8.8.0
      */
     protected $aContents;
 
     /**
      * @var int
+     *
+     * @internal since 8.8.0
      */
     protected $iLineNo;
 
@@ -61,6 +67,8 @@ abstract class CSSList implements Renderable, Commentable
      *
      * @throws UnexpectedTokenException
      * @throws SourceException
+     *
+     * @internal since V8.8.0
      */
     public static function parseList(ParserState $oParserState, CSSList $oList)
     {
@@ -69,8 +77,9 @@ abstract class CSSList implements Renderable, Commentable
             $oParserState = new ParserState($oParserState, Settings::create());
         }
         $bLenientParsing = $oParserState->getSettings()->bLenientParsing;
+        $aComments = [];
         while (!$oParserState->isEnd()) {
-            $comments = $oParserState->consumeWhiteSpace();
+            $aComments = array_merge($aComments, $oParserState->consumeWhiteSpace());
             $oListItem = null;
             if ($bLenientParsing) {
                 try {
@@ -86,11 +95,12 @@ abstract class CSSList implements Renderable, Commentable
                 return;
             }
             if ($oListItem) {
-                $oListItem->setComments($comments);
+                $oListItem->addComments($aComments);
                 $oList->append($oListItem);
             }
-            $oParserState->consumeWhiteSpace();
+            $aComments = $oParserState->consumeWhiteSpace();
         }
+        $oList->addComments($aComments);
         if (!$bIsRoot && !$bLenientParsing) {
             throw new SourceException("Unexpected end of document", $oParserState->currentLine());
         }
@@ -125,22 +135,19 @@ abstract class CSSList implements Renderable, Commentable
                         $oParserState->currentLine()
                     );
                 }
-                $oParserState->setCharset($oAtRule->getCharset()->getString());
+                $oParserState->setCharset($oAtRule->getCharset());
             }
             return $oAtRule;
         } elseif ($oParserState->comes('}')) {
-            if (!$oParserState->getSettings()->bLenientParsing) {
-                throw new UnexpectedTokenException('CSS selector', '}', 'identifier', $oParserState->currentLine());
-            } else {
-                if ($bIsRoot) {
-                    if ($oParserState->getSettings()->bLenientParsing) {
-                        return DeclarationBlock::parse($oParserState);
-                    } else {
-                        throw new SourceException("Unopened {", $oParserState->currentLine());
-                    }
+            if ($bIsRoot) {
+                if ($oParserState->getSettings()->bLenientParsing) {
+                    return DeclarationBlock::parse($oParserState);
                 } else {
-                    return null;
+                    throw new SourceException("Unopened {", $oParserState->currentLine());
                 }
+            } else {
+                // End of list
+                return null;
             }
         } else {
             return DeclarationBlock::parse($oParserState, $oList);
@@ -172,10 +179,10 @@ abstract class CSSList implements Renderable, Commentable
             $oParserState->consumeUntil([';', ParserState::EOF], true, true);
             return new Import($oLocation, $sMediaQuery ?: null, $iIdentifierLineNum);
         } elseif ($sIdentifier === 'charset') {
-            $sCharset = CSSString::parse($oParserState);
+            $oCharsetString = CSSString::parse($oParserState);
             $oParserState->consumeWhiteSpace();
             $oParserState->consumeUntil([';', ParserState::EOF], true, true);
-            return new Charset($sCharset, $iIdentifierLineNum);
+            return new Charset($oCharsetString, $iIdentifierLineNum);
         } elseif (self::identifierIs($sIdentifier, 'keyframes')) {
             $oResult = new KeyFrame($iIdentifierLineNum);
             $oResult->setVendorKeyFrame($sIdentifier);
@@ -272,7 +279,7 @@ abstract class CSSList implements Renderable, Commentable
     }
 
     /**
-     * Appends an item to tje list of contents.
+     * Appends an item to the list of contents.
      *
      * @param RuleSet|CSSList|Import|Charset $oItem
      *
@@ -295,6 +302,22 @@ abstract class CSSList implements Renderable, Commentable
     public function splice($iOffset, $iLength = null, $mReplacement = null)
     {
         array_splice($this->aContents, $iOffset, $iLength, $mReplacement);
+    }
+
+    /**
+     * Inserts an item in the CSS list before its sibling. If the desired sibling cannot be found,
+     * the item is appended at the end.
+     *
+     * @param RuleSet|CSSList|Import|Charset $item
+     * @param RuleSet|CSSList|Import|Charset $sibling
+     */
+    public function insertBefore($item, $sibling)
+    {
+        if (in_array($sibling, $this->aContents, true)) {
+            $this->replace($sibling, [$item, $sibling]);
+        } else {
+            $this->append($item);
+        }
     }
 
     /**
@@ -393,6 +416,8 @@ abstract class CSSList implements Renderable, Commentable
 
     /**
      * @return string
+     *
+     * @deprecated in V8.8.0, will be removed in V9.0.0. Use `render` instead.
      */
     public function __toString()
     {
@@ -402,7 +427,7 @@ abstract class CSSList implements Renderable, Commentable
     /**
      * @return string
      */
-    public function render(OutputFormat $oOutputFormat)
+    protected function renderListContents(OutputFormat $oOutputFormat)
     {
         $sResult = '';
         $bIsFirst = true;
@@ -442,6 +467,8 @@ abstract class CSSList implements Renderable, Commentable
     abstract public function isRootList();
 
     /**
+     * Returns the stored items.
+     *
      * @return array<int, RuleSet|Import|Charset|CSSList>
      */
     public function getContents()

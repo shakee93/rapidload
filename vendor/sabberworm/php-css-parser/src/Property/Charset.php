@@ -4,6 +4,7 @@ namespace Sabberworm\CSS\Property;
 
 use Sabberworm\CSS\Comment\Comment;
 use Sabberworm\CSS\OutputFormat;
+use Sabberworm\CSS\Value\CSSString;
 
 /**
  * Class representing an `@charset` rule.
@@ -16,27 +17,31 @@ use Sabberworm\CSS\OutputFormat;
 class Charset implements AtRule
 {
     /**
-     * @var string
+     * @var CSSString
      */
-    private $sCharset;
+    private $oCharset;
 
     /**
      * @var int
+     *
+     * @internal since 8.8.0
      */
     protected $iLineNo;
 
     /**
      * @var array<array-key, Comment>
+     *
+     * @internal since 8.8.0
      */
     protected $aComments;
 
     /**
-     * @param string $sCharset
+     * @param CSSString $oCharset
      * @param int $iLineNo
      */
-    public function __construct($sCharset, $iLineNo = 0)
+    public function __construct(CSSString $oCharset, $iLineNo = 0)
     {
-        $this->sCharset = $sCharset;
+        $this->oCharset = $oCharset;
         $this->iLineNo = $iLineNo;
         $this->aComments = [];
     }
@@ -50,13 +55,14 @@ class Charset implements AtRule
     }
 
     /**
-     * @param string $sCharset
+     * @param string|CSSString $oCharset
      *
      * @return void
      */
     public function setCharset($sCharset)
     {
-        $this->sCharset = $sCharset;
+        $sCharset = $sCharset instanceof CSSString ? $sCharset : new CSSString($sCharset);
+        $this->oCharset = $sCharset;
     }
 
     /**
@@ -64,11 +70,13 @@ class Charset implements AtRule
      */
     public function getCharset()
     {
-        return $this->sCharset;
+        return $this->oCharset->getString();
     }
 
     /**
      * @return string
+     *
+     * @deprecated in V8.8.0, will be removed in V9.0.0. Use `render` instead.
      */
     public function __toString()
     {
@@ -76,11 +84,13 @@ class Charset implements AtRule
     }
 
     /**
+     * @param OutputFormat|null $oOutputFormat
+     *
      * @return string
      */
-    public function render(OutputFormat $oOutputFormat)
+    public function render($oOutputFormat)
     {
-        return "@charset {$this->sCharset->render($oOutputFormat)};";
+        return "{$oOutputFormat->comments($this)}@charset {$this->oCharset->render($oOutputFormat)};";
     }
 
     /**
@@ -96,7 +106,7 @@ class Charset implements AtRule
      */
     public function atRuleArgs()
     {
-        return $this->sCharset;
+        return $this->oCharset;
     }
 
     /**
