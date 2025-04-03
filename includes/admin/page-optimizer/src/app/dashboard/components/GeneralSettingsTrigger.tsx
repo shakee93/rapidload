@@ -29,8 +29,9 @@ const GeneralSettingsTrigger: React.FC<MyDialogProps> = ({ open, onOpenChange })
                     </TooltipText>
                 </div>
             </DialogTrigger>
-            <DialogTitle></DialogTitle>
+            
             <DialogContent className="sm:max-w-[650px]">
+            <DialogTitle></DialogTitle>
                 <DialogHeader className='border-b px-6 py-4 mt-1'>
                     <DialogTitle>General Settings</DialogTitle>
                 </DialogHeader>

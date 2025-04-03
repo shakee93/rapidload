@@ -242,7 +242,7 @@ class UnusedCSS
             $cdn = self::get_wp_content_url();
         } else {
 
-            $url_parts = parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 
@@ -384,7 +384,7 @@ class UnusedCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = $_REQUEST['url'];
+            $url = sanitize_url($_REQUEST['url']);
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');

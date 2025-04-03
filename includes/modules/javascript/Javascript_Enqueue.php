@@ -94,6 +94,10 @@ class Javascript_Enqueue
                 continue;
             }
 
+            if(isset($link->id) && in_array($link->id, ['rapidload-image-handler','rapidload-diagnose-script-js-after'])){
+                continue;
+            }
+
             $original_src = self::is_js($link) ? $link->src : null;
 
             if(isset($link->src) && self::is_file_excluded($link->src)){
@@ -272,10 +276,6 @@ class Javascript_Enqueue
     public function minify_js($link){
 
         $_frontend_data = [];
-
-        if(defined('SCRIPT_DEBUG') && boolval(SCRIPT_DEBUG) == true){
-            return;
-        }
 
         if(!self::is_js($link) || self::is_file_excluded($link->src, 'uucss_exclude_files_from_minify_js')){
             return;

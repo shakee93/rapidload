@@ -270,7 +270,7 @@ class CriticalCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = $_REQUEST['url'];
+            $url = sanitize_url($_REQUEST['url']);
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');

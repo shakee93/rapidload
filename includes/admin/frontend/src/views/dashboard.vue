@@ -492,7 +492,7 @@ export default {
     });
 
 
-    const rapidLoadLicense = JSON.parse(localStorage.getItem("rapidLoadLicense"));
+    //const rapidLoadLicense = JSON.parse(localStorage.getItem("rapidLoadLicense"));
 
     // if (rapidLoadLicense) {
      // Object.keys(rapidLoadLicense).forEach((a) => {
@@ -502,6 +502,10 @@ export default {
       //  this.license_information.license = data.plan
       //  this.license_information.licensed_domain = data.licensedDomain
       //})
+
+      const rapidLoadLicense = window.uucss_global?.rapidload_license_data;
+
+     // console.log("rapidLoadLicense", rapidLoadLicense);
 
       if (rapidLoadLicense) {
         // Map the object properties to license information

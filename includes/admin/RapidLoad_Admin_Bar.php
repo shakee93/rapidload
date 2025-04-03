@@ -9,22 +9,7 @@ class RapidLoad_Admin_Bar {
         add_action( 'wp_after_admin_bar_render', [$this,'rapidload_admin_bar_css'] );
         add_action('admin_bar_menu', [$this, 'add_rapidload_admin_bar_menu'], 100);
 
-//        wp_register_script( 'rapidload-page-optimizer-data', UUCSS_PLUGIN_URL .  'includes/admin/assets/js/page-optimizer/dist/page-optimizer-data.min.js', null, 111);
-//
-//        // Localize the script with new data
-//        $script_data_array = array(
-//            'ajax_url' => admin_url( 'admin-ajax.php' ),
-//            'plugin_url' => UUCSS_PLUGIN_URL
-//        );
-//        wp_localize_script( 'rapidload-page-optimizer-data', 'rapidload', $script_data_array );
-//
-//        // Enqueued script with localized data.
-//        wp_enqueue_script( 'rapidload-page-optimizer-data' );
-//
-//        wp_enqueue_script( 'rapidload-speed-popover-js', UUCSS_PLUGIN_URL .  'includes/admin/assets/js/speed-popover/build/static/js/main.js', null, 'xx.xx', true);
-//        wp_enqueue_style( 'rapidload-speed-popover-css', UUCSS_PLUGIN_URL .  'includes/admin/assets/js/speed-popover/build/static/css/main.css', null, 'xx.xx');
-
-        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
         if (
             (!is_admin() && is_user_logged_in() && defined('RAPIDLOAD_PAGE_OPTIMIZER_ENABLED')) ||
@@ -47,7 +32,7 @@ class RapidLoad_Admin_Bar {
     {
         $options = RapidLoad_Base::fetch_options();
 
-        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
         $tag = apply_filters('rapidload/titan/tag', 'latest');
 
@@ -85,12 +70,12 @@ class RapidLoad_Admin_Bar {
 
         wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
 
-        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url($_SERVER['REQUEST_URI']) : $this->get_current_url();
+        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
 
         if($this->is_admin_url($current_url)){
             $current_url = site_url();
             if(isset($_GET['optimize-url'])){
-                $current_url = $this->transform_url(urldecode($_GET['optimize-url']));
+                $current_url = $this->transform_url(urldecode(sanitize_url(wp_unslash($_GET['optimize-url']))));
             }
         }
 
@@ -146,7 +131,6 @@ class RapidLoad_Admin_Bar {
             'license_key' => RapidLoad_Base::get_license_key(),
             'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"),
             'uucss_disable_error_tracking' => boolval(isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] == "1"),
-            'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"),
             'rapidload_titan_gear' => get_option('rapidload_titan_gear', 'trurboMax'),
             'rapidload_license_data' => $rapidload_license_data,
             'rapidload_privacy_policy_accepted' => get_option('rapidload_privacy_policy_accepted', false),

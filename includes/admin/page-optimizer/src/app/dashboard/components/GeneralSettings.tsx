@@ -61,12 +61,14 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
             const hasChanges = (Object.keys(generalOptions) as Array<keyof GeneralSettings>)
                 .some(key => generalOptions[key] !== settingsData[key]);
             
-            if (hasChanges) {
+            if (hasChanges) {   
                 setSettingsData(generalOptions);
             }
         }
-    }, [generalSettings]);
-
+       
+    }, [uucssGlobal, generalSettings]);
+    
+  
     useEffect(() => {
         if (settingsData) {
             setJobCount(settingsData.uucss_jobs_per_queue?.toString() || '1');
