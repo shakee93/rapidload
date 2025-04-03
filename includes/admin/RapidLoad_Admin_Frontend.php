@@ -163,7 +163,7 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $notice_id = isset($_REQUEST['notice_id']) ? sanitize_text_field($_REQUEST['notice_id']) : false;
+        $notice_id = isset($_REQUEST['notice_id']) ? sanitize_text_field(wp_unslash($_REQUEST['notice_id'])) : false;
 
         if($notice_id){
             RapidLoad_Base::update_option('uucss_notice_' . $notice_id . '_read', true);
@@ -190,9 +190,9 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('Required fields missing');
         }
 
-        $rule = sanitize_text_field( $_REQUEST['rule'] );
-        $url = sanitize_url( $_REQUEST['url'] );
-        $regex = isset($_REQUEST['regex']) ? sanitize_text_field( $_REQUEST['regex'] ) : '/';
+        $rule = sanitize_text_field( wp_unslash($_REQUEST['rule']) );
+        $url = sanitize_url( wp_unslash($_REQUEST['url']) );
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field( wp_unslash($_REQUEST['regex']) ) : '/';
 
         $url = $this->transform_url($url);
 
@@ -208,8 +208,8 @@ class RapidLoad_Admin_Frontend
 
         if(isset($_REQUEST['old_rule']) && isset($_REQUEST['old_regex'])){
 
-            $old_rule = sanitize_text_field( $_REQUEST['old_rule'] );
-            $old_regex = sanitize_text_field( $_REQUEST['old_regex'] );
+            $old_rule = sanitize_text_field( wp_unslash($_REQUEST['old_rule']) );
+            $old_regex = sanitize_text_field( wp_unslash($_REQUEST['old_regex']) );
 
             $rule_exist = new RapidLoad_Job([
                 'rule' => $old_rule,
@@ -231,9 +231,9 @@ class RapidLoad_Admin_Frontend
                 $rule_exist->regex = $regex;
                 $rule_exist->save(true);
 
-                if(isset($_REQUEST['old_url']) && sanitize_text_field($_REQUEST['old_url']) != $url ||
-                    sanitize_text_field($_REQUEST['old_rule']) != $rule || sanitize_text_field($_REQUEST['old_regex']) != $regex){
-                    if(isset($_REQUEST['requeue']) && sanitize_text_field($_REQUEST['requeue']) == "1"){
+                if(isset($_REQUEST['old_url']) && sanitize_text_field(wp_unslash($_REQUEST['old_url'])) != $url ||
+                    sanitize_text_field(wp_unslash($_REQUEST['old_rule'])) != $rule || sanitize_text_field(wp_unslash($_REQUEST['old_regex'])) != $regex){
+                    if(isset($_REQUEST['requeue']) && sanitize_text_field(wp_unslash($_REQUEST['requeue'])) == "1"){
                         RapidLoad_DB::requeueJob($rule_exist->id);
                     }
                 }
@@ -354,8 +354,8 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
-        $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'path';
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
+        $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'path';
 
         if($type == 'rule'){
 
@@ -367,7 +367,7 @@ class RapidLoad_Admin_Frontend
 
         $uucss_api = new RapidLoad_Api();
 
-        $link = $type == 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field($_REQUEST['rule']), 'regex' => sanitize_text_field($_REQUEST['regex'])]);
+        $link = $type == 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field(wp_unslash($_REQUEST['rule'])), 'regex' => sanitize_text_field(wp_unslash($_REQUEST['regex']))]);
 
         $result = $this->get_gpsi_test_result(new RapidLoad_Job_Data($link, 'uucss'));
 
@@ -386,7 +386,7 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $type = isset($_REQUEST['type']) ? sanitize_text_field($_REQUEST['type']) : 'path';
+        $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'path';
 
         $start = isset($_REQUEST['start']) ? absint($_REQUEST['start']) : 0;
         $length = isset($_REQUEST['length']) ? absint($_REQUEST['length']) : 10;
@@ -396,7 +396,7 @@ class RapidLoad_Admin_Frontend
         isset($_REQUEST['columns'][0]) &&
         isset($_REQUEST['columns'][0]['search']) &&
         isset($_REQUEST['columns'][0]['search']['value']) ?
-            $_REQUEST['columns'][0]['search']['value'] : false;
+            sanitize_text_field(wp_unslash($_REQUEST['columns'][0]['search']['value'])) : false;
 
         $filters = [];
 
@@ -421,13 +421,13 @@ class RapidLoad_Admin_Frontend
         isset($_REQUEST['columns'][1]) &&
         isset($_REQUEST['columns'][1]['search']) &&
         isset($_REQUEST['columns'][1]['search']['value']) ?
-            $_REQUEST['columns'][1]['search']['value'] : false;
+            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['value'])) : false;
 
         $url_regex = isset($_REQUEST['columns']) &&
         isset($_REQUEST['columns'][1]) &&
         isset($_REQUEST['columns'][1]['search']) &&
         isset($_REQUEST['columns'][1]['search']['regex']) ?
-            $_REQUEST['columns'][1]['search']['regex'] : false;
+            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['regex'])) : false;
 
         if($type != 'rule'){
 
@@ -574,8 +574,8 @@ class RapidLoad_Admin_Frontend
             return;
         }
 
-        $job_type = isset($_GET['_job_type']) ? sanitize_text_field($_GET['_job_type']) : 'all';
-        $url = isset($_GET['_url']) ? sanitize_url($_GET['_url']) : false;
+        $job_type = isset($_GET['_job_type']) ? sanitize_text_field(wp_unslash($_GET['_job_type'])) : 'all';
+        $url = isset($_GET['_url']) ? sanitize_url(wp_unslash($_GET['_url'])) : false;
         $clear = isset($_GET['_clear']) && boolval($_GET['_clear'] == 'true') ? true : false;
 
         if($clear){
@@ -600,10 +600,10 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $job_type = isset($_REQUEST['job_type']) ? sanitize_text_field($_REQUEST['job_type']) : 'all';
-        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : false;
-        $rule = isset($_REQUEST['rule']) ? sanitize_text_field($_REQUEST['rule']) : false;
-        $regex = isset($_REQUEST['regex']) ? sanitize_text_field($_REQUEST['regex']) : false;
+        $job_type = isset($_REQUEST['job_type']) ? sanitize_text_field(wp_unslash($_REQUEST['job_type'])    ) : 'all';
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
+        $rule = isset($_REQUEST['rule']) ? sanitize_text_field(wp_unslash($_REQUEST['rule'])) : false;
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field(wp_unslash($_REQUEST['regex'])) : false;
         $clear = isset($_REQUEST['clear']) && boolval($_REQUEST['clear'] == 'true' || $_REQUEST['clear'] == '1') ? true : false;
         $url_list = isset($_REQUEST['url_list']) ? $_REQUEST['url_list'] : [];
         $immediate = isset($_REQUEST['immediate']) ? boolval($_REQUEST['immediate']) : false;
@@ -783,7 +783,7 @@ class RapidLoad_Admin_Frontend
                         }
                     }
 
-                    wp_reset_query();
+                    wp_reset_postdata();
 
                     break;
                 }
@@ -800,7 +800,7 @@ class RapidLoad_Admin_Frontend
             wp_send_json_error('rules required');
         }
 
-        $rules = json_decode(sanitize_text_field(stripslashes($_REQUEST['rules'])));
+        $rules = json_decode(sanitize_text_field(wp_unslash($_REQUEST['rules'])));
 
         if(!$rules){
             wp_send_json_error('rules required');

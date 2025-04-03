@@ -9,7 +9,7 @@ class RapidLoad_Admin_Bar {
         add_action( 'wp_after_admin_bar_render', [$this,'rapidload_admin_bar_css'] );
         add_action('admin_bar_menu', [$this, 'add_rapidload_admin_bar_menu'], 100);
 
-        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
         if (
             (!is_admin() && is_user_logged_in() && defined('RAPIDLOAD_PAGE_OPTIMIZER_ENABLED')) ||
@@ -32,7 +32,7 @@ class RapidLoad_Admin_Bar {
     {
         $options = RapidLoad_Base::fetch_options();
 
-        $page = isset($_REQUEST['page']) ? sanitize_text_field($_REQUEST['page']) : '';
+        $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
         $tag = apply_filters('rapidload/titan/tag', 'latest');
 
@@ -70,12 +70,12 @@ class RapidLoad_Admin_Bar {
 
         wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
 
-        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url($_SERVER['REQUEST_URI']) : $this->get_current_url();
+        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
 
         if($this->is_admin_url($current_url)){
             $current_url = site_url();
             if(isset($_GET['optimize-url'])){
-                $current_url = $this->transform_url(urldecode($_GET['optimize-url']));
+                $current_url = $this->transform_url(urldecode(wp_unslash($_GET['optimize-url'])));
             }
         }
 
