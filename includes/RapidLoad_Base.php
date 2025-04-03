@@ -574,7 +574,7 @@ class RapidLoad_Base
             return;
         }
 
-        $token = sanitize_text_field( $_REQUEST['rapidload_license'] );
+        $token = sanitize_text_field( wp_unslash( $_REQUEST['rapidload_license'] ) );
 
         $options = self::get_option( 'autoptimize_uucss_settings' , []);
 
@@ -619,7 +619,7 @@ class RapidLoad_Base
             return;
         }
 
-        $token = sanitize_text_field( $_REQUEST['token'] );
+        $token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
 
         if ( strlen( $token ) !== 32 ) {
             self::add_admin_notice( 'RapidLoad : Invalid Api Token Received from the Activation. Contact support if the problem persists.', 'error' );
