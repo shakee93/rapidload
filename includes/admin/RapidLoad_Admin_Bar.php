@@ -75,7 +75,7 @@ class RapidLoad_Admin_Bar {
         if($this->is_admin_url($current_url)){
             $current_url = site_url();
             if(isset($_GET['optimize-url'])){
-                $current_url = $this->transform_url(urldecode(wp_unslash($_GET['optimize-url'])));
+                $current_url = $this->transform_url(urldecode(sanitize_url(wp_unslash($_GET['optimize-url']))));
             }
         }
 

@@ -87,8 +87,10 @@ class RapidLoad_Onboard{
     }
 
     function redirect() {
-        if ( strpos( home_url( $_SERVER['REQUEST_URI'] ), '/options-general.php?page=rapidload-on-board' ) &&
-            self::on_board_completed() && !strpos( home_url( $_SERVER['REQUEST_URI'] ), 'nonce' )) {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        
+        if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&
+            self::on_board_completed() && !strpos( home_url( $request_uri ), 'nonce' )) {
             wp_redirect( admin_url( 'admin.php?page=rapidload' ) );
         } else if ( RapidLoad_Base::get_option( 'rapidload_do_activation_redirect' ) ) {
             RapidLoad_Base::delete_option( 'rapidload_do_activation_redirect' );
