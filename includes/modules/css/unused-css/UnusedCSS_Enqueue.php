@@ -158,7 +158,7 @@ class UnusedCSS_Enqueue
 
                 if(apply_filters('uucss/enqueue/path-based-search', true) && self::endsWith(basename(preg_replace('/\?.*/', '', $link)),'.css')){
 
-                    $url_parts = parse_url( $link );
+                    $url_parts = wp_parse_url( $link );
 
                     if(isset($url_parts['path'])){
 

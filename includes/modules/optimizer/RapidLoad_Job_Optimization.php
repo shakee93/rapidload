@@ -28,7 +28,7 @@ class RapidLoad_Job_Optimization
             $this->data = $exist->data;
             $this->created_at = $exist->created_at;
         }else{
-            $this->created_at = date( "Y-m-d H:m:s", time() );
+            $this->created_at = gmdate( "Y-m-d H:m:s", time() );
         }
     }
 

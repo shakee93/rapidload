@@ -109,7 +109,7 @@ class RapidLoad_Font_Enqueue
             if(empty($url)){
                 continue;
             }
-            $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+            $extension = pathinfo(wp_parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
             $preload_font = '<link rel="preload" href="'. $url .'" as="font" fetchpriority="high" type="font/'. $extension .'" crossorigin> ';
             $title_content = $this->dom->find( 'title' )[0]->outertext;
             $this->dom->find( 'title' )[0]->__set('outertext', $title_content . $preload_font);
@@ -121,7 +121,7 @@ class RapidLoad_Font_Enqueue
 
         $google_fonts = $this->dom->find('link[href*=fonts.googleapis.com/css]');
         foreach ($google_fonts as $google_font) {
-            $url = parse_url($google_font->href);
+            $url = wp_parse_url($google_font->href);
             parse_str($url['query'], $q);
             $q['display'] = 'swap';
             $new_url = 'https://' . $url['host'] . $url['path'] . '?' . http_build_query($q);

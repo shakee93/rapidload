@@ -173,12 +173,12 @@ class RapidLoad_Image
     }
 
     function isAbsolute($url) {
-        return isset(parse_url($url)['host']);
+        return isset(wp_parse_url($url)['host']);
     }
 
     function makeURLAbsolute($relative_url, $base_url) {
 
-        $parsed_base_url = parse_url($base_url);
+        $parsed_base_url = wp_parse_url($base_url);
 
         if (strpos($relative_url, '/') !== 0) {
             $relative_url = '/' . $relative_url;
