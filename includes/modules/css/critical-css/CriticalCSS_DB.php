@@ -56,21 +56,33 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
     }
 
-    static function get_data_where($where = '')
+    /**
+     * Get data from the database based on where clause
+     *
+     * @param string $where Additional WHERE clause conditions
+     * @return array|object|null Database results
+     */
+    public static function get_data_where($where = '')
     {
         global $wpdb;
 
-        if(empty($where)){
+        if (empty($where)) {
             $where = " WHERE job_type='cpcss' ";
-        }else{
+        } else {
             $where .= " AND job_type='cpcss' ";
         }
 
-        $data = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}rapidload_job_data {$where} ", OBJECT);
+        $data = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}rapidload_job_data %5s",
+                $where
+            ),
+            OBJECT
+        );
 
         $error = $wpdb->last_error;
 
-        if(!empty($error)){
+        if (!empty($error)) {
             self::show_db_error($error);
         }
 

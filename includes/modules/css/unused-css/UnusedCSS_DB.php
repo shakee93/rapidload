@@ -41,27 +41,6 @@ class UnusedCSS_DB extends RapidLoad_DB{
         }
     }
 
-    static function get_data_where($where = '')
-    {
-        global $wpdb;
-
-        if(empty($where)){
-            $where = " WHERE job_type='uucss' ";
-        }else{
-            $where .= " AND job_type='uucss' ";
-        }
-
-        $data = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}rapidload_job_data {$where} ", OBJECT);
-
-        $error = $wpdb->last_error;
-
-        if(!empty($error)){
-            self::show_db_error($error);
-        }
-
-        return $data;
-    }
-
     static function get_data($select = ' * ' , $where = '', $limit = 1, $order_by = 'id DESC')
     {
         global $wpdb;
