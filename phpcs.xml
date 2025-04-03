@@ -20,6 +20,9 @@
 	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 
+	<!-- Exclude the third-party libraries directory. -->
+	<exclude-pattern>/includes/third-party/libs/*</exclude-pattern>
+
 	<!-- Exclude minified Javascript files. -->
 	<exclude-pattern>*.min.js</exclude-pattern>
 	
@@ -27,13 +30,15 @@
 	<exclude-pattern>/includes/admin/page-optimizer/dist/*</exclude-pattern>
 	<exclude-pattern>/includes/admin/page-optimizer/dist-debug/*</exclude-pattern>
 
-	<!-- Strip the filepaths down to the relevant bit. -->
-	<arg name="basepath" value="."/>
+	<!-- Exclude global vendor directory -->
+	<exclude-pattern>/Users/shakee93/.composer/vendor/*</exclude-pattern>
 
 	<!-- Check up to 8 files simultaneously. -->
 	<arg name="parallel" value="8"/>
 
+	<!-- Include only PHP files -->
 	<arg name="extensions" value="php"/>
+	
 
 	<!--
 	#############################################################################
@@ -42,7 +47,7 @@
 	-->
 
 	<!-- Include the WordPress-Extra standard. -->
-	<rule ref="WordPress-Extra">
+	<!-- <rule ref="WordPress-Extra"> -->
 		<!--
 		We may want a middle ground though. The best way to do this is add the
 		entire ruleset, then rule by rule, remove ones that don't suit a project.
@@ -59,13 +64,35 @@
 		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
 		<exclude name="Modernize.FunctionCalls.Dirname.Nested"/>
 		-->
-	</rule>
+	<!-- </rule> -->
 
 	<!-- Let's also check that everything is properly documented. -->
 	<rule ref="WordPress-Docs"/>
 
+
+<!-- Critical: Enforce escaping, nonce, SQL, redirect safety -->
+<rule ref="WordPress.Security.EscapeOutput"/>
+<rule ref="WordPress.Security.NonceVerification"/>
+<rule ref="WordPress.DB.PreparedSQL"/>
+<rule ref="WordPress.Security.SafeRedirect"/>
+
+<!-- Discourage unsafe PHP -->
+<rule ref="WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize"/>
+
+<!-- Enforce strict comparisons and clean logic -->
+<rule ref="Universal.Operators.StrictComparisons"/>
+
+<!-- Maintainability -->
+<rule ref="Squiz.Scope.MethodScope"/>
+
+<!-- Whitespace / formatting – low priority -->
+<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
+<exclude name="Squiz.WhiteSpace.*"/>
+
+<exclude name="PEAR.Functions.*"/>
+
 	<!-- Add in some extra rules from other standards. -->
-	<rule ref="Generic.Commenting.Todo"/>
+	<!-- <rule ref="Generic.Commenting.Todo"/> -->
 
 	<!-- Check for PHP cross-version compatibility. -->
 	<!--

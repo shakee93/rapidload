@@ -6,7 +6,7 @@
         "mck89/peast": "^1.15"
     },
     "scripts": {
-        "lint": "./vendor/bin/phpcs",
+        "lint": "./vendor/bin/phpcs --colors",
         "lint-fix": "./vendor/bin/phpcbf"
     },
     "autoload": {

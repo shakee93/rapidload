@@ -17,3 +17,5 @@ Note: plugin version and page-optimizer version are different. We only release t
 7. bump page-optimizer version in ./includes/admin/page-optimizer/package.json
 8. Create a git tag for the new version. (3.0.1, 3.1.0, 3.1.1, etc)
 9. push the new tag to github
+
+configured phpcs using phpcs.xml read it before 
