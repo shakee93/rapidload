@@ -256,6 +256,8 @@ class RapidLoad_Admin
 
     public function rapidload_titan_optimizations_data(){
 
+        self::verify_nonce();
+
         $start_from = 0;
         $limit = 10;
         $s = null;
