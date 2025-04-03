@@ -1062,7 +1062,7 @@ class RapidLoad_Cache
 
         if ( is_multisite() ) {
             global $wpdb;
-            $blog_paths = $wpdb->get_col( $wpdb->prepare( "SELECT path FROM $wpdb->blogs" ) );
+            $blog_paths = $wpdb->get_col( "SELECT path FROM $wpdb->blogs" );
         } else {
             $blog_paths = array( '/' );
         }
@@ -1146,7 +1146,7 @@ class RapidLoad_Cache
 
         if ( is_multisite() ) {
             global $wpdb;
-            $blog_ids = array_map( 'absint', $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM $wpdb->blogs" ) ) );
+            $blog_ids = array_map( 'absint', $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ) );
         } else {
             $blog_ids = array( 1 );
         }

@@ -439,7 +439,7 @@ abstract class RapidLoad_DB
             switch ($type){
 
                 case 'all':{
-                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data" ) );
+                    $wpdb->query( "DELETE FROM {$wpdb->prefix}rapidload_job_data" );
                     break;
                 }
 
@@ -448,7 +448,7 @@ abstract class RapidLoad_DB
                         $url = sanitize_text_field($args['url']); // Sanitize URL input
                         $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s)", $url));
                     }else{
-                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url')" ) );
+                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = %s)", 'is_url' ) );
                     }
                     break;
                 }
@@ -460,18 +460,18 @@ abstract class RapidLoad_DB
 
                         $wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s)", $rule, $regex));
                     }else{
-                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != 'is_url')" ) );
+                        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_id IN (SELECT id FROM {$wpdb->prefix}rapidload_job WHERE rule != %s)", 'is_url' ) );
                     }
                     break;
                 }
 
                 case 'uucss':{
-                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'" ) );
+                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = %s", 'uucss' ) );
                     break;
                 }
 
                 case 'cpcss':{
-                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'" ) );
+                    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = %s", 'cpcss' ) );
                     break;
                 }
             }

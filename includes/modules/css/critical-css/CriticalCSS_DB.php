@@ -87,7 +87,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
             $where .= " AND job_type='cpcss' ";
         }
 
-        $data = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} FROM {$wpdb->prefix}rapidload_job_data {$where} ORDER BY {$order_by} LIMIT " . round($limit, 0)), OBJECT );
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} FROM {$wpdb->prefix}rapidload_job_data {$where} ORDER BY {$order_by} LIMIT %d" , round($limit, 0)), OBJECT );
 
         $error = $wpdb->last_error;
 
@@ -106,7 +106,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
 
         $status = str_replace('"', '', $status);
 
-        $data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss' AND status IN(%s) ORDER BY {$order_by} LIMIT " . $limit, $status ), OBJECT );
+        $data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss' AND status IN(%s) ORDER BY {$order_by} LIMIT %d", $status, $start_from, $limit ), OBJECT );
 
         $error = $wpdb->last_error;
 
