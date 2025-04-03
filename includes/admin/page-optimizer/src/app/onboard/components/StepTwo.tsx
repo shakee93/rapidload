@@ -18,6 +18,7 @@ import ComparisonDialog from "app/dashboard/components/ComparisonDialog";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import LettersPullUp from "components/ui/letterUpAnimation";
 import ApiService from '../../../services/api';
+import { setCommonRootState } from '../../../store/common/commonActions';
 
 // type PerformanceGear = 'starter' | 'accelerate' | 'turboMax';
 
@@ -92,11 +93,8 @@ const StepTwo: React.FC<StepTwoProps> = ({ reconnect, onNext }) => {
         setLoading(false);
         if (response.success) {
             dispatch(updateLicense(options));
-            // setIsFadingOut(true);
-            //
-            // setTimeout(() => {
-            //     window.location.hash = '#/';
-            // }, 300);
+            dispatch(setCommonRootState('licenseConnected', true));
+           
             if (onNext) {
                 onNext();
             }

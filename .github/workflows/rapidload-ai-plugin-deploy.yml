@@ -20,25 +20,25 @@ jobs:
           VERSION=$(grep -m 1 "Version:" unusedcss.php | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract Data from `readme.json`
+      - name: Extract Data from `readme.txt`
         id: readme
         run: |
-          # Extract metadata from readme.json
-          TESTED_UPTO=$(jq -r '.tested_up_to' readme.json)
-          REQUIRES_PHP=$(jq -r '.requires_php' readme.json) 
-          STABLE_TAG=$(jq -r '.stable_tag' readme.json)
-          REQUIRES_AT_LEAST=$(jq -r '.requires_at_least' readme.json)
-
-          # Get changelog directly from changelog key
-          CHANGELOG=$(jq -r '.changelog' readme.json)
+          # Extract metadata from readme.txt using grep and sed
+          TESTED_UPTO=$(grep "Tested up to:" readme.txt | sed 's/Tested up to: *//')
+          REQUIRES_PHP=$(grep "Requires PHP:" readme.txt | sed 's/Requires PHP: *//')
+          STABLE_TAG=$(grep "Stable tag:" readme.txt | sed 's/Stable tag: *//')
+          REQUIRES_AT_LEAST=$(grep "Requires at least:" readme.txt | sed 's/Requires at least: *//')
+          
+          # Extract description section
+          DESCRIPTION=$(sed -n '/== Description ==/,/==/{/== Description ==/d;/==/q;p}' readme.txt)
+          
+          # Extract changelog section
+          CHANGELOG=$(sed -n '/== Changelog ==/,/==/{/== Changelog ==/d;/==/q;p}' readme.txt)
           
           if [ -z "$CHANGELOG" ]; then
             echo "Warning: No changelog found"
             CHANGELOG="<h4>Version ${{ env.VERSION }}</h4><ul><li>Release</li></ul>"
           fi
-
-          # Extract description from readme.json
-          DESCRIPTION=$(jq -r '.description' readme.json)
 
           # Store extracted values in environment variables
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
@@ -58,10 +58,9 @@ jobs:
       - name: Zip Plugin Files
         run: |
           PLUGIN_NAME="unusedcss"
-          mkdir -p "$PLUGIN_NAME"
-          rsync -av --progress . "$PLUGIN_NAME" --exclude "$PLUGIN_NAME" --exclude .git --exclude .github --exclude '*.zip'
-          zip -r "${PLUGIN_NAME}.zip" "$PLUGIN_NAME"
-          rm -rf "$PLUGIN_NAME"
+          # Create zip directly without wrapping folder
+          zip -r "${PLUGIN_NAME}.zip" . -x ".git/*" ".github/*" "*.zip"
+          # Remove everything except the zip
           find . -mindepth 1 -maxdepth 1 ! -name "${PLUGIN_NAME}.zip" -exec rm -rf {} +
 
       - name: List Files
@@ -69,29 +68,24 @@ jobs:
           pwd
           ls -la
 
-      - name: Upload Plugin ZIP to S3
-        uses: jakejarvis/s3-sync-action@master
+      - name: Delete existing files from S3 version folder
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "download/${{ env.VERSION }}"
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload Plugin ZIP to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "."
-          DEST_DIR: "latest"
+      - name: Delete existing files from S3 version folder
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }} --recursive
+
+      - name: Delete existing files from S3 latest folder
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/latest --recursive
+
+      - name: Upload Plugin ZIP to S3 version folder
+        run: aws s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/download/${{ env.VERSION }}/unusedcss.zip --acl public-read
+
+      - name: Upload Plugin ZIP to S3 latest folder
+        run: aws s3 cp unusedcss.zip s3://${{ secrets.AWS_BUCKET_NAME }}/latest/unusedcss.zip --acl public-read
 
       - name: Generate Update JSON
         run: |
@@ -112,22 +106,13 @@ jobs:
             "license_uri": "https://www.gnu.org/licenses/gpl-3.0.html",
             "last_updated": "$(date +'%Y-%m-%d')",
             "sections": {
-              "description": "${{ env.DESCRIPTION }}",
-              "installation": "1. Upload the plugin files to the `/wp-content/plugins/unusedcss` directory, or install the plugin through WordPress.\\n2. Activate the plugin.\\n3. Configure settings under 'RapidLoad AI'.",
-              "changelog": "${{ env.CHANGELOG }}",
-              "faq": "<strong>Q: How much does it cost?</strong><br>A: Starts at $10/month via [RapidLoad.io](https://rapidload.io).<br><br><strong>Q: Will this work with WooCommerce?</strong><br>A: Yes, it fully supports WooCommerce."
+              
             }
           }
           EOF
 
+      - name: Delete existing Update JSON from S3
+        run: aws s3 rm s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json
+
       - name: Upload Update JSON to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./plugin-update-check"
-          DEST_DIR: "download/"
+        run: aws s3 cp plugin-update-check/update.json s3://${{ secrets.AWS_BUCKET_NAME }}/download/update.json --acl public-read

@@ -18,7 +18,7 @@ class WpForms_Compatible extends RapidLoad_ThirdParty{
 
     public function handle($args)
     {
-        $url_parts = parse_url( $args );
+        $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
             ( $this->str_contains($url_parts['query'], 'post_type=wpforms') ||

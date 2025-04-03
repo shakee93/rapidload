@@ -7,7 +7,7 @@ import { useAppContext } from "../context/app";
 import { ThunkDispatch } from "redux-thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { AppAction, RootState } from "../store/app/appTypes";
-import { fetchPosts, fetchReport, fetchSettings, getTestModeStatus, updateDiagnosticResults, updateLicense } from "../store/app/appActions";
+import { fetchPosts, fetchReport, fetchSettings, getTestModeStatus, updateDiagnosticResults, updateGeneralSettings, updateLicense } from "../store/app/appActions";
 import { Toaster } from "components/ui/toaster";
 import { AnimatePresence, m, motion } from "framer-motion";
 import { useRootContext } from "../context/root";
@@ -67,7 +67,13 @@ const App = ({ popup, _showOptimizer = false }: {
     });
     const { headerUrl, onboardCompleted, diagnosticLoading } = useCommonDispatch();
     const { changeTheme } = useRootContext()
-    const { testMode, license, data } = useSelector(optimizerData);
+    const { testMode, license, data, generalSettings } = useSelector(optimizerData);
+    const [licenseInfo, setLicenseInfo] = useState<License | null>(() => options.rapidload_license_data || null);
+
+    useEffect(() => {
+        dispatch(updateGeneralSettings(uucssGlobal?.active_modules.general.options));
+        //console.log("update global settings")
+    }, []);
 
     useEffect(() => {
 
@@ -92,7 +98,8 @@ const App = ({ popup, _showOptimizer = false }: {
     }, []);
 
     useEffect(() => {
-        if (isDark) {
+        const hasRapidloadClass = document.body.classList.contains('toplevel_page_rapidload');
+        if (isDark && hasRapidloadClass) {
           document.body.style.backgroundColor = "rgb(24, 24, 27)"; 
         } else {
           document.body.style.backgroundColor = ""; 
@@ -115,7 +122,6 @@ const App = ({ popup, _showOptimizer = false }: {
 
         // load initial data
         dispatch(fetchReport(options, headerUrl ? headerUrl : options.optimizer_url, false, true));
-        //console.log(activeRoute)
         if (!uucssGlobal?.on_board_complete && !isDev) {
             return;
         }
@@ -126,56 +132,30 @@ const App = ({ popup, _showOptimizer = false }: {
         dispatch(updateDiagnosticResults(options, headerUrl ? headerUrl : options.optimizer_url));
     }, [dispatch, activeReport]);
 
-    const [showStepTwo, setShowStepTwo] = useState(false);
+    const fetchRapidloadLicense = async () => {
+        const response = await dispatch(updateLicense(options));
+        
+        if (response.success) {
+            localStorage.setItem('rapidLoadLicense', JSON.stringify(response.data));
+            setLicenseInfo(response.data);
+        } else {
+            localStorage.removeItem('rapidLoadLicense');
+        }
+    };
 
     useEffect(() => {
-        if (uucssGlobal?.on_board_complete == '') {
-            return;
+        if (uucssGlobal?.on_board_complete === '') return;
+        if (licenseInfo) {
+            dispatch(setCommonRootState('licenseConnected', true));
+            
+        } else if (!license) {
+            fetchRapidloadLicense();
         }
+    }, [licenseInfo]);
 
-        const updateLicenseAndStore = async () => {
-            const response = await dispatch(updateLicense(options));
-            const isLicensed = response.data?.licensedDomain;
-            // const isLicensed = true;
-            if (!isLicensed && uucssGlobal?.on_board_complete == '1') {
-                localStorage.removeItem('rapidLoadLicense');
-                setShowStepTwo(true);
-            }
-        };
-        updateLicenseAndStore();
+  
+  
 
-    }, [dispatch]);
-
-
-    useEffect(() => {
-        if (license?.licensedDomain) {
-            localStorage.setItem('rapidLoadLicense', JSON.stringify(license));
-        }
-        const storedLicense = localStorage.getItem('rapidLoadLicense');
-
-       // console.log(license, storedLicense);
-
-        if (storedLicense) {
-            setShowStepTwo(false)
-        }
-
-    }, [license]);
-
-    const renderStepTwo = () => {
-        return (
-            <div className='bg-transparent p-6'>
-                <motion.div
-                    key="stepTwo"
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: 100, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <StepTwo reconnect={true} />
-                </motion.div>
-            </div>
-        );
-    }
     // const hash = window.location.hash.replace("#", "");
     //  const [activeRoute, setActiveRoute] = useState( hash.length > 0 ? hash : '/');
     //  const [routes, setRoutes] = useState( [
@@ -244,18 +224,7 @@ const App = ({ popup, _showOptimizer = false }: {
         return routes.find(r => r.id === baseRoute)?.component || routes[0].component;
     };
 
-    // useEffect(() => {
-    //     if (isAdminPage || isDev) {
-    //         if (onboardCompleted) {
-    //             window.location.hash = activeRoute;
-    //         } else if (uucssGlobal?.on_board_complete === undefined || uucssGlobal?.on_board_complete === "") {
-    //             window.location.hash = "#/onboard";
-    //             setActiveRoute("/onboard");
-    //         } else {
-    //             window.location.hash = activeRoute;
-    //         }
-    //     }
-    // }, [activeRoute, onboardCompleted]);
+   
     useEffect(() => {
         const hasNonce = hasQueryParam("nonce");
         const hasOnboard = window.location.hash.includes("onboard");
@@ -320,10 +289,7 @@ const App = ({ popup, _showOptimizer = false }: {
             {(mounted && showOptimizer) &&
                 <>
 
-                    {/*{testMode &&*/}
-                    {/*    <TestModeNotification/>*/}
-                    {/*}*/}
-
+                  
                     <div className={`dark:text-brand-300 text-brand-800 dark:bg-brand-900 bg-[#F0F0F1]`}>
                         {/* New Banner Component */}
                         {showBanner && (
@@ -361,7 +327,7 @@ const App = ({ popup, _showOptimizer = false }: {
                             </AppTour>
                         </Suspense>
                         {/* this is temp fix this need to be fixed */}
-                        {/* {activeRoute !== "/onboard" && !showStepTwo && ( */}
+                        
                         {activeRoute !== "/onboard" && (
                             <div className='justify-center flex container'>
                                 <header
@@ -422,11 +388,7 @@ const App = ({ popup, _showOptimizer = false }: {
 
                                         <div className="flex items-center gap-1.5">
                                             <GeneralSettingsTrigger open={open.generalSettings} onOpenChange={(isOpen) => handleOpenChange("generalSettings", isOpen)} />
-                                            {/*<TooltipText text="Theme">*/}
-                                            {/*    <div onClick={e => changeTheme()}>*/}
-                                            {/*        <ThemeSwitcher></ThemeSwitcher>*/}
-                                            {/*    </div>*/}
-                                            {/*</TooltipText>*/}
+                                            
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger className='w-8 h-12 flex items-center justify-center'>
                                                     <TooltipText className='flex items-center justify-center' asChild={true} text='Add Optimization'>
@@ -507,9 +469,7 @@ const App = ({ popup, _showOptimizer = false }: {
                         )}
                     </div>
 
-                    {/* {!isDev && (
-                        <div className="dark:bg-brand-900 absolute bottom-0 left-0 right-0 h-[8%] bg-[#F0F0F1]" />
-                    )} */}
+                    
                 </>
             }
 

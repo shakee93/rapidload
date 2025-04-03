@@ -61,7 +61,7 @@ class Woocommerce_Compatible extends RapidLoad_ThirdParty{
     }
 
     public function exclude($args){
-        $url_parts = parse_url( $args );
+        $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
             ( $this->str_contains($url_parts['query'], 'post_type=shop_coupon') ||
@@ -87,9 +87,9 @@ class Woocommerce_Compatible extends RapidLoad_ThirdParty{
 
             $order = new WC_Order();
 
-            $excludable_urls[] = parse_url($order->get_checkout_payment_url(), PHP_URL_PATH);
-            $excludable_urls[] = parse_url($order->get_checkout_order_received_url(), PHP_URL_PATH);
-            $excludable_urls[] = parse_url($order->get_view_order_url(), PHP_URL_PATH);
+            $excludable_urls[] = wp_parse_url($order->get_checkout_payment_url(), PHP_URL_PATH);
+            $excludable_urls[] = wp_parse_url($order->get_checkout_order_received_url(), PHP_URL_PATH);
+            $excludable_urls[] = wp_parse_url($order->get_view_order_url(), PHP_URL_PATH);
 
             foreach ($excludable_urls as $key => $excludable_url){
 

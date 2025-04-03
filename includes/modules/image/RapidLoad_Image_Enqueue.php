@@ -49,7 +49,9 @@ class RapidLoad_Image_Enqueue
             $this->options['uucss_exclude_above_the_fold_image_count'] = 3;
         }
 
-        $this->preload_images();
+        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] == "1"){
+            $this->preload_images();
+        }
 
         $this->set_width_and_height();
 
@@ -488,7 +490,7 @@ class RapidLoad_Image_Enqueue
 
 
     function is_youtube_iframe($iframe_src) {
-        $domain = parse_url($iframe_src, PHP_URL_HOST);
+        $domain = wp_parse_url($iframe_src, PHP_URL_HOST);
         if (strpos($domain, 'youtube.com') !== false) {
             return true;
         } else {
@@ -707,12 +709,12 @@ class RapidLoad_Image_Enqueue
     }
 
     function isAbsolute($url) {
-        return isset(parse_url($url)['host']);
+        return isset(wp_parse_url($url)['host']);
     }
 
     function makeURLAbsolute($relative_url, $base_url) {
 
-        $parsed_base_url = parse_url($base_url);
+        $parsed_base_url = wp_parse_url($base_url);
 
         if (strpos($relative_url, '/') !== 0) {
             $relative_url = '/' . $relative_url;
@@ -767,34 +769,31 @@ class RapidLoad_Image_Enqueue
     }
 
     public function convertImageUrlToDataUri($imageUrl) {
-        // Initialize cURL
-        $ch = curl_init();
-
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $imageUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For HTTPS urls, if necessary
-
-        // Execute cURL session
-        $imageData = curl_exec($ch);
+        // Get image data using WordPress HTTP API
+        $response = wp_remote_get($imageUrl);
 
         // Check for errors
-        if(curl_errno($ch)) {
+        if (is_wp_error($response)) {
             return $imageUrl;
         }
 
-        // Close cURL session
-        curl_close($ch);
+        // Get response body
+        $imageData = wp_remote_retrieve_body($response);
 
-        // Get the MIME type of the image
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->buffer($imageData);
+        // Get content type from headers
+        $contentType = wp_remote_retrieve_header($response, 'content-type');
+
+        // If content type not found in headers, try to detect it
+        if (!$contentType) {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $contentType = $finfo->buffer($imageData);
+        }
 
         // Encode the image data in Base64
         $base64 = base64_encode($imageData);
 
         // Create the Data URI
-        return "data:$mime;base64,$base64";
+        return "data:$contentType;base64,$base64";
     }
 
 

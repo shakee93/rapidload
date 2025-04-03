@@ -4,8 +4,8 @@ Contributors: shakee93, futtta
 Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 3.1.2
+Tested up to: 6.7.2
+Stable tag: 3.1.6
 Requires PHP: 5.4
 License: GPLv3
 License URI: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -22,7 +22,7 @@ RapidLoad AI is a next-generation optimization tool designed to bring your site'
 ### Why choose RapidLoad AI?
 
 - **Top Rated Support**
-   - Expert Support team to help non-technical users get their best performance. ([Read Reviews](https://wordpress.org/support/plugin/unusedcss/reviews/?filter=5))
+   - Expert Support team to help non-technical users get their best performance. ([Read Reviews](https://wordpress.org/support/plugin/unusedcss/reviews/))
 - **AI Diagnostics**
    - Analyzes your website bottlenecks and provides actionable insights to get your business perform at the top level.
 - **AI Support Chat**
@@ -142,6 +142,20 @@ RapidLoad accepts both broad and star(*) expressions and regular expression excl
 3. RapidLoad Dashboard.
 
 == Changelog ==
+
+= 3.1.6 - 26/03/2025 =
+ * fix: known bugs
+
+= 3.1.5 - 21/03/2025 =
+ * fix: known bugs
+
+= 3.1.4 - 18/03/2025 =
+ * feat: enhanced user experience
+ * fix: known bugs
+
+= 3.1.3 - 18/03/2025 =
+ * feat: enhanced user experience
+ * fix: known bugs
 
 = 3.1.2 - 06/03/2025 =
  * fix: known bugs

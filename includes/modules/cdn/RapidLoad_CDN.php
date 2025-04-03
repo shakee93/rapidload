@@ -130,7 +130,7 @@ class RapidLoad_CDN
             $cdn = $this->options['uucss_cdn_url'];
         }
 
-        $parsed_url = parse_url($url);
+        $parsed_url = wp_parse_url($url);
 
         if($parsed_url['path'] && !empty($cdn)){
             return untrailingslashit($cdn) . $parsed_url['path'];

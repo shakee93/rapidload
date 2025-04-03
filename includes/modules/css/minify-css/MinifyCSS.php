@@ -64,7 +64,7 @@ class MinifyCSS
         foreach ($files as $file) {
             $file_path = $directory_path . '/' . $file;
             if (is_file($file_path) && $this->str_contains($file_path, 'rpd-inline-style-') && (filemtime($file_path) < ($current_time - ($days_to_keep * 86400)))) {
-                unlink($file_path);
+                wp_delete_file($file_path);
             }
         }
     }
@@ -125,7 +125,7 @@ class MinifyCSS
             $cdn = self::get_wp_content_url();
         } else {
 
-            $url_parts = parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 

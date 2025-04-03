@@ -270,7 +270,7 @@ class CriticalCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = $_REQUEST['url'];
+            $url = sanitize_url($_REQUEST['url']);
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');
@@ -467,7 +467,7 @@ class CriticalCSS
         }
 
         // make dir if not exists
-        //$created = $this->file_system->mkdir( self::$base_dir );
+        //$created = $this->file_system->mkdir( self::$base_dir );.
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
         if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {

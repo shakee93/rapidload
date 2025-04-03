@@ -93,7 +93,7 @@ class RapidLoad_Admin
 
         $image_url_status = [];
 
-        $image_urls = json_decode(sanitize_text_field(stripslashes($_REQUEST['image_urls'])), true);
+        $image_urls = json_decode(sanitize_text_field(wp_unslash($_REQUEST['image_urls'])), true);
 
         if (!is_array($image_urls)) {
             wp_send_json_error('Invalid image URLs format');
@@ -193,7 +193,7 @@ class RapidLoad_Admin
             wp_send_json_error( 'Search key not found' );
         }
 
-        $search_term = sanitize_text_field( $_REQUEST['s'] );
+        $search_term = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
         $search_term_lower = strtolower( $search_term );
 
         if ( strlen( $search_term ) < 3 ) {
@@ -207,7 +207,7 @@ class RapidLoad_Admin
             $cart_page_id = $checkout_page_id = 0;
         }
 
-        $post_type = isset( $_REQUEST['post_type'] ) ? sanitize_text_field( $_REQUEST['post_type'] ) : 'any';
+        $post_type = isset( $_REQUEST['post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) ) : 'any';
         $posts_per_page = 10;
         $paged = 1;
         $data = [];
@@ -256,18 +256,20 @@ class RapidLoad_Admin
 
     public function rapidload_titan_optimizations_data(){
 
+        self::verify_nonce();
+
         $start_from = 0;
         $limit = 10;
         $s = null;
 
         if(isset($_REQUEST['start_from'])){
-            $start_from = $_REQUEST['start_from'];
+            $start_from = absint($_REQUEST['start_from']);
         }
         if(isset($_REQUEST['limit'])){
-            $limit = $_REQUEST['limit'];
+            $limit = absint($_REQUEST['limit']);
         }
         if(isset($_REQUEST['s']) && !empty($_REQUEST['s'])){
-            $s = $_REQUEST['s'];
+            $s = sanitize_text_field(wp_unslash($_REQUEST['s']));
         }
 
         wp_send_json_success(RapidLoad_Job::get_all_optimizations_data_for('desktop', $start_from, $limit, $s));
@@ -280,7 +282,7 @@ class RapidLoad_Admin
             wp_send_json_error('url required');
         }
 
-        $url = $this->transform_url($_REQUEST['url']);
+        $url = $this->transform_url(sanitize_url(wp_unslash($_REQUEST['url'])));
 
         if($url == $this->transform_url(site_url())){
             wp_send_json_error('cannot delete home page optimizations');
@@ -377,7 +379,7 @@ class RapidLoad_Admin
         self::verify_nonce();
 
         if(isset($_REQUEST['status'])){
-            RapidLoad_Base::update_option('titan_checklist_status', $_REQUEST['status']);
+            RapidLoad_Base::update_option('titan_checklist_status', sanitize_text_field(wp_unslash($_REQUEST['status'])));
             wp_send_json_success(true);
         }
 
@@ -436,7 +438,7 @@ class RapidLoad_Admin
 
         // Create server array first
         $server_info = array(
-            'software' => $_SERVER['SERVER_SOFTWARE'],
+            'software' => isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : '',
             'php_version' => PHP_VERSION,
             'cron_status' => 0
         );
@@ -484,8 +486,8 @@ class RapidLoad_Admin
             wp_send_json_error(false);
         }
 
-        $version = $_REQUEST['smiley'];
-        $reason = isset($_REQUEST['detail']) ? $_REQUEST['detail'] : '';
+        $version = sanitize_text_field(wp_unslash($_REQUEST['smiley']));
+        $reason = isset($_REQUEST['detail']) ? sanitize_textarea_field(wp_unslash($_REQUEST['detail'])) : '';
 
         $api = new RapidLoad_Api();
 
@@ -527,41 +529,41 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_minify'])){
 
-            $options['uucss_minify'] = (sanitize_text_field($_REQUEST['uucss_minify']) == 'true' ? "1" : null);
+            $options['uucss_minify'] = (sanitize_text_field(wp_unslash($_REQUEST['uucss_minify'])) == 'true' ? "1" : null);
 
         }
 
         if(isset($_REQUEST['uucss_minify_excluded_files'])){
 
-            $options['uucss_minify_excluded_files'] = sanitize_textarea_field($_REQUEST['uucss_minify_excluded_files']);
+            $options['uucss_minify_excluded_files'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_minify_excluded_files']));
 
         }
 
         if(isset($_REQUEST['rapidload_aggregate_css'])){
 
-            $options['rapidload_aggregate_css'] = sanitize_text_field($_REQUEST['rapidload_aggregate_css']) == 'true' ? "1" : null;
+            $options['rapidload_aggregate_css'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_aggregate_css'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_inline_css'])){
 
-            $options['uucss_inline_css'] = sanitize_text_field($_REQUEST['uucss_inline_css']) == 'true' ? "1" : null;
+            $options['uucss_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_inline_css'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_cpcss'])){
 
-            $options['uucss_enable_cpcss'] = sanitize_text_field($_REQUEST['uucss_enable_cpcss']) == 'true' ? "1" : null;
+            $options['uucss_enable_cpcss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_cpcss'])) == 'true' ? "1" : null;
 
             if(isset($_REQUEST['remove_cpcss_on_user_interaction'])){
 
-                $options['remove_cpcss_on_user_interaction'] = sanitize_text_field($_REQUEST['remove_cpcss_on_user_interaction']) == 'true' ? "1" : null;
+                $options['remove_cpcss_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['remove_cpcss_on_user_interaction'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_additional_css'])){
 
-                $options['uucss_additional_css'] = sanitize_textarea_field($_REQUEST['uucss_additional_css']);
+                $options['uucss_additional_css'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_additional_css']));
 
             }
 
@@ -575,7 +577,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_excluded_files'])){
 
-            $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_excluded_files']));
+            $value = explode("\r\n", sanitize_textarea_field(wp_unslash($_REQUEST['uucss_excluded_files'])));
 
             $value = array_filter($value, function ($v){
                 return !empty($v);
@@ -589,41 +591,41 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_uucss'])){
 
-            $options['uucss_enable_uucss'] = sanitize_text_field($_REQUEST['uucss_enable_uucss']) == 'true' ? "1" : null;
+            $options['uucss_enable_uucss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_uucss'])) == 'true' ? "1" : null;
 
             if(isset($_REQUEST['uucss_variables'])){
 
-                $options['uucss_variables'] = sanitize_text_field($_REQUEST['uucss_variables']) == 'true' ? "1" : null;
+                $options['uucss_variables'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_variables'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_keyframes'])){
 
-                $options['uucss_keyframes'] = sanitize_text_field($_REQUEST['uucss_keyframes']) == 'true' ? "1" : null;
+                $options['uucss_keyframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_keyframes'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_fontface'])){
 
-                $options['uucss_fontface'] = sanitize_text_field($_REQUEST['uucss_fontface']) == 'true' ? "1" : null;
+                $options['uucss_fontface'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_fontface'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_include_inline_css'])){
 
-                $options['uucss_include_inline_css'] = sanitize_text_field($_REQUEST['uucss_include_inline_css']) == 'true' ? "1" : null;
+                $options['uucss_include_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_include_inline_css'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_cache_busting_v2'])){
 
-                $options['uucss_cache_busting_v2'] = sanitize_text_field($_REQUEST['uucss_cache_busting_v2']) == 'true' ? "1" : null;
+                $options['uucss_cache_busting_v2'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cache_busting_v2'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_safelist'])){
 
-                $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_safelist']));
+                $value = explode("\r\n", sanitize_textarea_field(wp_unslash($_REQUEST['uucss_safelist'])));
 
                 $value = array_filter($value, function ($v){
                     return !empty($v);
@@ -642,7 +644,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_blocklist'])){
 
-                $value = explode("\r\n", sanitize_textarea_field($_REQUEST['uucss_blocklist']));
+                $value = explode("\r\n", sanitize_textarea_field(wp_unslash($_REQUEST['uucss_blocklist'])));
 
                 $value = array_filter($value, function ($v){
                    return !empty($v);
@@ -654,7 +656,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['whitelist_packs'])){
 
-                $options['whitelist_packs'] = sanitize_textarea_field($_REQUEST['whitelist_packs']);
+                $options['whitelist_packs'] = sanitize_textarea_field(wp_unslash($_REQUEST['whitelist_packs']));
 
             }else{
 
@@ -667,7 +669,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_rules'])){
 
-            $options['uucss_enable_rules'] = sanitize_text_field($_REQUEST['uucss_enable_rules']) == 'true' ? "1" : null;
+            $options['uucss_enable_rules'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_rules'])) == 'true' ? "1" : null;
 
         }
 
@@ -675,67 +677,67 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_load_js_method'])){
 
-            $options['uucss_load_js_method'] = sanitize_text_field($_REQUEST['uucss_load_js_method']);
+            $options['uucss_load_js_method'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_load_js_method']));
 
         }
 
         if(isset($_REQUEST['defer_inline_js'])){
 
-            $options['defer_inline_js'] = sanitize_text_field($_REQUEST['defer_inline_js']) == 'true' ? "1" : null;
+            $options['defer_inline_js'] = sanitize_text_field(wp_unslash($_REQUEST['defer_inline_js'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['minify_js'])){
 
-            $options['minify_js'] = sanitize_text_field($_REQUEST['minify_js']) == 'true' ? "1" : null;
+            $options['minify_js'] = sanitize_text_field(wp_unslash($_REQUEST['minify_js'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['preload_internal_links'])){
 
-            $options['preload_internal_links'] = sanitize_text_field($_REQUEST['preload_internal_links']) == 'true' ? "1" : null;
+            $options['preload_internal_links'] = sanitize_text_field(wp_unslash($_REQUEST['preload_internal_links'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['delay_javascript'])){
 
-            $options['delay_javascript'] = sanitize_text_field($_REQUEST['delay_javascript']) == 'true' ? "1" : null;
+            $options['delay_javascript'] = sanitize_text_field(wp_unslash($_REQUEST['delay_javascript'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_excluded_js_files'])){
 
-            $options['uucss_excluded_js_files'] = sanitize_textarea_field($_REQUEST['uucss_excluded_js_files']);
+            $options['uucss_excluded_js_files'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_excluded_js_files']));
 
         }
 
         if(isset($_REQUEST['delay_javascript_callback'])){
 
-            $options['delay_javascript_callback'] = sanitize_textarea_field($_REQUEST['delay_javascript_callback']);
+            $options['delay_javascript_callback'] = sanitize_textarea_field(wp_unslash($_REQUEST['delay_javascript_callback']));
 
         }
 
         if(isset($_REQUEST['uucss_excluded_js_files_from_defer'])){
 
-            $options['uucss_excluded_js_files_from_defer'] = sanitize_textarea_field($_REQUEST['uucss_excluded_js_files_from_defer']);
+            $options['uucss_excluded_js_files_from_defer'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_excluded_js_files_from_defer']));
 
         }
 
         if(isset($_REQUEST['uucss_load_scripts_on_user_interaction'])){
 
-            $options['uucss_load_scripts_on_user_interaction'] = sanitize_textarea_field($_REQUEST['uucss_load_scripts_on_user_interaction']) == 'true' ? "1" : null;
+            $options['uucss_load_scripts_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_load_scripts_on_user_interaction'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_exclude_files_from_delay_js'])){
 
-            $options['uucss_exclude_files_from_delay_js'] = sanitize_textarea_field($_REQUEST['uucss_exclude_files_from_delay_js']);
+            $options['uucss_exclude_files_from_delay_js'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_exclude_files_from_delay_js']));
 
         }
 
         if(isset($_REQUEST['uucss_exclude_files_from_minify_js'])){
 
-            $options['uucss_exclude_files_from_minify_js'] = sanitize_textarea_field($_REQUEST['uucss_exclude_files_from_minify_js']);
+            $options['uucss_exclude_files_from_minify_js'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_exclude_files_from_minify_js']));
 
         }
 
@@ -743,31 +745,31 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_query_string'])){
 
-            $options['uucss_query_string'] = sanitize_text_field($_REQUEST['uucss_query_string']) == 'true' ? "1" : null;
+            $options['uucss_query_string'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_query_string'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['rapidload_minify_html'])){
 
-            $options['rapidload_minify_html'] = sanitize_text_field($_REQUEST['rapidload_minify_html']) == 'true' ? "1" : null;
+            $options['rapidload_minify_html'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_minify_html'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_debug'])){
 
-            $options['uucss_enable_debug'] = sanitize_text_field($_REQUEST['uucss_enable_debug']) == 'true' ? "1" : null;
+            $options['uucss_enable_debug'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_debug'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_queue'])){
 
-            $options['uucss_disable_add_to_queue'] = sanitize_text_field($_REQUEST['uucss_disable_add_to_queue']) == 'true' ? "1" : null;
+            $options['uucss_disable_add_to_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_queue'])) == 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_re_queue'])){
 
-            $options['uucss_disable_add_to_re_queue'] = sanitize_text_field($_REQUEST['uucss_disable_add_to_re_queue']) == 'true' ? "1" : null;
+            $options['uucss_disable_add_to_re_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_re_queue'])) == 'true' ? "1" : null;
 
         }
 
@@ -785,13 +787,13 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_excluded_links'])){
 
-            $options['uucss_excluded_links'] = sanitize_textarea_field($_REQUEST['uucss_excluded_links']);
+            $options['uucss_excluded_links'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_excluded_links']));
 
         }
 
         if(isset($_REQUEST['uucss_disable_error_tracking'])){
 
-            $options['uucss_disable_error_tracking'] = sanitize_text_field($_REQUEST['uucss_disable_error_tracking']) == 'true' ? "1" : null;
+            $options['uucss_disable_error_tracking'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_error_tracking'])) == 'true' ? "1" : null;
 
         }
 
@@ -801,7 +803,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_image_optimize_level'])){
 
-                $options['uucss_image_optimize_level'] = sanitize_text_field($_REQUEST['uucss_image_optimize_level']);
+                $options['uucss_image_optimize_level'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_image_optimize_level']));
 
             }
 
@@ -813,61 +815,61 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_support_next_gen_formats'])){
 
-                $options['uucss_support_next_gen_formats'] = sanitize_text_field($_REQUEST['uucss_support_next_gen_formats']) == 'true' ? "1" : null;
+                $options['uucss_support_next_gen_formats'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_support_next_gen_formats'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_adaptive_image_delivery'])){
 
-                $options['uucss_adaptive_image_delivery'] = sanitize_text_field($_REQUEST['uucss_adaptive_image_delivery']) == 'true' ? "1" : null;
+                $options['uucss_adaptive_image_delivery'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_adaptive_image_delivery'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_set_width_and_height'])){
 
-                $options['uucss_set_width_and_height'] = sanitize_text_field($_REQUEST['uucss_set_width_and_height']) == 'true' ? "1" : null;
+                $options['uucss_set_width_and_height'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_set_width_and_height'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_images'])){
 
-                $options['uucss_lazy_load_images'] = sanitize_text_field($_REQUEST['uucss_lazy_load_images']) == 'true' ? "1" : null;
+                $options['uucss_lazy_load_images'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_images'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_iframes'])){
 
-                $options['uucss_lazy_load_iframes'] = sanitize_text_field($_REQUEST['uucss_lazy_load_iframes']) == 'true' ? "1" : null;
+                $options['uucss_lazy_load_iframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_iframes'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_generate_blurry_place_holder'])){
 
-                $options['uucss_generate_blurry_place_holder'] = sanitize_text_field($_REQUEST['uucss_generate_blurry_place_holder']) == 'true' ? "1" : null;
+                $options['uucss_generate_blurry_place_holder'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_generate_blurry_place_holder'])) == 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images'])){
 
-                $options['uucss_exclude_images'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images']);
+                $options['uucss_exclude_images'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_exclude_images']));
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images_from_lazy_load'])){
 
-                $options['uucss_exclude_images_from_lazy_load'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images_from_lazy_load']);
+                $options['uucss_exclude_images_from_lazy_load'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_exclude_images_from_lazy_load']));
 
             }
 
             if(isset($_REQUEST['uucss_exclude_images_from_modern_images'])){
 
-                $options['uucss_exclude_images_from_modern_images'] = sanitize_textarea_field($_REQUEST['uucss_exclude_images_from_modern_images']);
+                $options['uucss_exclude_images_from_modern_images'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_exclude_images_from_modern_images']));
 
             }
 
             if(isset($_REQUEST['uucss_preload_lcp_image'])){
 
-                $options['uucss_preload_lcp_image'] = sanitize_text_field($_REQUEST['uucss_preload_lcp_image']) == 'true' ? "1" : null;
+                $options['uucss_preload_lcp_image'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_preload_lcp_image'])) == 'true' ? "1" : null;
 
             }
 
@@ -879,13 +881,13 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_preload_font_urls'])){
 
-                $options['uucss_preload_font_urls'] = sanitize_textarea_field($_REQUEST['uucss_preload_font_urls']);
+                $options['uucss_preload_font_urls'] = sanitize_textarea_field(wp_unslash($_REQUEST['uucss_preload_font_urls']));
 
             }
 
             if(isset($_REQUEST['uucss_self_host_google_fonts'])){
 
-                $options['uucss_self_host_google_fonts'] = sanitize_text_field($_REQUEST['uucss_self_host_google_fonts']) == 'true' ? "1" : null;
+                $options['uucss_self_host_google_fonts'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_self_host_google_fonts'])) == 'true' ? "1" : null;
 
             }
         }
@@ -896,19 +898,19 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_cdn_url'])){
 
-                $options['uucss_cdn_url'] = sanitize_text_field($_REQUEST['uucss_cdn_url']);
+                $options['uucss_cdn_url'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cdn_url']));
 
             }
 
             if(isset($_REQUEST['uucss_cdn_dns_id'])){
 
-                $options['uucss_cdn_dns_id'] = sanitize_text_field($_REQUEST['uucss_cdn_dns_id']);
+                $options['uucss_cdn_dns_id'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cdn_dns_id']));
 
             }
 
             if(isset($_REQUEST['uucss_cdn_zone_id'])){
 
-                $options['uucss_cdn_zone_id'] = sanitize_text_field($_REQUEST['uucss_cdn_zone_id']);
+                $options['uucss_cdn_zone_id'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cdn_zone_id']));
 
             }
 
@@ -928,7 +930,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['cache_expires'])){
 
-                $args['cache_expires'] = sanitize_text_field($_REQUEST['cache_expires']) == 'true' ? 1 : 0;
+                $args['cache_expires'] = sanitize_text_field(wp_unslash($_REQUEST['cache_expires'])) == 'true' ? 1 : 0;
 
             }
 
@@ -940,31 +942,31 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['mobile_cache'])){
 
-                $args['mobile_cache'] = sanitize_text_field($_REQUEST['mobile_cache']) == 'true' ? 1 : 0;
+                $args['mobile_cache'] = sanitize_text_field(wp_unslash($_REQUEST['mobile_cache'])) == 'true' ? 1 : 0;
 
             }
 
             if(isset($_REQUEST['excluded_post_ids']) && !empty($_REQUEST['excluded_post_ids'])){
 
-                $args['excluded_post_ids'] = sanitize_textarea_field($_REQUEST['excluded_post_ids']);
+                $args['excluded_post_ids'] = sanitize_textarea_field(wp_unslash($_REQUEST['excluded_post_ids']));
 
             }
 
             if(isset($_REQUEST['excluded_page_paths']) && !empty($_REQUEST['excluded_page_paths'])){
 
-                $args['excluded_page_paths'] = sanitize_textarea_field($_REQUEST['excluded_page_paths']);
+                $args['excluded_page_paths'] = sanitize_textarea_field(wp_unslash($_REQUEST['excluded_page_paths']));
 
             }
 
             if(isset($_REQUEST['excluded_query_strings']) && !empty($_REQUEST['excluded_query_strings'])){
 
-                $args['excluded_query_strings'] = sanitize_textarea_field($_REQUEST['excluded_query_strings']);
+                $args['excluded_query_strings'] = sanitize_textarea_field(wp_unslash($_REQUEST['excluded_query_strings']));
 
             }
 
             if(isset($_REQUEST['excluded_cookies']) && !empty($_REQUEST['excluded_cookies'])){
 
-                $args['excluded_cookies'] = sanitize_textarea_field($_REQUEST['excluded_cookies']);
+                $args['excluded_cookies'] = sanitize_textarea_field(wp_unslash($_REQUEST['excluded_cookies']));
 
             }
 
@@ -974,7 +976,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['rapidload_test_mode'])){
 
-            $options['rapidload_test_mode'] = sanitize_text_field($_REQUEST['rapidload_test_mode']) == 'true' ? 1 : 0;
+            $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) == 'true' ? 1 : 0;
         }
 
         RapidLoad_Base::update_option('autoptimize_uucss_settings',$options);
@@ -997,9 +999,9 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : false;
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : false;
-        $rule_id = isset($_REQUEST['rule_id']) ? $_REQUEST['rule_id'] : false;
+        $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : false;
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
+        $rule_id = isset($_REQUEST['rule_id']) ? sanitize_text_field(wp_unslash($_REQUEST['rule_id'])) : false;
 
         if(!$type || !$url){
             wp_send_json_error('Required field missing');
@@ -1055,7 +1057,7 @@ class RapidLoad_Admin
         }
 
         $uucss_api         = new RapidLoad_Api();
-        $uucss_api->apiKey = sanitize_text_field( $_POST['api_key'] );
+        $uucss_api->apiKey = sanitize_text_field(wp_unslash($_POST['api_key']));
 
         $results = $uucss_api->get( 'verify' );
 
@@ -1106,13 +1108,11 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? $_REQUEST['url'] : false;
-        $rule = isset($_REQUEST['rule']) ? $_REQUEST['rule'] : false;
-        $regex = isset($_REQUEST['regex']) ? $_REQUEST['regex'] : false;
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
+        $rule = isset($_REQUEST['rule']) ? sanitize_text_field(wp_unslash($_REQUEST['rule'])) : false;
+        $regex = isset($_REQUEST['regex']) ? sanitize_text_field(wp_unslash($_REQUEST['regex'])) : false;
 
-        $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : false;
-
-        $type = isset($_REQUEST['type']) ? $_REQUEST['status'] : 'path';
+        $status = isset($_REQUEST['status']) ? sanitize_text_field(wp_unslash($_REQUEST['status'])) : false;
 
         if($url){
 
@@ -1167,7 +1167,7 @@ class RapidLoad_Admin
             wp_send_json_error( 'License Key required' );
         }
 
-        $license_key = $_REQUEST['license_key'];
+        $license_key = sanitize_text_field(wp_unslash($_REQUEST['license_key']));
 
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = $license_key;
@@ -1590,9 +1590,9 @@ class RapidLoad_Admin
 
         $args = [];
 
-        $args['type'] = isset($_REQUEST['type']) && !empty($_REQUEST['type']) ? $_REQUEST['type'] : 'frontend';
-        $args['log'] = isset($_REQUEST['log']) && !empty($_REQUEST['log']) ? $_REQUEST['log'] : '';
-        $args['url'] = isset($_REQUEST['url']) && !empty($_REQUEST['url']) ? $_REQUEST['url'] : '';
+        $args['type'] = isset($_REQUEST['type']) && !empty($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'frontend';
+        $args['log'] = isset($_REQUEST['log']) && !empty($_REQUEST['log']) ? sanitize_text_field(wp_unslash($_REQUEST['log'])) : '';
+        $args['url'] = isset($_REQUEST['url']) && !empty($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : '';
 
         self::log($args);
 

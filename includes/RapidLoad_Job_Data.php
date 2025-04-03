@@ -48,7 +48,7 @@ class RapidLoad_Job_Data{
             $this->attempts = 0;
             $this->hits = 0;
             $this->status = 'queued';
-            $this->created_at = date( "Y-m-d H:m:s", time() );
+            $this->created_at = gmdate( "Y-m-d H:m:s", time() );
 
         }
 
@@ -101,7 +101,14 @@ class RapidLoad_Job_Data{
 
         global $wpdb;
 
-        return $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = '". $this->job_type ."' AND job_id = '" . $this->job_id . "' ORDER BY id LIMIT 1", OBJECT);
+        return $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = %s AND job_id = %d ORDER BY id LIMIT 1",
+                $this->job_type,
+                $this->job_id
+            ),
+            OBJECT
+        );
 
     }
 
@@ -113,7 +120,7 @@ class RapidLoad_Job_Data{
         $this->stats = null;
         $this->warnings = null;
         $this->error = null;
-        $this->created_at = date( "Y-m-d H:m:s", time() );
+        $this->created_at = gmdate( "Y-m-d H:m:s", time() );
         $this->clearFiles();
     }
 

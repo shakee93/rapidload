@@ -34,7 +34,7 @@ trait RapidLoad_Utils {
 	    }
 
         if(isset($_SERVER['REQUEST_URI'])){
-            return urldecode(home_url(add_query_arg(array(), $_SERVER['REQUEST_URI'])));
+            return urldecode(home_url(add_query_arg(array(), sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])))));
         }
 
 	    return null;
@@ -291,7 +291,7 @@ trait RapidLoad_Utils {
             return $url;
         }
 
-		$url_parts = parse_url( $url );
+		$url_parts = wp_parse_url( $url );
 
 		$options = RapidLoad_Base::fetch_options();
 
@@ -586,7 +586,7 @@ trait RapidLoad_Utils {
 
                 if ( filter_var( $pattern, FILTER_VALIDATE_URL ) ) {
 
-                    $pattern = parse_url( $pattern );
+                    $pattern = wp_parse_url( $pattern );
 
                     $path = $pattern['path'];
                     $query = isset($pattern['query']) ? '?' . $pattern['query'] : '';
@@ -606,7 +606,7 @@ trait RapidLoad_Utils {
             }
         }
 
-        $url_parts = parse_url( $url );
+        $url_parts = wp_parse_url( $url );
 
         if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
             $this->log( 'skipped  query contains : ' . $url );
@@ -632,8 +632,8 @@ trait RapidLoad_Utils {
 
     public static function get_file_path_from_url($url)
     {
-        $file_relative_path = parse_url($url, PHP_URL_PATH);
-        $site_path = parse_url(site_url(), PHP_URL_PATH);
+        $file_relative_path = wp_parse_url($url, PHP_URL_PATH);
+        $site_path = wp_parse_url(site_url(), PHP_URL_PATH);
         $file_path = UUCSS_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
         return str_replace("//","/", $file_path);
     }
@@ -696,7 +696,7 @@ trait RapidLoad_Utils {
     }
 
     public static function get_relative_url($fullUrl) {
-        $parsedUrl = parse_url($fullUrl);
+        $parsedUrl = wp_parse_url($fullUrl);
 
         if ( strpos( $fullUrl, site_url() ) === false ) {
             return $fullUrl;

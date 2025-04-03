@@ -148,9 +148,9 @@ class RapidLoad_Module
 
         self::verify_nonce();
 
-        $module = isset($_REQUEST['module']) ? $_REQUEST['module'] : false;
-        $active = isset($_REQUEST['active']) ? $_REQUEST['active'] : 'off';
-        $onboard = isset($_REQUEST['onboard']) ? $_REQUEST['onboard'] : false;
+        $module = isset($_REQUEST['module']) ? sanitize_text_field($_REQUEST['module']) : false;
+        $active = isset($_REQUEST['active']) ? sanitize_text_field($_REQUEST['active']) : 'off';
+        $onboard = isset($_REQUEST['onboard']) ? boolval($_REQUEST['onboard']) : false;
 
         if(!$module){
             wp_send_json_error('Rapidload module required');
@@ -261,11 +261,15 @@ class RapidLoad_Module
         $options = RapidLoad_Base::fetch_options($cache);
         $cache_options = RapidLoad_Cache::get_settings();
 
+        if(isset($options['uucss_excluded_links']) && $options['uucss_excluded_links'] == 'null'){
+            $options['uucss_excluded_links'] = '';
+        }
+
         $options = [
             'general' => [
                 'id' => 'general',
                 'options' => [
-                    'uucss_excluded_links' => isset($options['uucss_excluded_links']) ? $options['uucss_excluded_links'] : null,
+                    'uucss_excluded_links' => isset($options['uucss_excluded_links']) ? $options['uucss_excluded_links'] : '',
                     'rapidload_minify_html' => isset($options['rapidload_minify_html']) && $options['rapidload_minify_html'] == "1" ? true : false,
                     'uucss_query_string' => isset($options['uucss_query_string']) && $options['uucss_query_string'] == "1" ? true : false,
                     'uucss_query_string_enabled' => apply_filters('uucss/url/enable-query-strings', false),
