@@ -30,6 +30,7 @@ import AppButton from "components/ui/app-button";
 import GeneralSettingsTrigger from "app/dashboard/components/GeneralSettingsTrigger";
 import OptimzePagesTrigger from "app/dashboard/components/OptimzePagesTrigger";
 import OptimizerTableTrigger from "app/dashboard/components/OptimizerTableTrigger";
+import DebugLogsTrigger from "app/dashboard/components/DebugLogsTrigger";
 import ThemeSwitcher from "components/ui/theme-switcher";
 import TooltipText from "components/ui/tooltip-text";
 import { optimizerData } from "../store/app/appSelector";
@@ -63,7 +64,8 @@ const App = ({ popup, _showOptimizer = false }: {
     const [open, setOpen] = useState({
         generalSettings: false,
         optimizerTable: false,
-        optimizePages: false
+        optimizePages: false,
+        debugLogs: false
     });
     const { headerUrl, onboardCompleted, diagnosticLoading } = useCommonDispatch();
     const { changeTheme } = useRootContext()
@@ -383,12 +385,14 @@ const App = ({ popup, _showOptimizer = false }: {
                                     </div>
 
 
-                                    <div className="flex gap-6 items-center">
+                                    <div className="flex gap-1.5 items-center">
                                         <TestModeSwitcher />
 
                                         <div className="flex items-center gap-1.5">
+                                           <div className="flex gap-3">
                                             <GeneralSettingsTrigger open={open.generalSettings} onOpenChange={(isOpen) => handleOpenChange("generalSettings", isOpen)} />
-                                            
+                                            {uucssGlobal?.active_modules.general.options.uucss_enable_debug && <DebugLogsTrigger open={open.debugLogs} onOpenChange={(isOpen) => handleOpenChange("debugLogs", isOpen)} />}
+                                            </div>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger className='w-8 h-12 flex items-center justify-center'>
                                                     <TooltipText className='flex items-center justify-center' asChild={true} text='Add Optimization'>

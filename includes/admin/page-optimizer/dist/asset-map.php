@@ -10,11 +10,11 @@
     'assets/inter-vietnamese-wght-normal.woff2' => 'assets/inter-vietnamese-wght-normal.woff2',
     'assets/inter-latin-ext-wght-normal.woff2' => 'assets/inter-latin-ext-wght-normal.woff2',
     'assets/inter-latin-wght-normal.woff2' => 'assets/inter-latin-wght-normal.woff2',
-    'assets/index.css' => 'assets/index.Ct4fNtKh.css',
+    'assets/index.css' => 'assets/index.CaFmK9OX.css',
     'assets/core-vendor.js' => 'assets/core-vendor.V80Ff32-.js',
-    'assets/index.js' => 'assets/index.DWkW83RQ.js',
     'assets/animations.js' => 'assets/animations.CVpoelRy.js',
-    'assets/InitTour.js' => 'assets/InitTour.DjpVrak1.js',
-    'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js'
+    'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js',
+    'assets/index.js' => 'assets/index.B0-9ISWZ.js',
+    'assets/InitTour.js' => 'assets/InitTour.D7Z2duXG.js'
                     ]);
                     
