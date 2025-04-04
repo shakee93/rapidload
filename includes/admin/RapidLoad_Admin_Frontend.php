@@ -132,7 +132,6 @@ class RapidLoad_Admin_Frontend
             add_action("wp_ajax_rapidload_purge_all", [$this, 'rapidload_purge_all']);
             add_action("wp_ajax_uucss_test_url", [ $this, 'uucss_test_url' ] );
             add_action("wp_ajax_uucss_data", [ $this, 'uucss_data' ] );
-            add_action('wp_ajax_uucss_status', [ $this, 'uucss_status' ] );
             add_action( 'wp_ajax_rapidload_notifications', [$this, 'rapidload_notifications']);
             add_action( "wp_ajax_uucss_update_rule", [ $this, 'uucss_update_rule' ] );
             add_action('wp_ajax_mark_faqs_read', [$this, 'mark_faqs_read']);
@@ -457,11 +456,11 @@ class RapidLoad_Admin_Frontend
 
             if($key == 0){
 
-                $where_clause = ' WHERE ';
+                $where_clause = " WHERE ";
                 $where_clause .= $filter;
             }else{
 
-                $where_clause .= ' AND ';
+                $where_clause .= " AND ";
                 $where_clause .= $filter;
             }
 
@@ -478,28 +477,7 @@ class RapidLoad_Admin_Frontend
         ]);
 
     }
-
-    public function uucss_status(){
-
-        self::verify_nonce();
-
-        $job_counts = RapidLoad_DB::get_job_counts();
-
-        wp_send_json_success([
-            'cssStyleSheetsCount' => RapidLoad_Base::cache_file_count(),
-            'cssStyleSheetsSize' => $this->size(),
-            'hits' => $job_counts->hits,
-            'success' => $job_counts->success,
-            'ruleBased' => $job_counts->rule_based,
-            'queued' => $job_counts->queued,
-            'waiting' => $job_counts->waiting,
-            'processing' => $job_counts->processing,
-            'warnings' => $job_counts->warnings,
-            'failed' => $job_counts->failed,
-            'total' => $job_counts->total,
-        ]);
-    }
-
+    
     public function run_gpsi_test_for_all(){
 
         $links = UnusedCSS_DB::get_data_for_gpsi_test();
@@ -823,7 +801,7 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        wp_send_json_success(RapidLoad_Job::all());
+        wp_send_json_success(RapidLoad_Job::all_rules());
 
     }
 

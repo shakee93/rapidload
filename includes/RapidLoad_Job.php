@@ -217,9 +217,9 @@ class RapidLoad_Job{
         (new RapidLoad_Job($args))->save();
     }
 
-    static function all(){
+    static function all_rules(){
 
-        return RapidLoad_DB::get_rules_where();
+        return RapidLoad_DB::get_all_rules();
 
     }
 
