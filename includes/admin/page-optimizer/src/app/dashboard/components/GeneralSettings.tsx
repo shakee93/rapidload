@@ -14,6 +14,7 @@ import { useToast } from "components/ui/use-toast"
 import { Loader } from 'lucide-react';
 import { optimizerData } from '../../../store/app/appSelector';
 import { useSelector } from 'react-redux';
+import DebugLogsTrigger from './DebugLogsTrigger';
 
 
 interface GeneralSettingsProps {
@@ -54,6 +55,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const { generalSettings } = useSelector(optimizerData);
+    const [debugLogsOpen, setDebugLogsOpen] = useState(false);
 
     useEffect(() => {
         if (generalSettings) {
@@ -134,12 +136,11 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
                 />
                 <div className="flex flex-col">
                     <div className="select-none cursor-pointer">{label}</div>
-                    <p className="text-sm font-normal select-none">{description}</p>
+                    <p className="text-sm font-normal select-none flex gap-2">{description} {key === 'uucss_enable_debug' && settingsData.uucss_enable_debug && <DebugLogsTrigger open={debugLogsOpen} onOpenChange={setDebugLogsOpen} />}</p>
                 </div>
             </div>
         );
     };
-
 
 
     

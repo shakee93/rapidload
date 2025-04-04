@@ -30,19 +30,21 @@ const GeneralSettingsTrigger: React.FC<MyDialogProps> = ({ open, onOpenChange })
                 </div>
             </DialogTrigger>
             
-            <DialogContent className="sm:max-w-[650px]">
-            <DialogTitle></DialogTitle>
+            <DialogContent className="sm:max-w-[650px]" >
+                <DialogTitle></DialogTitle>
                 <DialogHeader className='border-b px-6 py-4 mt-1'>
                     <DialogTitle>General Settings</DialogTitle>
                 </DialogHeader>
+                
                 <div className="py-2">
                     <GeneralSettings onClose={onOpenChange}/>
                 </div>
                 <DialogDescription>
-                    {/* Additional description if needed */}
                 </DialogDescription>
 
             </DialogContent>
+
+
         </Dialog>
     );
 };

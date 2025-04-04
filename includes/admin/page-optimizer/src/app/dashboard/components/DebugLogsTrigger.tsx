@@ -23,9 +23,10 @@ const DebugLogsTrigger: React.FC<MyDialogProps> = ({ open, onOpenChange }) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
-                <div>
+                <div data-debug-logs-trigger>
                     <TooltipText text={`Debug Logs`}>
-                        <BugAntIcon className='w-5 text-brand-400'/>
+                        {/* <BugAntIcon className='w-5 text-brand-400'/> */}
+                        <span className='underline'>View Logs</span>
                     </TooltipText>
                 </div>
             </DialogTrigger>

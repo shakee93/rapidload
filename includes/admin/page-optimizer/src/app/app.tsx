@@ -385,14 +385,13 @@ const App = ({ popup, _showOptimizer = false }: {
                                     </div>
 
 
-                                    <div className="flex gap-1.5 items-center">
+                                    <div className="flex gap-6 items-center">
                                         <TestModeSwitcher />
 
                                         <div className="flex items-center gap-1.5">
-                                           <div className="flex gap-3">
                                             <GeneralSettingsTrigger open={open.generalSettings} onOpenChange={(isOpen) => handleOpenChange("generalSettings", isOpen)} />
-                                            {uucssGlobal?.active_modules.general.options.uucss_enable_debug && <DebugLogsTrigger open={open.debugLogs} onOpenChange={(isOpen) => handleOpenChange("debugLogs", isOpen)} />}
-                                            </div>
+                                            {/* <DebugLogsTrigger open={open.debugLogs} onOpenChange={(isOpen) => handleOpenChange("debugLogs", isOpen)} /> */}
+                                            
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger className='w-8 h-12 flex items-center justify-center'>
                                                     <TooltipText className='flex items-center justify-center' asChild={true} text='Add Optimization'>
