@@ -75,7 +75,6 @@ This document lists all WordPress AJAX actions used in the RapidLoad plugin.
 ### Status & Tests
 - `uucss_test_url` - Test URL optimization
 - `uucss_data` - Get optimization data
-- `uucss_status` - Get optimization status
 - `rapidload_notifications` - Get plugin notifications
 - `titan_checklist_crawler` - Check crawler status
 - `titan_checklist_cron` - Check cron status
