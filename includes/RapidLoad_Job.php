@@ -520,45 +520,32 @@ class RapidLoad_Job{
     }
 
     public static function get_all_optimizations_data_for($strategy, $start_from, $limit = 10, $s = null){
-
         global $wpdb;
         $data = [];
 
-        $query = "
-        SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
-               IF(t1.id != t2.id, t2.data, NULL) AS first_data, 
-               t1.created_at 
-        FROM  {$wpdb->prefix}rapidload_job_optimizations t1 
-        LEFT JOIN  {$wpdb->prefix}rapidload_job_optimizations t2 
-        ON t1.job_id = t2.job_id 
-        AND t2.id = (SELECT MIN(id) FROM  {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = t1.job_id) 
-        LEFT JOIN {$wpdb->prefix}rapidload_job t3 
-        ON t1.job_id = t3.id 
-        WHERE t1.strategy = %s";
-
-        if ($s !== null) {
-            $query .= " AND t3.url LIKE %s";
-        }
-
-        $query .= " AND (t1.job_id, t1.created_at) IN (
-                    SELECT job_id, MAX(created_at) 
-                    FROM  {$wpdb->prefix}rapidload_job_optimizations 
-                    WHERE strategy = %s 
-                    GROUP BY job_id
-                ) 
-                ORDER BY t1.id DESC 
-                LIMIT %d, %d;";
-
-        if ($s !== null) {
-            $query = $wpdb->prepare($query, $strategy, $strategy, '%' . $wpdb->esc_like($s) . '%', $strategy, $start_from, $limit);
-        } else {
-            $query = $wpdb->prepare($query, $strategy, $strategy, $strategy, $start_from, $limit);
-        }
-
-        $result = $wpdb->get_results($query, OBJECT);
+        $result = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
+                IF(t1.id != t2.id, t2.data, NULL) AS first_data, t1.created_at 
+                FROM {$wpdb->prefix}rapidload_job_optimizations t1 
+                LEFT JOIN {$wpdb->prefix}rapidload_job_optimizations t2 
+                ON t1.job_id = t2.job_id 
+                AND t2.id = (SELECT MIN(id) FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = t1.job_id) 
+                LEFT JOIN {$wpdb->prefix}rapidload_job t3 ON t1.job_id = t3.id 
+                WHERE t1.strategy = %s AND t3.url LIKE %s 
+                AND (t1.job_id, t1.created_at) IN (SELECT job_id, MAX(created_at) FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s GROUP BY job_id) 
+                ORDER BY t1.id DESC LIMIT %d, %d",
+                $strategy,
+                $strategy,
+                $s !== null ? '%' . $wpdb->esc_like($s) . '%' : '%%',
+                $strategy,
+                $start_from,
+                $limit
+            ),
+            OBJECT
+        );
 
         foreach ($result as $value) {
-
             $first_data = [];
             $last_data = [];
 

@@ -18,7 +18,7 @@ class UnusedCSS_Queue
 
     function fetch_job_id(){
 
-        $current_waiting = UnusedCSS_DB::get_task_count(" WHERE status = 'processing' OR status = 'waiting' AND job_type = 'uucss'" );
+        $current_waiting = UnusedCSS_DB::get_current_waiting_tasks_count();
 
         if( (RapidLoad_Queue::$job_count - $current_waiting) <= 0 ){
             return;
@@ -26,7 +26,7 @@ class UnusedCSS_Queue
 
         global $wpdb;
 
-        $links = UnusedCSS_DB::get_data(' job_id ', " WHERE status = 'queued' ", RapidLoad_Queue::$job_count - $current_waiting);
+        $links = UnusedCSS_DB::get_current_queued_tasks_job_ids(RapidLoad_Queue::$job_count - $current_waiting);
 
         if(!empty($links)){
 
@@ -55,7 +55,7 @@ class UnusedCSS_Queue
 
     function fetch_result(){
 
-        $links = UnusedCSS_DB::get_data(' job_id ', " WHERE status = 'processing' OR status = 'waiting' ", RapidLoad_Queue::$job_count, 'queue_job_id');
+        $links = UnusedCSS_DB::get_current_processing_tasks_job_ids(RapidLoad_Queue::$job_count);
 
         if(!empty($links)){
 

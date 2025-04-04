@@ -8,10 +8,6 @@ if ( ! defined( 'RAPIDLOAD_PLUGIN_DIR' ) ) {
     define( 'RAPIDLOAD_PLUGIN_DIR', __DIR__ );
 }
 
-if ( ! defined( 'RAPIDLOAD_PLUGIN_URL' ) ) {
-    define( 'RAPIDLOAD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-}
-
 if ( ! defined( 'RAPIDLOAD_SETTINGS_DIR' ) ) {
     define( 'RAPIDLOAD_SETTINGS_DIR', WP_CONTENT_DIR . '/settings/rapidload' );
 }

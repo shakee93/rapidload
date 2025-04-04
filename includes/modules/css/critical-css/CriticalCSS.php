@@ -485,7 +485,7 @@ class CriticalCSS
 
     public function cleanCacheFiles(){
 
-        $data = CriticalCSS_DB::get_data_where(" WHERE status = 'success' ");
+        $data = CriticalCSS_DB::get_success_data();
 
         $used_files = [];
 
