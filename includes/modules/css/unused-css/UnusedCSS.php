@@ -415,22 +415,22 @@ class UnusedCSS
                 }
                 case 'warnings':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='success' AND warnings IS NOT NULL ");
+                    UnusedCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='failed' ");
+                    UnusedCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='processing' ");
+                    UnusedCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    UnusedCSS_DB::requeue_where();
+                    UnusedCSS_DB::requeue_where_status('');
                     break;
                 }
             }

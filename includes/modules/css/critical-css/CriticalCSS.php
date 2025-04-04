@@ -238,30 +238,6 @@ class CriticalCSS
 
     function clear_files($job_data = null){
 
-        if($job_data){
-
-            if(!empty($job_data->data)){
-
-                $count = CriticalCSS_DB::data_used_elsewhere($job_data->id, $job_data->data);
-
-                if($count == 0){
-
-                    if($this->file_system->exists(self::$base_dir . '/' .  $job_data->data)){
-                        $this->file_system->delete( self::$base_dir . '/' .  $job_data->data);
-                    }
-                    if($this->file_system->exists(self::$base_dir . '/' .  str_replace(".css","-mobile.css", $job_data->data))){
-                        $this->file_system->delete( self::$base_dir . '/' .  str_replace(".css","-mobile.css", $job_data->data));
-                    }
-
-                }
-            }
-
-        }else{
-
-            $this->file_system->delete( self::$base_dir );
-
-        }
-
     }
 
     function cpcss_purge_url()
@@ -301,22 +277,22 @@ class CriticalCSS
                 }
                 case 'warnings':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='success' AND warnings IS NOT NULL ");
+                    CriticalCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='failed' ");
+                    CriticalCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='processing' ");
+                    CriticalCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    CriticalCSS_DB::requeue_where();
+                    CriticalCSS_DB::requeue_where_status('');
                     break;
                 }
             }
