@@ -397,6 +397,18 @@ class RapidLoad_Admin_Frontend
         isset($_REQUEST['columns'][0]['search']['value']) ?
             sanitize_text_field(wp_unslash($_REQUEST['columns'][0]['search']['value'])) : false;
 
+        $url_filter = isset($_REQUEST['columns']) &&
+        isset($_REQUEST['columns'][1]) &&
+        isset($_REQUEST['columns'][1]['search']) &&
+        isset($_REQUEST['columns'][1]['search']['value']) ?
+            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['value'])) : false;
+
+        $url_regex = isset($_REQUEST['columns']) &&
+        isset($_REQUEST['columns'][1]) &&
+        isset($_REQUEST['columns'][1]['search']) &&
+        isset($_REQUEST['columns'][1]['search']['regex']) ?
+            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['regex'])) : false;
+
         $filters = [];
 
         if($status_filter){
@@ -413,28 +425,6 @@ class RapidLoad_Admin_Frontend
         }else{
 
             $filters[] = " status != 'rule-based' ";
-
-        }
-
-        $url_filter = isset($_REQUEST['columns']) &&
-        isset($_REQUEST['columns'][1]) &&
-        isset($_REQUEST['columns'][1]['search']) &&
-        isset($_REQUEST['columns'][1]['search']['value']) ?
-            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['value'])) : false;
-
-        $url_regex = isset($_REQUEST['columns']) &&
-        isset($_REQUEST['columns'][1]) &&
-        isset($_REQUEST['columns'][1]['search']) &&
-        isset($_REQUEST['columns'][1]['search']['regex']) ?
-            sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['regex'])) : false;
-
-        if($type != 'rule'){
-
-            $filters[] = " rule = 'is_url' ";
-
-        }else{
-
-            $filters[] = " rule != 'is_url' ";
 
         }
 
@@ -466,7 +456,7 @@ class RapidLoad_Admin_Frontend
 
         }
 
-        $data  = RapidLoad_DB::get_merged_data($start, $length, $where_clause);
+        $data  = RapidLoad_DB::get_merged_data($type == "rule", $start, $length);
 
         wp_send_json([
             'data' => $data,
@@ -477,7 +467,7 @@ class RapidLoad_Admin_Frontend
         ]);
 
     }
-    
+
     public function run_gpsi_test_for_all(){
 
         $links = UnusedCSS_DB::get_data_for_gpsi_test();
@@ -636,42 +626,42 @@ class RapidLoad_Admin_Frontend
 
                 case 'requeue_all_rule': {
                     if (!empty($url_list)) {
-                        RapidLoad_DB::updateRuleJobDataStatusWhere("queued", "", $url_list);
+                        RapidLoad_DB::updateRuleJobDataStatusWhere("queued", $url_list);
                     } else {
-                        RapidLoad_DB::updateRuleJobDataStatusWhere();
+                        RapidLoad_DB::updateRuleJobDataStatusWhere("queued", []);
                     }
                     break;
                 }
                 case 'requeue_all_rule_processing': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", "", "", "processing");
+                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "processing");
                     break;
                 }
                 case 'requeue_all_rule_warnings': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", " AND warnings IS NOT NULL", "", "success");
+                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "success");
                     break;
                 }
                 case 'requeue_all_rule_failed': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", "", "", "failed");
+                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "failed");
                     break;
                 }
                 case 'requeue_all_url': {
                     if (!empty($url_list)) {
-                        RapidLoad_DB::updateUrlJobDataStatusWhere("queued", "", $url_list);
+                        RapidLoad_DB::updateUrlJobDataStatusWhere("queued", $url_list);
                     } else {
-                        RapidLoad_DB::updateUrlJobDataStatusWhere();
+                        RapidLoad_DB::updateUrlJobDataStatusWhere("queued", []);
                     }
                     break;
                 }
                 case 'requeue_all_url_processing':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", "AND status = 'processing'");
+                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "processing");
                     break;
                 }
                 case 'requeue_all_url_warnings':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", "AND status = 'success' AND warnings IS NOT NULL");
+                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "success");
                     break;
                 }
                 case 'requeue_all_url_failed':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", "AND status = 'failed'");
+                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "failed");
                     break;
                 }
                 case 'url':{
