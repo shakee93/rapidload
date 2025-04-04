@@ -693,8 +693,8 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function updateRuleJobDataStatusWhere($status = 'queued', $where = "", $ids = []){
-
+    static function updateRuleJobDataStatusWhere($status = 'queued', $where = "", $ids = [], $whereAndStatus = null)
+    {
         global $wpdb;
 
         if (!empty($ids)) {
@@ -704,16 +704,33 @@ abstract class RapidLoad_DB
             $ids = implode(',', array_map('intval', $ids));
         }
 
-        $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (%5s) %5s", $status, $ids, $where));
+        if (empty($whereAndStatus)) {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (%5s) %5s",
+                    $status,
+                    $ids,
+                    $where
+                )
+            );
+        } else {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s WHERE job_id IN (%5s) AND status = %s %s",
+                    $status,
+                    $ids,
+                    $whereAndStatus,
+                    $where
+                )
+            );
+        }
 
         error_log($wpdb->last_query);
 
         $error = $wpdb->last_error;
-
-        if(!empty($error)){
+        if (!empty($error)) {
             self::show_db_error($error);
         }
-
         return true;
     }
 
