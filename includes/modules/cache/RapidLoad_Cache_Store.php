@@ -161,7 +161,7 @@ class RapidLoad_Cache_Store
         $advanced_cache_file = WP_CONTENT_DIR . '/advanced-cache.php';
 
         if(file_exists($advanced_cache_file)){
-            @unlink($advanced_cache_file);
+            wp_delete_file($advanced_cache_file);
             RapidLoad_Cache_Store::set_wp_cache_constant(false);
             self::clearDirectory(RAPIDLOAD_CACHE_DIR);
         }
@@ -186,7 +186,7 @@ class RapidLoad_Cache_Store
                 self::clearDirectory($filePath);
                 @rmdir($filePath);
             } else {
-                @unlink($filePath);
+                wp_delete_file($filePath);
             }
         }
     }
@@ -256,7 +256,7 @@ class RapidLoad_Cache_Store
 
                 if ( $args['clear'] ) {
 
-                    if ( ! @unlink( $cache_object ) ) {
+                    if ( ! wp_delete_file( $cache_object ) ) {
                         // Skip to the next object because the file deletion failed.
                         continue;
                     }
@@ -641,8 +641,10 @@ class RapidLoad_Cache_Store
             return RAPIDLOAD_CACHE_DIR;
         }
 
-        if ( empty ( $url ) ) {
-            $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false );
+        if ( empty ( $url ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+            $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false );
+        }else{
+            $url = site_url();
         }
 
         $url = filter_var($url, FILTER_SANITIZE_URL);
@@ -705,7 +707,7 @@ class RapidLoad_Cache_Store
                     $settings_file_regex = str_replace( '.', '\.', $settings_file_regex );
 
                     if ( defined( 'SUBDOMAIN_INSTALL' ) && ! SUBDOMAIN_INSTALL && ! $skip_blog_path ) {
-                        $url_path = trim( wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false ), PHP_URL_PATH ), '/' );
+                        $url_path = trim( wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false ), PHP_URL_PATH ), '/' );
 
                         if ( ! empty( $url_path ) ) {
                             $url_path_regex = str_replace( '/', '|', $url_path );
@@ -730,7 +732,7 @@ class RapidLoad_Cache_Store
                 $settings_file_name = strtolower( RapidLoad_Cache_Engine::$request_headers['Host'] );
 
                 if ( is_multisite() && defined( 'SUBDOMAIN_INSTALL' ) && ! SUBDOMAIN_INSTALL && ! $skip_blog_path ) {
-                    $url_path = wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false ), PHP_URL_PATH );
+                    $url_path = wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false ), PHP_URL_PATH );
                     $url_path_pieces = explode( '/', $url_path, 3 );
                     $blog_path = $url_path_pieces[1];
 
@@ -943,9 +945,9 @@ class RapidLoad_Cache_Store
             'preview' => '',
         );
 
-        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( $_SERVER['HTTPS'] ) === 'on' || $_SERVER['HTTPS'] == '1' ) ) {
+        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) ) === 'on' || sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) == '1' ) ) {
             $cache_keys['scheme'] = 'https-';
-        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ) {
+        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && sanitize_text_field( wp_unslash( $_SERVER['SERVER_PORT'] ) ) == '443' ) {
             $cache_keys['scheme'] = 'https-';
         } elseif ( isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto'] === 'https'
             || isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme'] === 'https'

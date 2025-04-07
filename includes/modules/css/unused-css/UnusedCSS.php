@@ -154,7 +154,7 @@ class UnusedCSS
                 continue;
             }
 
-            $value = sanitize_text_field( $_POST[ 'uucss_' . $option ] );
+            $value = sanitize_text_field( wp_unslash( $_POST[ 'uucss_' . $option ] ) );
 
             update_post_meta( $post_id, '_uucss_' . $option, $value );
         }
@@ -162,7 +162,7 @@ class UnusedCSS
 
     public function uucss_notfound_fallback(){
 
-        $original_request = strtok( $_SERVER['REQUEST_URI'], '?' );
+        $original_request = isset($_SERVER['REQUEST_URI']) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '/';
         $original_path = self::get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
 
         $options = RapidLoad_Base::fetch_options(false);
@@ -384,7 +384,7 @@ class UnusedCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = sanitize_url($_REQUEST['url']);
+            $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');

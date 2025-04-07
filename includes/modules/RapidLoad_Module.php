@@ -148,8 +148,8 @@ class RapidLoad_Module
 
         self::verify_nonce();
 
-        $module = isset($_REQUEST['module']) ? sanitize_text_field($_REQUEST['module']) : false;
-        $active = isset($_REQUEST['active']) ? sanitize_text_field($_REQUEST['active']) : 'off';
+        $module = isset($_REQUEST['module']) ? sanitize_text_field(wp_unslash($_REQUEST['module'])) : false;
+        $active = isset($_REQUEST['active']) ? sanitize_text_field(wp_unslash($_REQUEST['active'])) : 'off';
         $onboard = isset($_REQUEST['onboard']) ? boolval($_REQUEST['onboard']) : false;
 
         if(!$module){

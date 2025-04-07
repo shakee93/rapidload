@@ -648,8 +648,6 @@ class Javascript_Enqueue
             return $snippets;
 
         } catch (Exception $exception) {
-            // Log any exceptions that occur
-            error_log('RapidLoad:Error in JS Optimization: ' . $exception->getMessage());
             return $this->wrapWithJavaScriptEvent($eventToBind, $jsSnippet);
         }
     }

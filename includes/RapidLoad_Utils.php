@@ -497,13 +497,13 @@ trait RapidLoad_Utils {
     function source_is_mobile() {
         if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
             $is_mobile = false;
-        } elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Mobile' ) !== false // Many mobile devices (all iPhone, iPad, etc.)
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Android' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Silk/' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Kindle' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'BlackBerry' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mobi' ) !== false ) {
+        } elseif ( strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Mobile' ) !== false // Many mobile devices (all iPhone, iPad, etc.)
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Android' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Silk/' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Kindle' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'BlackBerry' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Opera Mini' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Opera Mobi' ) !== false ) {
             $is_mobile = true;
         } else {
             $is_mobile = false;
@@ -521,11 +521,11 @@ trait RapidLoad_Utils {
         }
 
         if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-            return $_SERVER['HTTP_USER_AGENT'];
+            return sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
         }
 
         if ( isset( $headers['User-Agent'] ) ) {
-            return $headers['User-Agent'];
+            return sanitize_text_field( wp_unslash( $headers['User-Agent'] ) );
         }
 
         return '';
@@ -792,12 +792,12 @@ trait RapidLoad_Utils {
             return;
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '.') === false) {
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            self::debug_log("Request URI: " . $_SERVER['REQUEST_URI'] . " - " . "User Agent: " . $user_agent);
+        if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), '.') === false) {
+            $user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+            self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . " - " . "User Agent: " . $user_agent);
         } else {
             if (isset($_SERVER['REQUEST_URI'])) {
-                self::debug_log("Request URI: " . $_SERVER['REQUEST_URI']);
+                self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ));
             }
             self::debug_log("User Agent: Not available or not an HTML request");
         }
