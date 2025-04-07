@@ -48,7 +48,7 @@ class RapidLoad_Font_Enqueue
 
         $this->add_display_swap_to_google_fonts();
 
-        if(isset($this->options['uucss_self_host_google_fonts']) && $this->options['uucss_self_host_google_fonts'] == "1"){
+        if(isset($this->options['uucss_self_host_google_fonts']) && $this->options['uucss_self_host_google_fonts'] === "1"){
 
             $this->self_host_google_fonts();
 
@@ -145,7 +145,7 @@ class RapidLoad_Font_Enqueue
 
         foreach ($google_fonts as $google_font) {
 
-            if ($google_font->parentNode() && $google_font->parentNode()->tag == 'noscript') {
+            if ($google_font->parentNode() && $google_font->parentNode()->tag === 'noscript') {
                 continue;
             }
 

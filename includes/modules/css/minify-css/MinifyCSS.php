@@ -14,11 +14,11 @@ class MinifyCSS
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_minify']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_minify'] != "1" ){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_minify']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_minify'] !== "1" ){
             return;
         }
 
-        if(defined('SCRIPT_DEBUG') && boolval(SCRIPT_DEBUG) == true){
+        if(defined('SCRIPT_DEBUG') && boolval(SCRIPT_DEBUG) === true){
             return;
         }
 

@@ -18,7 +18,7 @@ class RapidLoad_CDN
 
         add_action('rapidload/validate-cdn', [$this, 'validate_cdn']);
 
-        if(!isset($this->options['uucss_enable_cdn']) || $this->options['uucss_enable_cdn'] != "1" || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_cdn']) || $this->options['uucss_enable_cdn'] !== "1" || !RapidLoad_Base::is_api_key_verified()){
             return;
         }
 
@@ -79,7 +79,7 @@ class RapidLoad_CDN
 
             if(isset($this->options['uucss_cdn_zone_id']) && isset($this->options['uucss_cdn_dns_id'])){
 
-                if($this->options['uucss_cdn_zone_id'] != $response->zone_id){
+                if($this->options['uucss_cdn_zone_id'] !== $response->zone_id){
 
                     $api->post('delete-cdn',[
                         'dns_id' => $this->options['uucss_cdn_dns_id'],
@@ -173,7 +173,7 @@ class RapidLoad_CDN
         }
         $search_url = trailingslashit(site_url());
         $replace_url = trailingslashit($args['cdn_url']);
-        if (isset($args['clear']) && boolval($args['clear']) == 1) {
+        if (isset($args['clear']) && boolval($args['clear'])) {
             $temp_url = $search_url;
             $search_url = $replace_url;
             $replace_url = $temp_url;

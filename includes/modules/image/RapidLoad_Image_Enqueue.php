@@ -49,7 +49,7 @@ class RapidLoad_Image_Enqueue
             $this->options['uucss_exclude_above_the_fold_image_count'] = 3;
         }
 
-        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] == "1"){
+        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] === "1"){
             $this->preload_images();
         }
 
@@ -61,7 +61,7 @@ class RapidLoad_Image_Enqueue
 
         // replacing urls
 
-        if(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1"){
+        if(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] === "1"){
 
             $attributes = [
                 [
@@ -255,7 +255,7 @@ class RapidLoad_Image_Enqueue
                                     continue;
                                 }
 
-                                if($style_tag == 'background'){
+                                if($style_tag === 'background'){
                                     $_style_lines[] = preg_replace('/\burl\([^)]*\)/', '', $style_line);
                                 }
 
@@ -270,7 +270,7 @@ class RapidLoad_Image_Enqueue
                                 if (in_array($urlExt, $this->imgExt)) {
                                     $background_image_found = true;
                                     $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn);
-                                    if($style_tag == "background-image"){
+                                    if($style_tag === "background-image"){
                                         $style_line = str_replace($match[1], $replace_url, $style_line);
                                     }
                                 }
@@ -283,7 +283,7 @@ class RapidLoad_Image_Enqueue
 
                 }
 
-                if ($background_image_found && isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] == "1") {
+                if ($background_image_found && isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] === "1") {
                     $inline_style->style = implode(";", $_style_lines);
                     $inline_style->{'data-rapidload-lazy-bg'} = $replace_url; // Assuming you want to store the lazy-loaded URL
                     $inline_style->{'data-rapidload-lazy-method'} = 'viewport';
@@ -363,7 +363,7 @@ class RapidLoad_Image_Enqueue
 
         foreach ($preloaded_images as $preloaded_image){
 
-            if(isset($preloaded_image->as) && $preloaded_image->as == "image"){
+            if(isset($preloaded_image->as) && $preloaded_image->as === "image"){
 
                 if(isset($preloaded_image->href)){
 
@@ -398,7 +398,7 @@ class RapidLoad_Image_Enqueue
 
     public function lazy_load_iframes(){
 
-        if(isset($this->options['uucss_lazy_load_iframes']) && $this->options['uucss_lazy_load_iframes'] == "1"){
+        if(isset($this->options['uucss_lazy_load_iframes']) && $this->options['uucss_lazy_load_iframes'] === "1"){
 
             $iframes = $this->dom->find( 'iframe[src]' );
 
@@ -406,7 +406,7 @@ class RapidLoad_Image_Enqueue
 
                 $parent = $iframe->parent();
 
-                if(isset($parent) && $parent->tag == 'noscript'){
+                if(isset($parent) && $parent->tag === 'noscript'){
                     continue;
                 }
 
@@ -526,7 +526,7 @@ class RapidLoad_Image_Enqueue
 
     public function lazy_load_images(){
 
-        if(isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] == "1"){
+        if(isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] === "1"){
             $images = $this->dom->find( 'img[src]' );
 
             foreach ( $images as $index => $img ) {
@@ -565,7 +565,7 @@ class RapidLoad_Image_Enqueue
 
         $found = false;
 
-        if(isset($this->options['uucss_exclude_above_the_fold_images']) && $this->options['uucss_exclude_above_the_fold_images'] == "1"){
+        if(isset($this->options['uucss_exclude_above_the_fold_images']) && $this->options['uucss_exclude_above_the_fold_images'] === "1"){
 
             if(isset($this->options['uucss_preload_lcp_image'])){
 
@@ -601,7 +601,7 @@ class RapidLoad_Image_Enqueue
             ]
         ];
 
-        if(isset($this->options['uucss_set_width_and_height']) && $this->options['uucss_set_width_and_height'] == "1"){
+        if(isset($this->options['uucss_set_width_and_height']) && $this->options['uucss_set_width_and_height'] === "1"){
 
             foreach ($attributes as $attribute){
 
@@ -659,7 +659,7 @@ class RapidLoad_Image_Enqueue
                                 $img->width = $dimension['width'];
                             }
 
-                            if (!isset($img->height) || $img->height == "auto") {
+                            if (!isset($img->height) || $img->height === "auto") {
                                 $img->height = $this->calculateSecondImageHeight($dimension['width'],  $dimension['height'], $img->width);
                             }
 

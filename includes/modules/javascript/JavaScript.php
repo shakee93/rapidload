@@ -19,7 +19,7 @@ class JavaScript
 
         add_action('uucss/options/js', [$this, 'render_options']);
 
-        if(!isset($this->options['uucss_enable_javascript']) || $this->options['uucss_enable_javascript'] != "1"){
+        if(!isset($this->options['uucss_enable_javascript']) || $this->options['uucss_enable_javascript'] !== "1"){
             return;
         }
 

@@ -17,7 +17,7 @@ class RapidLoad_CSS_Aggregator
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['rapidload_aggregate_css']) || $this->options['rapidload_aggregate_css'] != "1" ){
+        if(!isset($this->options['rapidload_aggregate_css']) || $this->options['rapidload_aggregate_css'] !== "1" ){
             return;
         }
 

@@ -10,11 +10,11 @@ trait RapidLoad_Utils {
     private static $log_file_system = null;
 
 	public function url_origin( $s, $use_forwarded_host = false ) {
-		$ssl      = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] == 'on' );
+		$ssl      = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] === 'on' );
 		$sp       = strtolower( $s['SERVER_PROTOCOL'] );
         $protocol = substr( $sp, 0, strpos( $sp, '/' ) ) . ( ( $ssl ) ? 's' : '' );
         $port     = $s['SERVER_PORT'];
-        $port     = ( ( ! $ssl && $port=='80' ) || ( $ssl && $port=='443' ) ) ? '' : ':'.$port;
+        $port     = ( ( ! $ssl && $port === '80' ) || ( $ssl && $port === '443' ) ) ? '' : ':'.$port;
         $host     = ( $use_forwarded_host && isset( $s['HTTP_X_FORWARDED_HOST'] ) ) ? $s['HTTP_X_FORWARDED_HOST'] : ( isset( $s['HTTP_HOST'] ) ? $s['HTTP_HOST'] : null );
         $host     = isset( $host ) ? $host : $s['SERVER_NAME'] . $port;
         return $protocol . '://' . $host;
@@ -58,7 +58,7 @@ trait RapidLoad_Utils {
             array_push($rules_with_permalink, $rule);
         }
         usort($rules_with_permalink, function ($a, $b){
-            if ($a['priority'] == $b['priority']) {
+            if ($a['priority'] === $b['priority']) {
                 return 0;
             }
             return ($a['priority'] < $b['priority']) ? -1 : 1;
@@ -90,7 +90,7 @@ trait RapidLoad_Utils {
 
     public static function log( $object, $callee = false ) {
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG == false)) {
+	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -133,7 +133,7 @@ trait RapidLoad_Utils {
 
     public static function uucss_log($object){
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG == false)) {
+	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -309,7 +309,7 @@ trait RapidLoad_Utils {
             $url = rtrim($url,'/');
         }
 
-		if ( isset( $options['uucss_query_string'] ) && $options['uucss_query_string'] == "1" && isset($url_parts['query']) && !empty($url_parts['query']) ) {
+		if ( isset( $options['uucss_query_string'] ) && $options['uucss_query_string'] === "1" && isset($url_parts['query']) && !empty($url_parts['query']) ) {
             $url .= "?" .$url_parts['query'];
 		}
 
@@ -566,7 +566,7 @@ trait RapidLoad_Utils {
 
         if ( $_post ) {
             $page_options = RapidLoad_Base::get_page_options( $_post->ID );
-            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] == "on" ) {
+            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] === "on" ) {
                 return false;
             }
 
@@ -653,13 +653,13 @@ trait RapidLoad_Utils {
             $width =
                 isset($attr->width) && preg_match('/\d+/', $attr->width, $value)
                     ? (int) $value[0]
-                    : (count($viewbox) == 4
+                    : (count($viewbox) === 4
                     ? (int) $viewbox[2]
                     : null);
             $height =
                 isset($attr->height) && preg_match('/\d+/', $attr->height, $value)
                     ? (int) $value[0]
-                    : (count($viewbox) == 4
+                    : (count($viewbox) === 4
                     ? (int) $viewbox[3]
                     : null);
             if ($width && $height) {
@@ -767,14 +767,14 @@ trait RapidLoad_Utils {
     }
 
     function is_serialized($string) {
-        return ($string == serialize(false) || @unserialize($string) !== false);
+        return ($string === serialize(false) || @unserialize($string) !== false);
     }
 
     public static function debug_log(...$objects)
     {
         if(defined('RAPIDLOAD_DEBUG_LOG') && RAPIDLOAD_DEBUG_LOG){
             foreach ($objects as $object) {
-                if (gettype($object) == "string") {
+                if (gettype($object) === "string") {
                     error_log("RapidLoad Log:  " . $object);
                 } else {
                     error_log("RapidLoad Log:  " . json_encode($object, JSON_PRETTY_PRINT));

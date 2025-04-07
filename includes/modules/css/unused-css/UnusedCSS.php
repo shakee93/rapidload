@@ -26,7 +26,7 @@ class UnusedCSS
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_enable_uucss'] != "1" || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_uucss'] !== "1" || !RapidLoad_Base::is_api_key_verified()){
             return;
         }
 
@@ -169,7 +169,7 @@ class UnusedCSS
 
         if ( strpos( $original_request, wp_basename( self::get_wp_content_dir() ) . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' ) !== false
             && !file_exists($original_path)
-            //&& isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] == "1"
+            //&& isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] === "1"
         ) {
 
             global $wp_query;
@@ -204,7 +204,7 @@ class UnusedCSS
 
                 if(isset($job_data->id)){
 
-                    if($job->rule != 'is_url'){
+                    if($job->rule !== 'is_url'){
                         //$link['rule_status'] = $job_data->status;
                        // $link['rule_hits'] = $job_data->hits;
                         //$link['applied_links'] = count($job->get_urls());
@@ -224,7 +224,7 @@ class UnusedCSS
                     $link['attempts'] = isset( $job_data->attempts ) ? $job_data->attempts : null;
                     $link['rule'] = $job_data->job->rule;
 
-                    if(boolval($link['meta']['warnings']) == false){
+                    if(boolval($link['meta']['warnings']) === false){
                         $link['meta']['warnings'] = [];
                     }
                 }
@@ -298,7 +298,7 @@ class UnusedCSS
 
         $post = get_post($post_id);
 
-        if($post->post_status == "publish") {
+        if($post->post_status === "publish") {
 
             $this->clear_on_actions( $post->ID );
 
@@ -321,7 +321,7 @@ class UnusedCSS
             return false;
         }
 
-        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] == "1" && !wp_doing_ajax()){
+        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] === "1" && !wp_doing_ajax()){
             return false;
         }
 
@@ -335,7 +335,7 @@ class UnusedCSS
             $this->job_data->save();
         }
 
-        if($this->job_data->status == 'failed' && $this->job_data->attempts >= 2 && (!isset($args['immediate']) || !isset( $args['requeue']))){
+        if($this->job_data->status === 'failed' && $this->job_data->attempts >= 2 && (!isset($args['immediate']) || !isset( $args['requeue']))){
             return false;
         }
 
@@ -436,7 +436,7 @@ class UnusedCSS
             }
         }
 
-        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] == 'true') ) {
+        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] === 'true') ) {
 
             $this->clear_cache();
 
@@ -479,7 +479,7 @@ class UnusedCSS
 
             $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
-            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule == "is_url" || $job_data->job->rule != "is_url")){
+            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule === "is_url" || $job_data->job->rule !== "is_url")){
 
                 $this->clear_files($job_data);
                 self::log([

@@ -138,7 +138,7 @@ class RapidLoad_Job_Data{
 
     public function mark_as_success($data, $stats, $warnings, $status = 'success', $job_type = 'uucss'){
         $this->data = isset($data) ? is_string($data) ? $data : serialize($data) : null;
-        if($job_type == 'uucss'){
+        if($job_type === 'uucss'){
             $this->status = $status;
         }else{
             $this->status = isset($data) && (isset($data['mobile']) && !empty($data['mobile']) || isset($data['desktop']) && !empty($data['desktop'])) ? 'success' : 'failed';

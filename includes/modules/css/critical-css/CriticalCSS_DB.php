@@ -32,7 +32,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
                     'queued'
                 )
             );
-        }else if($status == 'success'){
+        }else if($status === 'success'){
             $wpdb->query(
                 $wpdb->prepare(
                     "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s, queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 WHERE job_type='cpcss' AND status = 'success' AND warnings IS NOT NULL",

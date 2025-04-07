@@ -179,7 +179,7 @@ class RapidLoad_Optimizer
 
         if($data){
             $diagnose_data = $job->get_diagnose_data();
-            if($strategy == 'desktop'){
+            if($strategy === 'desktop'){
                 $diagnose_data['desktop'] = $data;
                 $job->set_diagnose_data($diagnose_data);
             }else{
@@ -483,7 +483,7 @@ class RapidLoad_Optimizer
                     $status = RapidLoad_Cache_Store::get_page_cache_errors();
 
                     $response[$type] = [
-                        'status' => $cache_file_exist ? 'Hit' : ($status == 'Hit' ? $status : 'failed'),
+                        'status' => $cache_file_exist ? 'Hit' : ($status === 'Hit' ? $status : 'failed'),
                         'error' => [
                             'code' => $cache_file_exist ? null : 422,
                             'message' => $cache_file_exist ? 'Hit' : $status,
@@ -548,7 +548,7 @@ class RapidLoad_Optimizer
 
         $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
-        $global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(strtolower($url),"/") == rtrim(strtolower(site_url()), "/");
+        $global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(strtolower($url),"/") === rtrim(strtolower(site_url()), "/");
 
         $this->pre_optimizer_function($url, $strategy, $global);
 
@@ -646,7 +646,7 @@ class RapidLoad_Optimizer
 
         $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
-        self::$global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(site_url(), "/") == rtrim($url, "/");
+        self::$global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(site_url(), "/") === rtrim($url, "/");
 
         $this->pre_optimizer_function($url, $strategy, self::$global);
 
@@ -685,7 +685,7 @@ class RapidLoad_Optimizer
 
         self::$global = $global;
 
-        self::$options = self::$strategy == "desktop" ? isset(self::$job->id) ? self::$job->get_desktop_options() : self::$job->get_mobile_options() : self::$global_options;
+        self::$options = self::$strategy === "desktop" ? isset(self::$job->id) ? self::$job->get_desktop_options() : self::$job->get_mobile_options() : self::$global_options;
 
         self::$previous_options = self::$options;
 
@@ -702,7 +702,7 @@ class RapidLoad_Optimizer
 
         foreach (self::$options as $key => $option){
 
-            if(isset(self::$options[$key]) && (self::$options[$key] != "" && self::$options[$key] && !empty(self::$options[$key]))){
+            if(isset(self::$options[$key]) && (self::$options[$key] !== "" && self::$options[$key] && !empty(self::$options[$key]))){
                 switch ($key){
                     case 'uucss_enable_uucss':
                     case 'uucss_inline_css':
@@ -712,23 +712,23 @@ class RapidLoad_Optimizer
                             RapidLoad_Base::update_option('rapidload_module_css',"1");
                         }
                         self::$options['uucss_enable_css'] = "1";
-                        if($key == "uucss_enable_uucss"){
+                        if($key === "uucss_enable_uucss"){
                             do_action('rapidload/uucss/job/handle', self::$job, [
                                 'immediate' => true,
                                 'titan' => true,
                             ]);
                         }
-                        if($key == "uucss_enable_cpcss"){
+                        if($key === "uucss_enable_cpcss"){
                             do_action('rapidload/cpcss/job/handle', self::$job, [
                                 'immediate' => true,
                                 'titan' => true,
                                 'options' => [
-                                    'strategy' => self::$strategy
+                                    'strategy' => self::$strategy === "desktop" ? "mobile" : "desktop"
                                 ]
                             ], [
                                 'titan' => true,
                                 'options' => [
-                                    'strategy' => self::$strategy == "desktop" ? "mobile" : "desktop"
+                                    'strategy' => self::$strategy === "desktop" ? "mobile" : "desktop"
                                 ]
                             ]);
                         }
@@ -765,10 +765,10 @@ class RapidLoad_Optimizer
             $option_type = gettype(self::$options[$key]);
 
             if(isset(self::$global_options[$key])){
-                if($option_type == "string" && self::$global_options[$key] == $option){
+                if($option_type === "string" && self::$global_options[$key] === $option){
                     unset(self::$options[$key]);
                 }
-                else if (($option_type == "object" || $option_type == "array") && json_encode($option) == json_encode(self::$global_options[$key])){
+                else if (($option_type === "object" || $option_type === "array") && json_encode($option) === json_encode(self::$global_options[$key])){
                     unset(self::$options[$key]);
                 }
             }
@@ -800,11 +800,11 @@ class RapidLoad_Optimizer
             self::$options['uucss_preload_lcp_image'] = implode("\n",$preload_images);
         }
 
-        if(isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] == "1"){
+        if(isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] === "1"){
             unset(self::$options['rapidload_test_mode']);
         }
 
-        if(self::$strategy == "desktop"){
+        if(self::$strategy === "desktop"){
             self::$job->set_desktop_options(self::$options);
         }else{
             self::$job->set_mobile_options(self::$options);
@@ -876,7 +876,7 @@ class RapidLoad_Optimizer
 
     function formatSize($bytes) {
         $sizes = array("Bytes", "KB", "MB", "GB", "TB");
-        if ($bytes == 0) return '0 Byte';
+        if ($bytes === 0) return '0 Byte';
         $i = intval(floor(log($bytes, 1024)));
         return round($bytes / pow(1024, $i), 2) . ' ' . $sizes[$i];
     }
@@ -939,7 +939,7 @@ class RapidLoad_Optimizer
         $new_hash = hash('md5', json_encode($result));
         $revision_count = self::$job->get_revision_count(self::$strategy);
 
-        if(($hash != $new_hash) || $revision_count == 0){
+        if(($hash !== $new_hash) || $revision_count === 0){
 
             if($revision_count > (self::$revision_limit - 1)){
                 self::$job->delete_old_revision(self::$strategy, self::$revision_limit);
@@ -1480,7 +1480,7 @@ class RapidLoad_Optimizer
             if (isset($input_map[$key])) {
                 $input = $input_map[$key];
                 $input['key'] = $key;
-                if($input['key'] == "uucss_exclude_files_from_delay_js"){
+                if($input['key'] === "uucss_exclude_files_from_delay_js"){
                     $input['control_values'] = JavaScript::get_dynamic_exclusion_list();
                     $input['value'] = "";
                     if(isset($options['uucss_dynamic_js_exclusion_list']) && !empty($options['uucss_dynamic_js_exclusion_list'])){
@@ -1489,11 +1489,11 @@ class RapidLoad_Optimizer
                     if(isset($options['uucss_exclude_files_from_delay_js']) && !empty($options['uucss_exclude_files_from_delay_js'])){
                         $input['value'] = (!empty($input['value'])) ? trim($input['value']) . "," . $options['uucss_exclude_files_from_delay_js'] : $options['uucss_exclude_files_from_delay_js'];
                     }
-                }else if($input['key'] == "uucss_load_js_method" && isset($options[$input['key']])){
-                    $input['value'] = $options[$input['key']] == "defer" || $options[$input['key']] == "1";
-                }else if($input['key'] == "uucss_enable_uucss"){
+                }else if($input['key'] === "uucss_load_js_method" && isset($options[$input['key']])){
+                    $input['value'] = $options[$input['key']] === "defer" || $options[$input['key']] === "1";
+                }else if($input['key'] === "uucss_enable_uucss"){
                     $data = new RapidLoad_Job_Data(self::$job, 'uucss');
-                    $settings['status'] =  isset($options[$input['key']]) && $options[$input['key']] == "1" ? [
+                    $settings['status'] =  isset($options[$input['key']]) && $options[$input['key']] === "1" ? [
                         'status' => isset($data->id) ? $data->status : 'queued',
                         'error' =>  isset($data->id) ? $data->get_error() : null,
                         'meta' => [
@@ -1502,12 +1502,12 @@ class RapidLoad_Optimizer
                         ]
                     ] : null;
                     $input['value'] = isset($options[$input['key']]) ? $options[$input['key']] : ( isset($input['default']) ? $input['default'] : null) ;
-                }else if($input['key'] == "update_htaccess_file"){
+                }else if($input['key'] === "update_htaccess_file"){
                     $settings['status'] = RapidLoad_htaccess::has_rapidload_rules();
-                }else if($input['key'] == "uucss_enable_cpcss"){
+                }else if($input['key'] === "uucss_enable_cpcss"){
                     $data = new RapidLoad_Job_Data(self::$job, 'cpcss');
                     $cpcss_data = $data->get_cpcss_data();
-                    $settings['status'] = isset($options[$input['key']]) && $options[$input['key']] == "1" ? [
+                    $settings['status'] = isset($options[$input['key']]) && $options[$input['key']] === "1" ? [
                         'status' => isset($data->id) ? $data->status : 'queued',
                         'error' => isset($data->id) ? $data->get_error() : null,
                         'meta' => [
@@ -1516,10 +1516,10 @@ class RapidLoad_Optimizer
                         ]
                     ] : null;
                     $input['value'] = isset($options[$input['key']]) ? $options[$input['key']] : ( isset($input['default']) ? $input['default'] : null) ;
-                }else if($input['key'] == "uucss_enable_cache"){
+                }else if($input['key'] === "uucss_enable_cache"){
                     $cache_file = RapidLoad_Cache_Store::get_cache_file($url);
                     $cache_file_exist = @file_exists($cache_file);
-                    $settings['status'] = isset($options[$input['key']]) && $options[$input['key']] == "1" ? [
+                    $settings['status'] = isset($options[$input['key']]) && $options[$input['key']] === "1" ? [
                         'status' => $cache_file_exist ? 'Hit' : 'processing',
                         'error' => [
                             'code' => $cache_file_exist ? null : 422,
@@ -1532,7 +1532,7 @@ class RapidLoad_Optimizer
                         ]
                     ] : null;
                     $input['value'] = isset($options[$input['key']]) ? $options[$input['key']] : ( isset($input['default']) ? $input['default'] : null) ;
-                }else if($input['key'] == "uucss_safelist"){
+                }else if($input['key'] === "uucss_safelist"){
                     $rulesArray = [];
                     if(isset($options[$input['key']])){
                         $dataArray = json_decode($options[$input['key']], true);
@@ -1543,17 +1543,17 @@ class RapidLoad_Optimizer
                         }
                     }
                     $input['value'] = implode("\n",$rulesArray);
-                }else if($input['key'] == "cache_expires" || $input['key'] == "cache_expiry_time" || $input['key'] == "mobile_cache"){
+                }else if($input['key'] === "mobile_cache"){
                     $input['value'] = isset($rapidload_cache_args[$input['key']]) ? (string)$rapidload_cache_args[$input['key']] : null;
-                }else if($input['key'] == "excluded_page_paths") {
+                }else if($input['key'] === "excluded_page_paths") {
                     $input['value'] = isset($rapidload_cache_args[$input['key']]) ? implode("\n", $this->transformRegexToPaths($rapidload_cache_args[$input['key']])) : '';
-                }else if($input['key'] == "rapidload_js_delay_method"){
+                }else if($input['key'] === "rapidload_js_delay_method"){
                     $input['value'] = isset($options['uucss_load_scripts_on_user_interaction']) && !empty($options['uucss_load_scripts_on_user_interaction']) ? 'Selected Files' : 'All Files' ;
-                }else if($input['key'] == "uucss_misc_options"){
+                }else if($input['key'] === "uucss_misc_options"){
 
                     foreach ($input['inputs'] as $internal_key => $internal_input){
 
-                        $input['inputs'][$internal_key]['value'] = isset($options[$input['inputs'][$internal_key]['key']]) && $options[$input['inputs'][$internal_key]['key']] == "1" ? "1" : "0" ;
+                        $input['inputs'][$internal_key]['value'] = isset($options[$input['inputs'][$internal_key]['key']]) && $options[$input['inputs'][$internal_key]['key']] === "1" ? "1" : "0" ;
 
                     }
 
@@ -1628,16 +1628,16 @@ class RapidLoad_Optimizer
                 switch($input->control_type ){
 
                     case 'checkbox' :{
-                        if(isset($input->value) && isset($input->key) && ($input->value || $input->value == "1")){
-                            if($input->key == "uucss_load_js_method"){
+                        if(isset($input->value) && isset($input->key) && ($input->value || $input->value === "1")){
+                            if($input->key === "uucss_load_js_method"){
                                 self::$options[$input->key] = "defer";
-                            }else if($input->key == "cache_expires" || $input->key == "mobile_cache"){
+                            }else if($input->key === "cache_expires" || $input->key === "mobile_cache"){
                                 $rapidload_cache_args[$input->key] = $input->value ? 1 : 0;
                             }else{
                                 self::$options[$input->key] = "1";
                             }
                         }else if(isset($input->key)){
-                            if($input->key == "cache_expires" || $input->key == "mobile_cache"){
+                            if($input->key === "cache_expires" || $input->key === "mobile_cache"){
                                 $rapidload_cache_args[$input->key] = "0";
                             }else{
                                 self::$options[$input->key] = "";
@@ -1653,7 +1653,7 @@ class RapidLoad_Optimizer
                     case 'input' :
                     case 'number' :{
                         if(isset($input->value) && isset($input->key)){
-                            if($input->key == "uucss_safelist"){
+                            if($input->key === "uucss_safelist"){
                                 $rulesArray = explode("\n",sanitize_textarea_field($input->value));
                                 $transformedRulesArray = [];
                                 foreach ($rulesArray as $rule) {
@@ -1663,9 +1663,9 @@ class RapidLoad_Optimizer
                                     ];
                                 }
                                 self::$options[$input->key] = json_encode($transformedRulesArray);
-                            }else if($input->key == "cache_expiry_time"){
+                            }else if($input->key === "cache_expiry_time"){
                                 $rapidload_cache_args['cache_expiry_time'] = (float)$input->value;
-                            }else if($input->key == "excluded_page_paths"){
+                            }else if($input->key === "excluded_page_paths"){
                                 if(!empty($input->value)){
                                     $paths = explode("\n",sanitize_textarea_field($input->value));
                                     $rapidload_cache_args['excluded_page_paths'] = $this->transformPathsToRegex($paths);
@@ -1673,7 +1673,7 @@ class RapidLoad_Optimizer
                                     $rapidload_cache_args['excluded_page_paths'] = "";
                                 }
                             }else{
-                                if($input->key != "uucss_cdn_url"){
+                                if($input->key !== "uucss_cdn_url"){
                                     self::$options[$input->key] = sanitize_textarea_field($input->value);
                                 }
                             }
@@ -1683,7 +1683,7 @@ class RapidLoad_Optimizer
                         break;
                     }
                     case 'tab' : {
-                        if(isset($input->key) && $input->key == "uucss_exclude_files_from_delay_js"){
+                        if(isset($input->key) && $input->key === "uucss_exclude_files_from_delay_js"){
                             if(is_array($input->value)){
                                 self::$options['uucss_dynamic_js_exclusion_list'] = implode("\n",$input->value);
                             }
@@ -1695,13 +1695,13 @@ class RapidLoad_Optimizer
                             self::$options[$input->inputs[$accordion_key]->key] =
                                 isset($accordion_input->value) &&
                                 ($accordion_input->value ||
-                                    $accordion_input->value == "1") ? "1" : "0";
+                                    $accordion_input->value === "1") ? "1" : "0";
                         }
                         break;
                     }
                 }
 
-                if(isset($input->key) && ($input->key == "uucss_enable_uucss" || $input->key == "uucss_enable_cpcss")){
+                if(isset($input->key) && ($input->key === "uucss_enable_uucss" || $input->key === "uucss_enable_cpcss")){
                     if(isset($input->{'value_data'})){
                         unset($input->{'value_data'});
                     }
@@ -1712,17 +1712,17 @@ class RapidLoad_Optimizer
 
         RapidLoad_Cache::update_settings($rapidload_cache_args);
 
-        if((isset(self::$options['uucss_lazy_load_images']) && self::$options['uucss_lazy_load_images'] == "1") || (isset(self::$options['uucss_support_next_gen_formats']) && self::$options['uucss_support_next_gen_formats'] == "1" ) || (isset(self::$options['uucss_lazy_load_iframes']) && self::$options['uucss_lazy_load_iframes'] == "1") ){
+        if((isset(self::$options['uucss_lazy_load_images']) && self::$options['uucss_lazy_load_images'] === "1") || (isset(self::$options['uucss_support_next_gen_formats']) && self::$options['uucss_support_next_gen_formats'] === "1" ) || (isset(self::$options['uucss_lazy_load_iframes']) && self::$options['uucss_lazy_load_iframes'] === "1") ){
             self::$options['uucss_enable_image_delivery'] = "1";
-            if(isset(self::$options['uucss_lazy_load_iframes']) && self::$options['uucss_lazy_load_iframes'] == "1" ){
-                self::$options['uucss_lazy_load_images'] == "1";
+            if(isset(self::$options['uucss_lazy_load_iframes']) && self::$options['uucss_lazy_load_iframes'] === "1" ){
+                self::$options['uucss_lazy_load_images'] === "1";
             }
         }else{
             unset(self::$options['uucss_enable_image_delivery']);
             RapidLoad_Base::update_option('rapidload_module_image',"0");
         }
 
-        if(isset(self::$options['uucss_self_host_google_fonts']) && self::$options['uucss_self_host_google_fonts'] == "1"){
+        if(isset(self::$options['uucss_self_host_google_fonts']) && self::$options['uucss_self_host_google_fonts'] === "1"){
             self::$options['uucss_enable_font_optimization'] = "1";
         }else{
             unset(self::$options['uucss_enable_font_optimization']);
@@ -1737,8 +1737,8 @@ class RapidLoad_Optimizer
         }
 
         if(isset(self::$options['minify_js']) && self::$options['minify_js'] ||
-            isset(self::$options['delay_javascript']) && self::$options['delay_javascript'] == "1" ||
-            isset(self::$options['uucss_load_js_method']) && (self::$options['uucss_load_js_method'] == "defer" || self::$options['uucss_load_js_method'] == "1")){
+            isset(self::$options['delay_javascript']) && self::$options['delay_javascript'] === "1" ||
+            isset(self::$options['uucss_load_js_method']) && (self::$options['uucss_load_js_method'] === "defer" || self::$options['uucss_load_js_method'] === "1")){
             self::$options['uucss_enable_javascript'] = "1";
         }else{
             unset(self::$options['uucss_enable_javascript']);
@@ -1747,15 +1747,15 @@ class RapidLoad_Optimizer
         $cache_enabled = isset(self::$options['uucss_enable_cache']) && self::$options['uucss_enable_cache'] ? "1" : "";
         $cache_enabled_prev_status = isset(self::$global_options['uucss_enable_cache']) && self::$global_options['uucss_enable_cache'] ? "1" : "";
 
-        if($cache_enabled != $cache_enabled_prev_status){
+        if($cache_enabled !== $cache_enabled_prev_status){
             RapidLoad_Base::update_option('rapidload_module_cache',$cache_enabled);
             RapidLoad_Cache::setup_cache($cache_enabled);
         }
 
-        $cdn_enabled = isset(self::$options['uucss_enable_cdn']) && self::$options['uucss_enable_cdn'] == "1";
-        $cdn_enabled_prev_status = isset(self::$global_options['uucss_enable_cdn']) && self::$global_options['uucss_enable_cdn'] == "1";
+        $cdn_enabled = isset(self::$options['uucss_enable_cdn']) && self::$options['uucss_enable_cdn'] === "1";
+        $cdn_enabled_prev_status = isset(self::$global_options['uucss_enable_cdn']) && self::$global_options['uucss_enable_cdn'] === "1";
 
-        if($cdn_enabled != $cdn_enabled_prev_status){
+        if($cdn_enabled !== $cdn_enabled_prev_status){
             do_action('rapidload/validate-cdn', !$cdn_enabled);
             $refresh_cdn_settings = RapidLoad_Base::fetch_options(false);
             if(isset($refresh_cdn_settings['uucss_cdn_zone_id']) && isset($refresh_cdn_settings['uucss_cdn_dns_id']) && isset($refresh_cdn_settings['uucss_cdn_url'])){
@@ -1825,7 +1825,7 @@ class RapidLoad_Optimizer
 
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
-        if(self::$global_options['rapidload_test_mode'] && self::$global_options['rapidload_test_mode'] == "1"){
+        if(self::$global_options['rapidload_test_mode'] && self::$global_options['rapidload_test_mode'] === "1"){
             $url = add_query_arg('rapidload_preview', 'true', $url);
         }
 

@@ -55,7 +55,7 @@ class Autoptimize_Beta_Compatible extends RapidLoad_ThirdParty {
 
         add_filter('cpcss/other-plugins', function ($args){
             $ao_render_blocking = autoptimizeOptionWrapper::get_option( 'autoptimize_css_defer' );
-            if(isset($ao_render_blocking) && $ao_render_blocking == "on"){
+            if(isset($ao_render_blocking) && $ao_render_blocking === "on"){
                 $args[] = 'Autoptimize';
             }
             return $args;
@@ -95,7 +95,7 @@ class Autoptimize_Beta_Compatible extends RapidLoad_ThirdParty {
             ];
         }
 
-        if(autoptimizeOptionWrapper::get_option( 'autoptimize_css_inline' ) == 'on'){
+        if(autoptimizeOptionWrapper::get_option( 'autoptimize_css_inline' ) === 'on'){
             $notifications[] = [
                 "title" => "Incompatible Autoptimize option enabled",
                 "message" => "It is recommended to disable <strong>'inline all css?'</strong> in Autoptimize to RapidLoad to work properly.",

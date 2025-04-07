@@ -14,7 +14,7 @@ class RapidLoad_Image
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['uucss_enable_image_delivery']) || $this->options['uucss_enable_image_delivery'] != "1"){
+        if(!isset($this->options['uucss_enable_image_delivery']) || $this->options['uucss_enable_image_delivery'] !== "1"){
             return;
         }
 
@@ -33,7 +33,7 @@ class RapidLoad_Image
 
         add_action('rapidload/job/handle', [$this, 'optimize_image'], 30, 2);
 
-        if(isset($this->options['rapidload_disable_thumbnails']) && $this->options['rapidload_disable_thumbnails'] == "1"){
+        if(isset($this->options['rapidload_disable_thumbnails']) && $this->options['rapidload_disable_thumbnails'] === "1"){
             add_filter('intermediate_image_sizes_advanced',function (){
                 return [];
             }, 90);
@@ -84,8 +84,8 @@ class RapidLoad_Image
             esc_js(self::create_nonce('rapidload_image')),
             esc_js(RapidLoad_Image::$image_indpoint),
             esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null'),
-            isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false',
-            isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false'
+            isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] === "1" ? 'true' : 'false',
+            isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] === "1" ? 'true' : 'false'
         );
 
         $image_handler_script = file_get_contents(RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js');
@@ -132,7 +132,7 @@ class RapidLoad_Image
             $options = $args['retina'];
         }
 
-        $enamble_blurry_place_holder = isset(self::$instance->options['uucss_generate_blurry_place_holder']) && self::$instance->options['uucss_generate_blurry_place_holder'] == "1";
+        $enamble_blurry_place_holder = isset(self::$instance->options['uucss_generate_blurry_place_holder']) && self::$instance->options['uucss_generate_blurry_place_holder'] === "1";
 
         if($enamble_blurry_place_holder){
             $options = 'ret_img';
@@ -144,11 +144,11 @@ class RapidLoad_Image
             $options .= ',q_' . self::$instance->options['uucss_image_optimize_level'];
         }
 
-        if(isset(self::$instance->options['uucss_support_next_gen_formats']) && self::$instance->options['uucss_support_next_gen_formats'] == "1"){
+        if(isset(self::$instance->options['uucss_support_next_gen_formats']) && self::$instance->options['uucss_support_next_gen_formats'] === "1"){
             $options .= ',to_avif';
         }
 
-        if(isset(self::$instance->options['uucss_adaptive_image_delivery']) && self::$instance->options['uucss_adaptive_image_delivery'] == "1"){
+        if(isset(self::$instance->options['uucss_adaptive_image_delivery']) && self::$instance->options['uucss_adaptive_image_delivery'] === "1"){
             if($width){
 
                 $options .= ',w_' . str_replace("px", "", $width);

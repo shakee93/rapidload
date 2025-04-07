@@ -119,8 +119,8 @@ class RapidLoad_Module
 
             $class_object = $module['class'];
 
-            if(class_exists($class_object) && $module['status'] == 'on'){
-                if($module['global'] == 'uucss'){
+            if(class_exists($class_object) && $module['status'] === 'on'){
+                if($module['global'] === 'uucss'){
                     $uucss = new $class_object();
                     $this->modules_instances[$module['id']] = $uucss;
                 }else{
@@ -140,7 +140,7 @@ class RapidLoad_Module
     function is_active($module){
 
         return isset($this->modules) && isset($this->modules[$module]) &&
-            isset($this->modules[$module]['status']) && $this->modules[$module]['status'] == "on";
+            isset($this->modules[$module]['status']) && $this->modules[$module]['status'] === "on";
 
     }
 
@@ -158,7 +158,7 @@ class RapidLoad_Module
 
         switch ($module){
             case 'css' : {
-                $css = $active == "on" ? "1" : "";
+                $css = $active === "on" ? "1" : "";
                 if($onboard){
                     $css = "1";
                 }
@@ -166,15 +166,15 @@ class RapidLoad_Module
                 break;
             }
             case 'javascript' : {
-                $js = $active == "on" ? "1" : "";
+                $js = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_js',$js);
                 break;
             }
             case 'image-delivery' : {
-                $image = $active == "on" ? "1" : "";
+                $image = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_image',$image);
                 $api = new RapidLoad_Api();
-                if($image == "1"){
+                if($image === "1"){
                     $api->post('spai-associate-host',[
                         'url' => trailingslashit(site_url()),
                         'action' => 'add-domain'
@@ -188,16 +188,16 @@ class RapidLoad_Module
                 break;
             }
             case 'font' : {
-                $font = $active == "on" ? "1" : "";
+                $font = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_font',$font);
                 break;
             }
             case 'cdn' : {
-                $cdn = $active == "on" ? "1" : "";
+                $cdn = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_cdn',$cdn);
                 $api = new RapidLoad_Api();
                 $options = RapidLoad_Base::fetch_options();
-                if($cdn == "1" && !isset($options['uucss_cdn_url'])){
+                if($cdn === "1" && !isset($options['uucss_cdn_url'])){
                     $response = $api->post('cdn',[
                         'url' => trailingslashit(site_url()),
                         'validate' => isset($options['uucss_cdn_dns_id']) && isset($options['uucss_cdn_zone_id']) && isset($options['uucss_cdn_url'])
@@ -207,14 +207,14 @@ class RapidLoad_Module
                         $options['uucss_cdn_dns_id'] = $response->dns_id;
                         $options['uucss_cdn_url'] = $response->cdn_url;
                         do_action('rapidload/cdn/validated', [
-                            'clear' => $cdn != "1",
+                            'clear' => $cdn !== "1",
                             'cdn_url' => $response->cdn_url
                         ]);
                     }
 
                 }else{
                     do_action('rapidload/cdn/validated', [
-                        'clear' => $cdn != "1",
+                        'clear' => $cdn !== "1",
                         'cdn_url' => isset($options['uucss_cdn_url']) ? $options['uucss_cdn_url'] : null
                     ]);
 
@@ -238,14 +238,14 @@ class RapidLoad_Module
             }
             case 'cache': {
 
-                $cache = $active == "on" ? "1" : "";
+                $cache = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_cache',$cache);
 
                 RapidLoad_Cache::setup_cache($cache);
                 break;
             }
             case 'page-optimizer' : {
-                $titan = $active == "on" ? "1" : "";
+                $titan = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_titan',$titan);
                 break;
             }
@@ -261,7 +261,7 @@ class RapidLoad_Module
         $options = RapidLoad_Base::fetch_options($cache);
         $cache_options = RapidLoad_Cache::get_settings();
 
-        if(isset($options['uucss_excluded_links']) && $options['uucss_excluded_links'] == 'null'){
+        if(isset($options['uucss_excluded_links']) && $options['uucss_excluded_links'] === 'null'){
             $options['uucss_excluded_links'] = '';
         }
 
@@ -270,64 +270,64 @@ class RapidLoad_Module
                 'id' => 'general',
                 'options' => [
                     'uucss_excluded_links' => isset($options['uucss_excluded_links']) ? $options['uucss_excluded_links'] : '',
-                    'rapidload_minify_html' => isset($options['rapidload_minify_html']) && $options['rapidload_minify_html'] == "1" ? true : false,
-                    'uucss_query_string' => isset($options['uucss_query_string']) && $options['uucss_query_string'] == "1" ? true : false,
+                    'rapidload_minify_html' => isset($options['rapidload_minify_html']) && $options['rapidload_minify_html'] === "1" ? true : false,
+                    'uucss_query_string' => isset($options['uucss_query_string']) && $options['uucss_query_string'] === "1" ? true : false,
                     'uucss_query_string_enabled' => apply_filters('uucss/url/enable-query-strings', false),
-                    'uucss_enable_debug' => isset($options['uucss_enable_debug']) && $options['uucss_enable_debug'] == "1" ? true : false,
+                    'uucss_enable_debug' => isset($options['uucss_enable_debug']) && $options['uucss_enable_debug'] === "1" ? true : false,
                     'uucss_jobs_per_queue' => isset($options['uucss_jobs_per_queue']) ? $options['uucss_jobs_per_queue'] : 1,
                     'uucss_queue_interval' => isset($options['uucss_queue_interval']) ? $options['uucss_queue_interval'] : 600,
-                    'uucss_disable_add_to_queue' => isset($options['uucss_disable_add_to_queue']) && $options['uucss_disable_add_to_queue'] == "1" ? true : false,
-                    'uucss_disable_add_to_re_queue' => isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] == "1" ? true : false,
-                    'preload_internal_links' => isset($options['preload_internal_links']) && $options['preload_internal_links'] == "1" ? true : false,
-                    'uucss_disable_error_tracking' => isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] == "1" ? true : false,
+                    'uucss_disable_add_to_queue' => isset($options['uucss_disable_add_to_queue']) && $options['uucss_disable_add_to_queue'] === "1" ? true : false,
+                    'uucss_disable_add_to_re_queue' => isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] === "1" ? true : false,
+                    'preload_internal_links' => isset($options['preload_internal_links']) && $options['preload_internal_links'] === "1" ? true : false,
+                    'uucss_disable_error_tracking' => isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] === "1" ? true : false,
                 ]
             ],
             'css' => [
                 'id' => 'css',
                 'options' => [
                     'uucss_minify' => [
-                        'status' => isset($options['uucss_minify']) && $options['uucss_minify'] == "1" ?  "on" : "off",
+                        'status' => isset($options['uucss_minify']) && $options['uucss_minify'] === "1" ?  "on" : "off",
                         'options' => [
                             'uucss_minify_excluded_files' => isset($options['uucss_minify_excluded_files']) ? $options['uucss_minify_excluded_files'] : null,
                         ]
                     ],
-                    'rapidload_aggregate_css' => isset($options['rapidload_aggregate_css']) && $options['rapidload_aggregate_css'] == "1" ? true : false,
+                    'rapidload_aggregate_css' => isset($options['rapidload_aggregate_css']) && $options['rapidload_aggregate_css'] === "1" ? true : false,
                     'critical_css' => [
-                        'status' => isset($options['uucss_enable_cpcss']) && $options['uucss_enable_cpcss'] == "1" ? "on" : "off",
+                        'status' => isset($options['uucss_enable_cpcss']) && $options['uucss_enable_cpcss'] === "1" ? "on" : "off",
                         'options' => [
-                            'remove_cpcss_on_user_interaction' =>  isset($options['remove_cpcss_on_user_interaction']) && $options['remove_cpcss_on_user_interaction'] == "1" ? true : false,
+                            'remove_cpcss_on_user_interaction' =>  isset($options['remove_cpcss_on_user_interaction']) && $options['remove_cpcss_on_user_interaction'] === "1" ? true : false,
                             'uucss_additional_css' => isset($options['uucss_additional_css']) ? stripslashes($options['uucss_additional_css']) : null,
                         ]
                     ],
                     'unused_css' => [
-                        'status' => isset($options['uucss_enable_uucss']) && $options['uucss_enable_uucss'] == "1" ? "on" : "off",
+                        'status' => isset($options['uucss_enable_uucss']) && $options['uucss_enable_uucss'] === "1" ? "on" : "off",
                         'options' => [
-                            'uucss_variables' => isset($options['uucss_variables']) && $options['uucss_variables'] == "1" ? true : false,
-                            'uucss_keyframes' => isset($options['uucss_keyframes']) && $options['uucss_keyframes'] == "1" ? true : false,
-                            'uucss_fontface' => isset($options['uucss_fontface']) && $options['uucss_fontface'] == "1" ? true : false,
-                            'uucss_include_inline_css' => isset($options['uucss_include_inline_css']) && $options['uucss_include_inline_css'] == "1" ? true : false,
-                            'uucss_cache_busting_v2' => isset($options['uucss_cache_busting_v2']) && $options['uucss_cache_busting_v2'] == "1" ? true : false,
+                            'uucss_variables' => isset($options['uucss_variables']) && $options['uucss_variables'] === "1" ? true : false,
+                            'uucss_keyframes' => isset($options['uucss_keyframes']) && $options['uucss_keyframes'] === "1" ? true : false,
+                            'uucss_fontface' => isset($options['uucss_fontface']) && $options['uucss_fontface'] === "1" ? true : false,
+                            'uucss_include_inline_css' => isset($options['uucss_include_inline_css']) && $options['uucss_include_inline_css'] === "1" ? true : false,
+                            'uucss_cache_busting_v2' => isset($options['uucss_cache_busting_v2']) && $options['uucss_cache_busting_v2'] === "1" ? true : false,
                             'uucss_excluded_files' => isset($options['uucss_excluded_files']) ? $options['uucss_excluded_files'] : null,
                             'uucss_safelist' => isset($options['uucss_safelist']) ? $options['uucss_safelist'] : null,
                             'uucss_blocklist' => isset($options['uucss_blocklist']) ? $options['uucss_blocklist'] : null,
                             'whitelist_packs' => isset($options['whitelist_packs']) ? $options['whitelist_packs'] : [],
                             'suggested_whitelist_packs' => isset($options['suggested_whitelist_packs']) ? $options['suggested_whitelist_packs'] : [],
-                            'uucss_inline_css' => isset($options['uucss_inline_css']) && $options['uucss_inline_css'] == "1" ? true : false,
+                            'uucss_inline_css' => isset($options['uucss_inline_css']) && $options['uucss_inline_css'] === "1" ? true : false,
                         ]
                     ],
-                    'uucss_enable_rules' => isset($options['uucss_enable_rules']) && $options['uucss_enable_rules'] == "1" ? true : false,
+                    'uucss_enable_rules' => isset($options['uucss_enable_rules']) && $options['uucss_enable_rules'] === "1" ? true : false,
                 ],
-                'status' => isset($options['uucss_enable_css']) && $options['uucss_enable_css'] == "1" ? "on" : "off"
+                'status' => isset($options['uucss_enable_css']) && $options['uucss_enable_css'] === "1" ? "on" : "off"
             ],
             'javascript' => [
                 'id' => 'javascript',
-                'status' => isset($options['uucss_enable_javascript']) && $options['uucss_enable_javascript'] == "1" ? "on" : "off",
+                'status' => isset($options['uucss_enable_javascript']) && $options['uucss_enable_javascript'] === "1" ? "on" : "off",
                 'options' => [
                     'uucss_load_js_method' => isset($options['uucss_load_js_method']) ? $options['uucss_load_js_method'] : 'none',
-                    'defer_inline_js' => isset($options['defer_inline_js']) && $options['defer_inline_js'] == "1" ? true : false,
-                    'minify_js' => isset($options['minify_js']) && $options['minify_js'] == "1" ? true : false,
-                    'preload_internal_links' => isset($options['preload_internal_links']) && $options['preload_internal_links'] == "1" ? true : false,
-                    'delay_javascript' => isset($options['delay_javascript']) && $options['delay_javascript'] == "1" ? true : false,
+                    'defer_inline_js' => isset($options['defer_inline_js']) && $options['defer_inline_js'] === "1" ? true : false,
+                    'minify_js' => isset($options['minify_js']) && $options['minify_js'] === "1" ? true : false,
+                    'preload_internal_links' => isset($options['preload_internal_links']) && $options['preload_internal_links'] === "1" ? true : false,
+                    'delay_javascript' => isset($options['delay_javascript']) && $options['delay_javascript'] === "1" ? true : false,
                     'uucss_excluded_js_files' => isset($options['uucss_excluded_js_files']) ? $options['uucss_excluded_js_files'] : null,
                     'delay_javascript_callback' => isset($options['delay_javascript_callback']) ? $options['delay_javascript_callback'] : null,
                     'uucss_excluded_js_files_from_defer' => isset($options['uucss_excluded_js_files_from_defer']) ? $options['uucss_excluded_js_files_from_defer'] : null,
@@ -338,26 +338,26 @@ class RapidLoad_Module
             ],
             'image-delivery' => [
                 'id' => 'image-delivery',
-                'status' => isset($options['uucss_enable_image_delivery']) && $options['uucss_enable_image_delivery'] == "1" ? "on" : "off",
+                'status' => isset($options['uucss_enable_image_delivery']) && $options['uucss_enable_image_delivery'] === "1" ? "on" : "off",
                 'options' => [
                     'uucss_image_optimize_level' => isset($options['uucss_image_optimize_level']) ? $options['uucss_image_optimize_level'] : null,
                     'uucss_exclude_above_the_fold_image_count' => isset($options['uucss_exclude_above_the_fold_image_count']) ? $options['uucss_exclude_above_the_fold_image_count'] : null,
                     'uucss_exclude_images' => isset($options['uucss_exclude_images']) ? $options['uucss_exclude_images'] : '',
                     'uucss_exclude_images_from_lazy_load' => isset($options['uucss_exclude_images_from_lazy_load']) ? $options['uucss_exclude_images_from_lazy_load'] : '',
                     'uucss_exclude_images_from_modern_images' => isset($options['uucss_exclude_images_from_modern_images']) ? $options['uucss_exclude_images_from_modern_images'] : '',
-                    'uucss_support_next_gen_formats' => isset($options['uucss_support_next_gen_formats']) && $options['uucss_support_next_gen_formats'] == "1" ? true : false,
-                    'uucss_lazy_load_images' => isset($options['uucss_lazy_load_images']) && $options['uucss_lazy_load_images'] == "1" ? true : false,
-                    'uucss_generate_blurry_place_holder' => isset($options['uucss_generate_blurry_place_holder']) && $options['uucss_generate_blurry_place_holder'] == "1" ? true : false,
-                    'uucss_adaptive_image_delivery' => isset($options['uucss_adaptive_image_delivery']) && $options['uucss_adaptive_image_delivery'] == "1" ? true : false,
-                    'uucss_lazy_load_iframes' => isset($options['uucss_lazy_load_iframes']) && $options['uucss_lazy_load_iframes'] == "1" ? true : false,
+                    'uucss_support_next_gen_formats' => isset($options['uucss_support_next_gen_formats']) && $options['uucss_support_next_gen_formats'] === "1" ? true : false,
+                    'uucss_lazy_load_images' => isset($options['uucss_lazy_load_images']) && $options['uucss_lazy_load_images'] === "1" ? true : false,
+                    'uucss_generate_blurry_place_holder' => isset($options['uucss_generate_blurry_place_holder']) && $options['uucss_generate_blurry_place_holder'] === "1" ? true : false,
+                    'uucss_adaptive_image_delivery' => isset($options['uucss_adaptive_image_delivery']) && $options['uucss_adaptive_image_delivery'] === "1" ? true : false,
+                    'uucss_lazy_load_iframes' => isset($options['uucss_lazy_load_iframes']) && $options['uucss_lazy_load_iframes'] === "1" ? true : false,
                     'uucss_exclude_iframes_from_lazy_load' => isset($options['uucss_exclude_iframes_from_lazy_load']) ? $options['uucss_exclude_iframes_from_lazy_load'] : '',
-                    'uucss_set_width_and_height' => isset($options['uucss_set_width_and_height']) && $options['uucss_set_width_and_height'] == "1" ? true : false,
+                    'uucss_set_width_and_height' => isset($options['uucss_set_width_and_height']) && $options['uucss_set_width_and_height'] === "1" ? true : false,
                     'uucss_exclude_images_from_set_width_and_height' => isset($options['uucss_exclude_images_from_set_width_and_height']) ? $options['uucss_exclude_images_from_set_width_and_height'] : '',
                 ]
             ],
             'cdn' => [
                 'id' => 'cdn',
-                'status' => isset($options['uucss_enable_cdn']) && $options['uucss_enable_cdn'] == "1" ? "on" : "off",
+                'status' => isset($options['uucss_enable_cdn']) && $options['uucss_enable_cdn'] === "1" ? "on" : "off",
                 'options' => [
                     'uucss_cdn_url' => isset($options['uucss_cdn_url']) ? $options['uucss_cdn_url'] : null,
                     'uucss_cdn_dns_id' => isset($options['uucss_cdn_dns_id']) ? $options['uucss_cdn_dns_id'] : null,
@@ -366,15 +366,15 @@ class RapidLoad_Module
             ],
             'font' => [
                 'id' => 'font',
-                'status' => isset($options['uucss_enable_font_optimization']) && $options['uucss_enable_font_optimization'] == "1" ? "on" : "off",
+                'status' => isset($options['uucss_enable_font_optimization']) && $options['uucss_enable_font_optimization'] === "1" ? "on" : "off",
                 'options' => [
                     'uucss_preload_font_urls' => isset($options['uucss_preload_font_urls']) ? $options['uucss_preload_font_urls'] : null,
-                    'uucss_self_host_google_fonts' => isset($options['uucss_self_host_google_fonts']) && $options['uucss_self_host_google_fonts'] == "1" ? true : false,
+                    'uucss_self_host_google_fonts' => isset($options['uucss_self_host_google_fonts']) && $options['uucss_self_host_google_fonts'] === "1" ? true : false,
                 ]
             ],
             'cache' => [
                 'id' => 'cache',
-                'status' => isset($options['uucss_enable_cache']) && $options['uucss_enable_cache'] == "1" ? "on" : "off",
+                'status' => isset($options['uucss_enable_cache']) && $options['uucss_enable_cache'] === "1" ? "on" : "off",
                 'options' => [
                     'cache_expires' => isset($cache_options['cache_expires']) ? (int)$cache_options['cache_expires'] : 0,
                     'cache_expiry_time' => isset($cache_options['cache_expiry_time']) ? $cache_options['cache_expiry_time'] : 0,
