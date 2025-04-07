@@ -265,7 +265,7 @@ class RapidLoad_Optimizer
         $file_system = RapidLoad_Base::get_log_instance();
 
         foreach ($cache_folders as $key => $folder) {
-            if (file_exists($folder['path'])) {
+            if (isset($folder['path']) && file_exists($folder['path'])) {
                 $folder_sizes[] = [
                     'key' => $key,
                     'label' => $folder['label'],

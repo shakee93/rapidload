@@ -217,7 +217,7 @@ class RapidLoad_Cache_Store
 
         $switched = false;
         if ( is_multisite() && ! ms_is_switched() ) {
-            $blog_domain = (string) wp_parse_url( $url, PHP_URL_HOST );
+            $blog_domain = (string) parse_url( $url, PHP_URL_HOST );
             $blog_path   = is_subdomain_install() ? '/' : RapidLoad_Cache::get_blog_path_from_url( $url );
             $blog_id     = get_blog_id_from_url( $blog_domain, $blog_path );
 
@@ -382,7 +382,7 @@ class RapidLoad_Cache_Store
             return '';
         }
 
-        $cache_url = wp_parse_url( home_url(), PHP_URL_SCHEME ) . '://' . str_replace( RAPIDLOAD_CACHE_DIR . '/', '', $dir );
+        $cache_url = parse_url( home_url(), PHP_URL_SCHEME ) . '://' . str_replace( RAPIDLOAD_CACHE_DIR . '/', '', $dir );
         $cache_url = user_trailingslashit( $cache_url );
 
         return $cache_url;
@@ -466,14 +466,14 @@ class RapidLoad_Cache_Store
             }
         }
 
-        $url_path = (string) wp_parse_url( $url, PHP_URL_PATH );
+        $url_path = (string) parse_url( $url, PHP_URL_PATH );
         if ( substr( $url_path, -1, 1 ) === '*' ) {
-            $args['root'] = RAPIDLOAD_CACHE_DIR . '/' . substr( (string) wp_parse_url( $url, PHP_URL_HOST ) . $url_path, 0, -1 );
+            $args['root'] = RAPIDLOAD_CACHE_DIR . '/' . substr( (string) parse_url( $url, PHP_URL_HOST ) . $url_path, 0, -1 );
             $args['subpages']['include'] = basename( $url_path );
         }
 
         // Merge query string arguments into the parameter arguments and then the default arguments.
-        wp_parse_str( (string) wp_parse_url( $url, PHP_URL_QUERY ), $query_string_args );
+        wp_parse_str( (string) parse_url( $url, PHP_URL_QUERY ), $query_string_args );
         $args = wp_parse_args( $query_string_args, $args );
         $args = wp_parse_args( $args, $default_args );
         $args = self::validate_cache_iterator_args( $args );
@@ -642,19 +642,19 @@ class RapidLoad_Cache_Store
         }
 
         if ( empty ( $url ) && isset( $_SERVER['REQUEST_URI'] ) ) {
-            $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false );
+            $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false );
         }else{
             $url = site_url();
         }
 
         $url = filter_var($url, FILTER_SANITIZE_URL);
 
-        $url_host = wp_parse_url( $url, PHP_URL_HOST );
+        $url_host = parse_url( $url, PHP_URL_HOST );
         if ( ! is_string( $url_host ) ) {
             return RAPIDLOAD_CACHE_DIR;
         }
 
-        $url_path = wp_parse_url( $url, PHP_URL_PATH );
+        $url_path = parse_url( $url, PHP_URL_PATH );
         if ( ! is_string( $url_path ) ) {
             $url_path = '';
         } elseif ( substr( $url_path, -1, 1 ) === '*' ) {
@@ -689,7 +689,7 @@ class RapidLoad_Cache_Store
         $settings_file_name = '';
 
         if ( function_exists( 'home_url' ) ) {
-            $settings_file_name = wp_parse_url( home_url(), PHP_URL_HOST );
+            $settings_file_name = parse_url( home_url(), PHP_URL_HOST );
 
             if ( is_multisite() && defined( 'SUBDOMAIN_INSTALL' ) && ! SUBDOMAIN_INSTALL ) {
                 $blog_path = RapidLoad_Cache::get_blog_path();
@@ -707,7 +707,7 @@ class RapidLoad_Cache_Store
                     $settings_file_regex = str_replace( '.', '\.', $settings_file_regex );
 
                     if ( defined( 'SUBDOMAIN_INSTALL' ) && ! SUBDOMAIN_INSTALL && ! $skip_blog_path ) {
-                        $url_path = trim( wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false ), PHP_URL_PATH ), '/' );
+                        $url_path = trim( parse_url( RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false ), PHP_URL_PATH ), '/' );
 
                         if ( ! empty( $url_path ) ) {
                             $url_path_regex = str_replace( '/', '|', $url_path );
@@ -732,7 +732,7 @@ class RapidLoad_Cache_Store
                 $settings_file_name = strtolower( RapidLoad_Cache_Engine::$request_headers['Host'] );
 
                 if ( is_multisite() && defined( 'SUBDOMAIN_INSTALL' ) && ! SUBDOMAIN_INSTALL && ! $skip_blog_path ) {
-                    $url_path = wp_parse_url( RapidLoad_Cache_Engine::sanitize_server_input( sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), false ), PHP_URL_PATH );
+                    $url_path = parse_url( RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false ), PHP_URL_PATH );
                     $url_path_pieces = explode( '/', $url_path, 3 );
                     $blog_path = $url_path_pieces[1];
 
@@ -945,9 +945,9 @@ class RapidLoad_Cache_Store
             'preview' => '',
         );
 
-        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) ) === 'on' || sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) == '1' ) ) {
+        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( $_SERVER['HTTPS'] ) === 'on' || $_SERVER['HTTPS'] == '1' ) ) {
             $cache_keys['scheme'] = 'https-';
-        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && sanitize_text_field( wp_unslash( $_SERVER['SERVER_PORT'] ) ) == '443' ) {
+        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ) {
             $cache_keys['scheme'] = 'https-';
         } elseif ( isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto'] === 'https'
             || isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme'] === 'https'
@@ -1182,8 +1182,8 @@ class RapidLoad_Cache_Store
         $image_url    = $image_pieces[0];
 
         // In case installation is in a subdirectory.
-        $image_url_path   = ltrim( wp_parse_url( $image_url, PHP_URL_PATH ), '/' );
-        $installation_dir = ltrim( wp_parse_url( site_url( '/' ), PHP_URL_PATH ), '/' );
+        $image_url_path   = ltrim( parse_url( $image_url, PHP_URL_PATH ), '/' );
+        $installation_dir = ltrim( parse_url( site_url( '/' ), PHP_URL_PATH ), '/' );
         $image_path       = str_replace( $installation_dir, '', ABSPATH ) . $image_url_path;
 
         return $image_path;

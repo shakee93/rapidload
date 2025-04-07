@@ -670,7 +670,7 @@ class RapidLoad_Cache
 
         if ( $_GET['_action'] === 'clearurl' ) {
 
-            $url = isset($_GET['_url']) ? sanitize_url(wp_unslash($_GET['_url'])) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])), false);
+            $url = isset($_GET['_url']) ? sanitize_url(wp_unslash($_GET['_url'])) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
 
             self::clear_page_cache_by_url( $url );
         } elseif ( $_GET['_action'] === 'clear' ) {
@@ -946,7 +946,7 @@ class RapidLoad_Cache
             'compress_cache'                     => (int) ( ! empty( $settings['compress_cache'] ) ),
             'minify_html'                        => (int) ( ! empty( $settings['minify_html'] ) ),
             'minify_inline_css_js'               => (int) ( ! empty( $settings['minify_inline_css_js'] ) ),
-            'excluded_post_ids'                  => (string) sanitize_text_field( $settings['excluded_post_ids'] ),
+            'excluded_post_ids'                  => (string) $settings['excluded_post_ids'],
             'excluded_page_paths'                => (string) self::validate_regex( $settings['excluded_page_paths'] ),
             'excluded_query_strings'             => (string) self::validate_regex( $settings['excluded_query_strings'] ),
             'excluded_cookies'                   => (string) self::validate_regex( $settings['excluded_cookies'] ),
@@ -971,7 +971,7 @@ class RapidLoad_Cache
                 return '';
             }
 
-            $validated_regex = sanitize_text_field( $regex );
+            $validated_regex = $regex;
 
             return $validated_regex;
         }
@@ -1025,7 +1025,7 @@ class RapidLoad_Cache
 
     public static function get_blog_path_from_url( $url ) {
 
-        $url_path        = (string) wp_parse_url( $url, PHP_URL_PATH );
+        $url_path        = (string) parse_url( $url, PHP_URL_PATH );
         $url_path_pieces = explode( '/', trim( $url_path, '/' ) );
         $blog_path       = '/';
         $blog_paths      = self::get_blog_paths();
@@ -1072,7 +1072,7 @@ class RapidLoad_Cache
 
     public static function get_blog_path() {
 
-        $site_url_path        = (string) wp_parse_url( home_url(), PHP_URL_PATH );
+        $site_url_path        = (string) parse_url( home_url(), PHP_URL_PATH );
         $site_url_path_pieces = explode( '/', trim( $site_url_path, '/' ) );
 
         $blog_path = end( $site_url_path_pieces );
