@@ -98,7 +98,7 @@ class RapidLoad_Font_Enqueue
     {
 
         $font_urls = isset($this->options['uucss_preload_font_urls']) ?
-            explode(",", $this->options['uucss_preload_font_urls']) :
+            explode("\n", $this->options['uucss_preload_font_urls']) :
             [];
 
         $font_urls = apply_filters('rapidload/enqueue/preload/fonts', $font_urls, $this->job, $this->strategy);

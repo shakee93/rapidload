@@ -1654,7 +1654,7 @@ class RapidLoad_Optimizer
                     case 'number' :{
                         if(isset($input->value) && isset($input->key)){
                             if($input->key == "uucss_safelist"){
-                                $rulesArray = explode("\n",sanitize_text_field($input->value));
+                                $rulesArray = explode("\n",sanitize_textarea_field($input->value));
                                 $transformedRulesArray = [];
                                 foreach ($rulesArray as $rule) {
                                     $transformedRulesArray[] = [
@@ -1667,7 +1667,7 @@ class RapidLoad_Optimizer
                                 $rapidload_cache_args['cache_expiry_time'] = (float)$input->value;
                             }else if($input->key == "excluded_page_paths"){
                                 if(!empty($input->value)){
-                                    $paths = explode("\n",sanitize_text_field($input->value));
+                                    $paths = explode("\n",sanitize_textarea_field($input->value));
                                     $rapidload_cache_args['excluded_page_paths'] = $this->transformPathsToRegex($paths);
                                 }else{
                                     $rapidload_cache_args['excluded_page_paths'] = "";
@@ -1794,6 +1794,8 @@ class RapidLoad_Optimizer
             self::$global_options['uucss_ignore_inlined_styles'] = self::$options['uucss_ignore_inlined_styles'];
             RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
         }
+
+        error_log(json_encode(self::$options, JSON_PRETTY_PRINT));
 
         self::post_optimizer_function($result);
 
