@@ -75,9 +75,9 @@ class RapidLoad_Onboard{
         }
 
         if(get_current_screen() &&
-            get_current_screen()->base == 'update' &&
-            $_REQUEST['action'] = 'install-plugin' &&
-                $_REQUEST['plugin'] == 'autoptimize'){
+            get_current_screen()->base === 'update' &&
+            $_REQUEST['action'] === 'install-plugin' &&
+                $_REQUEST['plugin'] === 'autoptimize'){
             echo '<style>div.notice{display: none !important;}</style>';
         }
     }
@@ -91,10 +91,10 @@ class RapidLoad_Onboard{
         
         if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&
             self::on_board_completed() && !strpos( home_url( $request_uri ), 'nonce' )) {
-            wp_redirect( admin_url( 'admin.php?page=rapidload' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=rapidload' ) );
         } else if ( RapidLoad_Base::get_option( 'rapidload_do_activation_redirect' ) ) {
             RapidLoad_Base::delete_option( 'rapidload_do_activation_redirect' );
-            wp_redirect( '/wp-admin/options-general.php?page=rapidload#/onboard' );
+            wp_safe_redirect( '/wp-admin/options-general.php?page=rapidload#/onboard' );
         }
     }
 

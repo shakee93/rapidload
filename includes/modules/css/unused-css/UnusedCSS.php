@@ -179,7 +179,7 @@ class UnusedCSS
 
             if ( isset($fallback_target) ) {
 
-                wp_redirect( $fallback_target, 302 );
+                wp_safe_redirect( $fallback_target, 302 );
             } else {
 
                 status_header( 410 );

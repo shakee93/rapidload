@@ -147,7 +147,7 @@ class RapidLoad_FileSystem
             $bytes = number_format($bytes / 1024, 2) . ' KB';
         } elseif ($bytes > 1) {
             $bytes = $bytes . ' bytes';
-        } elseif ($bytes == 1) {
+        } elseif ($bytes === 1) {
             $bytes = '1 byte';
         } else {
             $bytes = '0 bytes';

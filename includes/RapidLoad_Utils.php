@@ -819,7 +819,7 @@ trait RapidLoad_Utils {
             $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
             $plugin_details[] = [
                 'name' => $plugin_data['Name'],
-                'source' => $plugin_data['PluginURI'] ?? 'Unknown'
+                'source' => $plugin_data['PluginURI'] ? $plugin_data['PluginURI'] : 'Unknown'
             ];
         }
 
@@ -829,7 +829,7 @@ trait RapidLoad_Utils {
                 $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
                 $plugin_details[] = [
                     'name' => $plugin_data['Name'],
-                    'source' => $plugin_data['PluginURI'] ?? 'Unknown'
+                    'source' => $plugin_data['PluginURI'] ? $plugin_data['PluginURI'] : 'Unknown'
                 ];
             }
         }

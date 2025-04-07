@@ -35,7 +35,7 @@ class CriticalCSS_Store
 
             $discontinue = false;
 
-            if(!isset($this->args['titan']) && ($this->job_data->status == 'waiting' || $this->job_data->status == 'processing' || $this->job_data->status == 'success')){
+            if(!isset($this->args['titan']) && ($this->job_data->status === 'waiting' || $this->job_data->status === 'processing' || $this->job_data->status === 'success')){
                 return;
             }
 
@@ -44,7 +44,7 @@ class CriticalCSS_Store
                 $strategy = $this->args['options']['strategy'];
                 $cpcss_data = $this->job_data->get_cpcss_data();
 
-                if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status == 'success' || $this->job_data->status == 'processing')){
+                if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status === 'success' || $this->job_data->status === 'processing')){
                     $discontinue = true;
                 }
 
@@ -63,7 +63,7 @@ class CriticalCSS_Store
                         'service' => true,
                         'mobile_device' => true,
                         "cacheBusting"          => isset($this->options['uucss_cache_busting_v2']) ? apply_filters('uucss/cache/bust',[]) : [],
-                        "ignoreInlinedStyles" => isset($this->options['uucss_ignore_inlined_styles']) ? !($this->options['uucss_ignore_inlined_styles'] == "1") : true
+                        "ignoreInlinedStyles" => isset($this->options['uucss_ignore_inlined_styles']) ? !($this->options['uucss_ignore_inlined_styles'] === "1") : true
                     ]
                 ) );
 
@@ -91,7 +91,7 @@ class CriticalCSS_Store
                 $strategy = $this->args['options']['strategy'];
                 $cpcss_data = $this->job_data->get_cpcss_data();
 
-                if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status == 'success' || $this->job_data->status == 'processing')){
+                if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status === 'success' || $this->job_data->status === 'processing')){
                     $discontinue = true;
                 }
 
@@ -113,7 +113,7 @@ class CriticalCSS_Store
                         'hook_end_point' => trailingslashit(get_site_url()),
                         'immediate' => true,
                         "cacheBusting"          => isset($this->options['uucss_cache_busting_v2']) ? apply_filters('uucss/cache/bust',[]) : [],
-                        "ignoreInlinedStyles" => isset($this->options['uucss_ignore_inlined_styles']) ? !($this->options['uucss_ignore_inlined_styles'] == "1") : true
+                        "ignoreInlinedStyles" => isset($this->options['uucss_ignore_inlined_styles']) ? !($this->options['uucss_ignore_inlined_styles'] === "1") : true
                     ]
 
                 ) );
@@ -164,7 +164,7 @@ class CriticalCSS_Store
         }
 
         $data = $this->job_data->get_cpcss_data();
-        $file_chunk_enabled = isset($this->options['rapidload_enable_cpcss_file_chunk']) && $this->options['rapidload_enable_cpcss_file_chunk'] == "1";
+        $file_chunk_enabled = isset($this->options['rapidload_enable_cpcss_file_chunk']) && $this->options['rapidload_enable_cpcss_file_chunk'] === "1";
         $file_character_length = $file_chunk_enabled && isset($this->options['rapidload_cpcss_file_character_length']) ? $this->options['rapidload_cpcss_file_character_length'] : 0;
         $file_character_length = apply_filters('rapidload/cpcss/file-character-length', $file_character_length);
 
@@ -187,7 +187,7 @@ class CriticalCSS_Store
 
     function handle_css_parts($css, $suffix, $file_character_length) {
 
-        if($file_character_length == "0"){
+        if($file_character_length === "0"){
             $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
             if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)) {
                 $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $file_name, $css);
@@ -221,7 +221,7 @@ class CriticalCSS_Store
 
     function update_css(){
 
-        if(!$this->job_data->queue_job_id || $this->job_data->status == "success" || $this->job_data->status == "failed"){
+        if(!$this->job_data->queue_job_id || $this->job_data->status === "success" || $this->job_data->status === "failed"){
             return;
         }
 
@@ -233,7 +233,7 @@ class CriticalCSS_Store
 
             $error = $uucss_api->extract_error( $result );
 
-            if(isset($error['message']) && ($error['message'] == 'Job processing failed in queue' || $error['message'] == 'Error')){
+            if(isset($error['message']) && ($error['message'] === 'Job processing failed in queue' || $error['message'] === 'Error')){
 
                 self::log([
                     'log' =>  'requeue-> cpcss job processing failed in queue',
@@ -255,7 +255,7 @@ class CriticalCSS_Store
             return;
         }
 
-        if(isset($result->state) && $result->state == 'failed'){
+        if(isset($result->state) && $result->state === 'failed'){
 
             $this->job_data->mark_as_failed('Unknown error occurred');
             $this->job_data->save();
@@ -269,10 +269,10 @@ class CriticalCSS_Store
 
         if(isset($result->state)){
 
-            if($result->state == 'waiting' || $result->state == 'delayed' || $result->state == 'created' || $result->state == 'stalling'){
+            if($result->state === 'waiting' || $result->state === 'delayed' || $result->state === 'created' || $result->state === 'stalling'){
                 $this->job_data->status = 'waiting';
                 $this->job_data->save();
-            }else if($result->state == 'active'){
+            }else if($result->state === 'active'){
                 $this->job_data->status = 'processing';
                 $this->job_data->save();
             }

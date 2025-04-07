@@ -21,11 +21,11 @@ class RapidLoad_Cache
 
         $cache_module_enabled = RapidLoad_Base::get_option('rapidload_module_cache');
 
-        if(isset(self::$options['uucss_disable_wp_emoji']) && self::$options['uucss_disable_wp_emoji'] == "1"){
+        if(isset(self::$options['uucss_disable_wp_emoji']) && self::$options['uucss_disable_wp_emoji'] === "1"){
             $this->disable_wp_emojis();
         }
 
-        if(!isset($cache_module_enabled) || $cache_module_enabled != "1" ){
+        if(!isset($cache_module_enabled) || $cache_module_enabled !== "1" ){
             return;
         }
 
@@ -704,7 +704,7 @@ class RapidLoad_Cache
 
         if(isset($state['dom']) && RapidLoad_Cache_Engine::$to_be_cached){
 
-            if(gettype($state['dom']) == "string"){
+            if(gettype($state['dom']) === "string"){
                 $content = $state['dom'];
             }else{
                 $content = $state['dom']->__toString();
@@ -727,7 +727,7 @@ class RapidLoad_Cache
 
     public static function setup_cache($status){
 
-        if($status == "1"){
+        if($status === "1"){
 
             RapidLoad_Cache_Store::create_advanced_cache_file();
             RapidLoad_Cache_Store::set_wp_cache_constant();
@@ -1260,7 +1260,7 @@ class RapidLoad_Cache
 
         self::$options = RapidLoad_Base::fetch_options();
 
-        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] != "1" ){
+        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;
         }
 
@@ -1273,7 +1273,7 @@ class RapidLoad_Cache
 
         self::$options = RapidLoad_Base::fetch_options();
 
-        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] != "1" ){
+        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;
         }
 

@@ -56,7 +56,7 @@ class RapidLoad_Job{
             $this->mobile_options = isset($exist->mobile_options) ? $exist->mobile_options : null;
             $this->diagnose_data = isset($exist->diagnose_data) ? $exist->diagnose_data : null;
 
-            if(isset($this->rule_id) && $this->rule_id != $this->id && $this->rule == 'is_url'){
+            if(isset($this->rule_id) && $this->rule_id !== $this->id && $this->rule === 'is_url'){
                 $this->parent = RapidLoad_Job::find_or_fail($this->rule_id);
             }
 
@@ -82,7 +82,7 @@ class RapidLoad_Job{
                 OBJECT
             );
         }
-        else if($this->rule == 'is_url'){
+        else if($this->rule === 'is_url'){
             $exist = $wpdb->get_row(
                 $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $this->url),
                 OBJECT
@@ -236,7 +236,7 @@ class RapidLoad_Job{
     }
 
     function get_urls() {
-        if ($this->rule == "is_url") {
+        if ($this->rule === "is_url") {
             return [];
         }
 
@@ -526,7 +526,7 @@ class RapidLoad_Job{
         $result = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
-                IF(t1.id != t2.id, t2.data, NULL) AS first_data, t1.created_at 
+                IF(t1.id !== t2.id, t2.data, NULL) AS first_data, t1.created_at 
                 FROM {$wpdb->prefix}rapidload_job_optimizations t1 
                 LEFT JOIN {$wpdb->prefix}rapidload_job_optimizations t2 
                 ON t1.job_id = t2.job_id 
@@ -616,7 +616,7 @@ class RapidLoad_Job{
         );
 
         $first_entry = isset($first_data[0]) ? $first_data[0] : false;
-        $last_entry = isset($last_data[0]) && $first_entry && $first_data[0]->id != $last_data[0]->id ? $last_data[0] : false;
+        $last_entry = isset($last_data[0]) && $first_entry && $first_data[0]->id !== $last_data[0]->id ? $last_data[0] : false;
 
         $get_response_time = function ($data) {
             $decoded_data = json_decode($data);

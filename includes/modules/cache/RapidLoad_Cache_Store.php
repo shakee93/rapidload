@@ -171,13 +171,13 @@ class RapidLoad_Cache_Store
         if (!is_dir($dirPath)) {
             return;
         }
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        if (substr($dirPath, strlen($dirPath) - 1, 1) !== '/') {
             $dirPath .= '/';
         }
 
         $files = scandir($dirPath);
         foreach ($files as $file) {
-            if ($file == "." || $file == "..") {
+            if ($file === "." || $file === "..") {
                 continue;
             }
 
@@ -390,7 +390,7 @@ class RapidLoad_Cache_Store
 
     public static function cache_expired( $cache_file ) {
 
-        if ( RapidLoad_Cache_Engine::$settings['cache_expiry_time'] == 0 ) {
+        if ( RapidLoad_Cache_Engine::$settings['cache_expiry_time'] === 0 ) {
             return false;
         }
 
@@ -945,9 +945,9 @@ class RapidLoad_Cache_Store
             'preview' => '',
         );
 
-        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( $_SERVER['HTTPS'] ) === 'on' || $_SERVER['HTTPS'] == '1' ) ) {
+        if ( isset( $_SERVER['HTTPS'] ) && ( strtolower( $_SERVER['HTTPS'] ) === 'on' || $_SERVER['HTTPS'] === '1' ) ) {
             $cache_keys['scheme'] = 'https-';
-        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ) {
+        } elseif ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] === '443' ) {
             $cache_keys['scheme'] = 'https-';
         } elseif ( isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Proto'] === 'https'
             || isset(RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme']) && RapidLoad_Cache_Engine::$request_headers['X-Forwarded-Scheme'] === 'https'

@@ -14,7 +14,7 @@ class RapidLoad_Font
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['uucss_enable_font_optimization']) || $this->options['uucss_enable_font_optimization'] != "1"){
+        if(!isset($this->options['uucss_enable_font_optimization']) || $this->options['uucss_enable_font_optimization'] !== "1"){
             return;
         }
 

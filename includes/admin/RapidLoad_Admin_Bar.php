@@ -129,12 +129,12 @@ class RapidLoad_Admin_Bar {
             'enable_entire_site' => RapidLoad_DB::get_optimization_count() < 2,
             'rest_url' => RapidLoadRestApi::rest_url(),
             'license_key' => RapidLoad_Base::get_license_key(),
-            'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"),
-            'uucss_disable_error_tracking' => boolval(isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] == "1"),
+            'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1"),
+            'uucss_disable_error_tracking' => boolval(isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] === "1"),
             'rapidload_titan_gear' => get_option('rapidload_titan_gear', 'trurboMax'),
             'rapidload_license_data' => $rapidload_license_data,
             'rapidload_privacy_policy_accepted' => get_option('rapidload_privacy_policy_accepted', false),
-            'db_to_be_updated' => RapidLoad_DB::$current_version != RapidLoad_DB::$db_version,
+            'db_to_be_updated' => RapidLoad_DB::$current_version !== RapidLoad_DB::$db_version,
         );
 
         wp_localize_script( 'rapidload_page_optimizer', 'rapidload_optimizer', $data );
@@ -221,12 +221,12 @@ class RapidLoad_Admin_Bar {
 
                 $wp_admin_bar->add_node(array(
                     'id'    => 'rapidload',
-                    'title' => '<div id="rl-node-wrapper" class="'. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1" ? 'rl-node-wrapper rl-test-mode-on' : 'rl-node-wrapper') .'" >
+                    'title' => '<div id="rl-node-wrapper" class="'. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? 'rl-node-wrapper rl-test-mode-on' : 'rl-node-wrapper') .'" >
                                     <span class="rl-icon">
                                         <img src="'. esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
                                     </span>
                                     <span class="rl-label">'.__( 'RapidLoad', 'unusedcss' ) . '</span>
-                                    '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',
+                                    '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',
                     'href'  => admin_url( 'admin.php?page=rapidload' ),
                     'meta'  => array( 'class' => '' ),
                 ));
