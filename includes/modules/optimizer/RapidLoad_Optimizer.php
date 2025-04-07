@@ -646,7 +646,7 @@ class RapidLoad_Optimizer
 
         $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
-        self::$global = isset($_REQUEST['global']) && (boolval($_REQUEST['global']) || rtrim(site_url(), "/") == rtrim($url, "/"));
+        self::$global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(site_url(), "/") == rtrim($url, "/");
 
         $this->pre_optimizer_function($url, $strategy, self::$global);
 
@@ -1794,8 +1794,6 @@ class RapidLoad_Optimizer
             self::$global_options['uucss_ignore_inlined_styles'] = self::$options['uucss_ignore_inlined_styles'];
             RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
         }
-
-        error_log(json_encode(self::$options, JSON_PRETTY_PRINT));
 
         self::post_optimizer_function($result);
 

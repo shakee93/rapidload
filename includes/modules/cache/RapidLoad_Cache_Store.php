@@ -161,7 +161,7 @@ class RapidLoad_Cache_Store
         $advanced_cache_file = WP_CONTENT_DIR . '/advanced-cache.php';
 
         if(file_exists($advanced_cache_file)){
-            wp_delete_file($advanced_cache_file);
+            @unlink($advanced_cache_file);
             RapidLoad_Cache_Store::set_wp_cache_constant(false);
             self::clearDirectory(RAPIDLOAD_CACHE_DIR);
         }
@@ -186,7 +186,7 @@ class RapidLoad_Cache_Store
                 self::clearDirectory($filePath);
                 @rmdir($filePath);
             } else {
-                wp_delete_file($filePath);
+                @unlink($filePath);
             }
         }
     }
@@ -256,7 +256,7 @@ class RapidLoad_Cache_Store
 
                 if ( $args['clear'] ) {
 
-                    if ( ! wp_delete_file( $cache_object ) ) {
+                    if ( ! @unlink( $cache_object ) ) {
                         // Skip to the next object because the file deletion failed.
                         continue;
                     }
