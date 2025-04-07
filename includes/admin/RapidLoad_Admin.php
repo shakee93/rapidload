@@ -157,7 +157,7 @@ class RapidLoad_Admin
 
                     $post_id = $post->ID;
 
-                    if ( $post_type === 'page' && ( $post_id == $cart_page_id || $post_id == $checkout_page_id ) ) {
+                    if ( $post_type === 'page' && ( $post_id === $cart_page_id || $post_id === $checkout_page_id ) ) {
                         continue;
                     }
 
@@ -226,7 +226,7 @@ class RapidLoad_Admin
             if ( $query->have_posts() ) {
                 foreach ( $query->posts as $post_id ) {
 
-                    if ( $post_type === 'page' && ( $post_id == $cart_page_id || $post_id == $checkout_page_id ) ) {
+                    if ( $post_type === 'page' && ( $post_id === $cart_page_id || $post_id === $checkout_page_id ) ) {
                         continue;
                     }
 
@@ -284,7 +284,7 @@ class RapidLoad_Admin
 
         $url = $this->transform_url(sanitize_url(wp_unslash($_REQUEST['url'])));
 
-        if($url == $this->transform_url(site_url())){
+        if($url === $this->transform_url(site_url())){
             wp_send_json_error('cannot delete home page optimizations');
         }
 
@@ -351,7 +351,7 @@ class RapidLoad_Admin
         $options = RapidLoad_Base::fetch_options();
 
         if(!isset($_REQUEST['test_mode']) || empty($_REQUEST['test_mode'])){
-            if(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] == "1"){
+            if(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1"){
                 wp_send_json_success([
                     'status' => true
                 ]);
@@ -362,14 +362,14 @@ class RapidLoad_Admin
             }
         }
 
-        $status = $_REQUEST['test_mode'] == "true" ? "1" : "0";
+        $status = $_REQUEST['test_mode'] === "true" ? "1" : "0";
 
         $options['rapidload_test_mode'] = $status;
 
         RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
 
         wp_send_json_success([
-            'status' => $options['rapidload_test_mode'] == "1"
+            'status' => $options['rapidload_test_mode'] === "1"
         ]);
 
     }
@@ -423,7 +423,7 @@ class RapidLoad_Admin
             'url' => site_url()
         ]);
 
-        if($result == "200"){
+        if($result === "200"){
             update_option('crawler_check_rapidload_success',"1");
             wp_send_json_success(true);
         }
@@ -529,7 +529,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_minify'])){
 
-            $options['uucss_minify'] = (sanitize_text_field(wp_unslash($_REQUEST['uucss_minify'])) == 'true' ? "1" : null);
+            $options['uucss_minify'] = (sanitize_text_field(wp_unslash($_REQUEST['uucss_minify'])) === 'true' ? "1" : null);
 
         }
 
@@ -541,23 +541,23 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['rapidload_aggregate_css'])){
 
-            $options['rapidload_aggregate_css'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_aggregate_css'])) == 'true' ? "1" : null;
+            $options['rapidload_aggregate_css'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_aggregate_css'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_inline_css'])){
 
-            $options['uucss_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_inline_css'])) == 'true' ? "1" : null;
+            $options['uucss_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_inline_css'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_cpcss'])){
 
-            $options['uucss_enable_cpcss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_cpcss'])) == 'true' ? "1" : null;
+            $options['uucss_enable_cpcss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_cpcss'])) === 'true' ? "1" : null;
 
             if(isset($_REQUEST['remove_cpcss_on_user_interaction'])){
 
-                $options['remove_cpcss_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['remove_cpcss_on_user_interaction'])) == 'true' ? "1" : null;
+                $options['remove_cpcss_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['remove_cpcss_on_user_interaction'])) === 'true' ? "1" : null;
 
             }
 
@@ -591,35 +591,35 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_uucss'])){
 
-            $options['uucss_enable_uucss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_uucss'])) == 'true' ? "1" : null;
+            $options['uucss_enable_uucss'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_uucss'])) === 'true' ? "1" : null;
 
             if(isset($_REQUEST['uucss_variables'])){
 
-                $options['uucss_variables'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_variables'])) == 'true' ? "1" : null;
+                $options['uucss_variables'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_variables'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_keyframes'])){
 
-                $options['uucss_keyframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_keyframes'])) == 'true' ? "1" : null;
+                $options['uucss_keyframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_keyframes'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_fontface'])){
 
-                $options['uucss_fontface'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_fontface'])) == 'true' ? "1" : null;
+                $options['uucss_fontface'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_fontface'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_include_inline_css'])){
 
-                $options['uucss_include_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_include_inline_css'])) == 'true' ? "1" : null;
+                $options['uucss_include_inline_css'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_include_inline_css'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_cache_busting_v2'])){
 
-                $options['uucss_cache_busting_v2'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cache_busting_v2'])) == 'true' ? "1" : null;
+                $options['uucss_cache_busting_v2'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_cache_busting_v2'])) === 'true' ? "1" : null;
 
             }
 
@@ -669,7 +669,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_enable_rules'])){
 
-            $options['uucss_enable_rules'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_rules'])) == 'true' ? "1" : null;
+            $options['uucss_enable_rules'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_rules'])) === 'true' ? "1" : null;
 
         }
 
@@ -683,25 +683,25 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['defer_inline_js'])){
 
-            $options['defer_inline_js'] = sanitize_text_field(wp_unslash($_REQUEST['defer_inline_js'])) == 'true' ? "1" : null;
+            $options['defer_inline_js'] = sanitize_text_field(wp_unslash($_REQUEST['defer_inline_js'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['minify_js'])){
 
-            $options['minify_js'] = sanitize_text_field(wp_unslash($_REQUEST['minify_js'])) == 'true' ? "1" : null;
+            $options['minify_js'] = sanitize_text_field(wp_unslash($_REQUEST['minify_js'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['preload_internal_links'])){
 
-            $options['preload_internal_links'] = sanitize_text_field(wp_unslash($_REQUEST['preload_internal_links'])) == 'true' ? "1" : null;
+            $options['preload_internal_links'] = sanitize_text_field(wp_unslash($_REQUEST['preload_internal_links'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['delay_javascript'])){
 
-            $options['delay_javascript'] = sanitize_text_field(wp_unslash($_REQUEST['delay_javascript'])) == 'true' ? "1" : null;
+            $options['delay_javascript'] = sanitize_text_field(wp_unslash($_REQUEST['delay_javascript'])) === 'true' ? "1" : null;
 
         }
 
@@ -724,9 +724,7 @@ class RapidLoad_Admin
         }
 
         if(isset($_REQUEST['uucss_load_scripts_on_user_interaction'])){
-
-            $options['uucss_load_scripts_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_load_scripts_on_user_interaction'])) == 'true' ? "1" : null;
-
+            $options['uucss_load_scripts_on_user_interaction'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_load_scripts_on_user_interaction'])) === 'true' ? "1" : null;
         }
 
         if(isset($_REQUEST['uucss_exclude_files_from_delay_js'])){
@@ -745,31 +743,31 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_query_string'])){
 
-            $options['uucss_query_string'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_query_string'])) == 'true' ? "1" : null;
+            $options['uucss_query_string'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_query_string'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['rapidload_minify_html'])){
 
-            $options['rapidload_minify_html'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_minify_html'])) == 'true' ? "1" : null;
+            $options['rapidload_minify_html'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_minify_html'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_enable_debug'])){
 
-            $options['uucss_enable_debug'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_debug'])) == 'true' ? "1" : null;
+            $options['uucss_enable_debug'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_enable_debug'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_queue'])){
 
-            $options['uucss_disable_add_to_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_queue'])) == 'true' ? "1" : null;
+            $options['uucss_disable_add_to_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_queue'])) === 'true' ? "1" : null;
 
         }
 
         if(isset($_REQUEST['uucss_disable_add_to_re_queue'])){
 
-            $options['uucss_disable_add_to_re_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_re_queue'])) == 'true' ? "1" : null;
+            $options['uucss_disable_add_to_re_queue'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_add_to_re_queue'])) === 'true' ? "1" : null;
 
         }
 
@@ -793,7 +791,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['uucss_disable_error_tracking'])){
 
-            $options['uucss_disable_error_tracking'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_error_tracking'])) == 'true' ? "1" : null;
+            $options['uucss_disable_error_tracking'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_disable_error_tracking'])) === 'true' ? "1" : null;
 
         }
 
@@ -815,37 +813,37 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_support_next_gen_formats'])){
 
-                $options['uucss_support_next_gen_formats'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_support_next_gen_formats'])) == 'true' ? "1" : null;
+                $options['uucss_support_next_gen_formats'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_support_next_gen_formats'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_adaptive_image_delivery'])){
 
-                $options['uucss_adaptive_image_delivery'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_adaptive_image_delivery'])) == 'true' ? "1" : null;
+                $options['uucss_adaptive_image_delivery'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_adaptive_image_delivery'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_set_width_and_height'])){
 
-                $options['uucss_set_width_and_height'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_set_width_and_height'])) == 'true' ? "1" : null;
+                $options['uucss_set_width_and_height'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_set_width_and_height'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_images'])){
 
-                $options['uucss_lazy_load_images'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_images'])) == 'true' ? "1" : null;
+                $options['uucss_lazy_load_images'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_images'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_lazy_load_iframes'])){
 
-                $options['uucss_lazy_load_iframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_iframes'])) == 'true' ? "1" : null;
+                $options['uucss_lazy_load_iframes'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_lazy_load_iframes'])) === 'true' ? "1" : null;
 
             }
 
             if(isset($_REQUEST['uucss_generate_blurry_place_holder'])){
 
-                $options['uucss_generate_blurry_place_holder'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_generate_blurry_place_holder'])) == 'true' ? "1" : null;
+                $options['uucss_generate_blurry_place_holder'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_generate_blurry_place_holder'])) === 'true' ? "1" : null;
 
             }
 
@@ -869,7 +867,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_preload_lcp_image'])){
 
-                $options['uucss_preload_lcp_image'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_preload_lcp_image'])) == 'true' ? "1" : null;
+                $options['uucss_preload_lcp_image'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_preload_lcp_image'])) === 'true' ? "1" : null;
 
             }
 
@@ -887,7 +885,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['uucss_self_host_google_fonts'])){
 
-                $options['uucss_self_host_google_fonts'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_self_host_google_fonts'])) == 'true' ? "1" : null;
+                $options['uucss_self_host_google_fonts'] = sanitize_text_field(wp_unslash($_REQUEST['uucss_self_host_google_fonts'])) === 'true' ? "1" : null;
 
             }
         }
@@ -930,7 +928,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['cache_expires'])){
 
-                $args['cache_expires'] = sanitize_text_field(wp_unslash($_REQUEST['cache_expires'])) == 'true' ? 1 : 0;
+                $args['cache_expires'] = sanitize_text_field(wp_unslash($_REQUEST['cache_expires'])) === 'true' ? 1 : 0;
 
             }
 
@@ -942,7 +940,7 @@ class RapidLoad_Admin
 
             if(isset($_REQUEST['mobile_cache'])){
 
-                $args['mobile_cache'] = sanitize_text_field(wp_unslash($_REQUEST['mobile_cache'])) == 'true' ? 1 : 0;
+                $args['mobile_cache'] = sanitize_text_field(wp_unslash($_REQUEST['mobile_cache'])) === 'true' ? 1 : 0;
 
             }
 
@@ -976,7 +974,7 @@ class RapidLoad_Admin
 
         if(isset($_REQUEST['rapidload_test_mode'])){
 
-            $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) == 'true' ? 1 : 0;
+            $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) === 'true' ? 1 : 0;
         }
 
         RapidLoad_Base::update_option('autoptimize_uucss_settings',$options);
@@ -1007,7 +1005,7 @@ class RapidLoad_Admin
             wp_send_json_error('Required field missing');
         }
 
-        if($type == 'detach'){
+        if($type === 'detach'){
 
             $path = new RapidLoad_Job([
                 'url' => $url
@@ -1017,11 +1015,11 @@ class RapidLoad_Admin
             wp_send_json_success('Successfully detached from rule');
         }
 
-        if(!$type || $type == 'attach' && !$rule_id){
+        if(!$type || $type === 'attach' && !$rule_id){
             wp_send_json_error('Required field missing');
         }
 
-        if($type == 'attach'){
+        if($type === 'attach'){
 
             $rule = RapidLoad_Job::find_or_fail($rule_id);
 
@@ -1140,7 +1138,7 @@ class RapidLoad_Admin
             }
         }
 
-        if($status == 'warnings'){
+        if($status === 'warnings'){
 
             RapidLoad_DB::resetWarningHits();
             $links = RapidLoad_DB::getUrlsWithWarnings();
@@ -1196,13 +1194,13 @@ class RapidLoad_Admin
 
     public function validate_domain() {
 
-        if ( get_current_screen() && (get_current_screen()->base != 'settings_page_uucss_legacy' && get_current_screen()->base != 'toplevel_page_rapidload')) {
+        if ( get_current_screen() && (get_current_screen()->base !== 'settings_page_uucss_legacy' && get_current_screen()->base !== 'toplevel_page_rapidload')) {
             return;
         }
 
         $options   = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
 
-        if(!isset( $options['uucss_api_key_verified'] ) || $options['uucss_api_key_verified'] != '1'){
+        if(!isset( $options['uucss_api_key_verified'] ) || $options['uucss_api_key_verified'] !== '1'){
             return;
         }
 
@@ -1299,7 +1297,7 @@ class RapidLoad_Admin
         ];
 
         foreach ($custom_posts as $key => $value){
-            if($value == 'page' || $value == 'post' || $value == 'product'){
+            if($value === 'page' || $value === 'post' || $value === 'product'){
                 continue;
             }
             if(( $key = array_search($value, array_column($rules, 'name')) ) === false){
@@ -1310,7 +1308,7 @@ class RapidLoad_Admin
                     'category' => 'Custom Post Types',
                     'priority' => 5,
                     'callback' => function() use($value){
-                        return get_post_type( get_the_ID() ) == $value;
+                        return get_post_type( get_the_ID() ) === $value;
                     }
                 ];
             }
@@ -1437,7 +1435,7 @@ class RapidLoad_Admin
 
     public function clear_cache_on_option_update( $option, $old_value, $value ) {
 
-        if ( $option == 'autoptimize_uucss_settings' ) {
+        if ( $option === 'autoptimize_uucss_settings' ) {
 
             $needs_to_cleared = false;
 
@@ -1603,7 +1601,7 @@ class RapidLoad_Admin
 
         $options = RapidLoad_Base::fetch_options();
 
-        if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] == "1"){
+        if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] === "1"){
 
             if(isset($options['cf_email']) && isset($options['cf_token']) && isset($options['cf_zone_id'])){
                 $data['cloudflare'] = [
@@ -1621,7 +1619,7 @@ class RapidLoad_Admin
 
     public function update_cloudflare_settings( $option, $old_value, $value ){
 
-        if ( $option != 'autoptimize_uucss_settings' ) {
+        if ( $option !== 'autoptimize_uucss_settings' ) {
             return;
         }
 
@@ -1635,7 +1633,7 @@ class RapidLoad_Admin
                     'Content-Type' => 'application/json'
                 ],
                 'body' => json_encode((object)[
-                    'value' => isset($value['cf_is_dev_mode']) && $value['cf_is_dev_mode'] == "1" ? 'on' : 'off'
+                    'value' => isset($value['cf_is_dev_mode']) && $value['cf_is_dev_mode'] === "1" ? 'on' : 'off'
                 ])
             ]);
 
@@ -1667,7 +1665,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-dev-mode">Enable Bot toggle mode</label>
                         </td>
                         <td>
-                            <input type="checkbox" name="autoptimize_uucss_settings[cf_bot_toggle_mode]" id="cf_bot_toggle_mode" value="1" <?php if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] == "1") : echo 'checked'; endif; ?>>
+                            <input type="checkbox" name="autoptimize_uucss_settings[cf_bot_toggle_mode]" id="cf_bot_toggle_mode" value="1" <?php if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] === "1") : echo 'checked'; endif; ?>>
                         </td>
                     </tr>
                     <tr>
@@ -1699,7 +1697,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-dev-mode">Development Mode</label>
                         </td>
                         <td>
-                            <input type="checkbox" name="autoptimize_uucss_settings[cf_is_dev_mode]" id="cf_is_dev_mode" value="1" <?php if(isset($options['cf_is_dev_mode']) && $options['cf_is_dev_mode'] == "1") : echo 'checked'; endif; ?>>
+                            <input type="checkbox" name="autoptimize_uucss_settings[cf_is_dev_mode]" id="cf_is_dev_mode" value="1" <?php if(isset($options['cf_is_dev_mode']) && $options['cf_is_dev_mode'] === "1") : echo 'checked'; endif; ?>>
                         </td>
                     </tr>
                 </table>

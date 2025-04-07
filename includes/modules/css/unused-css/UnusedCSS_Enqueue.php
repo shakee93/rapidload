@@ -39,7 +39,7 @@ class UnusedCSS_Enqueue
 
     function enqueue_frontend_scripts(){
 
-        if(isset($this->job_data->id) && $this->job_data->status == 'success' && !empty($this->files)){
+        if(isset($this->job_data->id) && $this->job_data->status === 'success' && !empty($this->files)){
 
             wp_register_script( 'rapidload', false, [], UUCSS_VERSION , false);
             wp_localize_script( 'rapidload', 'rapidload', [
@@ -72,7 +72,7 @@ class UnusedCSS_Enqueue
             $this->strategy = $state['strategy'];
         }
 
-        if(!isset($this->job_data->id) || $this->job_data->status != 'success'){
+        if(!isset($this->job_data->id) || $this->job_data->status !== 'success'){
             //$this->inject->rapidload = false;
             //$this->inject->successfully_injected = false;
             return [
@@ -140,7 +140,7 @@ class UnusedCSS_Enqueue
 
             $parent = $sheet->parent();
 
-            if(isset($parent) && $parent->tag == 'noscript'){
+            if(isset($parent) && $parent->tag === 'noscript'){
                 continue;
             }
 
@@ -219,7 +219,7 @@ class UnusedCSS_Enqueue
 
                     $_frontend_data['new_href'] = $sheet->href;
 
-                    if ( isset( $this->options['uucss_inline_css'] ) && $this->options['uucss_inline_css'] == "1" && apply_filters('rapidload/enqueue/inline-small-css/enable', false)) {
+                    if ( isset( $this->options['uucss_inline_css'] ) && $this->options['uucss_inline_css'] === "1" && apply_filters('rapidload/enqueue/inline-small-css/enable', false)) {
 
                         $this->inline_sheet($sheet, $uucss_file);
                     }
@@ -271,7 +271,7 @@ class UnusedCSS_Enqueue
         $inline_styles = $this->dom->find('style');
 
         if(isset($this->options['uucss_include_inline_css']) &&
-            $this->options['uucss_include_inline_css'] == '1' &&
+            $this->options['uucss_include_inline_css'] === '1' &&
             apply_filters('uucss/inline-css-enabled', true) &&
             isset($this->files) && !empty($this->files)){
 
@@ -281,7 +281,7 @@ class UnusedCSS_Enqueue
 
                 $parent = $style->parent();
 
-                if(isset($parent) && $parent->tag == 'noscript'){
+                if(isset($parent) && $parent->tag === 'noscript'){
                     continue;
                 }
 
@@ -389,7 +389,7 @@ class UnusedCSS_Enqueue
 
     private function inline_sheet( $sheet, $link ) {
 
-        if(isset($sheet->{'data-media'}) && $sheet->{'data-media'} == "print"){
+        if(isset($sheet->{'data-media'}) && $sheet->{'data-media'} === "print"){
             return;
         }
 

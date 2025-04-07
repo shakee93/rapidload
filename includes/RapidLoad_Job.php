@@ -526,7 +526,7 @@ class RapidLoad_Job{
         $result = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
-                IF(t1.id !== t2.id, t2.data, NULL) AS first_data, t1.created_at 
+                IF(t1.id != t2.id, t2.data, NULL) AS first_data, t1.created_at 
                 FROM {$wpdb->prefix}rapidload_job_optimizations t1 
                 LEFT JOIN {$wpdb->prefix}rapidload_job_optimizations t2 
                 ON t1.job_id = t2.job_id 

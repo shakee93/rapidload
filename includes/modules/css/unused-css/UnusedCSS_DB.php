@@ -15,7 +15,7 @@ class UnusedCSS_DB extends RapidLoad_DB{
                     'queued'
                 )
             );
-        }else if($status == 'success'){
+        }else if($status === 'success'){
             $wpdb->query(
                 $wpdb->prepare(
                     "UPDATE {$wpdb->prefix}rapidload_job_data SET status = %s, queue_job_id = NULL, data = NULL, stats = NULL, warnings = NULL, error = NULL, hits = 0 WHERE job_type='uucss' AND status = 'success' AND warnings IS NOT NULL",
@@ -119,7 +119,7 @@ class UnusedCSS_DB extends RapidLoad_DB{
 
             foreach ($files as $file){
 
-                if($file['uucss'] == basename($path)){
+                if($file['uucss'] === basename($path)){
                     $orinal_file_name = $file['original'];
                     break;
                 }

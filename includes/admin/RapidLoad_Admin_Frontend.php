@@ -219,7 +219,7 @@ class RapidLoad_Admin_Frontend
                 'url' => $url
             ]);
 
-            if(isset($new_rule->id) && $new_rule->rule == "is_url"){
+            if(isset($new_rule->id) && $new_rule->rule === "is_url"){
                $new_rule->delete();
             }
 
@@ -230,9 +230,9 @@ class RapidLoad_Admin_Frontend
                 $rule_exist->regex = $regex;
                 $rule_exist->save(true);
 
-                if(isset($_REQUEST['old_url']) && sanitize_text_field(wp_unslash($_REQUEST['old_url'])) != $url ||
-                    sanitize_text_field(wp_unslash($_REQUEST['old_rule'])) != $rule || sanitize_text_field(wp_unslash($_REQUEST['old_regex'])) != $regex){
-                    if(isset($_REQUEST['requeue']) && sanitize_text_field(wp_unslash($_REQUEST['requeue'])) == "1"){
+                if(isset($_REQUEST['old_url']) && sanitize_text_field(wp_unslash($_REQUEST['old_url'])) !== $url ||
+                    sanitize_text_field(wp_unslash($_REQUEST['old_rule'])) !== $rule || sanitize_text_field(wp_unslash($_REQUEST['old_regex'])) !== $regex){
+                    if(isset($_REQUEST['requeue']) && sanitize_text_field(wp_unslash($_REQUEST['requeue'])) === "1"){
                         RapidLoad_DB::requeueJob($rule_exist->id);
                     }
                 }
@@ -246,7 +246,7 @@ class RapidLoad_Admin_Frontend
             'url' => $url
         ]);
 
-        if(isset($new_rule->id) && $new_rule->rule == "is_url"){
+        if(isset($new_rule->id) && $new_rule->rule === "is_url"){
             $new_rule->delete();
         }
 
@@ -356,7 +356,7 @@ class RapidLoad_Admin_Frontend
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
         $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'path';
 
-        if($type == 'rule'){
+        if($type === 'rule'){
 
             if(!isset($_REQUEST['rule']) || !isset($_REQUEST['regex'])){
                 wp_send_json_error('rule and regex required');
@@ -366,7 +366,7 @@ class RapidLoad_Admin_Frontend
 
         $uucss_api = new RapidLoad_Api();
 
-        $link = $type == 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field(wp_unslash($_REQUEST['rule'])), 'regex' => sanitize_text_field(wp_unslash($_REQUEST['regex']))]);
+        $link = $type === 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field(wp_unslash($_REQUEST['rule'])), 'regex' => sanitize_text_field(wp_unslash($_REQUEST['regex']))]);
 
         $result = $this->get_gpsi_test_result(new RapidLoad_Job_Data($link, 'uucss'));
 
@@ -413,7 +413,7 @@ class RapidLoad_Admin_Frontend
 
         if($status_filter){
 
-            if($status_filter == 'warning'){
+            if($status_filter === 'warning'){
 
                 $filters[] = " warnings IS NOT NULL ";
 
@@ -424,17 +424,17 @@ class RapidLoad_Admin_Frontend
 
         }else{
 
-            $filters[] = " status != 'rule-based' ";
+            $filters[] = " status !== 'rule-based' ";
 
         }
 
-        if($url_regex == 'true' && $url_filter){
+        if($url_regex === 'true' && $url_filter){
 
             $filters[] = " url = '". $url_filter . "' ";
 
         }
 
-        if($url_regex == 'false' && $url_filter){
+        if($url_regex === 'false' && $url_filter){
 
             $filters[] = " url LIKE '%%". $url_filter . "%%' ";
 
@@ -444,7 +444,7 @@ class RapidLoad_Admin_Frontend
 
         foreach ($filters as $key => $filter){
 
-            if($key == 0){
+            if($key === 0){
 
                 $where_clause = " WHERE ";
                 $where_clause .= $filter;
@@ -456,12 +456,12 @@ class RapidLoad_Admin_Frontend
 
         }
 
-        $data  = RapidLoad_DB::get_merged_data($type == "rule", $start, $length);
+        $data  = RapidLoad_DB::get_merged_data($type === "rule", $start, $length);
 
         wp_send_json([
             'data' => $data,
             "draw" => (int)$draw,
-            "recordsTotal" => RapidLoad_DB::get_total_job_count($type == "path" ? " where rule = 'is_url' and regex = '/'" : " where rule != 'is_url'"),
+            "recordsTotal" => RapidLoad_DB::get_total_job_count($type === "path" ? " where rule = 'is_url' and regex = '/'" : " where rule !== 'is_url'"),
             "recordsFiltered" => RapidLoad_DB::get_total_job_count($where_clause),
             "success" => true
         ]);
@@ -544,7 +544,7 @@ class RapidLoad_Admin_Frontend
 
         $job_type = isset($_GET['_job_type']) ? sanitize_text_field(wp_unslash($_GET['_job_type'])) : 'all';
         $url = isset($_GET['_url']) ? sanitize_url(wp_unslash($_GET['_url'])) : false;
-        $clear = isset($_GET['_clear']) && boolval($_GET['_clear'] == 'true') ? true : false;
+        $clear = isset($_GET['_clear']) && boolval($_GET['_clear'] === 'true') ? true : false;
 
         if($clear){
             if ($url){
@@ -572,7 +572,7 @@ class RapidLoad_Admin_Frontend
         $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
         $rule = isset($_REQUEST['rule']) ? sanitize_text_field(wp_unslash($_REQUEST['rule'])) : false;
         $regex = isset($_REQUEST['regex']) ? sanitize_text_field(wp_unslash($_REQUEST['regex'])) : false;
-        $clear = isset($_REQUEST['clear']) && boolval($_REQUEST['clear'] == 'true' || $_REQUEST['clear'] == '1') ? true : false;
+        $clear = isset($_REQUEST['clear']) && boolval($_REQUEST['clear'] === 'true' || $_REQUEST['clear'] === '1') ? true : false;
         $url_list = isset($_REQUEST['url_list']) ? $_REQUEST['url_list'] : [];
         $immediate = isset($_REQUEST['immediate']) ? boolval($_REQUEST['immediate']) : false;
 
@@ -977,7 +977,7 @@ class RapidLoad_Admin_Frontend
             'notifications' => $this->getNotifications(),
             'faqs' => [],
             'public_notices' => [],
-            'dev_mode' => apply_filters('uucss/dev_mode', isset($this->options['uucss_dev_mode'])) && $this->options['uucss_dev_mode'] == "1",
+            'dev_mode' => apply_filters('uucss/dev_mode', isset($this->options['uucss_dev_mode'])) && $this->options['uucss_dev_mode'] === "1",
             'rules_enabled' => $rapidload->rules_enabled(),
             'cpcss_enabled' => $rapidload->critical_css_enabled(),
             'home_url' => home_url(),
