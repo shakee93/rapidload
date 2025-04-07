@@ -75,7 +75,7 @@ class RapidLoad_Optimizer
 
     public function rapidload_privacy_policy_acceptance(){
         self::verify_nonce();
-        $accepted = isset($_REQUEST['accepted']) && boolval(sanitize_text_field($_REQUEST['accepted'])) ? true : false;
+        $accepted = isset($_REQUEST['accepted']) && boolval(sanitize_text_field(wp_unslash($_REQUEST['accepted']))) ? true : false;
         update_option('rapidload_privacy_policy_accepted', $accepted);
         wp_send_json_success('success');
     }
@@ -149,7 +149,7 @@ class RapidLoad_Optimizer
         $response['constants']['WP_CRON_LOCK_TIMEOUT'] = defined('WP_CRON_LOCK_TIMEOUT') ? WP_CRON_LOCK_TIMEOUT : false;
 
         $response['server'] = array(
-            'server_software' => $_SERVER['SERVER_SOFTWARE'],
+            'server_software' => sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ),
             'php_version' => PHP_VERSION,
         );
 
@@ -162,8 +162,8 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) && $_REQUEST['url'] ? sanitize_url($_REQUEST['url']) : $this->transform_url(site_url());
-        $strategy = isset($_REQUEST['strategy']) && $_REQUEST['strategy'] ? sanitize_text_field($_REQUEST['strategy']) : 'desktop';
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : $this->transform_url(site_url());
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'desktop';
 
         $body = file_get_contents('php://input');
 
@@ -407,7 +407,7 @@ class RapidLoad_Optimizer
         // Check if the SERVER_SOFTWARE key exists
         if (isset($_SERVER['SERVER_SOFTWARE'])) {
             // Get the server software information
-            $server_software = sanitize_text_field($_SERVER['SERVER_SOFTWARE']);
+            $server_software = sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE']));
 
             // Check if the server is Apache
             if (stripos($server_software, 'Apache') !== false) {
@@ -431,8 +431,8 @@ class RapidLoad_Optimizer
 
         self::verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? sanitize_url($_REQUEST['url']) : site_url();
-        $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field($_REQUEST['types'])) : [];
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : site_url();
+        $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field(wp_unslash($_REQUEST['types']))) : [];
 
         $url = $this->transform_url($url);
 
@@ -539,16 +539,16 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
-        $titan_gear = sanitize_text_field($_REQUEST['titan_gear']);
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
+        $titan_gear = sanitize_text_field(wp_unslash($_REQUEST['titan_gear']));
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
-        $global = isset($_REQUEST['global']) && $_REQUEST['global'] || rtrim(strtolower($url),"/") == rtrim(strtolower(site_url()), "/");
+        $global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(strtolower($url),"/") == rtrim(strtolower(site_url()), "/");
 
         $this->pre_optimizer_function($url, $strategy, $global);
 
@@ -593,13 +593,13 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
         $this->pre_optimizer_function($url, $strategy, null, false);
 
@@ -638,15 +638,15 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
-        self::$global = isset($_REQUEST['global']) && (sanitize_text_field($_REQUEST['global']) == 'true') || rtrim(site_url(), "/") == rtrim($url, "/");
+        self::$global = isset($_REQUEST['global']) && (boolval($_REQUEST['global']) || rtrim(site_url(), "/") == rtrim($url, "/"));
 
         $this->pre_optimizer_function($url, $strategy, self::$global);
 
@@ -889,14 +889,14 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
         if(!$this->is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field($_REQUEST['strategy']) : 'mobile';
-        $global = isset($_REQUEST['global']) && $_REQUEST['global'];
+        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
+        $global = isset($_REQUEST['global']) && boolval($_REQUEST['global']);
 
         $this->pre_optimizer_function($url, $strategy, $global, true);
 
@@ -1823,13 +1823,13 @@ class RapidLoad_Optimizer
             wp_send_json_error('url required');
         }
 
-        $url = sanitize_url($_REQUEST['url']);
+        $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
         if(self::$global_options['rapidload_test_mode'] && self::$global_options['rapidload_test_mode'] == "1"){
             $url = add_query_arg('rapidload_preview', 'true', $url);
         }
 
-        $agent = isset($_REQUEST['user_agent']) ? sanitize_text_field($_REQUEST['user_agent']) : null;
+        $agent = isset($_REQUEST['user_agent']) ? sanitize_text_field(wp_unslash($_REQUEST['user_agent'])) : null;
 
         $response = wp_remote_get( $url, array( 'timeout' => 30, 'headers' => [
             'User-Agent' => $agent
