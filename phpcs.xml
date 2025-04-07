@@ -67,29 +67,29 @@
 	<!-- </rule> -->
 
 	<!-- Let's also check that everything is properly documented. -->
-	<!-- <rule ref="WordPress-Docs"/> -->
+	<rule ref="WordPress-Docs"/>
 
 
 <!-- Critical: Enforce escaping, nonce, SQL, redirect safety -->
-<!-- <rule ref="WordPress.Security.EscapeOutput"/> -->
-<!-- <rule ref="WordPress.Security.NonceVerification"/> -->
-<!-- <rule ref="WordPress.DB.PreparedSQL"/> -->
-<!-- <rule ref="WordPress.Security.SafeRedirect"/> -->
+<rule ref="WordPress.Security.EscapeOutput"/>
+<rule ref="WordPress.Security.NonceVerification"/>
+<rule ref="WordPress.DB.PreparedSQL"/>
+<rule ref="WordPress.Security.SafeRedirect"/>
 
 <!-- Discourage unsafe PHP -->
-<!-- <rule ref="WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize"/> -->
+<rule ref="WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize"/>
 
 <!-- Enforce strict comparisons and clean logic -->
-<!-- <rule ref="Universal.Operators.StrictComparisons"/> -->
+<rule ref="Universal.Operators.StrictComparisons"/>
 
 <!-- Maintainability -->
-<!-- <rule ref="Squiz.Scope.MethodScope"/> -->
+<rule ref="Squiz.Scope.MethodScope"/>
 
 <!-- Whitespace / formatting – low priority -->
-<!-- <exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/> -->
-<!-- <exclude name="Squiz.WhiteSpace.*"/> -->
+<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
+<exclude name="Squiz.WhiteSpace.*"/>
 
-<!-- <exclude name="PEAR.Functions.*"/> -->
+<exclude name="PEAR.Functions.*"/>
 
 	<!-- Add in some extra rules from other standards. -->
 	<!-- <rule ref="Generic.Commenting.Todo"/> -->
@@ -104,10 +104,10 @@
 	https://github.com/PHPCompatibility/PHPCompatibility
 	-->
 	
-	<!-- <config name="testVersion" value="5.6-"/> -->
-	<!-- <rule ref="PHPCompatibilityWP">
+	<config name="testVersion" value="5.6-"/>
+	<rule ref="PHPCompatibilityWP">
 		<include-pattern>*\.php</include-pattern>
-	</rule> -->
+	</rule>
 	
 
 
@@ -126,24 +126,24 @@
 	the wiki:
 	https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
 	-->
-	<!-- <config name="minimum_wp_version" value="6.0"/> -->
+	<config name="minimum_wp_version" value="6.0"/>
 
-	<!-- <rule ref="WordPress.WP.I18n">
+	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="unusedcss"/>
 			</property>
 		</properties>
-	</rule> -->
+	</rule>
 
-	<!-- <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="unusedcss"/>
 				<element value="rapidload"/>
 			</property>
 		</properties>
-	</rule> -->
+	</rule>
 
 
 	<!--
@@ -169,14 +169,11 @@
 	For more information on ruleset configuration options, check out the PHPCS wiki:
 	https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Annotated-Ruleset
 	-->
-	<!-- <rule ref="WordPress.WP.GlobalVariablesOverride">
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
 		<exclude-pattern>/tests/*Test\.php</exclude-pattern>
-	</rule> -->
-	<!-- <rule ref="WordPress.Files.FileName">
+	</rule>
+	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>/tests/*Test\.php</exclude-pattern>
-	</rule> -->
-
-	<!-- Keep only database-related rules active -->
-	<rule ref="WordPress.DB.PreparedSQL"/>
+	</rule>
 
 </ruleset>
