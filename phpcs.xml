@@ -67,7 +67,12 @@
 	<!-- </rule> -->
 
 	<!-- Let's also check that everything is properly documented. -->
-	<rule ref="WordPress-Docs"/>
+	<rule ref="WordPress-Docs">
+		<!-- Exclude all commenting-related sniffs -->
+		<exclude name="Squiz.Commenting"/>
+		<exclude name="Generic.Commenting"/>
+		<exclude name="PEAR.Commenting"/>
+	</rule>
 
 
 <!-- Critical: Enforce escaping, nonce, SQL, redirect safety -->
