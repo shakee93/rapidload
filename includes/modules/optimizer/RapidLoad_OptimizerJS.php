@@ -1,6 +1,8 @@
 <?php
 
-class OptimizerJS
+defined( 'ABSPATH' ) or die();
+
+class RapidLoad_OptimizerJS
 {
 
     static $filter_added = false;

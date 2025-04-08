@@ -1,6 +1,8 @@
 <?php
 
-class OptimizerStyle
+defined( 'ABSPATH' ) or die();
+
+class RapidLoad_OptimizerStyle
 {
     public function __construct(){
 

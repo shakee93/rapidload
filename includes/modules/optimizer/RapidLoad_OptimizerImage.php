@@ -1,6 +1,8 @@
 <?php
 
-class OptimizerImage
+defined( 'ABSPATH' ) or die();
+
+class RapidLoad_OptimizerImage
 {
     public function __construct()
     {

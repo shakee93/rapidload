@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_Optimizer
 {
 
@@ -368,10 +370,10 @@ class RapidLoad_Optimizer
             define('RAPIDLOAD_PAGE_OPTIMIZER_ENABLED', true);
         }
 
-        new OptimizerFont();
-        new OptimizerJS();
-        new OptimizerImage();
-        new OptimizerStyle();
+        new RapidLoad_OptimizerFont();
+        new RapidLoad_OptimizerJS();
+        new RapidLoad_OptimizerImage();
+        new RapidLoad_OptimizerStyle();
     }
 
     public function update_content($state){

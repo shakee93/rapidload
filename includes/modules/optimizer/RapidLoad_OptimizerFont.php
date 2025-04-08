@@ -1,6 +1,8 @@
 <?php
 
-class OptimizerFont
+defined( 'ABSPATH' ) or die();
+
+class RapidLoad_OptimizerFont
 {
 
     public function __construct()
