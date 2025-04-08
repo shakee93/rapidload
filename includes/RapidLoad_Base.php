@@ -304,11 +304,13 @@ class RapidLoad_Base
                 $rapidload_license_data = unserialize($rapidload_license_data);
             }
 
+            error_log(json_encode(self::$options, JSON_PRETTY_PRINT));
+
             wp_register_script( 'uucss_global_admin_script', UUCSS_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], UUCSS_VERSION );
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
                 'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
-                'on_board_complete' => apply_filters('uucss/on-board/complete', RapidLoad_Onboard::on_board_completed()),
+                'on_board_complete' => self::is_api_key_verified() || self::get_option('rapidload_onboard_skipped', false),
                 'home_url' => home_url(),
                 'api_url' => RapidLoad_Api::get_key(),
                 'nonce' => self::create_nonce( 'uucss_nonce' ),
@@ -587,7 +589,7 @@ class RapidLoad_Base
 
         if ( !$uucss_api->is_error( $results ) ) {
 
-            $options['uucss_api_key_verified'] = 1;
+            $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $token;
 
             self::update_option( 'autoptimize_uucss_settings', $options );
@@ -633,7 +635,7 @@ class RapidLoad_Base
         }
 
         // Hey 👋 you stalker ! you can set this key to true, but its no use ☹️ api_key will be verified on each server request
-        $options['uucss_api_key_verified'] = 1;
+        $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $token;
 
         self::update_option( 'autoptimize_uucss_settings', $options );
@@ -759,7 +761,7 @@ class RapidLoad_Base
 
         $api_key_status = isset( self::$options['uucss_api_key_verified'] ) ? self::$options['uucss_api_key_verified'] : '';
 
-        return $api_key_status === '1';
+        return $api_key_status === '1' || $api_key_status === 1;
 
     }
 

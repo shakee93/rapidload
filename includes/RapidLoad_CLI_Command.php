@@ -37,7 +37,7 @@ if (defined('WP_CLI') && WP_CLI) {
             }
 
             $options = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' , RapidLoad_Base::get_default_options());
-            $options['uucss_api_key_verified'] = 1;
+            $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $license_key;
 
             if (isset($assoc_args['uucss'])) {
