@@ -298,7 +298,7 @@ class HtmlNode
 			}
 		}
 
-		if (isset($this->_[self::HDOM_INFO_END]) && $this->_[self::HDOM_INFO_END] != 0) {
+		if (isset($this->_[self::HDOM_INFO_END]) && $this->_[self::HDOM_INFO_END] !== 0) {
 			$ret .= '</' . $this->tag . '>';
 		}
 
@@ -545,7 +545,7 @@ class HtmlNode
 			// Find parent closing tag if the current element doesn't have a closing
 			// tag (i.e. void element)
 			$end = (!empty($this->_[self::HDOM_INFO_END])) ? $this->_[self::HDOM_INFO_END] : 0;
-			if ($end == 0 && $this->parent) {
+			if ($end === 0 && $this->parent) {
 				$parent = $this->parent;
 				while ($parent !== null && !isset($parent->_[self::HDOM_INFO_END])) {
 					$end -= 1;
@@ -1121,7 +1121,7 @@ class HtmlNode
 			}
 
 			// If there is a width in the style attributes:
-			if (isset($attributes['width']) && $width == -1) {
+			if (isset($attributes['width']) && $width === -1) {
 				// check that the last two characters are px (pixels)
 				if (strtolower(substr($attributes['width'], -2)) === 'px') {
 					$proposed_width = substr($attributes['width'], 0, -2);
@@ -1133,9 +1133,9 @@ class HtmlNode
 			}
 
 			// If there is a width in the style attributes:
-			if (isset($attributes['height']) && $height == -1) {
+			if (isset($attributes['height']) && $height === -1) {
 				// check that the last two characters are px (pixels)
-				if (strtolower(substr($attributes['height'], -2)) == 'px') {
+				if (strtolower(substr($attributes['height'], -2)) === 'px') {
 					$proposed_height = substr($attributes['height'], 0, -2);
 					// Now make sure that it's an integer and not something stupid.
 					if (filter_var($proposed_height, FILTER_VALIDATE_INT)) {

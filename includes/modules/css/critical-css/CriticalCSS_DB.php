@@ -95,7 +95,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
         return (int)$count;
     }
 
-    public static function get_current_queued_tasks_job_ids(int $limit = 1){
+    public static function get_current_queued_tasks_job_ids($limit = 1){
         global $wpdb;
 
         $job_ids = $wpdb->get_results(
@@ -116,7 +116,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
         return $job_ids;
     }
 
-    public static function get_current_processing_tasks_job_ids(int $limit = 1){
+    public static function get_current_processing_tasks_job_ids($limit = 1){
         global $wpdb;
 
         $job_ids = $wpdb->get_results(
@@ -137,7 +137,7 @@ class CriticalCSS_DB extends RapidLoad_DB{
         return $job_ids;
     }
 
-    public static function get_success_data(int $limit = 1) {
+    public static function get_success_data($limit = 1) {
         global $wpdb;
 
         $data = $wpdb->get_results(

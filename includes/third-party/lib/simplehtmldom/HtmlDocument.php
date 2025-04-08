@@ -440,9 +440,9 @@ class HtmlDocument
 
 		// Since CP1252 is a superset, if we get one of it's subsets, we want
 		// it instead.
-		if ((strtolower($charset) == 'iso-8859-1')
-			|| (strtolower($charset) == 'latin1')
-			|| (strtolower($charset) == 'latin-1')) {
+		if ((strtolower($charset) === 'iso-8859-1')
+			|| (strtolower($charset) === 'latin1')
+			|| (strtolower($charset) === 'latin-1')) {
 			$charset = 'CP1252';
 		}
 
