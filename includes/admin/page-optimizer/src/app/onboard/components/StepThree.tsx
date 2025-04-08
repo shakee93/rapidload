@@ -94,6 +94,8 @@ const StepThree: React.FC<StepThreeProps> = ({ onNext }) => {
     },[activeGear]);
 
     useEffect(() => {
+        console.log("Settings updated", settings);
+        console.log("Settings length", settings.length);
         settings.length > 0 && setUpdate(true);
     },[settings]);
 
