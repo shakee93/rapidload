@@ -94,14 +94,18 @@ const StepThree: React.FC<StepThreeProps> = ({ onNext }) => {
     },[activeGear]);
 
     useEffect(() => {
+        console.log("Settings updated", settings);
+        console.log("Settings length", settings.length);
         settings.length > 0 && setUpdate(true);
     },[settings]);
 
     useEffect(() => {
         if (update) {
             setIsSubmitting(true);
+            console.log("Submitting settings");
             submitSettings(true)
                 .then(() => {
+                    console.log("Settings submitted");
                     setIsSubmitting(false);
                     setCurrentStep(1);
                     const url = options?.optimizer_url;
