@@ -187,7 +187,7 @@ class CriticalCSS_Store
 
     function handle_css_parts($css, $suffix, $file_character_length) {
 
-        if($file_character_length === "0"){
+        if($file_character_length === "0" || $file_character_length === 0){
             $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
             if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)) {
                 $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $file_name, $css);

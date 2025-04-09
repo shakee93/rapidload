@@ -304,8 +304,6 @@ class RapidLoad_Base
                 $rapidload_license_data = unserialize($rapidload_license_data);
             }
 
-            error_log(json_encode(self::$options, JSON_PRETTY_PRINT));
-
             wp_register_script( 'uucss_global_admin_script', UUCSS_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], UUCSS_VERSION );
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
