@@ -299,35 +299,44 @@ class RapidLoad_Image_Enqueue
 
                 $url_replaced = false;
 
-                $pattern = '/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|webp)/i';
-                preg_match_all($pattern, $style->innertext, $matches);
+                preg_match_all('/background[^;]*url[ ]?\([\'|"]?(.*?\.(?:png|jpg|jpeg|webp))/', $style->innertext, $bg_matches, PREG_SET_ORDER);
 
-                if(isset($matches[0]) && is_array($matches[0]) && !empty($matches[0])){
+                if(!empty($bg_matches)){
+                    
+                    $unique_urls = array();
 
-                    $matches[0] = array_unique($matches[0]);
-
-                    foreach ($matches[0] as $match){
-
-                        $urlExt = pathinfo($match, PATHINFO_EXTENSION);
-
-                        if($this->is_file_excluded($match,'uucss_exclude_images_from_modern_images')){
-                            continue;
+                    foreach($bg_matches as $match) {
+                        if(isset($match[1])) {
+                            $unique_urls[] = $match[1];
                         }
-
-                        if($this->is_file_excluded($match)){
-                            continue;
-                        }
-
-                        if (in_array($urlExt, $this->imgExt)) {
-                            $replace_url = RapidLoad_Image::get_replaced_url($match,$this->cdn,false,false, [
-                                'retina' => 'ret_img'
-                            ]);
-                            $style->__set('innertext', str_replace($match,$replace_url,$style->innertext));
-                            $url_replaced = true;
-                        }
-
                     }
 
+                    $unique_urls = array_unique($unique_urls);
+
+                    foreach($unique_urls as $url){
+
+                        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                            continue;
+                        }
+
+                        $urlExt = pathinfo($url, PATHINFO_EXTENSION);
+
+                        if($this->is_file_excluded($url,'uucss_exclude_images_from_modern_images')){
+                            continue;
+                        }
+
+                        if($this->is_file_excluded($url)){
+                            continue;
+                        }
+
+                        if(in_array($urlExt, $this->imgExt)){
+                            $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn, false, false, [
+                                'retina' => 'ret_img'
+                            ]);
+                            $style->innertext = str_replace($url, $replace_url, $style->innertext);
+                            $url_replaced = true;
+                        }
+                    }
                 }
 
                 if(!$url_replaced){
