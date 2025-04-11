@@ -137,7 +137,7 @@ class Autoptimize_Beta_Compatible extends RapidLoad_ThirdParty {
 
         if(class_exists('autoptimizeConfig')){
 
-            echo esc_html(autoptimizeConfig::ao_admin_tabs());
+            echo autoptimizeConfig::ao_admin_tabs();
 
         }
 

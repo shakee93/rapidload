@@ -549,7 +549,8 @@ class RapidLoad_Base
             'uucss_enable_cache' => "0",
             'uucss_enable_cdn' => "0",
             'update_htaccess_file' => "0",
-            'uucss_lazy_load_iframes' => "0"
+            'uucss_lazy_load_iframes' => "0",
+            'uucss_disable_add_to_queue' => "1"
 
         ];
     }
