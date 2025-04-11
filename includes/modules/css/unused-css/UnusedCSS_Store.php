@@ -33,7 +33,7 @@ class UnusedCSS_Store
 
         if(isset($this->args['immediate']) || isset($this->args['titan'])){
 
-            if(isset($this->args['titan']) && ($this->job_data->status == 'waiting' || $this->job_data->status == 'processing' || $this->job_data->status == 'success')){
+            if(isset($this->args['titan']) && ($this->job_data->status === 'waiting' || $this->job_data->status === 'processing' || $this->job_data->status === 'success')){
                 return;
             }
 
@@ -236,7 +236,7 @@ class UnusedCSS_Store
 
     function update_css(){
 
-        if(!$this->job_data->queue_job_id || $this->job_data->status == "success" || $this->job_data->status == "failed"){
+        if(!$this->job_data->queue_job_id || $this->job_data->status === "success" || $this->job_data->status === "failed"){
             return;
         }
 
@@ -248,7 +248,7 @@ class UnusedCSS_Store
 
             $error = $uucss_api->extract_error( $result );
 
-            if(isset($error['message']) && ($error['message'] == 'Job processing failed in queue' || $error['message'] == 'Error')){
+            if(isset($error['message']) && ($error['message'] === 'Job processing failed in queue' || $error['message'] === 'Error')){
 
                 self::log([
                     'log' =>  'requeue-> uucss job processing failed in queue',
@@ -270,7 +270,7 @@ class UnusedCSS_Store
             return;
         }
 
-        if(isset($result->state) && $result->state == 'failed'){
+        if(isset($result->state) && $result->state === 'failed'){
 
             $this->job_data->mark_as_failed('Unknown error occurred');
             $this->job_data->save();
@@ -284,10 +284,10 @@ class UnusedCSS_Store
 
         if(isset($result->state)){
 
-            if($result->state == 'waiting' || $result->state == 'delayed' || $result->state == 'created' || $result->state == 'stalling'){
+            if($result->state === 'waiting' || $result->state === 'delayed' || $result->state === 'created' || $result->state === 'stalling'){
                 $this->job_data->status = 'waiting';
                 $this->job_data->save();
-            }else if($result->state == 'active'){
+            }else if($result->state === 'active'){
                 $this->job_data->status = 'processing';
                 $this->job_data->save();
             }
@@ -303,7 +303,7 @@ class UnusedCSS_Store
 
     function handleFontFace($content){
 
-        if(isset($this->options['uucss_enable_font_optimization']) && $this->options['uucss_enable_font_optimization'] == "1"){
+        if(isset($this->options['uucss_enable_font_optimization']) && $this->options['uucss_enable_font_optimization'] === "1"){
             return RapidLoad_Font::add_display_swap($content);
         }
         return  $content;

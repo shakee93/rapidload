@@ -37,9 +37,9 @@ if (file_exists(dirname(__FILE__) . '/includes/RapidLoad_CLI_Command.php')) {
 
 if ( is_multisite() ) {
     $blog_id = get_current_blog_id();
-    define('UUCSS_LOG_DIR', wp_get_upload_dir()['basedir'] . '/rapidload/' . date('Ymd') . '/' . $blog_id . '/');
+    define('UUCSS_LOG_DIR', wp_get_upload_dir()['basedir'] . '/rapidload/' . gmdate('Ymd') . '/' . $blog_id . '/');
 } else {
-    define('UUCSS_LOG_DIR', wp_get_upload_dir()['basedir'] .  '/rapidload/' . date('Ymd') . '/');
+    define('UUCSS_LOG_DIR', wp_get_upload_dir()['basedir'] .  '/rapidload/' . gmdate('Ymd') . '/');
 }
 
 

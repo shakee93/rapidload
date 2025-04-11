@@ -94,6 +94,10 @@ class Javascript_Enqueue
                 continue;
             }
 
+            if(isset($link->id) && in_array($link->id, ['rapidload-image-handler','rapidload-diagnose-script-js-after'])){
+                continue;
+            }
+
             $original_src = self::is_js($link) ? $link->src : null;
 
             if(isset($link->src) && self::is_file_excluded($link->src)){
@@ -108,7 +112,7 @@ class Javascript_Enqueue
 
             // legacy delay starts here
 
-            if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] == "1"){
+            if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1"){
 
                 if(!apply_filters('rapidload/js/delay-excluded', false, $link, $this->job, $this->strategy, $this->options)){
                     $this->load_scripts_on_user_interaction($link, $original_src);
@@ -118,7 +122,7 @@ class Javascript_Enqueue
 
             // legacy delay ended
 
-            if(isset($this->options['minify_js']) && $this->options['minify_js'] == "1"){
+            if(isset($this->options['minify_js']) && $this->options['minify_js'] === "1"){
                 $this->minify_js($link);
             }
 
@@ -126,7 +130,7 @@ class Javascript_Enqueue
 
         }
 
-        if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] == "1" || apply_filters('rapidload/delay-script/enable', false)){
+        if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1" || apply_filters('rapidload/delay-script/enable', false)){
 
             $this->add_call_back_script();
 
@@ -347,9 +351,9 @@ class Javascript_Enqueue
         }
 
         $js_to_be_defer = isset($this->options['uucss_load_js_method']) &&
-            ($this->options['uucss_load_js_method'] == "defer" || $this->options['uucss_load_js_method'] == "1");
+            ($this->options['uucss_load_js_method'] === "defer" || $this->options['uucss_load_js_method'] === "1");
 
-        $js_to_be_delay = isset($this->options['delay_javascript']) && $this->options['delay_javascript'] == "1" && (!isset($this->options['uucss_load_scripts_on_user_interaction']) || empty($this->options['uucss_load_scripts_on_user_interaction']));
+        $js_to_be_delay = isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1" && (!isset($this->options['uucss_load_scripts_on_user_interaction']) || empty($this->options['uucss_load_scripts_on_user_interaction']));
 
         if(self::is_js($link)){
 
@@ -436,14 +440,14 @@ class Javascript_Enqueue
     }
 
     public static function is_inline_script( $el ) {
-        return !empty($el->type) && $el->type == "text/javascript" && !isset($el->src);
+        return !empty($el->type) && $el->type === "text/javascript" && !isset($el->src);
     }
 
     private function is_file_excluded($file, $option_name = 'uucss_excluded_js_files'){
 
         $exclude_files = isset($this->options[$option_name]) && !empty($this->options[$option_name]) ? explode("\n", $this->options[$option_name]) : [];
 
-        if($option_name == 'uucss_excluded_js_files'){
+        if($option_name === 'uucss_excluded_js_files'){
             $exclude_files = array_merge($exclude_files, $this->dynamic_exclusions);
         }
 
@@ -572,7 +576,7 @@ class Javascript_Enqueue
     {
         try {
             // Determine the global event based on the 'delay_javascript' option
-            $eventToBind = isset($this->options['delay_javascript']) && $this->options['delay_javascript'] == "1" && (!isset($this->options['uucss_load_scripts_on_user_interaction']) || empty($this->options['uucss_load_scripts_on_user_interaction']))
+            $eventToBind = isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1" && (!isset($this->options['uucss_load_scripts_on_user_interaction']) || empty($this->options['uucss_load_scripts_on_user_interaction']))
                 ? 'RapidLoad:DelayedScriptsLoaded'
                 : 'DOMContentLoaded';
 
@@ -611,7 +615,7 @@ class Javascript_Enqueue
 
             // Check if there are only variable or function declarations
             if (count(array_filter($rootStatements, function ($statement) {
-                    return $statement->type == 'VariableDeclaration' || $statement->type == 'FunctionDeclaration';
+                    return $statement->type === 'VariableDeclaration' || $statement->type === 'FunctionDeclaration';
                 })) === count($rootStatements)) {
                 // No need to delay, return the original snippet
                 return $updatedSnippet;
@@ -644,8 +648,6 @@ class Javascript_Enqueue
             return $snippets;
 
         } catch (Exception $exception) {
-            // Log any exceptions that occur
-            error_log('RapidLoad:Error in JS Optimization: ' . $exception->getMessage());
             return $this->wrapWithJavaScriptEvent($eventToBind, $jsSnippet);
         }
     }

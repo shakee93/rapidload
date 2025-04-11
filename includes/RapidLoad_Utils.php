@@ -10,11 +10,11 @@ trait RapidLoad_Utils {
     private static $log_file_system = null;
 
 	public function url_origin( $s, $use_forwarded_host = false ) {
-		$ssl      = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] == 'on' );
+		$ssl      = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] === 'on' );
 		$sp       = strtolower( $s['SERVER_PROTOCOL'] );
         $protocol = substr( $sp, 0, strpos( $sp, '/' ) ) . ( ( $ssl ) ? 's' : '' );
         $port     = $s['SERVER_PORT'];
-        $port     = ( ( ! $ssl && $port=='80' ) || ( $ssl && $port=='443' ) ) ? '' : ':'.$port;
+        $port     = ( ( ! $ssl && ($port === '80' || $port === 80) ) || ( $ssl && ($port === '443' || $port === 443) ) ) ? '' : ':'.$port;
         $host     = ( $use_forwarded_host && isset( $s['HTTP_X_FORWARDED_HOST'] ) ) ? $s['HTTP_X_FORWARDED_HOST'] : ( isset( $s['HTTP_HOST'] ) ? $s['HTTP_HOST'] : null );
         $host     = isset( $host ) ? $host : $s['SERVER_NAME'] . $port;
         return $protocol . '://' . $host;
@@ -34,7 +34,7 @@ trait RapidLoad_Utils {
 	    }
 
         if(isset($_SERVER['REQUEST_URI'])){
-            return urldecode(home_url(add_query_arg(array(), $_SERVER['REQUEST_URI'])));
+            return urldecode(home_url(add_query_arg(array(), sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])))));
         }
 
 	    return null;
@@ -58,7 +58,7 @@ trait RapidLoad_Utils {
             array_push($rules_with_permalink, $rule);
         }
         usort($rules_with_permalink, function ($a, $b){
-            if ($a['priority'] == $b['priority']) {
+            if ($a['priority'] === $b['priority']) {
                 return 0;
             }
             return ($a['priority'] < $b['priority']) ? -1 : 1;
@@ -90,7 +90,7 @@ trait RapidLoad_Utils {
 
     public static function log( $object, $callee = false ) {
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG == false)) {
+	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -133,7 +133,7 @@ trait RapidLoad_Utils {
 
     public static function uucss_log($object){
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG == false)) {
+	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -291,7 +291,7 @@ trait RapidLoad_Utils {
             return $url;
         }
 
-		$url_parts = parse_url( $url );
+		$url_parts = wp_parse_url( $url );
 
 		$options = RapidLoad_Base::fetch_options();
 
@@ -309,7 +309,7 @@ trait RapidLoad_Utils {
             $url = rtrim($url,'/');
         }
 
-		if ( isset( $options['uucss_query_string'] ) && $options['uucss_query_string'] == "1" && isset($url_parts['query']) && !empty($url_parts['query']) ) {
+		if ( isset( $options['uucss_query_string'] ) && $options['uucss_query_string'] === "1" && isset($url_parts['query']) && !empty($url_parts['query']) ) {
             $url .= "?" .$url_parts['query'];
 		}
 
@@ -497,13 +497,13 @@ trait RapidLoad_Utils {
     function source_is_mobile() {
         if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
             $is_mobile = false;
-        } elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Mobile' ) !== false // Many mobile devices (all iPhone, iPad, etc.)
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Android' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Silk/' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Kindle' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'BlackBerry' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mini' ) !== false
-            || strpos( $_SERVER['HTTP_USER_AGENT'], 'Opera Mobi' ) !== false ) {
+        } elseif ( strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Mobile' ) !== false // Many mobile devices (all iPhone, iPad, etc.)
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Android' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Silk/' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Kindle' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'BlackBerry' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Opera Mini' ) !== false
+            || strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Opera Mobi' ) !== false ) {
             $is_mobile = true;
         } else {
             $is_mobile = false;
@@ -521,11 +521,11 @@ trait RapidLoad_Utils {
         }
 
         if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-            return $_SERVER['HTTP_USER_AGENT'];
+            return sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
         }
 
         if ( isset( $headers['User-Agent'] ) ) {
-            return $headers['User-Agent'];
+            return sanitize_text_field( wp_unslash( $headers['User-Agent'] ) );
         }
 
         return '';
@@ -566,7 +566,7 @@ trait RapidLoad_Utils {
 
         if ( $_post ) {
             $page_options = RapidLoad_Base::get_page_options( $_post->ID );
-            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] == "on" ) {
+            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] === "on" ) {
                 return false;
             }
 
@@ -586,7 +586,7 @@ trait RapidLoad_Utils {
 
                 if ( filter_var( $pattern, FILTER_VALIDATE_URL ) ) {
 
-                    $pattern = parse_url( $pattern );
+                    $pattern = wp_parse_url( $pattern );
 
                     $path = $pattern['path'];
                     $query = isset($pattern['query']) ? '?' . $pattern['query'] : '';
@@ -606,7 +606,7 @@ trait RapidLoad_Utils {
             }
         }
 
-        $url_parts = parse_url( $url );
+        $url_parts = wp_parse_url( $url );
 
         if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
             $this->log( 'skipped  query contains : ' . $url );
@@ -632,8 +632,8 @@ trait RapidLoad_Utils {
 
     public static function get_file_path_from_url($url)
     {
-        $file_relative_path = parse_url($url, PHP_URL_PATH);
-        $site_path = parse_url(site_url(), PHP_URL_PATH);
+        $file_relative_path = wp_parse_url($url, PHP_URL_PATH);
+        $site_path = wp_parse_url(site_url(), PHP_URL_PATH);
         $file_path = UUCSS_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
         return str_replace("//","/", $file_path);
     }
@@ -653,13 +653,13 @@ trait RapidLoad_Utils {
             $width =
                 isset($attr->width) && preg_match('/\d+/', $attr->width, $value)
                     ? (int) $value[0]
-                    : (count($viewbox) == 4
+                    : (count($viewbox) === 4
                     ? (int) $viewbox[2]
                     : null);
             $height =
                 isset($attr->height) && preg_match('/\d+/', $attr->height, $value)
                     ? (int) $value[0]
-                    : (count($viewbox) == 4
+                    : (count($viewbox) === 4
                     ? (int) $viewbox[3]
                     : null);
             if ($width && $height) {
@@ -696,7 +696,7 @@ trait RapidLoad_Utils {
     }
 
     public static function get_relative_url($fullUrl) {
-        $parsedUrl = parse_url($fullUrl);
+        $parsedUrl = wp_parse_url($fullUrl);
 
         if ( strpos( $fullUrl, site_url() ) === false ) {
             return $fullUrl;
@@ -767,14 +767,14 @@ trait RapidLoad_Utils {
     }
 
     function is_serialized($string) {
-        return ($string == serialize(false) || @unserialize($string) !== false);
+        return ($string === serialize(false) || @unserialize($string) !== false);
     }
 
     public static function debug_log(...$objects)
     {
         if(defined('RAPIDLOAD_DEBUG_LOG') && RAPIDLOAD_DEBUG_LOG){
             foreach ($objects as $object) {
-                if (gettype($object) == "string") {
+                if (gettype($object) === "string") {
                     error_log("RapidLoad Log:  " . $object);
                 } else {
                     error_log("RapidLoad Log:  " . json_encode($object, JSON_PRETTY_PRINT));
@@ -792,12 +792,12 @@ trait RapidLoad_Utils {
             return;
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '.') === false) {
-            $user_agent = $_SERVER['HTTP_USER_AGENT'];
-            self::debug_log("Request URI: " . $_SERVER['REQUEST_URI'] . " - " . "User Agent: " . $user_agent);
+        if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), '.') === false) {
+            $user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+            self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . " - " . "User Agent: " . $user_agent);
         } else {
             if (isset($_SERVER['REQUEST_URI'])) {
-                self::debug_log("Request URI: " . $_SERVER['REQUEST_URI']);
+                self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ));
             }
             self::debug_log("User Agent: Not available or not an HTML request");
         }
@@ -819,7 +819,7 @@ trait RapidLoad_Utils {
             $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
             $plugin_details[] = [
                 'name' => $plugin_data['Name'],
-                'source' => $plugin_data['PluginURI'] ?? 'Unknown'
+                'source' => $plugin_data['PluginURI'] ? $plugin_data['PluginURI'] : 'Unknown'
             ];
         }
 
@@ -829,7 +829,7 @@ trait RapidLoad_Utils {
                 $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
                 $plugin_details[] = [
                     'name' => $plugin_data['Name'],
-                    'source' => $plugin_data['PluginURI'] ?? 'Unknown'
+                    'source' => $plugin_data['PluginURI'] ? $plugin_data['PluginURI'] : 'Unknown'
                 ];
             }
         }

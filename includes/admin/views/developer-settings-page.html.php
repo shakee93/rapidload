@@ -9,7 +9,7 @@ global $rapidload;
 
 $third_party_plugins = apply_filters('uucss/third-party/plugins', []);
 $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugin){
-    return isset($plugin['category']) && $plugin['category'] == 'cache';
+    return isset($plugin['category']) && $plugin['category'] === 'cache';
 });
 
 ?>
@@ -17,7 +17,7 @@ $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugi
 <form id='ao_settings_form' action='<?php echo esc_url(admin_url( 'options.php' )); ?>' method='post'>
     <?php settings_fields( 'autoptimize_uucss_settings' );
 
-    $api_key_verified = isset( $options['uucss_api_key_verified'] ) && $options['uucss_api_key_verified'] == '1';
+    $api_key_verified = isset( $options['uucss_api_key_verified'] ) && $options['uucss_api_key_verified'] === '1';
     $default_debug_mode = ! empty( $options['uucss_enable_debug'] ) && '1' === $options['uucss_enable_debug'];
     $hide_view_log = apply_filters('uucss/view_debug/frontend', (boolean)$default_debug_mode);
 

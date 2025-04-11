@@ -19,7 +19,7 @@ class JavaScript
 
         add_action('uucss/options/js', [$this, 'render_options']);
 
-        if(!isset($this->options['uucss_enable_javascript']) || $this->options['uucss_enable_javascript'] != "1"){
+        if(!isset($this->options['uucss_enable_javascript']) || $this->options['uucss_enable_javascript'] !== "1"){
             return;
         }
 
@@ -196,7 +196,7 @@ class JavaScript
             $cdn = self::get_wp_content_url();
         } else {
 
-            $url_parts = parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 

@@ -16,6 +16,7 @@ class RapidLoad_Job{
     public $created_at;
     public $desktop_options;
     public $mobile_options;
+    public $diagnose_data;
 
     public $parent;
 
@@ -56,13 +57,13 @@ class RapidLoad_Job{
             $this->mobile_options = isset($exist->mobile_options) ? $exist->mobile_options : null;
             $this->diagnose_data = isset($exist->diagnose_data) ? $exist->diagnose_data : null;
 
-            if(isset($this->rule_id) && $this->rule_id != $this->id && $this->rule == 'is_url'){
+            if(isset($this->rule_id) && $this->rule_id !== $this->id && $this->rule === 'is_url'){
                 $this->parent = RapidLoad_Job::find_or_fail($this->rule_id);
             }
 
         }else{
 
-            $this->created_at = date( "Y-m-d H:m:s", time() );
+            $this->created_at = gmdate( "Y-m-d H:m:s", time() );
         }
 
     }
@@ -77,12 +78,21 @@ class RapidLoad_Job{
         }
 
         if($id){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = " . $id, OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = %d", $id),
+                OBJECT
+            );
         }
-        else if($this->rule == 'is_url'){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE url = '" . $this->url . "' LIMIT 1", OBJECT);
+        else if($this->rule === 'is_url'){
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $this->url),
+                OBJECT
+            );
         }else{
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = '" . $this->rule . "' AND regex = '" . $this->regex . "' LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s LIMIT 1", $this->rule, $this->regex),
+                OBJECT
+            );
         }
 
         return $exist;
@@ -150,7 +160,13 @@ class RapidLoad_Job{
 
         global $wpdb;
 
-        $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = '" . $id . "'", OBJECT);
+        $exist = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE id = %d",
+                $id
+            ),
+            OBJECT
+        );
 
         if(!$exist){
             return null;
@@ -169,9 +185,23 @@ class RapidLoad_Job{
         $exist = false;
 
         if(!$include_failed){
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url' AND url = '" . $url . "' AND status IN('cached','rule-based') LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND url = %s AND status IN('cached','rule-based') LIMIT 1",
+                    'is_url',
+                    $url
+                ),
+                OBJECT
+            );
         }else{
-            $exist = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = 'is_url' AND url = '" . $url . "' LIMIT 1", OBJECT);
+            $exist = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND url = %s LIMIT 1",
+                    'is_url', 
+                    $url
+                ),
+                OBJECT
+            );
         }
 
         if(!$exist){
@@ -188,9 +218,9 @@ class RapidLoad_Job{
         (new RapidLoad_Job($args))->save();
     }
 
-    static function all(){
+    static function all_rules(){
 
-        return RapidLoad_DB::get_rules_where();
+        return RapidLoad_DB::get_all_rules();
 
     }
 
@@ -207,7 +237,7 @@ class RapidLoad_Job{
     }
 
     function get_urls() {
-        if ($this->rule == "is_url") {
+        if ($this->rule === "is_url") {
             return [];
         }
 
@@ -389,15 +419,15 @@ class RapidLoad_Job{
     function get_revision_ids($strategy) {
         global $wpdb;
 
-        $query = $wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id);
-
-        return $wpdb->get_results($query, ARRAY_N);
+        return $wpdb->get_results($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id), ARRAY_N);
     }
 
     function delete_all_revisions(){
         global $wpdb;
         $id = $this->id;
-        $wpdb->query("DELETE FROM {$wpdb->prefix}rapidload_job_optimizations WHERE job_id = $id");
+        $wpdb->query(
+            $wpdb->prepare("DELETE FROM {$wpdb->prefix}rapidload_job_optimizations WHERE job_id = %d", $id)
+        );
     }
 
     function transform_individual_file_actions($options){
@@ -437,7 +467,7 @@ class RapidLoad_Job{
 
     function generateUrlRegex($url) {
         // Escape characters with special meanings in regex
-        $urlParts = parse_url($url);
+        $urlParts = wp_parse_url($url);
         if (isset($urlParts['path'])) {
             $path = $urlParts['path'];
         } else {
@@ -491,45 +521,32 @@ class RapidLoad_Job{
     }
 
     public static function get_all_optimizations_data_for($strategy, $start_from, $limit = 10, $s = null){
-
         global $wpdb;
         $data = [];
 
-        $query = "
-        SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
-               IF(t1.id != t2.id, t2.data, NULL) AS first_data, 
-               t1.created_at 
-        FROM  {$wpdb->prefix}rapidload_job_optimizations t1 
-        LEFT JOIN  {$wpdb->prefix}rapidload_job_optimizations t2 
-        ON t1.job_id = t2.job_id 
-        AND t2.id = (SELECT MIN(id) FROM  {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = t1.job_id) 
-        LEFT JOIN {$wpdb->prefix}rapidload_job t3 
-        ON t1.job_id = t3.id 
-        WHERE t1.strategy = %s";
-
-        if ($s !== null) {
-            $query .= " AND t3.url LIKE %s";
-        }
-
-        $query .= " AND (t1.job_id, t1.created_at) IN (
-                    SELECT job_id, MAX(created_at) 
-                    FROM  {$wpdb->prefix}rapidload_job_optimizations 
-                    WHERE strategy = %s 
-                    GROUP BY job_id
-                ) 
-                ORDER BY t1.id DESC 
-                LIMIT %d, %d;";
-
-        if ($s !== null) {
-            $query = $wpdb->prepare($query, $strategy, $strategy, '%' . $wpdb->esc_like($s) . '%', $strategy, $start_from, $limit);
-        } else {
-            $query = $wpdb->prepare($query, $strategy, $strategy, $strategy, $start_from, $limit);
-        }
-
-        $result = $wpdb->get_results($query, OBJECT);
+        $result = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT t1.id, t1.job_id, t3.url, t1.strategy, t1.data AS last_data, 
+                IF(t1.id != t2.id, t2.data, NULL) AS first_data, t1.created_at 
+                FROM {$wpdb->prefix}rapidload_job_optimizations t1 
+                LEFT JOIN {$wpdb->prefix}rapidload_job_optimizations t2 
+                ON t1.job_id = t2.job_id 
+                AND t2.id = (SELECT MIN(id) FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = t1.job_id) 
+                LEFT JOIN {$wpdb->prefix}rapidload_job t3 ON t1.job_id = t3.id 
+                WHERE t1.strategy = %s AND t3.url LIKE %s 
+                AND (t1.job_id, t1.created_at) IN (SELECT job_id, MAX(created_at) FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s GROUP BY job_id) 
+                ORDER BY t1.id DESC LIMIT %d, %d",
+                $strategy,
+                $strategy,
+                $s !== null ? '%' . $wpdb->esc_like($s) . '%' : '%%',
+                $strategy,
+                $start_from,
+                $limit
+            ),
+            OBJECT
+        );
 
         foreach ($result as $value) {
-
             $first_data = [];
             $last_data = [];
 
@@ -564,7 +581,7 @@ class RapidLoad_Job{
     public static function get_first_and_last_optimization_score($url, $strategy) {
         global $wpdb;
 
-        $job_id = $wpdb->get_var("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = '" . esc_sql($url) . "' LIMIT 1");
+        $job_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $url));
 
         if (!$job_id) {
             return (object)[
@@ -600,7 +617,7 @@ class RapidLoad_Job{
         );
 
         $first_entry = isset($first_data[0]) ? $first_data[0] : false;
-        $last_entry = isset($last_data[0]) && $first_entry && $first_data[0]->id != $last_data[0]->id ? $last_data[0] : false;
+        $last_entry = isset($last_data[0]) && $first_entry && $first_data[0]->id !== $last_data[0]->id ? $last_data[0] : false;
 
         $get_response_time = function ($data) {
             $decoded_data = json_decode($data);

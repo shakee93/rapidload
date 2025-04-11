@@ -26,7 +26,7 @@ class UnusedCSS
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_enable_uucss'] != "1" || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_uucss'] !== "1" || !RapidLoad_Base::is_api_key_verified()){
             return;
         }
 
@@ -154,7 +154,7 @@ class UnusedCSS
                 continue;
             }
 
-            $value = sanitize_text_field( $_POST[ 'uucss_' . $option ] );
+            $value = sanitize_text_field( wp_unslash( $_POST[ 'uucss_' . $option ] ) );
 
             update_post_meta( $post_id, '_uucss_' . $option, $value );
         }
@@ -162,14 +162,14 @@ class UnusedCSS
 
     public function uucss_notfound_fallback(){
 
-        $original_request = strtok( $_SERVER['REQUEST_URI'], '?' );
+        $original_request = isset($_SERVER['REQUEST_URI']) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '/';
         $original_path = self::get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
 
         $options = RapidLoad_Base::fetch_options(false);
 
         if ( strpos( $original_request, wp_basename( self::get_wp_content_dir() ) . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' ) !== false
             && !file_exists($original_path)
-            //&& isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] == "1"
+            //&& isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] === "1"
         ) {
 
             global $wp_query;
@@ -179,7 +179,7 @@ class UnusedCSS
 
             if ( isset($fallback_target) ) {
 
-                wp_redirect( $fallback_target, 302 );
+                wp_safe_redirect( $fallback_target, 302 );
             } else {
 
                 status_header( 410 );
@@ -204,7 +204,7 @@ class UnusedCSS
 
                 if(isset($job_data->id)){
 
-                    if($job->rule != 'is_url'){
+                    if($job->rule !== 'is_url'){
                         //$link['rule_status'] = $job_data->status;
                        // $link['rule_hits'] = $job_data->hits;
                         //$link['applied_links'] = count($job->get_urls());
@@ -224,7 +224,7 @@ class UnusedCSS
                     $link['attempts'] = isset( $job_data->attempts ) ? $job_data->attempts : null;
                     $link['rule'] = $job_data->job->rule;
 
-                    if(boolval($link['meta']['warnings']) == false){
+                    if(boolval($link['meta']['warnings']) === false){
                         $link['meta']['warnings'] = [];
                     }
                 }
@@ -242,7 +242,7 @@ class UnusedCSS
             $cdn = self::get_wp_content_url();
         } else {
 
-            $url_parts = parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 
@@ -298,7 +298,7 @@ class UnusedCSS
 
         $post = get_post($post_id);
 
-        if($post->post_status == "publish") {
+        if($post->post_status === "publish") {
 
             $this->clear_on_actions( $post->ID );
 
@@ -321,7 +321,7 @@ class UnusedCSS
             return false;
         }
 
-        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] == "1" && !wp_doing_ajax()){
+        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] === "1" && !wp_doing_ajax()){
             return false;
         }
 
@@ -335,7 +335,7 @@ class UnusedCSS
             $this->job_data->save();
         }
 
-        if($this->job_data->status == 'failed' && $this->job_data->attempts >= 2 && (!isset($args['immediate']) || !isset( $args['requeue']))){
+        if($this->job_data->status === 'failed' && $this->job_data->attempts >= 2 && (!isset($args['immediate']) || !isset( $args['requeue']))){
             return false;
         }
 
@@ -384,7 +384,7 @@ class UnusedCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = $_REQUEST['url'];
+            $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');
@@ -415,28 +415,28 @@ class UnusedCSS
                 }
                 case 'warnings':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='success' AND warnings IS NOT NULL ");
+                    UnusedCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='failed' ");
+                    UnusedCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    UnusedCSS_DB::requeue_where(" WHERE status ='processing' ");
+                    UnusedCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    UnusedCSS_DB::requeue_where();
+                    UnusedCSS_DB::requeue_where_status('');
                     break;
                 }
             }
         }
 
-        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] == 'true') ) {
+        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] === 'true') ) {
 
             $this->clear_cache();
 
@@ -479,7 +479,7 @@ class UnusedCSS
 
             $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
-            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule == "is_url" || $job_data->job->rule != "is_url")){
+            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule === "is_url" || $job_data->job->rule !== "is_url")){
 
                 $this->clear_files($job_data);
                 self::log([

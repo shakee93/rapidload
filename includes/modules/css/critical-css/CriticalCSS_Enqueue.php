@@ -52,7 +52,7 @@ class CriticalCSS_Enqueue
             $this->strategy = $state['strategy'];
         }
 
-        if(!isset($this->job_data->id) || $this->job_data->status != 'success'){
+        if(!isset($this->job_data->id) || $this->job_data->status !== 'success'){
             //$this->inject->rapidload = false;
             //$this->inject->successfully_injected = false;
             return [
@@ -123,11 +123,11 @@ class CriticalCSS_Enqueue
 
             $parent = $sheet->parent();
 
-            if(isset($parent) && $parent->tag == 'noscript' || !self::is_css($sheet)){
+            if(isset($parent) && $parent->tag === 'noscript' || !self::is_css($sheet)){
                 continue;
             }
 
-            if($sheet->tag != 'link'){
+            if($sheet->tag !== 'link'){
                 continue;
             }
 
@@ -182,8 +182,8 @@ class CriticalCSS_Enqueue
         $mode = $this->is_mobile ? 'mobile' : 'desktop';
 
         for ($i = 1; $i <= $file_count; $i++) {
-            $file_name = ($i == 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
-            $index = ($i == 1) ? "" : "-" . $i;
+            $file_name = ($i === 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
+            $index = ($i === 1) ? "" : "-" . $i;
             if($this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)){
                 $part = $this->file_system->get_contents(CriticalCSS::$base_dir . '/' . $file_name );
                 $part = apply_filters('rapidload/cpcss/minify', $part, $mode);
@@ -239,7 +239,7 @@ class CriticalCSS_Enqueue
         $this->job_data->mark_as_successful_hit();
         $this->job_data->save();
 
-        if(isset($this->options['remove_cpcss_on_user_interaction']) && $this->options['remove_cpcss_on_user_interaction'] == "1"){
+        if(isset($this->options['remove_cpcss_on_user_interaction']) && $this->options['remove_cpcss_on_user_interaction'] === "1"){
 
             $body = $this->dom->find('body', 0);
             $node = $this->dom->createElement('script',

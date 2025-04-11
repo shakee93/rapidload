@@ -18,7 +18,7 @@ class RapidLoad_Sitemap
     function process_site_map($sitemap_url, array $urls = [] ){
 
         $args = apply_filters(
-            'uucss/sitemap/request',
+            'rapidload/sitemap/request',
             [
                 'timeout'    => 40,
                 'user-agent' => 'RapidLoad/Sitemaps',

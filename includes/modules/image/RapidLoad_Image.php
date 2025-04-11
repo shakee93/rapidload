@@ -14,13 +14,13 @@ class RapidLoad_Image
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['uucss_enable_image_delivery']) || $this->options['uucss_enable_image_delivery'] != "1"){
+        if(!isset($this->options['uucss_enable_image_delivery']) || $this->options['uucss_enable_image_delivery'] !== "1"){
             return;
         }
 
         self::$image_indpoint = "https://images.rapidload-cdn.io/spai/";
 
-        add_action('wp_footer', [$this, 'enqueue_frontend_js'], 90);
+        add_action('init', [$this, 'enqueue_frontend_js'], 90);
 
         /*add_filter('wp_calculate_image_srcset', function ($a, $b, $c, $d, $e){
             foreach ($a as $index => $src){
@@ -33,7 +33,7 @@ class RapidLoad_Image
 
         add_action('rapidload/job/handle', [$this, 'optimize_image'], 30, 2);
 
-        if(isset($this->options['rapidload_disable_thumbnails']) && $this->options['rapidload_disable_thumbnails'] == "1"){
+        if(isset($this->options['rapidload_disable_thumbnails']) && $this->options['rapidload_disable_thumbnails'] === "1"){
             add_filter('intermediate_image_sizes_advanced',function (){
                 return [];
             }, 90);
@@ -69,38 +69,36 @@ class RapidLoad_Image
         }, $css);
     }
 
-    public function enqueue_frontend_js(){
-
-        if(!RapidLoad_Base::is_api_key_verified()){
+    public function enqueue_frontend_js() {
+        if (!RapidLoad_Base::is_api_key_verified()) {
             return;
         }
+    
+        $handle = 'rapidload-image-handler';
 
-        ?>
-        <script id="rapidload-image-handler" type="text/javascript" norapidload>
-            <?php
-                $image_handler_script = file_get_contents(RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js');
-                if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE === true) {
-                    $filePath = RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.js';
+        wp_register_script($handle,'', [], null, true);
+        wp_enqueue_script($handle);
 
-                    if (file_exists($filePath)) {
-                        $image_handler_script = file_get_contents($filePath);
-                    }
-                }
-            ?>
-            (function(w, d){
-                w.rapidload_io_data = {
-                    nonce : "<?php echo esc_js(self::create_nonce('rapidload_image')) ?>",
-                    image_endpoint : "<?php echo esc_js(RapidLoad_Image::$image_indpoint) ?>",
-                    optimize_level : "<?php echo esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null') ?>" ,
-                    adaptive_image_delivery : <?php echo esc_js(isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] == "1" ? 'true' : 'false') ?> ,
-                    support_next_gen_format : <?php echo esc_js(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1" ? 'true' : 'false') ?>
-                };
-            }(window, document));
+        $inline_data = sprintf(
+            '(function(w,d){w.rapidload_io_data={nonce:"%s",image_endpoint:"%s",optimize_level:"%s",adaptive_image_delivery:%s,support_next_gen_format:%s};',
+            esc_js(self::create_nonce('rapidload_image')),
+            esc_js(RapidLoad_Image::$image_indpoint),
+            esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null'),
+            isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] === "1" ? 'true' : 'false',
+            isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] === "1" ? 'true' : 'false'
+        );
 
-            <?php echo $image_handler_script ?>
-        </script>
-        <?php
-
+        $image_handler_script = file_get_contents(RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js');
+    
+        if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE === true) {
+            $dev_script_path = RAPIDLOAD_PLUGIN_DIR . '/assets/js/rapidload_images.min.js';
+            if (file_exists($dev_script_path)) {
+                $image_handler_script = file_get_contents($dev_script_path);
+            }
+        }
+    
+        wp_add_inline_script($handle, $inline_data . $image_handler_script . '}(window,document));', 'after');
+    
     }
 
     public function optimize_image($job, $args){
@@ -134,7 +132,7 @@ class RapidLoad_Image
             $options = $args['retina'];
         }
 
-        $enamble_blurry_place_holder = isset(self::$instance->options['uucss_generate_blurry_place_holder']) && self::$instance->options['uucss_generate_blurry_place_holder'] == "1";
+        $enamble_blurry_place_holder = isset(self::$instance->options['uucss_generate_blurry_place_holder']) && self::$instance->options['uucss_generate_blurry_place_holder'] === "1";
 
         if($enamble_blurry_place_holder){
             $options = 'ret_img';
@@ -146,11 +144,11 @@ class RapidLoad_Image
             $options .= ',q_' . self::$instance->options['uucss_image_optimize_level'];
         }
 
-        if(isset(self::$instance->options['uucss_support_next_gen_formats']) && self::$instance->options['uucss_support_next_gen_formats'] == "1"){
+        if(isset(self::$instance->options['uucss_support_next_gen_formats']) && self::$instance->options['uucss_support_next_gen_formats'] === "1"){
             $options .= ',to_avif';
         }
 
-        if(isset(self::$instance->options['uucss_adaptive_image_delivery']) && self::$instance->options['uucss_adaptive_image_delivery'] == "1"){
+        if(isset(self::$instance->options['uucss_adaptive_image_delivery']) && self::$instance->options['uucss_adaptive_image_delivery'] === "1"){
             if($width){
 
                 $options .= ',w_' . str_replace("px", "", $width);
@@ -175,12 +173,12 @@ class RapidLoad_Image
     }
 
     function isAbsolute($url) {
-        return isset(parse_url($url)['host']);
+        return isset(wp_parse_url($url)['host']);
     }
 
     function makeURLAbsolute($relative_url, $base_url) {
 
-        $parsed_base_url = parse_url($base_url);
+        $parsed_base_url = wp_parse_url($base_url);
 
         if (strpos($relative_url, '/') !== 0) {
             $relative_url = '/' . $relative_url;

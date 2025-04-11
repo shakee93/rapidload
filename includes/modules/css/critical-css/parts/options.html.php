@@ -1,3 +1,9 @@
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+?>
+
 <tr>
     <th scope="row"><?php esc_html_e( 'Enable Critical CSS', 'unusedcss' ); ?></th>
     <td>

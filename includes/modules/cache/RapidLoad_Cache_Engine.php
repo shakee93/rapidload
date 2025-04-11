@@ -38,7 +38,7 @@ class RapidLoad_Cache_Engine
         $request_headers = array(
             'Accept'             => isset( $request_headers['Accept'] ) ? self::sanitize_server_input( $request_headers['Accept'] ) : ( isset( $_SERVER['HTTP_ACCEPT'] ) ? self::sanitize_server_input( $_SERVER['HTTP_ACCEPT'] ) : '' ),
             'Accept-Encoding'    => isset( $request_headers['Accept-Encoding'] ) ? self::sanitize_server_input( $request_headers['Accept-Encoding'] ) : ( isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) ? self::sanitize_server_input( $_SERVER['HTTP_ACCEPT_ENCODING'] ) : '' ),
-            'Host'               => isset( $request_headers['Host'] ) ? self::sanitize_server_input( $request_headers['Host'] ) : ( isset( $_SERVER['HTTP_HOST'] ) ? self::sanitize_server_input( $_SERVER[ 'HTTP_HOST' ] ) : '' ),
+            'Host'               => isset( $request_headers['Host'] ) ? self::sanitize_server_input( $request_headers['Host'] ) : ( isset( $_SERVER['HTTP_HOST'] ) ? self::sanitize_server_input( $_SERVER['HTTP_HOST'] ) : '' ),
             'If-Modified-Since'  => isset( $request_headers['If-Modified-Since'] ) ? self::sanitize_server_input( $request_headers['If-Modified-Since'] ) : ( isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ? self::sanitize_server_input( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) : '' ),
             'User-Agent'         => isset( $request_headers['User-Agent'] ) ? self::sanitize_server_input( $request_headers['User-Agent'] ) : ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? self::sanitize_server_input( $_SERVER['HTTP_USER_AGENT'] ) : '' ),
             'X-Forwarded-Proto'  => isset( $request_headers['X-Forwarded-Proto'] ) ? self::sanitize_server_input( $request_headers['X-Forwarded-Proto'] ) : ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) ? self::sanitize_server_input( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) : '' ),
@@ -63,7 +63,7 @@ class RapidLoad_Cache_Engine
         $early_ajax_request   = ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! class_exists( 'RapidLoad_Cache' ) );
         $rest_request         = ( defined( 'REST_REQUEST' ) && REST_REQUEST );
         $xmlrpc_request       = ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST );
-        $bad_request_uri      = ( str_replace( array( '.ico', '.txt', '.xml', '.xsl' ), '', $_SERVER['REQUEST_URI'] ) !== $_SERVER['REQUEST_URI'] );
+        $bad_request_uri      = ( isset( $_SERVER['REQUEST_URI'] ) && str_replace( array( '.ico', '.txt', '.xml', '.xsl' ), '', $_SERVER['REQUEST_URI'] ) !== $_SERVER['REQUEST_URI'] );
 
         if ( $valid_engine_running || $early_ajax_request || $rest_request || $xmlrpc_request || $bad_request_uri || wp_doing_cron() ) { // wp_doing_ajax() removed
             return false;
@@ -75,10 +75,10 @@ class RapidLoad_Cache_Engine
     private static function is_wrong_permalink_structure() {
 
         if ( self::$settings['use_trailing_slashes'] ) {
-            if ( preg_match( '/\/[^\.\/\?]+(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
+            if ( isset( $_SERVER['REQUEST_URI'] ) && preg_match( '/\/[^\.\/\?]+(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
                 return true;
             }
-        } elseif ( preg_match( '/\/[^\.\/\?]+\/(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
+        } elseif ( isset( $_SERVER['REQUEST_URI'] ) && preg_match( '/\/[^\.\/\?]+\/(\?.*)?$/', $_SERVER['REQUEST_URI'] ) ) {
             return true;
         }
 
@@ -106,7 +106,7 @@ class RapidLoad_Cache_Engine
         }
 
         // Page path exclusions.
-        if ( ! empty( self::$settings['excluded_page_paths'] ) ) {
+        if ( ! empty( self::$settings['excluded_page_paths'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
             $page_path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
             if ( preg_match( self::$settings['excluded_page_paths'], $page_path ) ) {
@@ -181,7 +181,7 @@ class RapidLoad_Cache_Engine
             header('X-Optimized-By: RapidLoad v' . UUCSS_VERSION);
             header( 'X-Cache-Status: HIT' );
 
-            if ( strtotime( self::$request_headers['If-Modified-Since'] >= filemtime( $cache_file ) ) ) {
+            if ( strtotime( self::$request_headers['If-Modified-Since'] >= filemtime( $cache_file ) ) && isset( $_SERVER['SERVER_PROTOCOL'] ) ) {
                 header( self::sanitize_server_input( $_SERVER['SERVER_PROTOCOL'] ) . ' 304 Not Modified', true, 304 );
                 exit; // Deliver empty body.
             }

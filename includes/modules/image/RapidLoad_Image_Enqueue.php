@@ -49,7 +49,7 @@ class RapidLoad_Image_Enqueue
             $this->options['uucss_exclude_above_the_fold_image_count'] = 3;
         }
 
-        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] == "1"){
+        if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] === "1"){
             $this->preload_images();
         }
 
@@ -61,7 +61,7 @@ class RapidLoad_Image_Enqueue
 
         // replacing urls
 
-        if(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] == "1"){
+        if(isset($this->options['uucss_support_next_gen_formats']) && $this->options['uucss_support_next_gen_formats'] === "1"){
 
             $attributes = [
                 [
@@ -255,7 +255,7 @@ class RapidLoad_Image_Enqueue
                                     continue;
                                 }
 
-                                if($style_tag == 'background'){
+                                if($style_tag === 'background'){
                                     $_style_lines[] = preg_replace('/\burl\([^)]*\)/', '', $style_line);
                                 }
 
@@ -270,7 +270,7 @@ class RapidLoad_Image_Enqueue
                                 if (in_array($urlExt, $this->imgExt)) {
                                     $background_image_found = true;
                                     $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn);
-                                    if($style_tag == "background-image"){
+                                    if($style_tag === "background-image"){
                                         $style_line = str_replace($match[1], $replace_url, $style_line);
                                     }
                                 }
@@ -283,7 +283,7 @@ class RapidLoad_Image_Enqueue
 
                 }
 
-                if ($background_image_found && isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] == "1") {
+                if ($background_image_found && isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] === "1") {
                     $inline_style->style = implode(";", $_style_lines);
                     $inline_style->{'data-rapidload-lazy-bg'} = $replace_url; // Assuming you want to store the lazy-loaded URL
                     $inline_style->{'data-rapidload-lazy-method'} = 'viewport';
@@ -299,35 +299,44 @@ class RapidLoad_Image_Enqueue
 
                 $url_replaced = false;
 
-                $pattern = '/https?:\/\/[^\s]+\.(?:jpg|jpeg|png|webp)/i';
-                preg_match_all($pattern, $style->innertext, $matches);
+                preg_match_all('/background[^;]*url[ ]?\([\'|"]?(.*?\.(?:png|jpg|jpeg|webp))/', $style->innertext, $bg_matches, PREG_SET_ORDER);
 
-                if(isset($matches[0]) && is_array($matches[0]) && !empty($matches[0])){
+                if(!empty($bg_matches)){
+                    
+                    $unique_urls = array();
 
-                    $matches[0] = array_unique($matches[0]);
-
-                    foreach ($matches[0] as $match){
-
-                        $urlExt = pathinfo($match, PATHINFO_EXTENSION);
-
-                        if($this->is_file_excluded($match,'uucss_exclude_images_from_modern_images')){
-                            continue;
+                    foreach($bg_matches as $match) {
+                        if(isset($match[1])) {
+                            $unique_urls[] = $match[1];
                         }
-
-                        if($this->is_file_excluded($match)){
-                            continue;
-                        }
-
-                        if (in_array($urlExt, $this->imgExt)) {
-                            $replace_url = RapidLoad_Image::get_replaced_url($match,$this->cdn,false,false, [
-                                'retina' => 'ret_img'
-                            ]);
-                            $style->__set('innertext', str_replace($match,$replace_url,$style->innertext));
-                            $url_replaced = true;
-                        }
-
                     }
 
+                    $unique_urls = array_unique($unique_urls);
+
+                    foreach($unique_urls as $url){
+
+                        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                            continue;
+                        }
+
+                        $urlExt = pathinfo($url, PATHINFO_EXTENSION);
+
+                        if($this->is_file_excluded($url,'uucss_exclude_images_from_modern_images')){
+                            continue;
+                        }
+
+                        if($this->is_file_excluded($url)){
+                            continue;
+                        }
+
+                        if(in_array($urlExt, $this->imgExt)){
+                            $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn, false, false, [
+                                'retina' => 'ret_img'
+                            ]);
+                            $style->innertext = str_replace($url, $replace_url, $style->innertext);
+                            $url_replaced = true;
+                        }
+                    }
                 }
 
                 if(!$url_replaced){
@@ -363,7 +372,7 @@ class RapidLoad_Image_Enqueue
 
         foreach ($preloaded_images as $preloaded_image){
 
-            if(isset($preloaded_image->as) && $preloaded_image->as == "image"){
+            if(isset($preloaded_image->as) && $preloaded_image->as === "image"){
 
                 if(isset($preloaded_image->href)){
 
@@ -398,7 +407,7 @@ class RapidLoad_Image_Enqueue
 
     public function lazy_load_iframes(){
 
-        if(isset($this->options['uucss_lazy_load_iframes']) && $this->options['uucss_lazy_load_iframes'] == "1"){
+        if(isset($this->options['uucss_lazy_load_iframes']) && $this->options['uucss_lazy_load_iframes'] === "1"){
 
             $iframes = $this->dom->find( 'iframe[src]' );
 
@@ -406,7 +415,7 @@ class RapidLoad_Image_Enqueue
 
                 $parent = $iframe->parent();
 
-                if(isset($parent) && $parent->tag == 'noscript'){
+                if(isset($parent) && $parent->tag === 'noscript'){
                     continue;
                 }
 
@@ -490,7 +499,7 @@ class RapidLoad_Image_Enqueue
 
 
     function is_youtube_iframe($iframe_src) {
-        $domain = parse_url($iframe_src, PHP_URL_HOST);
+        $domain = wp_parse_url($iframe_src, PHP_URL_HOST);
         if (strpos($domain, 'youtube.com') !== false) {
             return true;
         } else {
@@ -526,7 +535,7 @@ class RapidLoad_Image_Enqueue
 
     public function lazy_load_images(){
 
-        if(isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] == "1"){
+        if(isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] === "1"){
             $images = $this->dom->find( 'img[src]' );
 
             foreach ( $images as $index => $img ) {
@@ -565,7 +574,7 @@ class RapidLoad_Image_Enqueue
 
         $found = false;
 
-        if(isset($this->options['uucss_exclude_above_the_fold_images']) && $this->options['uucss_exclude_above_the_fold_images'] == "1"){
+        if(isset($this->options['uucss_exclude_above_the_fold_images']) && $this->options['uucss_exclude_above_the_fold_images'] === "1"){
 
             if(isset($this->options['uucss_preload_lcp_image'])){
 
@@ -601,7 +610,7 @@ class RapidLoad_Image_Enqueue
             ]
         ];
 
-        if(isset($this->options['uucss_set_width_and_height']) && $this->options['uucss_set_width_and_height'] == "1"){
+        if(isset($this->options['uucss_set_width_and_height']) && $this->options['uucss_set_width_and_height'] === "1"){
 
             foreach ($attributes as $attribute){
 
@@ -659,7 +668,7 @@ class RapidLoad_Image_Enqueue
                                 $img->width = $dimension['width'];
                             }
 
-                            if (!isset($img->height) || $img->height == "auto") {
+                            if (!isset($img->height) || $img->height === "auto") {
                                 $img->height = $this->calculateSecondImageHeight($dimension['width'],  $dimension['height'], $img->width);
                             }
 
@@ -709,12 +718,12 @@ class RapidLoad_Image_Enqueue
     }
 
     function isAbsolute($url) {
-        return isset(parse_url($url)['host']);
+        return isset(wp_parse_url($url)['host']);
     }
 
     function makeURLAbsolute($relative_url, $base_url) {
 
-        $parsed_base_url = parse_url($base_url);
+        $parsed_base_url = wp_parse_url($base_url);
 
         if (strpos($relative_url, '/') !== 0) {
             $relative_url = '/' . $relative_url;
@@ -769,34 +778,31 @@ class RapidLoad_Image_Enqueue
     }
 
     public function convertImageUrlToDataUri($imageUrl) {
-        // Initialize cURL
-        $ch = curl_init();
-
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $imageUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For HTTPS urls, if necessary
-
-        // Execute cURL session
-        $imageData = curl_exec($ch);
+        // Get image data using WordPress HTTP API
+        $response = wp_remote_get($imageUrl);
 
         // Check for errors
-        if(curl_errno($ch)) {
+        if (is_wp_error($response)) {
             return $imageUrl;
         }
 
-        // Close cURL session
-        curl_close($ch);
+        // Get response body
+        $imageData = wp_remote_retrieve_body($response);
 
-        // Get the MIME type of the image
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->buffer($imageData);
+        // Get content type from headers
+        $contentType = wp_remote_retrieve_header($response, 'content-type');
+
+        // If content type not found in headers, try to detect it
+        if (!$contentType) {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $contentType = $finfo->buffer($imageData);
+        }
 
         // Encode the image data in Base64
         $base64 = base64_encode($imageData);
 
         // Create the Data URI
-        return "data:$mime;base64,$base64";
+        return "data:$contentType;base64,$base64";
     }
 
 

@@ -21,11 +21,11 @@ class RapidLoad_Cache
 
         $cache_module_enabled = RapidLoad_Base::get_option('rapidload_module_cache');
 
-        if(isset(self::$options['uucss_disable_wp_emoji']) && self::$options['uucss_disable_wp_emoji'] == "1"){
+        if(isset(self::$options['uucss_disable_wp_emoji']) && self::$options['uucss_disable_wp_emoji'] === "1"){
             $this->disable_wp_emojis();
         }
 
-        if(!isset($cache_module_enabled) || $cache_module_enabled != "1" ){
+        if(!isset($cache_module_enabled) || $cache_module_enabled !== "1" ){
             return;
         }
 
@@ -108,7 +108,14 @@ class RapidLoad_Cache
 
         $cache_dir = dirname(RapidLoad_Cache_Store::get_cache_dir(site_url()));
 
-        if(!is_writable($cache_dir)){
+        if ( ! function_exists( 'WP_Filesystem' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        }
+        WP_Filesystem();
+        
+        global $wp_filesystem;
+
+        if(!isset($wp_filesystem) || !$wp_filesystem->is_writable($cache_dir)){
             $message = 'writing permission error for the path : ' . $cache_dir;
             $type = "error";
 
@@ -663,7 +670,7 @@ class RapidLoad_Cache
 
         if ( $_GET['_action'] === 'clearurl' ) {
 
-            $url = isset($_GET['_url']) ? esc_url_raw($_GET['_url']) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
+            $url = isset($_GET['_url']) ? sanitize_url(wp_unslash($_GET['_url'])) : RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input($_SERVER['REQUEST_URI'], false);
 
             self::clear_page_cache_by_url( $url );
         } elseif ( $_GET['_action'] === 'clear' ) {
@@ -697,7 +704,7 @@ class RapidLoad_Cache
 
         if(isset($state['dom']) && RapidLoad_Cache_Engine::$to_be_cached){
 
-            if(gettype($state['dom']) == "string"){
+            if(gettype($state['dom']) === "string"){
                 $content = $state['dom'];
             }else{
                 $content = $state['dom']->__toString();
@@ -720,7 +727,7 @@ class RapidLoad_Cache
 
     public static function setup_cache($status){
 
-        if($status == "1"){
+        if($status === "1"){
 
             RapidLoad_Cache_Store::create_advanced_cache_file();
             RapidLoad_Cache_Store::set_wp_cache_constant();
@@ -939,7 +946,7 @@ class RapidLoad_Cache
             'compress_cache'                     => (int) ( ! empty( $settings['compress_cache'] ) ),
             'minify_html'                        => (int) ( ! empty( $settings['minify_html'] ) ),
             'minify_inline_css_js'               => (int) ( ! empty( $settings['minify_inline_css_js'] ) ),
-            'excluded_post_ids'                  => (string) sanitize_text_field( $settings['excluded_post_ids'] ),
+            'excluded_post_ids'                  => (string) $settings['excluded_post_ids'],
             'excluded_page_paths'                => (string) self::validate_regex( $settings['excluded_page_paths'] ),
             'excluded_query_strings'             => (string) self::validate_regex( $settings['excluded_query_strings'] ),
             'excluded_cookies'                   => (string) self::validate_regex( $settings['excluded_cookies'] ),
@@ -964,7 +971,7 @@ class RapidLoad_Cache
                 return '';
             }
 
-            $validated_regex = sanitize_text_field( $regex );
+            $validated_regex = $regex;
 
             return $validated_regex;
         }
@@ -1253,7 +1260,7 @@ class RapidLoad_Cache
 
         self::$options = RapidLoad_Base::fetch_options();
 
-        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] != "1" ){
+        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;
         }
 
@@ -1266,7 +1273,7 @@ class RapidLoad_Cache
 
         self::$options = RapidLoad_Base::fetch_options();
 
-        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] != "1" ){
+        if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;
         }
 

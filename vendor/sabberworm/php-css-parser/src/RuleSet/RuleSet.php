@@ -12,23 +12,35 @@ use Sabberworm\CSS\Renderable;
 use Sabberworm\CSS\Rule\Rule;
 
 /**
- * RuleSet is a generic superclass denoting rules. The typical example for rule sets are declaration block.
- * However, unknown At-Rules (like `@font-face`) are also rule sets.
+ * This class is a container for individual 'Rule's.
+ *
+ * The most common form of a rule set is one constrained by a selector, i.e., a `DeclarationBlock`.
+ * However, unknown `AtRule`s (like `@font-face`) are rule sets as well.
+ *
+ * If you want to manipulate a `RuleSet`, use the methods `addRule(Rule $rule)`, `getRules()` and `removeRule($rule)`
+ * (which accepts either a `Rule` or a rule name; optionally suffixed by a dash to remove all related rules).
  */
 abstract class RuleSet implements Renderable, Commentable
 {
     /**
-     * @var array<string, Rule>
+     * the rules in this rule set, using the property name as the key,
+     * with potentially multiple rules per property name.
+     *
+     * @var array<string, array<int<0, max>, Rule>>
      */
     private $aRules;
 
     /**
      * @var int
+     *
+     * @internal since 8.8.0
      */
     protected $iLineNo;
 
     /**
      * @var array<array-key, Comment>
+     *
+     * @internal since 8.8.0
      */
     protected $aComments;
 
@@ -47,17 +59,23 @@ abstract class RuleSet implements Renderable, Commentable
      *
      * @throws UnexpectedTokenException
      * @throws UnexpectedEOFException
+     *
+     * @internal since V8.8.0
      */
     public static function parseRuleSet(ParserState $oParserState, RuleSet $oRuleSet)
     {
         while ($oParserState->comes(';')) {
             $oParserState->consume(';');
         }
-        while (!$oParserState->comes('}')) {
+        while (true) {
+            $commentsBeforeRule = $oParserState->consumeWhiteSpace();
+            if ($oParserState->comes('}')) {
+                break;
+            }
             $oRule = null;
             if ($oParserState->getSettings()->bLenientParsing) {
                 try {
-                    $oRule = Rule::parse($oParserState);
+                    $oRule = Rule::parse($oParserState, $commentsBeforeRule);
                 } catch (UnexpectedTokenException $e) {
                     try {
                         $sConsume = $oParserState->consumeUntil(["\n", ";", '}'], true);
@@ -75,7 +93,7 @@ abstract class RuleSet implements Renderable, Commentable
                     }
                 }
             } else {
-                $oRule = Rule::parse($oParserState);
+                $oRule = Rule::parse($oParserState, $commentsBeforeRule);
             }
             if ($oRule) {
                 $oRuleSet->addRule($oRule);
@@ -97,7 +115,7 @@ abstract class RuleSet implements Renderable, Commentable
      *
      * @return void
      */
-    public function addRule(Rule $oRule, Rule $oSibling = null)
+    public function addRule(Rule $oRule, $oSibling = null)
     {
         $sRule = $oRule->getRule();
         if (!isset($this->aRules[$sRule])) {
@@ -257,6 +275,8 @@ abstract class RuleSet implements Renderable, Commentable
 
     /**
      * @return string
+     *
+     * @deprecated in V8.8.0, will be removed in V9.0.0. Use `render` instead.
      */
     public function __toString()
     {
@@ -266,26 +286,25 @@ abstract class RuleSet implements Renderable, Commentable
     /**
      * @return string
      */
-    public function render(OutputFormat $oOutputFormat)
+    protected function renderRules(OutputFormat $oOutputFormat)
     {
         $sResult = '';
         $bIsFirst = true;
-        foreach ($this->aRules as $aRules) {
-            foreach ($aRules as $oRule) {
-                $sRendered = $oOutputFormat->safely(function () use ($oRule, $oOutputFormat) {
-                    return $oRule->render($oOutputFormat->nextLevel());
-                });
-                if ($sRendered === null) {
-                    continue;
-                }
-                if ($bIsFirst) {
-                    $bIsFirst = false;
-                    $sResult .= $oOutputFormat->nextLevel()->spaceBeforeRules();
-                } else {
-                    $sResult .= $oOutputFormat->nextLevel()->spaceBetweenRules();
-                }
-                $sResult .= $sRendered;
+        $oNextLevel = $oOutputFormat->nextLevel();
+        foreach ($this->getRules() as $oRule) {
+            $sRendered = $oNextLevel->safely(function () use ($oRule, $oNextLevel) {
+                return $oRule->render($oNextLevel);
+            });
+            if ($sRendered === null) {
+                continue;
             }
+            if ($bIsFirst) {
+                $bIsFirst = false;
+                $sResult .= $oNextLevel->spaceBeforeRules();
+            } else {
+                $sResult .= $oNextLevel->spaceBetweenRules();
+            }
+            $sResult .= $sRendered;
         }
 
         if (!$bIsFirst) {

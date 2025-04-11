@@ -22,7 +22,7 @@ RapidLoad AI is a next-generation optimization tool designed to bring your site'
 ### Why choose RapidLoad AI?
 
 - **Top Rated Support**
-   - Expert Support team to help non-technical users get their best performance. ([Read Reviews](https://wordpress.org/support/plugin/unusedcss/reviews/?filter=5))
+   - Expert Support team to help non-technical users get their best performance. ([Read Reviews](https://wordpress.org/support/plugin/unusedcss/reviews/))
 - **AI Diagnostics**
    - Analyzes your website bottlenecks and provides actionable insights to get your business perform at the top level.
 - **AI Support Chat**

@@ -23,7 +23,7 @@ class RapidLoad_Enqueue {
 
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(isset($_COOKIE['rapidload_debug']) && $_COOKIE['rapidload_debug'] == "1" || apply_filters('rapidload/enable/frontend_rapidload_debug', false)){
+        if(isset($_COOKIE['rapidload_debug']) && $_COOKIE['rapidload_debug'] === "1" || apply_filters('rapidload/enable/frontend_rapidload_debug', false)){
             self::$frontend_debug = true;
         }
 
@@ -39,7 +39,7 @@ class RapidLoad_Enqueue {
 
             $this->url = $this->transform_url($this->url);
 
-            self::$test_mode = isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] == "1";
+            self::$test_mode = isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] === "1";
 
             if(self::$test_mode){
                 self::debug_log("test mode enabled");
@@ -67,10 +67,10 @@ class RapidLoad_Enqueue {
         if(wp_doing_ajax()){
             return false;
         }
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'favicon.ico') !== false) {
+        if (isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), 'favicon.ico') !== false) {
             return false;
         }
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'robots.txt') !== false) {
+        if (isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), 'robots.txt') !== false) {
             return false;
         }
         return true;
@@ -152,7 +152,7 @@ class RapidLoad_Enqueue {
 
             if(isset($dom)){
 
-                if(gettype($dom) == "string"){
+                if(gettype($dom) === "string"){
                     $_html = $dom;
                 }else{
                     $_html = $dom->__toString();
@@ -167,7 +167,7 @@ class RapidLoad_Enqueue {
             foreach ($matches[1] as $url) {
                 if(filter_var($url, FILTER_VALIDATE_URL)){
                     if(isset($url) && !empty($url)){
-                        $_parsed_url = parse_url($url);
+                        $_parsed_url = wp_parse_url($url);
                         if(isset($_parsed_url['host'])){
                             array_push($domains, $_parsed_url['host']);
                         }
@@ -178,7 +178,7 @@ class RapidLoad_Enqueue {
             if(apply_filters('rapidload/enqueue/dns-prefetch/enabled', true)){
                 $domains = array_unique($domains);
 
-                if(gettype($dom) != "string"){
+                if(gettype($dom) !== "string"){
                     foreach ($domains as $domain){
                         if(!$this->str_contains(site_url(), $domain)){
                             $head = $dom->find('head', 0);
@@ -190,7 +190,7 @@ class RapidLoad_Enqueue {
                 }
             }
 
-            if (gettype($dom) == "string") {
+            if (gettype($dom) === "string") {
                 $html = $dom;
             } else {
                 $html = $dom->__toString();
@@ -227,7 +227,7 @@ class RapidLoad_Enqueue {
 
         if ( $_post ) {
             $page_options = RapidLoad_Base::get_page_options( $_post->ID );
-            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] == "on" ) {
+            if ( isset( $page_options['exclude'] ) && $page_options['exclude'] === "on" ) {
                 return false;
             }
 
@@ -245,7 +245,7 @@ class RapidLoad_Enqueue {
 
                 if ( filter_var( $pattern, FILTER_VALIDATE_URL ) ) {
 
-                    $pattern = parse_url( $pattern );
+                    $pattern = wp_parse_url( $pattern );
 
                     $path = $pattern['path'];
                     $query = isset($pattern['query']) ? '?' . $pattern['query'] : '';
@@ -265,7 +265,7 @@ class RapidLoad_Enqueue {
             }
         }
 
-        $url_parts = parse_url( $url );
+        $url_parts = wp_parse_url( $url );
 
         if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
             $this->log( 'skipped query contains: ' . $url );
@@ -331,7 +331,7 @@ class RapidLoad_Enqueue {
             return false;
         }
 
-        if(isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] == "1" && !isset($_REQUEST['rapidload_preview'])){
+        if(isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] === "1" && !isset($_REQUEST['rapidload_preview'])){
             return false;
         }
 
@@ -353,7 +353,7 @@ class RapidLoad_Enqueue {
             ]);
         }
 
-        if(!isset(RapidLoad_Enqueue::$job->rule_id) && $this->rule && RapidLoad_Enqueue::$job->rule_note != "detached") {
+        if(!isset(RapidLoad_Enqueue::$job->rule_id) && $this->rule && RapidLoad_Enqueue::$job->rule_note !== "detached") {
 
             $rule = new RapidLoad_Job([
                 'url' => $url,
@@ -370,7 +370,7 @@ class RapidLoad_Enqueue {
 
         $front_end_enabled = [];
         $front_end_enabled['add_queue_enabled'] = !isset( $this->options['uucss_disable_add_to_queue'] ) ||
-            isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] != "1";
+            isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] !== "1";
 
 
         if(!isset(RapidLoad_Enqueue::$job->id) && $front_end_enabled['add_queue_enabled']){
@@ -422,7 +422,7 @@ class RapidLoad_Enqueue {
         $current_page_type = $this->get_current_page_type();
         $current_page_content_type = $this->get_current_content_type();
         $current_page_id = get_queried_object_id();
-        if($current_page_id == "0"){
+        if($current_page_id === "0"){
             $current_page_id = null;
         }
 

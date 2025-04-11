@@ -33,7 +33,7 @@ class CriticalCSS
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] != "1" || $this->options['uucss_enable_cpcss'] != "1" || !empty(self::$cpcss_other_plugins) || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_cpcss'] !== "1" || !empty(self::$cpcss_other_plugins) || !RapidLoad_Base::is_api_key_verified()){
             return;
         }
 
@@ -43,7 +43,7 @@ class CriticalCSS
 
         add_action('cpcss_async_queue', [$this, 'init_async_store'], 10, 2);
 
-        if ((!isset($this->options['enable_uucss_on_cpcss']) || isset($this->options['enable_uucss_on_cpcss']) && $this->options['enable_uucss_on_cpcss'] != "1" ) && !defined('RAPIDLOAD_CPCSS_ENABLED')) {
+        if ((!isset($this->options['enable_uucss_on_cpcss']) || isset($this->options['enable_uucss_on_cpcss']) && $this->options['enable_uucss_on_cpcss'] !== "1" ) && !defined('RAPIDLOAD_CPCSS_ENABLED')) {
             define('RAPIDLOAD_CPCSS_ENABLED', true);
         }
 
@@ -192,7 +192,7 @@ class CriticalCSS
 
         $post = get_post($post_id);
 
-        if($post->post_status == "publish") {
+        if($post->post_status === "publish") {
 
             $this->clear_on_actions( $post->ID );
 
@@ -215,7 +215,7 @@ class CriticalCSS
 
             $job_data = new RapidLoad_Job_Data($job, 'cpcss');
 
-            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule == "is_url" || $job_data->job->rule != "is_url")){
+            if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule === "is_url" || $job_data->job->rule !== "is_url")){
 
                 $this->clear_files($job_data);
                 self::log([
@@ -238,30 +238,6 @@ class CriticalCSS
 
     function clear_files($job_data = null){
 
-        if($job_data){
-
-            if(!empty($job_data->data)){
-
-                $count = CriticalCSS_DB::data_used_elsewhere($job_data->id, $job_data->data);
-
-                if($count == 0){
-
-                    if($this->file_system->exists(self::$base_dir . '/' .  $job_data->data)){
-                        $this->file_system->delete( self::$base_dir . '/' .  $job_data->data);
-                    }
-                    if($this->file_system->exists(self::$base_dir . '/' .  str_replace(".css","-mobile.css", $job_data->data))){
-                        $this->file_system->delete( self::$base_dir . '/' .  str_replace(".css","-mobile.css", $job_data->data));
-                    }
-
-                }
-            }
-
-        }else{
-
-            $this->file_system->delete( self::$base_dir );
-
-        }
-
     }
 
     function cpcss_purge_url()
@@ -270,7 +246,7 @@ class CriticalCSS
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
-            $url = $_REQUEST['url'];
+            $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
             if(!$this->is_url_allowed($url)){
                 wp_send_json_error('url not allowed');
@@ -301,28 +277,28 @@ class CriticalCSS
                 }
                 case 'warnings':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='success' AND warnings IS NOT NULL ");
+                    CriticalCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='failed' ");
+                    CriticalCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    CriticalCSS_DB::requeue_where(" WHERE status ='processing' ");
+                    CriticalCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    CriticalCSS_DB::requeue_where();
+                    CriticalCSS_DB::requeue_where_status('');
                     break;
                 }
             }
         }
 
-        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] == 'true') ) {
+        if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] === 'true') ) {
 
             $this->clear_cache();
 
@@ -350,7 +326,7 @@ class CriticalCSS
                 if(isset($job_data->id)){
 
                     $link['cpcss'] = (array) $job_data;
-                    if($job->rule != 'is_url'){
+                    if($job->rule !== 'is_url'){
                         $link['rule_status'] = $job_data->status;
                         $link['rule_hits'] = $job_data->hits;
                         $link['applied_links'] = count($job->get_urls());
@@ -371,7 +347,7 @@ class CriticalCSS
             return false;
         }
 
-        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] == "1" && !wp_doing_ajax()){
+        if(isset( $this->options['uucss_disable_add_to_queue'] ) && $this->options['uucss_disable_add_to_queue'] === "1" && !wp_doing_ajax()){
             return false;
         }
 
@@ -385,7 +361,7 @@ class CriticalCSS
             $this->job_data->save();
         }
 
-        if($this->job_data->status == 'failed' && $this->job_data->attempts >= 2 && !isset($args['immediate'])){
+        if($this->job_data->status === 'failed' && $this->job_data->attempts >= 2 && !isset($args['immediate'])){
             return false;
         }
 
@@ -467,7 +443,7 @@ class CriticalCSS
         }
 
         // make dir if not exists
-        //$created = $this->file_system->mkdir( self::$base_dir );
+        //$created = $this->file_system->mkdir( self::$base_dir );.
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
         if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {
@@ -485,7 +461,7 @@ class CriticalCSS
 
     public function cleanCacheFiles(){
 
-        $data = CriticalCSS_DB::get_data_where(" WHERE status = 'success' ");
+        $data = CriticalCSS_DB::get_success_data();
 
         $used_files = [];
 
@@ -495,7 +471,7 @@ class CriticalCSS
                 foreach ($files as $file){
                     $file_data = self::extract_file_data($file);
                     for ($i = 1; $i <= $file_data['file_count']; $i++) {
-                        $file_name = ($i == 1) ? $file_data['file_name'] : str_replace(".css","-" . $i . ".css", $file_data['file_name']);
+                        $file_name = ($i === 1) ? $file_data['file_name'] : str_replace(".css","-" . $i . ".css", $file_data['file_name']);
                         array_push($used_files,$file_name);
                     }
                 }

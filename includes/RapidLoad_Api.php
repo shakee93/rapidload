@@ -75,7 +75,7 @@ class RapidLoad_Api
 
 		if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
-			if ( $response['response']['code'] == 200 ) {
+			if ( $response['response']['code'] === 200 ) {
 				$body = $response['body'];
 
 				return json_decode( $body );

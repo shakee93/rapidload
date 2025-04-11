@@ -23,7 +23,7 @@ class Optimole_WP_Compatible extends RapidLoad_ThirdParty {
     {
         $optml_option = get_option('optml_settings');
 
-        if(!isset($optml_option) || !isset($optml_option['cdn']) || $optml_option['cdn'] != 'enabled'){
+        if(!isset($optml_option) || !isset($optml_option['cdn']) || $optml_option['cdn'] !== 'enabled'){
 
             return $args;
         }

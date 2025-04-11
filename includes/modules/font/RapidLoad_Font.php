@@ -14,7 +14,7 @@ class RapidLoad_Font
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['uucss_enable_font_optimization']) || $this->options['uucss_enable_font_optimization'] != "1"){
+        if(!isset($this->options['uucss_enable_font_optimization']) || $this->options['uucss_enable_font_optimization'] !== "1"){
             return;
         }
 
@@ -218,9 +218,13 @@ class RapidLoad_Font
 
     public static function download_urls_in_parallel($urls)
     {
-        if(!is_writable(self::$base_dir)){
+
+        $file_system = new RapidLoad_FileSystem();
+
+        if(!$file_system->is_writable(self::$base_dir)){
             return;
         }
+        
         $multi_handle = curl_multi_init();
         $file_pointers = [];
         $curl_handles = [];

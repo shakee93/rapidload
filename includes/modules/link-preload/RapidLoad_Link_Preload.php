@@ -12,7 +12,7 @@ class RapidLoad_Link_Preload
     {
         $this->options = RapidLoad_Base::get_merged_options();
 
-        if(!isset($this->options['preload_internal_links']) || $this->options['preload_internal_links'] != "1" ){
+        if(!isset($this->options['preload_internal_links']) || $this->options['preload_internal_links'] !== "1" ){
             return;
         };
 

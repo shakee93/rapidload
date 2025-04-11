@@ -7,7 +7,7 @@ class RapidLoad_Feedback {
 
 		global $pagenow;
 
-		if($pagenow != 'plugins.php'){
+		if($pagenow !== 'plugins.php'){
 
 			return;
 

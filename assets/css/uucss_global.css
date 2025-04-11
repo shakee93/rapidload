@@ -1033,7 +1033,8 @@ a.toplevel_page_rapidload img{
     width: 16px;
 }
 
-body.rl-page-optimizer-loaded #wpbody-content>.notice{
+body.rl-page-optimizer-loaded #wpbody-content>.notice,
+body.rl-page-optimizer-loaded #wpbody-content> div[class*="-notice"]{
     display:none!important;
 }
 
