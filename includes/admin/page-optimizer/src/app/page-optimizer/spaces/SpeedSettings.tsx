@@ -93,7 +93,7 @@ const SpeedSettings = ({ }) => {
     const customUnsavedChanges = useRef<HTMLDivElement>(null);
     const { options, savingData, invalidatingCache } = useAppContext()
     const [customToggle, setCustomToggle] = useState(false);
-    const [activeGearMode, setActiveGearMode] = useState<PerformanceGear>((options.rapidload_titan_gear as PerformanceGear) || 'custom');
+    const [activeGearMode, setActiveGearMode] = useState<PerformanceGear>(options.rapidload_titan_gear as PerformanceGear);
     const [tempGearMode, setTempGearMode] = useState<PerformanceGear>('custom');
 
     const [mouseOnSettingsGear, setMouseOnSettingsGear] = useState('');
@@ -261,8 +261,8 @@ const SpeedSettings = ({ }) => {
     };
 
     useEffect(() => {
- 
-        if(activeGearMode !== 'custom' && activeGearMode !== options.rapidload_titan_gear ){
+       
+        if(activeGearMode !== 'custom' && activeGear!= null){
             submitSettings(true);
         }
        
@@ -313,8 +313,18 @@ const SpeedSettings = ({ }) => {
     useEffect(() => {
         if(activeGear === 'custom'){
             setActiveGearMode('custom');
+        }else if(!activeGearMode && activeGear){
+            setActiveGearMode(activeGear);
         }
+       
     }, [activeGear]);
+    
+    useEffect(() => {
+        // if(activeGearMode === 'custom' && !settingsLoading){
+        //     setCustomToggle(true);
+        // }
+        //console.log("activeGearMode",activeGearMode)
+    }, [activeGearMode]);
 
 
     const settingsDescriptions: { [key in PerformanceGear]: string } = {
