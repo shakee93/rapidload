@@ -860,7 +860,8 @@ class RapidLoad_Optimizer
             'uucss_self_host_google_fonts',
             'uucss_preload_font_urls',
             //cache
-            'uucss_disable_wp_emoji'
+            'uucss_disable_wp_emoji',
+            'preload_internal_links'
 
         ];
 
