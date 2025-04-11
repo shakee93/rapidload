@@ -646,11 +646,11 @@ class RapidLoad_Optimizer
            wp_send_json_error('url not valid');
         }
 
-        $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
+        self::$strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'mobile';
 
         self::$global = isset($_REQUEST['global']) && boolval($_REQUEST['global']) || rtrim(site_url(), "/") === rtrim($url, "/");
 
-        $this->pre_optimizer_function($url, $strategy, self::$global);
+        $this->pre_optimizer_function($url, self::$strategy, self::$global);
 
         if(isset(self::$merged_options['uucss_api_key'])){
             unset(self::$merged_options['uucss_api_key']);
@@ -725,12 +725,12 @@ class RapidLoad_Optimizer
                                 'immediate' => true,
                                 'titan' => true,
                                 'options' => [
-                                    'strategy' => self::$strategy === "desktop" ? "mobile" : "desktop"
+                                    'strategy' => self::$strategy
                                 ]
                             ], [
                                 'titan' => true,
                                 'options' => [
-                                    'strategy' => self::$strategy === "desktop" ? "mobile" : "desktop"
+                                    'strategy' => self::$strategy
                                 ]
                             ]);
                         }

@@ -16,6 +16,7 @@ class RapidLoad_Job{
     public $created_at;
     public $desktop_options;
     public $mobile_options;
+    public $diagnose_data;
 
     public $parent;
 
