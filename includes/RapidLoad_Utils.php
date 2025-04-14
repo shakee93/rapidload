@@ -532,7 +532,7 @@ trait RapidLoad_Utils {
     }
 
     public function is_valid_url($url){
-        $pattern = "/\b(?:https?|ftp):\/\/(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+(?:\/[^\s]*)?\b/";
+        $pattern = "/\b(?:https?|ftp):\/\/(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]{2,})+(?:\/[^\s]*)?\b/";
         $url = urldecode($url);
         return preg_match($pattern, $url);
     }
