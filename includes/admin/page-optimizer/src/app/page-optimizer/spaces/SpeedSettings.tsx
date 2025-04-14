@@ -262,11 +262,13 @@ const SpeedSettings = ({ }) => {
     };
 
     useEffect(() => {
-        
-        if(activeGearMode !== 'custom' && activeGear!= null && prevActiveGearRef.current != activeGearMode ){
+        // Only submit if we have a previous value and it's different from current
+        if(activeGearMode !== 'custom' && 
+           activeGear != null && 
+           prevActiveGearRef.current != null && 
+           prevActiveGearRef.current !== activeGearMode) {
             submitSettings(true);
         }
-       
     }, [activeGearMode]);
 
     const handleTestModeSettingsChange = (gearSettingsMode: string,) => {
@@ -316,8 +318,9 @@ const SpeedSettings = ({ }) => {
             setActiveGearMode('custom');
         }else if(!activeGearMode && activeGear){
             setActiveGearMode(activeGear);
+            setTempGearMode(activeGear);
         }
-        // Store the previous value before updating
+       
         prevActiveGearRef.current = activeGear;
     }, [activeGear]);
     
@@ -414,7 +417,7 @@ const SpeedSettings = ({ }) => {
                 </div>
 
 
-
+                <div>{JSON.stringify(activeGearMode)}</div>
                 <div className={`flex gap-4 `} data-tour="settings-gear">
                     {modes.map((mode, index) => (
                         <TooltipText key={`tooltip-${mode}`} text={loading ? "Analyzing your site performance" : savingData || invalidatingCache ? "Please wait while applying optimizations" : null}>
