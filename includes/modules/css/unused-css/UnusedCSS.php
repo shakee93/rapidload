@@ -626,8 +626,8 @@ class UnusedCSS
             "analyzeJavascript" => isset( $this->options['uucss_analyze_javascript'] ),
             "inlineCss"          => isset( $this->options['uucss_include_inline_css'] ),
             "whitelistPacks"    => $whitelist_packs,
-            "safelist"          => $safelist,
-            "blocklist"          => $blocklist,
+            "safelist"          => apply_filters('uucss/api/options/safelist', $safelist),
+            "blocklist"          => apply_filters('uucss/api/options/blocklist', $blocklist),
             "cacheBusting"          => $cacheBusting,
         ]);
     }
