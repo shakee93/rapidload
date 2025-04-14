@@ -320,11 +320,10 @@ const SpeedSettings = ({ }) => {
     }, [activeGear]);
     
     useEffect(() => {
-        // if(activeGearMode === 'custom' && !settingsLoading){
-        //     setCustomToggle(true);
-        // }
-        //console.log("activeGearMode",activeGearMode)
-    }, [activeGearMode]);
+        if(activeGearMode === 'custom' && !settingsLoading){
+            setCustomToggle(true);
+        }
+    }, [activeGearMode, settingsLoading]);
 
 
     const settingsDescriptions: { [key in PerformanceGear]: string } = {
