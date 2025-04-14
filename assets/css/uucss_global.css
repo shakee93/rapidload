@@ -861,8 +861,6 @@ body.settings_page_rapidload-onboarding{
 #wp-admin-bar-rapidload.bullet-green:hover .ab-icon::before
 {
     content: "\f226";
-    //color: #02CA02;
-    //font-size: 14px;
 }
 
 #wp-admin-bar-rapidload.bullet-red .ab-icon::before,
@@ -870,8 +868,6 @@ body.settings_page_rapidload-onboarding{
 #wp-admin-bar-rapidload.bullet-red:hover .ab-icon::before
 {
     content: "\f226";
-    //color: #f44337;
-    //font-size: 14px;
 }
 
 #wp-admin-bar-rapidload.bullet-yellow .ab-icon::before,
@@ -879,8 +875,6 @@ body.settings_page_rapidload-onboarding{
 #wp-admin-bar-rapidload.bullet-yellow:hover .ab-icon::before
 {
     content: "\f226";
-    //color: #ffc107;
-    //font-size: 14px;
 }
 
 a.toplevel_page_rapidload img{
