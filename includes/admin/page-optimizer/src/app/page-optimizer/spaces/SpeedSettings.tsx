@@ -95,6 +95,7 @@ const SpeedSettings = ({ }) => {
     const [customToggle, setCustomToggle] = useState(false);
     const [activeGearMode, setActiveGearMode] = useState<PerformanceGear>(options.rapidload_titan_gear as PerformanceGear);
     const [tempGearMode, setTempGearMode] = useState<PerformanceGear>('custom');
+    const prevActiveGearRef = useRef<PerformanceGear | null>(null);
 
     const [mouseOnSettingsGear, setMouseOnSettingsGear] = useState('');
     const { toast } = useToast();
@@ -261,8 +262,8 @@ const SpeedSettings = ({ }) => {
     };
 
     useEffect(() => {
-       
-        if(activeGearMode !== 'custom' && activeGear!= null){
+        
+        if(activeGearMode !== 'custom' && activeGear!= null && prevActiveGearRef.current != activeGearMode ){
             submitSettings(true);
         }
        
@@ -316,10 +317,12 @@ const SpeedSettings = ({ }) => {
         }else if(!activeGearMode && activeGear){
             setActiveGearMode(activeGear);
         }
-       
+        // Store the previous value before updating
+        prevActiveGearRef.current = activeGear;
     }, [activeGear]);
     
     useEffect(() => {
+      //  console.log("activeGearMode",activeGearMode)
         if(activeGearMode === 'custom' && !settingsLoading){
             setCustomToggle(true);
         }
