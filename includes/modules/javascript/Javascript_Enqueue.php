@@ -436,6 +436,9 @@ class Javascript_Enqueue
         if (isset($el->src) && preg_match("#" . preg_quote("googletagmanager.com/gtag/js", "#") . "#", $el->src)) {
             return true;
         }
+        if (isset($el->src) && preg_match("#" . preg_quote("maps.googleapis.com/maps/api/js", "#") . "#", $el->src)) {
+            return true;
+        }
         return !empty($el->src) && strpos($el->src,".js");
     }
 
