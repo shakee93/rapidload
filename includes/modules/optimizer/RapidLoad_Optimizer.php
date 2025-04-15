@@ -1656,7 +1656,7 @@ class RapidLoad_Optimizer
                     case 'input' :
                     case 'number' :{
                         if(isset($input->value) && isset($input->key)){
-                            if($input->key === "uucss_safelist"){
+                            if($input->key === "uucss_safelist" || $input->key === "uucss_blocklist"){
                                 $rulesArray = explode("\n",sanitize_textarea_field($input->value));
                                 $transformedRulesArray = [];
                                 foreach ($rulesArray as $rule) {
