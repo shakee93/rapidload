@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoadRestApi {
 
     public static $namespace = 'rapidload/v1';

@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_Admin_Bar {
     use RapidLoad_Utils;
 

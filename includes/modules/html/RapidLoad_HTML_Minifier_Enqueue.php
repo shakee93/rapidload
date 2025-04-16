@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_HTML_Minifier_Enqueue
 {
     use RapidLoad_Utils;

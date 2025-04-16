@@ -89,6 +89,8 @@
 // Optimize: Minify HTML
 //----------------------------------------------------
 
+defined( 'ABSPATH' ) or die();
+
 class WP_HTML_Compression
 {
     // Settings

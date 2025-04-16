@@ -1,5 +1,6 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
 
 class RapidLoad_Onboard{
     use RapidLoad_Utils;

@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_CDN_Enqueue
 {
     use RapidLoad_Utils;

@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class NinjaFroms_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

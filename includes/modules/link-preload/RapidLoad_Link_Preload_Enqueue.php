@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_Link_Preload_Enqueue
 {
     use RapidLoad_Utils;

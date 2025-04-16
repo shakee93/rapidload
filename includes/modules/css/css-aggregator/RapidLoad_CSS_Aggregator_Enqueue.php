@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_CSS_Aggregator_Enqueue
 {
     use RapidLoad_Utils;

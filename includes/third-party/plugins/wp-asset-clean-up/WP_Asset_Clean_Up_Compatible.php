@@ -1,5 +1,6 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
 class WP_Asset_Clean_Up_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

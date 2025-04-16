@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 use MatthiasMullie\Minify;
 use Peast\Peast;
 use Peast\Query;

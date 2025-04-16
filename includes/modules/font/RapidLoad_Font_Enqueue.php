@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) or die();
+
 class RapidLoad_Font_Enqueue
 {
     use RapidLoad_Utils;

@@ -1,6 +1,6 @@
 <?php
 
-
+defined( 'ABSPATH' ) or die();
 class CriticalCSS_Enqueue
 {
     use RapidLoad_Utils;
