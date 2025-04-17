@@ -180,6 +180,7 @@ class RapidLoad_Base
             }
         });
 
+        
     }
 
     public static function get_license_key(){
