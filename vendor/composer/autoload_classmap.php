@@ -20,6 +20,8 @@ return array(
     'CriticalCSS_Queue' => $baseDir . '/includes/modules/css/critical-css/CriticalCSS_Queue.php',
     'CriticalCSS_Store' => $baseDir . '/includes/modules/css/critical-css/CriticalCSS_Store.php',
     'Elementor_Compatible' => $baseDir . '/includes/third-party/plugins/elementor/Elementor_Compatible.php',
+    'Flatted' => $baseDir . '/includes/admin/page-optimizer/node_modules/flatted/php/flatted.php',
+    'FlattedString' => $baseDir . '/includes/admin/page-optimizer/node_modules/flatted/php/flatted.php',
     'GoogleModPageSpeedCompatible' => $baseDir . '/includes/third-party/plugins/kagg-pagespeed-module/GoogleModPageSpeedCompatible.php',
     'HideMyWP_Compatible' => $baseDir . '/includes/third-party/plugins/hide-my-wp/HideMyWP_Compatible.php',
     'JavaScript' => $baseDir . '/includes/modules/javascript/JavaScript.php',

@@ -5,7 +5,7 @@ Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 3.1.8
+Stable tag: 3.1.9
 Requires PHP: 5.4
 License: GPLv3
 License URI: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -143,7 +143,7 @@ RapidLoad accepts both broad and star(*) expressions and regular expression excl
 
 == Changelog ==
 
-= 3.1.8 - 17/04/2025 =
+= 3.1.9 - 17/04/2025 =
  * fix: improved internationalization by removing variable text domains and dynamic strings
  * fix: added proper data sanitization and validation for POST/GET/REQUEST inputs
  * fix: added direct file access protection to all PHP files

@@ -1,3 +1,7 @@
 .wordpress-org
 .git
 .github
+vendor/phpcompatibility
+vendor/phpcsstandards
+vendor/squizlabs
+vendor/wp-coding-standards
