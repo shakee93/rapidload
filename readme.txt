@@ -4,8 +4,8 @@ Contributors: shakee93, futtta
 Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
-Tested up to: 6.7.2
-Stable tag: 3.1.7
+Tested up to: 6.8
+Stable tag: 3.1.8
 Requires PHP: 5.4
 License: GPLv3
 License URI: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -142,6 +142,15 @@ RapidLoad accepts both broad and star(*) expressions and regular expression excl
 3. RapidLoad Dashboard.
 
 == Changelog ==
+
+= 3.1.8 - 17/04/2025 =
+ * fix: improved internationalization by removing variable text domains and dynamic strings
+ * fix: added proper data sanitization and validation for POST/GET/REQUEST inputs
+ * fix: added direct file access protection to all PHP files
+ * fix: improved SQL query security using wpdb::prepare()
+ * fix: removed incorrect textdomain
+ * fix: various security improvements and code standards compliance
+ * fix: disable search functionality from legacy job history table to comply with WordPress.org guidelines
 
 = 3.1.7 - 14/04/2025 =
  * fix: known bugs
