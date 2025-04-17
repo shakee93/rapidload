@@ -559,7 +559,7 @@ abstract class RapidLoad_DB
                 SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'
             ) AS cpcss ON job.id = cpcss.job_id
         ) AS derived_table where rule %5s 'is_url'
-        ORDER BY id DESC
+        ORDER BY id
         LIMIT %d, %d", 
         $status_column, 
         $status_column, 
