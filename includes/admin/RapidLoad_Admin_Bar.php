@@ -133,7 +133,7 @@ class RapidLoad_Admin_Bar {
             'license_key' => RapidLoad_Base::get_license_key(),
             'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1"),
             'uucss_disable_error_tracking' => boolval(isset($options['uucss_disable_error_tracking']) && $options['uucss_disable_error_tracking'] === "1"),
-            'rapidload_titan_gear' => get_option('rapidload_titan_gear', 'trurboMax'),
+            'rapidload_titan_gear' => get_option('rapidload_titan_gear', 'turboMax'),
             'rapidload_license_data' => $rapidload_license_data,
             'rapidload_privacy_policy_accepted' => get_option('rapidload_privacy_policy_accepted', false),
             'db_to_be_updated' => RapidLoad_DB::$current_version !== RapidLoad_DB::$db_version,
