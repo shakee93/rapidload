@@ -1552,3 +1552,6 @@ table#uucss-options tbody tr td{
 #uucss-rule-history_wrapper .dataTables_paginate{
     display: none;
 }
+#uucss-rule-history_info{
+    display: none;
+}
