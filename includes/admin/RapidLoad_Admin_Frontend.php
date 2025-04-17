@@ -388,7 +388,10 @@ class RapidLoad_Admin_Frontend
         $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'path';
 
         $start = isset($_REQUEST['start']) ? absint($_REQUEST['start']) : 0;
-        $length = isset($_REQUEST['length']) ? absint($_REQUEST['length']) : 10;
+        $length = isset($_REQUEST['length']) ? absint($_REQUEST['length']) : 5;
+
+        $length = 50;
+
         $draw = isset($_REQUEST['draw']) ? absint($_REQUEST['draw']) : 1;
 
         $status_filter = isset($_REQUEST['columns']) &&
