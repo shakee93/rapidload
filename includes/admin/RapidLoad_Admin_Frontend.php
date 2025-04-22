@@ -975,7 +975,7 @@ class RapidLoad_Admin_Frontend
             'url' => site_url(),
             'ajax_url'          => admin_url( 'admin-ajax.php' ),
             'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
-            'on_board_complete' => apply_filters('uucss/on-board/complete', RapidLoad_Onboard::on_board_completed()),
+            'on_board_complete' => apply_filters('uucss/on-board/complete', RapidLoad_Onboard::rapidload_on_board_completed()),
             'api_key_verified' => RapidLoad_Base::is_api_key_verified(),
             'notifications' => $this->getNotifications(),
             'faqs' => [],

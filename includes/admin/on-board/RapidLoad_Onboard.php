@@ -2,7 +2,12 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Onboard')){
+    return;
+}
+
 class RapidLoad_Onboard{
+    
     use RapidLoad_Utils;
 
     private $uucss;
@@ -12,18 +17,17 @@ class RapidLoad_Onboard{
 
     public function __construct() {
 
-        add_action( 'admin_init', [ $this, 'redirect' ] );
+        add_action( 'admin_init', [ $this, 'rapidload_redirect' ] );
         add_action( "wp_ajax_rapidload_configured", [ $this, 'rapidload_configured' ] );
-        add_action( "wp_ajax_run_first_job", [ $this, 'run_first_job' ] );
-        add_action( 'admin_head', [ $this, 'remove_notices' ] );
+        add_action( "wp_ajax_run_first_job", [ $this, 'rapidload_run_first_job' ] );
+        add_action( 'admin_head', [ $this, 'rapidload_remove_notices' ] );
         add_filter('uucss/on-board/complete', function ($value){
-            return self::on_board_completed();
+            return self::rapidload_on_board_completed();
         }, 10, 1);
 
     }
 
-    function run_first_job(){
-
+    function rapidload_run_first_job(){
         self::verify_nonce();
 
         if(!RapidLoad_Base::is_api_key_verified()){
@@ -47,11 +51,9 @@ class RapidLoad_Onboard{
         $store->purge_css();
 
         $this->rapidload_configured();
-
     }
 
     function rapidload_configured(){
-
         self::verify_nonce();
 
         $status = [];
@@ -66,8 +68,7 @@ class RapidLoad_Onboard{
         }
     }
 
-    function remove_notices(){
-
+    function rapidload_remove_notices(){
         if(!isset($_REQUEST['action'])){
             return;
         }
@@ -83,15 +84,15 @@ class RapidLoad_Onboard{
         }
     }
 
-    public static function on_board_completed(){
+    public static function rapidload_on_board_completed(){
         return RapidLoad_Base::is_api_key_verified() || RapidLoad_Base::get_option('rapidload_onboard_skipped', false);
     }
 
-    function redirect() {
+    function rapidload_redirect() {
         $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])) : '';
         
         if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&
-            self::on_board_completed() && !strpos( home_url( $request_uri ), 'nonce' )) {
+            self::rapidload_on_board_completed() && !strpos( home_url( $request_uri ), 'nonce' )) {
             wp_safe_redirect( admin_url( 'admin.php?page=rapidload' ) );
         } else if ( RapidLoad_Base::get_option( 'rapidload_do_activation_redirect' ) ) {
             RapidLoad_Base::delete_option( 'rapidload_do_activation_redirect' );
@@ -99,7 +100,7 @@ class RapidLoad_Onboard{
         }
     }
 
-    public static function display_get_start_link() {
+    public static function rapidload_display_get_start_link() {
         add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), function ( $links ) {
             $_links = array(
                 '<a href="' . admin_url( 'options-general.php?page=rapidload' ) . '">Get Started <span>⚡️</span> </a>',

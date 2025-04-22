@@ -237,7 +237,7 @@ class RapidLoad_Base
         if(self::is_api_key_verified()) {
             return true;
         }else {
-            self::display_get_start_link();
+            self::rapidload_display_get_start_link();
         }
 
         return false;
@@ -768,7 +768,7 @@ class RapidLoad_Base
 
     }
 
-    public static function display_get_start_link() {
+    public static function rapidload_display_get_start_link() {
         add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), function ( $links ) {
             $_links = array(
                 '<a href="' . admin_url( 'options-general.php?page=rapidload' ) . '">Get Started <span>⚡️</span> </a>',
