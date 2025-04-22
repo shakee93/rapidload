@@ -4,7 +4,6 @@
 
 <?php
 
-global $uucss;
 global $rapidload;
 
 $third_party_plugins = apply_filters('uucss/third-party/plugins', []);
