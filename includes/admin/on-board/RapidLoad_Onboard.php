@@ -53,7 +53,7 @@ class RapidLoad_Onboard{
         $this->rapidload_configured();
     }
 
-    function rapidload_configured(){
+    private function rapidload_configured(){
         self::verify_nonce();
 
         $status = [];
@@ -68,7 +68,7 @@ class RapidLoad_Onboard{
         }
     }
 
-    function rapidload_remove_notices(){
+    private function rapidload_remove_notices(){
         if(!isset($_REQUEST['action'])){
             return;
         }
@@ -88,7 +88,7 @@ class RapidLoad_Onboard{
         return RapidLoad_Base::is_api_key_verified() || RapidLoad_Base::get_option('rapidload_onboard_skipped', false);
     }
 
-    function rapidload_redirect() {
+    private function rapidload_redirect() {
         $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])) : '';
         
         if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&
