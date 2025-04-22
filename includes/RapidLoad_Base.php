@@ -344,7 +344,13 @@ class RapidLoad_Base
 
     function render_update_message($plugin_data, $r ){
 
-        $data = @file_get_contents( 'https://raw.githubusercontent.com/shakee93/autoptimize-unusedcss/master/readme.txt?format=txt' );
+        $response = wp_remote_get( 'https://raw.githubusercontent.com/shakee93/autoptimize-unusedcss/master/readme.txt?format=txt' );
+        
+        if ( is_wp_error( $response ) ) {
+            return;
+        }
+
+        $data = wp_remote_retrieve_body( $response );
 
         $changelog  = stristr( $data, '== Changelog ==' );
 
