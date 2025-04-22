@@ -2,14 +2,18 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Admin_Bar')){
+    return;
+}
+
 class RapidLoad_Admin_Bar {
+
     use RapidLoad_Utils;
 
     public function __construct()
     {
-
         add_action( 'wp_after_admin_bar_render', [$this,'rapidload_admin_bar_css'] );
-        add_action('admin_bar_menu', [$this, 'add_rapidload_admin_bar_menu'], 100);
+        add_action('admin_bar_menu', [$this, 'rapidload_add_admin_bar_menu'], 100);
 
         $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
@@ -18,27 +22,22 @@ class RapidLoad_Admin_Bar {
             (is_admin() && $page === 'rapidload')
         ) {
             add_action('init', function (){
-                $this->load_optimizer_scripts();
+                $this->rapidload_load_optimizer_scripts();
             });
 
             add_action('wp_after_admin_bar_render', function () {
                 echo '<div id="rapidload-page-optimizer"></div>';
             });
         }
-
-
-
     }
 
-    public function load_optimizer_scripts()
+    public function rapidload_load_optimizer_scripts()
     {
         $options = RapidLoad_Base::fetch_options();
 
         $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
         $tag = apply_filters('rapidload/titan/tag', 'latest');
-
-        //$package = "https://unpkg.com/@rapidload/page-optimizer@{$tag}/dist";
 
         $optimizer_path = 'includes/admin/page-optimizer/dist';
 
@@ -47,7 +46,6 @@ class RapidLoad_Admin_Bar {
         if ($debug_titan) {
             $optimizer_path .= '-debug';
         }
-
 
         $package = UUCSS_PLUGIN_URL . $optimizer_path;
 
@@ -74,7 +72,7 @@ class RapidLoad_Admin_Bar {
 
         $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
 
-        if($this->is_admin_url($current_url)){
+        if($this->rapidload_is_admin_url($current_url)){
             $current_url = site_url();
             if(isset($_GET['optimize-url'])){
                 $current_url = $this->transform_url(urldecode(sanitize_url(wp_unslash($_GET['optimize-url']))));
@@ -143,8 +141,7 @@ class RapidLoad_Admin_Bar {
 
         wp_enqueue_script( 'rapidload_page_optimizer' );
 
-        function add_module_script_type($tag, $handle) {
-
+        function rapidload_add_module_script_type($tag, $handle) {
             if ($handle === 'rapidload_page_optimizer') {
                 $tag = preg_replace("/type=['\"]text\/javascript['\"]/", "type='module'", $tag);
 
@@ -154,18 +151,13 @@ class RapidLoad_Admin_Bar {
             }
             return $tag;
         }
-        add_filter('script_loader_tag', 'add_module_script_type', 10, 2);
-
+        add_filter('script_loader_tag', 'rapidload_add_module_script_type', 10, 2);
     }
 
     public function rapidload_admin_bar_css()
     {
-
         if ( is_admin_bar_showing() ) { ?>
-
-
             <style id="rapidload-admin-bar-css">
-
                 #wp-admin-bar-rapidload .rl-node-wrapper {
                     display: flex;
                     gap: 6px;
@@ -203,20 +195,14 @@ class RapidLoad_Admin_Bar {
                 /*.rl-page-optimizer-loaded #wpadminbar .ab-top-menu > li.hover > .ab-item, #wpadminbar.nojq .quicklinks .ab-top-menu > li > .ab-item:focus,*/
                 /*.rl-page-optimizer-loaded #wpadminbar:not(.mobile) .ab-top-menu > li:hover > .ab-item, #wpadminbar:not(.mobile) .ab-top-menu > li > .ab-item:focus {*/
                 /*    color: #0c0c0c !important;*/
-
                 /*}*/
-
             </style>
-
         <?php }
     }
 
-    public function add_rapidload_admin_bar_menu($wp_admin_bar){
-
+    public function rapidload_add_admin_bar_menu($wp_admin_bar){
         if(apply_filters('rapidload/tool-bar-menu',true)){
-
             if ( current_user_can( 'manage_options' ) ) {
-
                 do_action('rapidload/admin-bar-actions', $wp_admin_bar);
 
                 $options = RapidLoad_Base::fetch_options();
@@ -236,7 +222,6 @@ class RapidLoad_Admin_Bar {
                 $wp_admin_bar->add_node( array(
                     'id'    => 'rapidload-clear-cache',
                     'title' => '<span class="ab-label">' . __( 'Clear CSS/JS/Font Optimizations', 'unusedcss' ) . '</span>',
-                    //'href'  => admin_url( 'admin.php?page=rapidload&action=rapidload_purge_all' ),
                     'href'   => wp_nonce_url( add_query_arg( array(
                         'action' => 'rapidload_purge_all',
                         'clear' => 'true',
@@ -244,15 +229,11 @@ class RapidLoad_Admin_Bar {
                     'meta'  => array( 'class' => 'rapidload-clear-all', 'title' => 'RapidLoad will clear all the cached files' ),
                     'parent' => 'rapidload'
                 ));
-
             }
-
         }
-
-
     }
 
-    function is_admin_url($url){
+    function rapidload_is_admin_url($url){
         $_url = wp_parse_url(untrailingslashit(admin_url()));
         if(isset($_url['path']) && $this->str_contains($url, $_url['path'])){
             return true;

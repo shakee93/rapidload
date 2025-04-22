@@ -866,9 +866,8 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function load_optimizer_scripts()
+    public function rapidload_load_optimizer_scripts()
     {
-
         wp_enqueue_style( 'rapidload_page_optimizer', UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.css',[],UUCSS_VERSION);
 
         wp_register_script( 'rapidload_page_optimizer', UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.js',[], UUCSS_VERSION);
@@ -884,9 +883,6 @@ class RapidLoad_Admin_Frontend
         wp_localize_script( 'rapidload_page_optimizer', 'rapidload_admin', $data );
 
         wp_enqueue_script( 'rapidload_page_optimizer' );
-
-
-
     }
 
     public function load_preview_scripts()
