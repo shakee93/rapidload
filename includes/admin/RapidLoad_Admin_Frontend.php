@@ -87,7 +87,7 @@ class RapidLoad_Admin_Frontend
                 do_action('uucss/options/before_render_form');
                 ?>
                 <div>
-                    <?php $this->render_developer_settings_page() ?>
+                    <?php $this->rapidload_render_developer_settings_page() ?>
                 </div>
             </div>
 
@@ -112,7 +112,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function render_developer_settings_page(){
+    public function rapidload_render_developer_settings_page(){
         $options = RapidLoad_Base::rapidload_fetch_options();
 
         include('views/developer-settings-page.html.php');
@@ -128,11 +128,11 @@ class RapidLoad_Admin_Frontend
             add_action("wp_ajax_rapidload_purge_all", [$this, 'rapidload_purge_all']);
             add_action("wp_ajax_uucss_test_url", [ $this, 'uucss_test_url' ] );
             add_action("wp_ajax_uucss_data", [ $this, 'uucss_data' ] );
-            add_action( 'wp_ajax_rapidload_notifications', [$this, 'rapidload_notifications']);
-            add_action( "wp_ajax_uucss_update_rule", [ $this, 'uucss_update_rule' ] );
-            add_action('wp_ajax_mark_faqs_read', [$this, 'mark_faqs_read']);
-            add_action('wp_ajax_mark_notice_read', [$this, 'mark_notice_read']);
-            add_action( "wp_ajax_suggest_whitelist_packs", [ $this, 'suggest_whitelist_packs' ] );
+            add_action("wp_ajax_rapidload_notifications", [$this, 'rapidload_notifications']);
+            add_action("wp_ajax_uucss_update_rule", [ $this, 'uucss_update_rule' ] );
+            add_action("wp_ajax_mark_faqs_read", [$this, 'mark_faqs_read']);
+            add_action("wp_ajax_mark_notice_read", [$this, 'mark_notice_read']);
+            add_action("wp_ajax_suggest_whitelist_packs", [ $this, 'suggest_whitelist_packs' ] );
             add_action("wp_ajax_update_htaccess_file", [$this, "wp_ajax_update_htaccess_file"]);
             add_action("wp_ajax_nopriv_update_htaccess_file", [$this, "wp_ajax_update_htaccess_file"]);
         }
