@@ -122,9 +122,9 @@ class RapidLoad_Admin_Frontend
 
         if(is_admin()){
 
-            add_action("wp_ajax_uucss_run_gpsi_status_check_for_all", [ $this, 'run_gpsi_status_check_for_all' ] );
-            add_action("wp_ajax_get_all_rules", [$this, 'get_all_rules']);
-            add_action("wp_ajax_upload_rules", [$this, 'upload_rules']);
+            add_action("wp_ajax_uucss_run_gpsi_status_check_for_all", [ $this, 'rapidload_run_gpsi_status_check_for_all' ] );
+            add_action("wp_ajax_get_all_rules", [$this, 'rapidload_get_all_rules']);
+            add_action("wp_ajax_upload_rules", [$this, 'rapidload_upload_rules']);
             add_action("wp_ajax_rapidload_purge_all", [$this, 'rapidload_purge_all']);
             add_action("wp_ajax_uucss_test_url", [ $this, 'uucss_test_url' ] );
             add_action("wp_ajax_uucss_data", [ $this, 'uucss_data' ] );
@@ -487,7 +487,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function run_gpsi_status_check_for_all(){
+    public function rapidload_run_gpsi_status_check_for_all(){
 
         self::verify_nonce();
 
@@ -759,7 +759,7 @@ class RapidLoad_Admin_Frontend
         wp_send_json_success('Successfully purged');
     }
 
-    public function upload_rules(){
+    public function rapidload_upload_rules(){
 
         self::verify_nonce();
 
@@ -786,7 +786,7 @@ class RapidLoad_Admin_Frontend
         wp_send_json_success('success');
     }
 
-    public function get_all_rules(){
+    public function rapidload_get_all_rules(){
 
         self::verify_nonce();
 
