@@ -13,7 +13,7 @@ class RapidLoad_Admin_Frontend
     {
         $this->options = RapidLoad_Base::rapidload_fetch_options();
 
-        add_action('admin_menu', [$this, 'menu_item']);
+        add_action('admin_menu', [$this, 'rapidload_menu_item']);
 
         new RapidLoad_Admin_Bar();
 
@@ -21,13 +21,13 @@ class RapidLoad_Admin_Frontend
 
             if($this->is_rapidload_legacy_page()){
 
-                $this->load_legacy_scripts();
+                $this->rapidload_load_legacy_scripts();
 
             }
 
-            if ($this->is_rapidload_page()) {
+            if ($this->rapidload_is_rapidload_page()) {
 
-                $this->load_scripts();
+                $this->rapidload_load_scripts();
 
                 // TODO: temporary should be removed so it supports all the browsers
                 add_filter('script_loader_tag', function ($tag, $handle) {
@@ -41,9 +41,9 @@ class RapidLoad_Admin_Frontend
 
             }
 
-            if ($this->is_rapidload_on_board()) {
+            if ($this->rapidload_is_rapidload_on_board()) {
 
-                $this->load_on_board_scripts();
+                $this->rapidload_load_on_board_scripts();
 
                 // TODO: temporary should be removed so it supports all the browsers
                 add_filter('script_loader_tag', function ($tag, $handle) {
@@ -57,19 +57,15 @@ class RapidLoad_Admin_Frontend
 
             }
 
-            if(isset($_REQUEST['rapidload_preview'])){
-                //$this->load_preview_scripts();
-            }
         });
 
-        $this->load_legacy_ajax();
+        $this->rapidload_load_legacy_ajax();
 
         if(is_admin()){
 
-            add_action( 'admin_menu', array( $this, 'add_developer_settings_page' ) );
-            add_action( 'admin_menu', array( $this, 'add_page_optimizer_page' ) );
-            add_action('uucss/rule/saved', [$this, 'update_rule'], 10, 2);
-            add_action('admin_menu', [$this, 'remove_rapidload_legacey_dashboard_menu'], 999);
+            add_action( 'admin_menu', array( $this, 'rapidload_add_developer_settings_page' ) );
+            add_action( 'admin_menu', array( $this, 'rapidload_add_page_optimizer_page' ) );
+            add_action('admin_menu', [$this, 'rapidload_remove_legacey_dashboard_menu'], 999);
 
         }
 
@@ -78,7 +74,7 @@ class RapidLoad_Admin_Frontend
         $this->rapidload_purge_all_process_request();
     }
 
-    public function add_developer_settings_page() {
+    public function rapidload_add_developer_settings_page() {
 
         global $submenu;
 
@@ -122,7 +118,7 @@ class RapidLoad_Admin_Frontend
         include('views/developer-settings-page.html.php');
     }
 
-    public function load_legacy_ajax(){
+    public function rapidload_load_legacy_ajax(){
 
         if(is_admin()){
 
@@ -798,7 +794,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function add_page_optimizer_page() {
+    public function rapidload_add_page_optimizer_page() {
 
         global $submenu;
 
@@ -827,12 +823,12 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function is_rapidload_page()
+    public function rapidload_is_rapidload_page()
     {
         return isset($_GET['page']) && $_GET['page'] === 'rapidload-legacy-dashboard';
     }
 
-    public function is_rapidload_on_board()
+    public function rapidload_is_rapidload_on_board()
     {
         return isset($_GET['page']) && $_GET['page'] === 'rapidload-on-board';
     }
@@ -847,7 +843,7 @@ class RapidLoad_Admin_Frontend
         return isset($_GET['page']) && $_GET['page'] === 'uucss_legacy';
     }
 
-    public function load_scripts()
+    public function rapidload_load_scripts()
     {
 
         wp_enqueue_style( 'rapidload_admin_frontend', UUCSS_PLUGIN_URL .  'includes/admin/frontend/dist/assets/index.css',[],UUCSS_VERSION);
@@ -885,27 +881,7 @@ class RapidLoad_Admin_Frontend
         wp_enqueue_script( 'rapidload_page_optimizer' );
     }
 
-    public function load_preview_scripts()
-    {
-        wp_enqueue_style( 'rapidload_page_preview', UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.css',[],UUCSS_VERSION);
-
-        wp_register_script( 'rapidload_page_preview', UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.js',[], UUCSS_VERSION);
-
-        $data = array(
-            'page_preview_base' => UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist',
-            'plugin_url' => UUCSS_PLUGIN_URL,
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce' => self::create_nonce( 'uucss_nonce' ),
-        );
-
-        wp_localize_script( 'rapidload_page_preview', 'rapidload_page_preview', $data );
-
-        wp_enqueue_script( 'rapidload_page_preview' );
-
-    }
-
-
-    public function load_on_board_scripts()
+    public function rapidload_load_on_board_scripts()
     {
 
         wp_enqueue_style( 'rapidload_admin_on_board', UUCSS_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist/assets/index.css', null, '1.23');
@@ -924,7 +900,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function load_legacy_scripts(){
+    public function rapidload_load_legacy_scripts(){
 
         $deregister_scripts = apply_filters('uucss/scripts/deregister', ['select2']);
 
@@ -997,7 +973,7 @@ class RapidLoad_Admin_Frontend
         return apply_filters('uucss/notifications', []);
     }
 
-    public function menu_item()
+    public function rapidload_menu_item()
     {
 
         add_menu_page(
@@ -1089,7 +1065,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function remove_rapidload_legacey_dashboard_menu(){
+    public function rapidload_remove_legacey_dashboard_menu(){
         remove_menu_page('rapidload-legacy-dashboard');
     }
 }
