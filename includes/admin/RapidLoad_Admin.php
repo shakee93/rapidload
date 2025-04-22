@@ -304,7 +304,7 @@ class RapidLoad_Admin
 
     public function rapidload_enable_cdn_metering(){
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if(!isset($options['uucss_cdn_zone_id'])){
             wp_send_json_error('cdn zone id not set');
@@ -348,7 +348,7 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if(!isset($_REQUEST['test_mode']) || empty($_REQUEST['test_mode'])){
             if(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1"){
@@ -506,7 +506,7 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if(!isset($options['uucss_cdn_zone_id'])){
             wp_send_json_error(false);
@@ -523,7 +523,7 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         // update  css options
 
@@ -1485,7 +1485,7 @@ class RapidLoad_Admin
                 ] );*/
             }
 
-            RapidLoad_Base::fetch_options(false);
+            RapidLoad_Base::rapidload_fetch_options(false);
         }
 
     }
@@ -1513,7 +1513,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         $data = $api->get( 'cdn-usage', [
             'zone_id' => isset($options['uucss_cdn_zone_id']) ? $options['uucss_cdn_zone_id'] : '',
@@ -1536,12 +1536,12 @@ class RapidLoad_Admin
 
         if($disconnect){
 
-            $options = RapidLoad_Base::fetch_options();
+            $options = RapidLoad_Base::rapidload_fetch_options();
             unset($options['uucss_api_key_verified']);
             unset($options['uucss_api_key']);
             unset($options['valid_domain']);
             RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
-            RapidLoad_Base::fetch_options(false);
+            RapidLoad_Base::rapidload_fetch_options(false);
 
             $cache_key = 'pand-' . md5( 'first-uucss-job' );
             RapidLoad_Base::delete_option( $cache_key );
@@ -1599,7 +1599,7 @@ class RapidLoad_Admin
 
     public function inject_cloudflare_settings($data){
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] === "1"){
 
@@ -1647,7 +1647,7 @@ class RapidLoad_Admin
             return;
         }
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         ?>
 

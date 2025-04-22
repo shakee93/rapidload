@@ -33,7 +33,7 @@ class RapidLoad_Admin_Bar {
 
     public function rapidload_load_optimizer_scripts()
     {
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         $page = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : '';
 
@@ -205,7 +205,7 @@ class RapidLoad_Admin_Bar {
             if ( current_user_can( 'manage_options' ) ) {
                 do_action('rapidload/admin-bar-actions', $wp_admin_bar);
 
-                $options = RapidLoad_Base::fetch_options();
+                $options = RapidLoad_Base::rapidload_fetch_options();
 
                 $wp_admin_bar->add_node(array(
                     'id'    => 'rapidload',

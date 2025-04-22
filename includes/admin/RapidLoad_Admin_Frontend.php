@@ -11,7 +11,7 @@ class RapidLoad_Admin_Frontend
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::fetch_options();
+        $this->options = RapidLoad_Base::rapidload_fetch_options();
 
         add_action('admin_menu', [$this, 'menu_item']);
 
@@ -117,7 +117,7 @@ class RapidLoad_Admin_Frontend
     }
 
     public function render_developer_settings_page(){
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         include('views/developer-settings-page.html.php');
     }

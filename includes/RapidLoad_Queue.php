@@ -19,7 +19,7 @@ class RapidLoad_Queue
 
         global $rapidload;
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if(isset($options['uucss_queue_interval'])){
             self::$interval = (int) $options['uucss_queue_interval'];

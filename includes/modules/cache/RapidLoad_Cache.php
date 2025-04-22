@@ -15,7 +15,7 @@ class RapidLoad_Cache
 
     public function __construct()
     {
-        self::$options = RapidLoad_Base::fetch_options();
+        self::$options = RapidLoad_Base::rapidload_fetch_options();
 
         add_action( 'uucss/cached', [$this, 'clear_cache'], 10, 2 );
 
@@ -1260,7 +1260,7 @@ class RapidLoad_Cache
 
     public static function on_activation( $network_wide ) {
 
-        self::$options = RapidLoad_Base::fetch_options();
+        self::$options = RapidLoad_Base::rapidload_fetch_options();
 
         if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;
@@ -1273,7 +1273,7 @@ class RapidLoad_Cache
 
     public static function on_deactivation( $network_wide ) {
 
-        self::$options = RapidLoad_Base::fetch_options();
+        self::$options = RapidLoad_Base::rapidload_fetch_options();
 
         if(!isset(self::$options['uucss_enable_cache']) || self::$options['uucss_enable_cache'] !== "1" ){
             return;

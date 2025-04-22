@@ -165,7 +165,7 @@ class UnusedCSS
         $original_request = isset($_SERVER['REQUEST_URI']) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '/';
         $original_path = self::get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
 
-        $options = RapidLoad_Base::fetch_options(false);
+        $options = RapidLoad_Base::rapidload_fetch_options(false);
 
         if ( strpos( $original_request, wp_basename( self::get_wp_content_dir() ) . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' ) !== false
             && !file_exists($original_path)

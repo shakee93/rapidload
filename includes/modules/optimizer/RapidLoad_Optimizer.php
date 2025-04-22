@@ -30,7 +30,7 @@ class RapidLoad_Optimizer
 
     public function __construct(){
 
-        self::$global_options = RapidLoad_Base::fetch_options();
+        self::$global_options = RapidLoad_Base::rapidload_fetch_options();
 
         $this->registerAjaxActions();
 
@@ -681,7 +681,7 @@ class RapidLoad_Optimizer
             self::$job->save();
         }
 
-        self::$global_options = RapidLoad_Base::fetch_options();
+        self::$global_options = RapidLoad_Base::rapidload_fetch_options();
 
         self::$strategy = $strategy;
 
@@ -1760,7 +1760,7 @@ class RapidLoad_Optimizer
 
         if($cdn_enabled !== $cdn_enabled_prev_status){
             do_action('rapidload/validate-cdn', !$cdn_enabled);
-            $refresh_cdn_settings = RapidLoad_Base::fetch_options(false);
+            $refresh_cdn_settings = RapidLoad_Base::rapidload_fetch_options(false);
             if(isset($refresh_cdn_settings['uucss_cdn_zone_id']) && isset($refresh_cdn_settings['uucss_cdn_dns_id']) && isset($refresh_cdn_settings['uucss_cdn_url'])){
                 self::$global_options['uucss_cdn_zone_id'] = $refresh_cdn_settings['uucss_cdn_zone_id'];
                 self::$global_options['uucss_cdn_dns_id'] = $refresh_cdn_settings['uucss_cdn_dns_id'];

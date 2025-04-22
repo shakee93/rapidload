@@ -84,7 +84,7 @@ trait RapidLoad_Utils {
     }
 
     private static function get_log_option(){
-	    $option = RapidLoad_Base::fetch_options();
+	    $option = RapidLoad_Base::rapidload_fetch_options();
         return  isset($option['uucss_enable_debug']);
     }
 
@@ -293,7 +293,7 @@ trait RapidLoad_Utils {
 
 		$url_parts = wp_parse_url( $url );
 
-		$options = RapidLoad_Base::fetch_options();
+		$options = RapidLoad_Base::rapidload_fetch_options();
 
 		if ( ! isset( $url_parts['host'] ) || ! isset( $url_parts['scheme'] ) ) {
 			return $url;
@@ -572,7 +572,7 @@ trait RapidLoad_Utils {
 
         }
 
-        $options = RapidLoad_Base::fetch_options();
+        $options = RapidLoad_Base::rapidload_fetch_options();
 
         if ( isset( $options['uucss_excluded_links'] ) && ! empty( $options['uucss_excluded_links'] ) ) {
 

@@ -80,7 +80,7 @@ class RapidLoad_Base
                 show_admin_bar(false);
             }
 
-            self::fetch_options();
+            self::rapidload_fetch_options();
 
             add_filter('rapidload/options', [$this, 'merge_job_options']);
 
@@ -184,7 +184,7 @@ class RapidLoad_Base
 
     public static function get_license_key(){
 
-        $options = self::fetch_options();
+        $options = self::rapidload_fetch_options();
 
         if(isset($options['uucss_api_key'])){
             return $options['uucss_api_key'];
@@ -422,7 +422,7 @@ class RapidLoad_Base
 
     }
 
-    public static function fetch_options($cache = true)
+    public static function rapidload_fetch_options($cache = true)
     {
 
         if(isset(self::$options) && $cache){
@@ -461,7 +461,7 @@ class RapidLoad_Base
     public static function get_merged_options(){
 
         if(!isset(self::$options)){
-            self::$options = self::fetch_options();
+            self::$options = self::rapidload_fetch_options();
         }
 
         if(isset(self::$paged_options)){
@@ -631,7 +631,7 @@ class RapidLoad_Base
             return;
         }
 
-        $options = self::fetch_options();
+        $options = self::rapidload_fetch_options();
 
         if ( ! isset( $options ) || empty( $options ) || ! $options ) {
             $options = [];
@@ -656,7 +656,7 @@ class RapidLoad_Base
             self::update_option( 'autoptimize_uucss_settings', $options );
         }
 
-        self::fetch_options(false);
+        self::rapidload_fetch_options(false);
 
         self::add_admin_notice( 'RapidLoad : 🙏 Thank you for using our plugin. if you have any questions feel free to contact us.', 'success' );
     }
@@ -726,7 +726,7 @@ class RapidLoad_Base
     }
 
     public static function is_domain_verified(){
-        $options = self::fetch_options();
+        $options = self::rapidload_fetch_options();
         return  $options['valid_domain'];
     }
 

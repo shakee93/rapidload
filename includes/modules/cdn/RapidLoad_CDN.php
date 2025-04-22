@@ -10,7 +10,7 @@ class RapidLoad_CDN
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::fetch_options();
+        $this->options = RapidLoad_Base::rapidload_fetch_options();
 
         add_action('wp_ajax_validate_cdn', [$this, 'validate_cdn']);
 

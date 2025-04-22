@@ -197,7 +197,7 @@ class RapidLoad_Module
                 $cdn = $active === "on" ? "1" : "";
                 RapidLoad_Base::update_option('rapidload_module_cdn',$cdn);
                 $api = new RapidLoad_Api();
-                $options = RapidLoad_Base::fetch_options();
+                $options = RapidLoad_Base::rapidload_fetch_options();
                 if($cdn === "1" && !isset($options['uucss_cdn_url'])){
                     $response = $api->post('cdn',[
                         'url' => trailingslashit(site_url()),
@@ -259,7 +259,7 @@ class RapidLoad_Module
 
     public function active_modules($cache = true){
 
-        $options = RapidLoad_Base::fetch_options($cache);
+        $options = RapidLoad_Base::rapidload_fetch_options($cache);
         $cache_options = RapidLoad_Cache::get_settings();
 
         if(isset($options['uucss_excluded_links']) && $options['uucss_excluded_links'] === 'null'){

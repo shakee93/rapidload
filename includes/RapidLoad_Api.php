@@ -20,7 +20,7 @@ class RapidLoad_Api
 			self::$apiUrl = UUCSS_API_URL;
 		}
 
-		$key          = isset( RapidLoad_Base::fetch_options()['uucss_api_key'] ) ? RapidLoad_Base::fetch_options()['uucss_api_key'] : null;
+		$key          = isset( RapidLoad_Base::rapidload_fetch_options()['uucss_api_key'] ) ? RapidLoad_Base::rapidload_fetch_options()['uucss_api_key'] : null;
 		$this->apiKey = defined( 'UUCSS_API_KEY' ) ? UUCSS_API_KEY : $key;
 	}
 
