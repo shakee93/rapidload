@@ -63,13 +63,13 @@ class RapidLoad_Admin_Frontend
 
         if(is_admin()){
 
-            add_action( 'admin_menu', array( $this, 'rapidload_add_developer_settings_page' ) );
-            add_action( 'admin_menu', array( $this, 'rapidload_add_page_optimizer_page' ) );
+            add_action('admin_menu', [$this, 'rapidload_add_developer_settings_page']);
+            add_action('admin_menu', [$this, 'rapidload_add_page_optimizer_page']);
             add_action('admin_menu', [$this, 'rapidload_remove_legacey_dashboard_menu'], 999);
 
         }
 
-        add_action( "uucss_run_gpsi_test_for_all", [ $this, 'run_gpsi_test_for_all' ]);
+        add_action( "rapidload_run_gpsi_test_for_all", [$this, 'rapidload_run_gpsi_test_for_all']);
 
         $this->rapidload_purge_all_process_request();
     }
@@ -467,7 +467,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function run_gpsi_test_for_all(){
+    public function rapidload_run_gpsi_test_for_all(){
 
         $links = UnusedCSS_DB::get_data_for_gpsi_test();
 
@@ -491,7 +491,7 @@ class RapidLoad_Admin_Frontend
 
         self::verify_nonce();
 
-        $spawned = wp_schedule_single_event( time() + 5, 'uucss_run_gpsi_test_for_all');
+        $spawned = wp_schedule_single_event( time() + 5, 'rapidload_run_gpsi_test_for_all');
 
         wp_send_json_success([
             'spawned' => $spawned
