@@ -26,7 +26,7 @@ if (defined('WP_CLI') && WP_CLI) {
                 $message = "not set";
             }
 
-            $results           = $uucss_api->post( 'connect', [ 'url' => $url, 'type' => 'wordpress' ] );
+            $results           = $uucss_api->rapidload_api_post( 'connect', [ 'url' => $url, 'type' => 'wordpress' ] );
 
             if ( $uucss_api->is_error( $results ) ) {
                 if(isset($results->errors) && isset($results->errors[0])){

@@ -339,7 +339,7 @@ class RapidLoad_JavaScript
         if ( ! empty( $parent ) ) {
             return $parent;
         }
-        return $theme->get( 'Name' );
+        return $theme->rapidload_api_get( 'Name' );
     }
 
     public static function get_active_plugins() {

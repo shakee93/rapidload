@@ -83,7 +83,7 @@ class RapidLoad_Image
 
         $inline_data = sprintf(
             '(function(w,d){w.rapidload_io_data={nonce:"%s",image_endpoint:"%s",optimize_level:"%s",adaptive_image_delivery:%s,support_next_gen_format:%s};',
-            esc_js(self::create_nonce('rapidload_image')),
+            esc_js(self::rapidload_util_create_nonce('rapidload_image')),
             esc_js(RapidLoad_Image::$image_indpoint),
             esc_js(isset($this->options['uucss_image_optimize_level']) ? $this->options['uucss_image_optimize_level'] : 'null'),
             isset($this->options['uucss_adaptive_image_delivery']) && $this->options['uucss_adaptive_image_delivery'] === "1" ? 'true' : 'false',

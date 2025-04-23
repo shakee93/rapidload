@@ -276,7 +276,7 @@ class RapidLoad_Admin_Frontend
 
         $api = new RapidLoad_Api();
 
-        $result = $api->get('notification');
+        $result = $api->rapidload_api_get('notification');
 
         $data = !$api->is_error($result) && isset($result->data) ? $result->data : [];
 
@@ -310,7 +310,7 @@ class RapidLoad_Admin_Frontend
 
         $api = new RapidLoad_Api();
 
-        $result = $api->get('faqs');
+        $result = $api->rapidload_api_get('faqs');
 
         $default = [
             [
@@ -526,7 +526,7 @@ class RapidLoad_Admin_Frontend
             'url' => $job_data->job->url
         ]);
 
-        return $uucss_api->post( 'test/wordpress',
+        return $uucss_api->rapidload_api_post( 'test/wordpress',
             [
                 'url' => urldecode($job_data->job->url),
                 'files' => !empty($cached_files) ? array_values(array_column($cached_files, 'uucss')) : [],
@@ -873,7 +873,7 @@ class RapidLoad_Admin_Frontend
             'plugin_url' => UUCSS_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'optimizer_url' => $this->rapidload_util_transform_url($this->rapidload_util_get_current_url()),
-            'nonce' => self::create_nonce( 'uucss_nonce' ),
+            'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
         );
 
         wp_localize_script( 'rapidload_page_optimizer', 'rapidload_admin', $data );
@@ -943,7 +943,7 @@ class RapidLoad_Admin_Frontend
 
         $data = array(
             'api' => RapidLoad_Api::get_key(),
-            'nonce' => self::create_nonce( 'uucss_nonce' ),
+            'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
             'url' => site_url(),
             'ajax_url'          => admin_url( 'admin-ajax.php' ),
             'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),

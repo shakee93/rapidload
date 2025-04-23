@@ -313,7 +313,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $response = $api->post('enable-cdn-metering',[
+        $response = $api->rapidload_api_post('enable-cdn-metering',[
            'zone_id' =>  $options['uucss_cdn_zone_id']
         ]);
 
@@ -331,7 +331,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $response = $api->post('enable-cdn-metering',[
+        $response = $api->rapidload_api_post('enable-cdn-metering',[
             'url' =>  site_url()
         ]);
 
@@ -420,7 +420,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $result = $api->post('crawler-check',[
+        $result = $api->rapidload_api_post('crawler-check',[
             'url' => site_url()
         ]);
 
@@ -492,7 +492,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $api->post('feedback', [
+        $api->rapidload_api_post('feedback', [
            'url' => site_url(),
            'type' => 'titan_feedback',
            'version' => $version,
@@ -515,7 +515,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $api->post('purge-cdn/' . $options['uucss_cdn_zone_id'],[]);
+        $api->rapidload_api_post('purge-cdn/' . $options['uucss_cdn_zone_id'],[]);
 
         wp_send_json_success(true);
     }
@@ -1058,7 +1058,7 @@ class RapidLoad_Admin
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = sanitize_text_field(wp_unslash($_POST['api_key']));
 
-        $results = $uucss_api->get( 'verify' );
+        $results = $uucss_api->rapidload_api_get( 'verify' );
 
         if ( isset( $results->data ) ) {
             wp_send_json_success( true );
@@ -1170,7 +1170,7 @@ class RapidLoad_Admin
 
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = $license_key;
-        $results           = $uucss_api->post( 'connect', [ 'url' => $this->rapidload_util_transform_url(get_site_url()), 'type' => 'wordpress' ] );
+        $results           = $uucss_api->rapidload_api_post( 'connect', [ 'url' => $this->rapidload_util_transform_url(get_site_url()), 'type' => 'wordpress' ] );
 
         if ( $uucss_api->is_error( $results ) ) {
             if(isset($results->errors) && isset($results->errors[0])){
@@ -1211,7 +1211,7 @@ class RapidLoad_Admin
             return;
         }
 
-        $results = $uucss_api->get( 'verify', [ 'url' => site_url(), 'token' => $options['uucss_api_key'] ] );
+        $results = $uucss_api->rapidload_api_get( 'verify', [ 'url' => site_url(), 'token' => $options['uucss_api_key'] ] );
 
         if($uucss_api->is_error($results)){
             $options['valid_domain'] = false;
@@ -1239,7 +1239,7 @@ class RapidLoad_Admin
         $api = new RapidLoad_Api();
 
         // remove domain from authorized list
-        $api->post( 'deactivate', [
+        $api->rapidload_api_post( 'deactivate', [
             'url' => site_url()
         ] );
 
@@ -1497,7 +1497,7 @@ class RapidLoad_Admin
 
         $api = new RapidLoad_Api();
 
-        $data = $api->get( 'image-usage', [
+        $data = $api->rapidload_api_get( 'image-usage', [
             'url' => $this->rapidload_util_transform_url(get_site_url()),
         ]);
 
@@ -1516,7 +1516,7 @@ class RapidLoad_Admin
 
         $options = RapidLoad_Base::rapidload_fetch_options();
 
-        $data = $api->get( 'cdn-usage', [
+        $data = $api->rapidload_api_get( 'cdn-usage', [
             'zone_id' => isset($options['uucss_cdn_zone_id']) ? $options['uucss_cdn_zone_id'] : '',
         ]);
 
@@ -1552,7 +1552,7 @@ class RapidLoad_Admin
             wp_send_json_success(true);
         }
 
-        $data = $api->get( 'license', [
+        $data = $api->rapidload_api_get( 'license', [
             'url' => $this->rapidload_util_transform_url(get_site_url()),
             'version' => UUCSS_VERSION,
             'db_version' => RapidLoad_DB::$db_version,

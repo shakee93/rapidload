@@ -66,7 +66,7 @@ class RapidLoad_CDN
             return true;
         }
 
-        $response = $api->post('cdn',[
+        $response = $api->rapidload_api_post('cdn',[
             'url' => trailingslashit(site_url()),
             'validate' => isset($this->options['uucss_cdn_dns_id']) && isset($this->options['uucss_cdn_zone_id']) && isset($this->options['uucss_cdn_url'])
         ]);
@@ -83,7 +83,7 @@ class RapidLoad_CDN
 
                 if($this->options['uucss_cdn_zone_id'] !== $response->zone_id){
 
-                    $api->post('delete-cdn',[
+                    $api->rapidload_api_post('delete-cdn',[
                         'dns_id' => $this->options['uucss_cdn_dns_id'],
                         'zone_id' => $this->options['uucss_cdn_zone_id']
                     ]);
@@ -119,7 +119,7 @@ class RapidLoad_CDN
         $api = new RapidLoad_Api();
 
         if($this->options['uucss_cdn_zone_id'] && !empty($this->options['uucss_cdn_zone_id'])){
-            $result = $api->post('purge-cdn/' . $this->options['uucss_cdn_zone_id']);
+            $result = $api->rapidload_api_post('purge-cdn/' . $this->options['uucss_cdn_zone_id']);
         }
 
     }

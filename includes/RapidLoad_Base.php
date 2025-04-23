@@ -309,7 +309,7 @@ class RapidLoad_Base
                 'on_board_complete' => self::is_api_key_verified() || self::get_option('rapidload_onboard_skipped', false),
                 'home_url' => home_url(),
                 'api_url' => RapidLoad_Api::get_key(),
-                'nonce' => self::create_nonce( 'uucss_nonce' ),
+                'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
                 'active_modules' => (array)self::get()->modules()->active_modules(),
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::activation_url('authorize' ),
@@ -588,7 +588,7 @@ class RapidLoad_Base
 
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = $token;
-        $results           = $uucss_api->post( 'connect', [ 'url' => trailingslashit(home_url()), 'type' => 'wordpress' ] );
+        $results           = $uucss_api->rapidload_api_post( 'connect', [ 'url' => trailingslashit(home_url()), 'type' => 'wordpress' ] );
 
         if ( !$uucss_api->is_error( $results ) ) {
 
@@ -677,7 +677,7 @@ class RapidLoad_Base
 
         $api = new RapidLoad_Api();
 
-        $data = $api->post( 'whitelist-packs/wp-suggest', [
+        $data = $api->rapidload_api_post( 'whitelist-packs/wp-suggest', [
             'plugins' => $active_plugins,
             'theme'   => get_template(),
             'url'     => site_url()

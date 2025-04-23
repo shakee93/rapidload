@@ -176,12 +176,12 @@ class RapidLoad_Module
                 RapidLoad_Base::update_option('rapidload_module_image',$image);
                 $api = new RapidLoad_Api();
                 if($image === "1"){
-                    $api->post('spai-associate-host',[
+                    $api->rapidload_api_post('spai-associate-host',[
                         'url' => trailingslashit(site_url()),
                         'action' => 'add-domain'
                     ]);
                 }else{
-                    $api->post('spai-associate-host',[
+                    $api->rapidload_api_post('spai-associate-host',[
                         'url' => trailingslashit(site_url()),
                         'action' => 'revoke-domain'
                     ]);
@@ -199,7 +199,7 @@ class RapidLoad_Module
                 $api = new RapidLoad_Api();
                 $options = RapidLoad_Base::rapidload_fetch_options();
                 if($cdn === "1" && !isset($options['uucss_cdn_url'])){
-                    $response = $api->post('cdn',[
+                    $response = $api->rapidload_api_post('cdn',[
                         'url' => trailingslashit(site_url()),
                         'validate' => isset($options['uucss_cdn_dns_id']) && isset($options['uucss_cdn_zone_id']) && isset($options['uucss_cdn_url'])
                     ]);
@@ -222,7 +222,7 @@ class RapidLoad_Module
                     if(apply_filters('rapidload/cdn/clear-server-dns', false)){
 
                         if(isset($options['uucss_cdn_dns_id']) && !empty($options['uucss_cdn_dns_id']) && isset($options['uucss_cdn_zone_id']) && !empty($options['uucss_cdn_zone_id'])){
-                            $api->post('delete-cdn',[
+                            $api->rapidload_api_post('delete-cdn',[
                                 'dns_id' => $options['uucss_cdn_dns_id'],
                                 'zone_id' => $options['uucss_cdn_zone_id']
                             ]);

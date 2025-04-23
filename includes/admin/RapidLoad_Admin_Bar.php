@@ -95,7 +95,7 @@ class RapidLoad_Admin_Bar {
             'admin_url' => admin_url(),
             'dashboard_url' => admin_url( 'admin.php?page=rapidload' ),
             'optimizer_url' => defined('RAPIDLOAD_OPTIMIZER_TEST_URL') ? RAPIDLOAD_OPTIMIZER_TEST_URL : $this->rapidload_util_transform_url($current_url),
-            'nonce' => self::create_nonce( 'uucss_nonce' ),
+            'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
             'timezone' => get_option('timezone_string', 'UTC'),
             'rapidload_version' => UUCSS_VERSION,
             'actions' => [
@@ -126,7 +126,7 @@ class RapidLoad_Admin_Bar {
                 ]
             ],
             'api_root' => defined('UUCSS_API_URL') ? UUCSS_API_URL : 'https://api.rapidload.io/api/v1',
-            'enable_entire_site' => RapidLoad_DB::get_optimization_count() < 2,
+            'enable_entire_site' => RapidLoad_DB::rapidload_db_get_optimization_count() < 2,
             'rest_url' => RapidLoadRestApi::rest_url(),
             'license_key' => RapidLoad_Base::get_license_key(),
             'test_mode' => boolval(isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1"),

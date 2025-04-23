@@ -51,7 +51,7 @@ class RapidLoad_UnusedCSS_Store
 
             $uucss_config = apply_filters('uucss/purge/config', $api_options);
 
-            $result = $uucss_api->post( 'purger',
+            $result = $uucss_api->rapidload_api_post( 'purger',
                 array_merge( $uucss_config,
                     [
                         'url' => $this->job_data->job->url,
@@ -89,7 +89,7 @@ class RapidLoad_UnusedCSS_Store
 
             $uucss_config = apply_filters('uucss/purge/config', $api_options);
 
-            $result = $uucss_api->post( 's/unusedcss',
+            $result = $uucss_api->rapidload_api_post( 's/unusedcss',
                 array_merge( $uucss_config,
                     [
                         'url' => $this->job_data->job->url,
@@ -242,7 +242,7 @@ class RapidLoad_UnusedCSS_Store
 
         $uucss_api = new RapidLoad_Api();
 
-        $result = $uucss_api->get( 's/unusedcss/' . $this->job_data->queue_job_id);
+        $result = $uucss_api->rapidload_api_get( 's/unusedcss/' . $this->job_data->queue_job_id);
 
         if ( ! isset( $result ) || isset( $result->errors ) || ( gettype( $result ) === 'string' && strpos( $result, 'cURL error' ) !== false ) ) {
 

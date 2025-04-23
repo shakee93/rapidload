@@ -56,7 +56,7 @@ class RapidLoad_CriticalCSS_Store
 
             $cpcss_config = apply_filters('cpcss/purge/config', ( isset( $this->args['options'] ) ) ? $this->args['options'] : []);
 
-            $result = $uucss_api->post( 'purger/cpcss',
+            $result = $uucss_api->rapidload_api_post( 'purger/cpcss',
                 array_merge( $cpcss_config,
                     [
                         'url' => $this->job_data->job->url,
@@ -103,7 +103,7 @@ class RapidLoad_CriticalCSS_Store
 
             $cpcss_config = apply_filters('cpcss/purge/config', ( isset( $this->args['options'] ) ) ? $this->args['options'] : []);
 
-            $result = $uucss_api->post( 's/criticalcss',
+            $result = $uucss_api->rapidload_api_post( 's/criticalcss',
                 array_merge( $cpcss_config,
                     [
                         'url' => $this->job_data->job->url,
@@ -227,7 +227,7 @@ class RapidLoad_CriticalCSS_Store
 
         $uucss_api = new RapidLoad_Api();
 
-        $result = $uucss_api->get( 's/criticalcss/' . $this->job_data->queue_job_id);
+        $result = $uucss_api->rapidload_api_get( 's/criticalcss/' . $this->job_data->queue_job_id);
 
         if ( ! isset( $result ) || isset( $result->errors ) || ( gettype( $result ) === 'string' && strpos( $result, 'cURL error' ) !== false ) ) {
 

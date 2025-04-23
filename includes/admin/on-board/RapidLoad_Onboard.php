@@ -88,7 +88,7 @@ class RapidLoad_Onboard{
         return RapidLoad_Base::is_api_key_verified() || RapidLoad_Base::get_option('rapidload_onboard_skipped', false);
     }
 
-    private function rapidload_redirect() {
+    public function rapidload_redirect() {
         $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])) : '';
         
         if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&

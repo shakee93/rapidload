@@ -94,7 +94,7 @@ class RapidLoad_Optimizer
 
         $api = new RapidLoad_Api();
 
-        $result = $api->post('crawler-check',[
+        $result = $api->rapidload_api_post('crawler-check',[
             'url' => site_url()
         ]);
 
@@ -325,7 +325,7 @@ class RapidLoad_Optimizer
 
         $api = new RapidLoad_Api();
 
-        $result = $api->post('get_cdn_usage',[
+        $result = $api->rapidload_api_post('get_cdn_usage',[
             'zone_id' => self::$global_options['uucss_cdn_zone_id']
         ]);
 
@@ -344,7 +344,7 @@ class RapidLoad_Optimizer
 
         $api = new RapidLoad_Api();
 
-        $result = $api->post('get_image_usage',[
+        $result = $api->rapidload_api_post('get_image_usage',[
             'url' => site_url()
         ]);
 
@@ -1047,7 +1047,7 @@ class RapidLoad_Optimizer
             'cpcss_purge_url' => array(
                 'control_type' => 'button',
                 'control_label' => 'Regenerate Critical CSS',
-                'action' => 'action=cpcss_purge_url&url=' . $url . '&nonce=' . self::create_nonce( 'uucss_nonce' ),
+                'action' => 'action=cpcss_purge_url&url=' . $url . '&nonce=' . self::rapidload_util_create_nonce( 'uucss_nonce' ),
                 'description' => ''
             ),
             // UUCSS settings starts here
@@ -1121,7 +1121,7 @@ class RapidLoad_Optimizer
             'rapidload_purge_all' => array(
                 'control_type' => 'button',
                 'control_label' => 'Regenerate Unused CSS',
-                'action' => 'action=rapidload_purge_all&job_type=url&clear=false&immediate=true&url=' . $url . '&nonce=' . self::create_nonce( 'uucss_nonce' ),
+                'action' => 'action=rapidload_purge_all&job_type=url&clear=false&immediate=true&url=' . $url . '&nonce=' . self::rapidload_util_create_nonce( 'uucss_nonce' ),
                 'description' => ''
             ),
 
@@ -1383,7 +1383,7 @@ class RapidLoad_Optimizer
                         'control_label' => 'Validate CDN URL',
                         'control_icon' => 'check-circle',
                         'control_description' => 'Check if the CDN url is working',
-                        'action' => 'action=validate_cdn&dashboard_cdn_validator&nonce=' . self::create_nonce( 'uucss_nonce' ),
+                        'action' => 'action=validate_cdn&dashboard_cdn_validator&nonce=' . self::rapidload_util_create_nonce( 'uucss_nonce' ),
                         // this state will be updated in the frontend after response using data.${provided_key}
                         'action_response_mutates' => ['uucss_cdn_url'],
                     ),
@@ -1393,7 +1393,7 @@ class RapidLoad_Optimizer
                         'control_label' => 'Clear CDN Cache',
                         'control_icon' => 'rotate-cw',
                         'control_description' => 'Clear resources caches across the CDN network',
-                        'action' => 'action=purge_rapidload_cdn&nonce=' . self::create_nonce( 'uucss_nonce' ),
+                        'action' => 'action=purge_rapidload_cdn&nonce=' . self::rapidload_util_create_nonce( 'uucss_nonce' ),
                     ),
                 )
             ),
@@ -1805,12 +1805,12 @@ class RapidLoad_Optimizer
     public function associate_domain($revoke){
         $api = new RapidLoad_Api();
         if(!$revoke){
-            $api->post('spai-associate-host',[
+            $api->rapidload_api_post('spai-associate-host',[
                 'url' => trailingslashit(site_url()),
                 'action' => 'add-domain'
             ]);
         }else{
-            $api->post('spai-associate-host',[
+            $api->rapidload_api_post('spai-associate-host',[
                 'url' => trailingslashit(site_url()),
                 'action' => 'revoke-domain'
             ]);
