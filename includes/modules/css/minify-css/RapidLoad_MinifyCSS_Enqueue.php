@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class MinifyCSS_Enqueue
+class RapidLoad_MinifyCSS_Enqueue
 {
     use RapidLoad_Utils;
 

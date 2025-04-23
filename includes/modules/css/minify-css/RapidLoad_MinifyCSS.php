@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class MinifyCSS
+class RapidLoad_MinifyCSS
 {
     use RapidLoad_Utils;
 

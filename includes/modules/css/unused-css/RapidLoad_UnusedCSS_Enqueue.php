@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS_Enqueue
+class RapidLoad_UnusedCSS_Enqueue
 {
     use RapidLoad_Utils;
 

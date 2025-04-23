@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class CriticalCSS
+class RapidLoad_CriticalCSS
 {
     use RapidLoad_Utils;
 

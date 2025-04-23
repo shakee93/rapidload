@@ -1,7 +1,7 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
-class CriticalCSS_Store
+class RapidLoad_CriticalCSS_Store
 {
     use RapidLoad_Utils;
 

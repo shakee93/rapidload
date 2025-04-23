@@ -1,7 +1,8 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
-class CriticalCSS_Queue
+
+class RapidLoad_UnusedCSS_Queue
 {
     use RapidLoad_Utils;
 
@@ -17,7 +18,7 @@ class CriticalCSS_Queue
 
     function fetch_job_id(){
 
-        $current_waiting = CriticalCSS_DB::get_current_waiting_tasks_count();
+        $current_waiting = UnusedCSS_DB::get_current_waiting_tasks_count();
 
         if( (RapidLoad_Queue::$job_count - $current_waiting) <= 0 ){
             return;
@@ -25,7 +26,7 @@ class CriticalCSS_Queue
 
         global $wpdb;
 
-        $links = CriticalCSS_DB::get_current_queued_tasks_job_ids(RapidLoad_Queue::$job_count - $current_waiting);
+        $links = UnusedCSS_DB::get_current_queued_tasks_job_ids(RapidLoad_Queue::$job_count - $current_waiting);
 
         if(!empty($links)){
 
@@ -35,14 +36,14 @@ class CriticalCSS_Queue
 
                 if($job){
 
-                    $job_data = new RapidLoad_Job_Data($job, 'cpcss');
+                    $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
-                    $store = new CriticalCSS_Store($job_data, apply_filters('rapidload/purge/args', []));
+                    $store = new UnusedCSS_Store($job_data, apply_filters('rapidload/purge/args', []));
                     $store->purge_css();
 
                 }else{
 
-                    CriticalCSS_DB::delete_by_job_id($link->job_id);
+                    UnusedCSS_DB::delete_by_job_id($link->job_id);
 
                 }
 
@@ -54,7 +55,7 @@ class CriticalCSS_Queue
 
     function fetch_result(){
 
-        $links = CriticalCSS_DB::get_current_processing_tasks_job_ids(RapidLoad_Queue::$job_count);
+        $links = UnusedCSS_DB::get_current_processing_tasks_job_ids(RapidLoad_Queue::$job_count);
 
         if(!empty($links)){
 
@@ -64,14 +65,14 @@ class CriticalCSS_Queue
 
                 if($job){
 
-                    $job_data = new RapidLoad_Job_Data($job, 'cpcss');
+                    $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
-                    $store = new CriticalCSS_Store($job_data, []);
+                    $store = new UnusedCSS_Store($job_data, []);
                     $store->update_css();
 
                 }else{
 
-                    CriticalCSS_DB::delete_by_job_id($link->job_id);
+                    UnusedCSS_DB::delete_by_job_id($link->job_id);
 
                 }
 

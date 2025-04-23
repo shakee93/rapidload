@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS_Store
+class RapidLoad_UnusedCSS_Store
 {
     use RapidLoad_Utils;
 

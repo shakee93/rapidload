@@ -10,7 +10,7 @@ use Peast\Renderer;
 use Peast\Formatter\PrettyPrint;
 use Peast\Formatter\Compact;
 
-class Javascript_Enqueue
+class RapidLoad_Javascript_Enqueue
 {
     use RapidLoad_Utils;
 

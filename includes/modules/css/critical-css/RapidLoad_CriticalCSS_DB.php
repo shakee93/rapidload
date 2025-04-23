@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class CriticalCSS_DB extends RapidLoad_DB{
+class RapidLoad_CriticalCSS_DB extends RapidLoad_DB{
 
     public static function clear_data($soft = false){
 
