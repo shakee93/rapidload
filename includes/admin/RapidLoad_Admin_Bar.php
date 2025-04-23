@@ -75,7 +75,7 @@ class RapidLoad_Admin_Bar {
         if($this->rapidload_is_admin_url($current_url)){
             $current_url = site_url();
             if(isset($_GET['optimize-url'])){
-                $current_url = $this->transform_url(urldecode(sanitize_url(wp_unslash($_GET['optimize-url']))));
+                $current_url = $this->rapidload_util_transform_url(urldecode(sanitize_url(wp_unslash($_GET['optimize-url']))));
             }
         }
 
@@ -94,7 +94,7 @@ class RapidLoad_Admin_Bar {
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'admin_url' => admin_url(),
             'dashboard_url' => admin_url( 'admin.php?page=rapidload' ),
-            'optimizer_url' => defined('RAPIDLOAD_OPTIMIZER_TEST_URL') ? RAPIDLOAD_OPTIMIZER_TEST_URL : $this->transform_url($current_url),
+            'optimizer_url' => defined('RAPIDLOAD_OPTIMIZER_TEST_URL') ? RAPIDLOAD_OPTIMIZER_TEST_URL : $this->rapidload_util_transform_url($current_url),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
             'timezone' => get_option('timezone_string', 'UTC'),
             'rapidload_version' => UUCSS_VERSION,
@@ -112,7 +112,7 @@ class RapidLoad_Admin_Bar {
                     'href' => wp_nonce_url( add_query_arg( array(
                         '_cache'  => 'rapidload-cache',
                         '_action' => 'clearurl',
-                        '_url' => $this->transform_url($this->rapidload_util_get_current_url()),
+                        '_url' => $this->rapidload_util_transform_url($this->rapidload_util_get_current_url()),
                     ) ), 'rapidload_cache_clear_cache_nonce' ),
                     'icon' => 'clear_page_cache'
                 ],

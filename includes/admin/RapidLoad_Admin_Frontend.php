@@ -189,7 +189,7 @@ class RapidLoad_Admin_Frontend
         $url = sanitize_url( wp_unslash($_REQUEST['url']) );
         $regex = isset($_REQUEST['regex']) ? sanitize_text_field( wp_unslash($_REQUEST['regex']) ) : '/';
 
-        $url = $this->transform_url($url);
+        $url = $this->rapidload_util_transform_url($url);
 
         global $uucss;
 
@@ -619,7 +619,7 @@ class RapidLoad_Admin_Frontend
         }
         else{
 
-            $url = $this->transform_url($url);
+            $url = $this->rapidload_util_transform_url($url);
 
             switch ($job_type){
 
@@ -740,7 +740,7 @@ class RapidLoad_Admin_Frontend
 
                             $posts->the_post();
 
-                            $url = $this->transform_url(get_the_permalink(get_the_ID()));
+                            $url = $this->rapidload_util_transform_url(get_the_permalink(get_the_ID()));
 
                             if($this->is_url_allowed($url)){
 
@@ -872,7 +872,7 @@ class RapidLoad_Admin_Frontend
             'page_optimizer_base' => UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
             'plugin_url' => UUCSS_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'optimizer_url' => $this->transform_url($this->rapidload_util_get_current_url()),
+            'optimizer_url' => $this->rapidload_util_transform_url($this->rapidload_util_get_current_url()),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
         );
 

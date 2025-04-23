@@ -16,7 +16,7 @@ if (defined('WP_CLI') && WP_CLI) {
 
             $uucss_api         = new RapidLoad_Api();
             $uucss_api->apiKey = $license_key;
-            $url = $this->transform_url(home_url());
+            $url = $this->rapidload_util_transform_url(home_url());
 
             $message = "";
 

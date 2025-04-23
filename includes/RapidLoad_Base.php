@@ -100,7 +100,7 @@ class RapidLoad_Base
 
             $this->init_log_dir();
 
-            RapidLoad_ThirdParty::initialize();
+            RapidLoad_ThirdParty::rapidload_initialize();
 
             register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'vanish' ] );
 
@@ -196,7 +196,7 @@ class RapidLoad_Base
 
         $this->url = $this->rapidload_util_get_current_url();
 
-        $this->url = $this->transform_url($this->url);
+        $this->url = $this->rapidload_util_transform_url($this->url);
 
         if(RapidLoad_DB::$current_version !== RapidLoad_DB::$db_version){
             return $option;
@@ -245,7 +245,7 @@ class RapidLoad_Base
 
     public function init_log_dir(){
 
-        if(!self::get_log_option()){
+        if(!self::rapidload_util_get_log_option()){
             return false;
         }
 

@@ -143,7 +143,7 @@ class RapidLoad_Autoptimize_Compatible extends RapidLoad_ThirdParty {
 
     }
 
-    public function is_mu_plugin()
+    public function rapidload_is_mu_plugin()
     {
         return false;
     }

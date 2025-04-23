@@ -13,11 +13,11 @@ class RapidLoad_WP_Engine_Common_Compatible extends RapidLoad_ThirdParty{
         parent::__construct();
     }
 
-    public function is_mu_plugin(){
+    public function rapidload_is_mu_plugin(){
         return class_exists('WpeCommon');
     }
 
-    public function init_hooks()
+    public function rapidload_init_hooks()
     {
         add_action( 'uucss/cached', [$this, 'rapidload_handle'], 10, 2 );
         add_action( 'uucss/cache_cleared', [$this, 'rapidload_handle'], 10, 2 );

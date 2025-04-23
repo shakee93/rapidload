@@ -34,7 +34,7 @@ class RapidLoad_Onboard{
             wp_send_json_error(false);
         }
 
-        $site_url = $this->transform_url(get_site_url());
+        $site_url = $this->rapidload_util_transform_url(get_site_url());
 
         $job = new RapidLoad_Job([
             'url' => $site_url

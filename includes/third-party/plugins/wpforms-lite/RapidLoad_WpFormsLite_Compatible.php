@@ -33,7 +33,7 @@ class RapidLoad_WpForms_Lite_Compatible extends RapidLoad_ThirdParty{
         return $args;
     }
 
-    public function is_mu_plugin()
+    public function rapidload_is_mu_plugin()
     {
         return false;
     }

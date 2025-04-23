@@ -25,7 +25,7 @@ abstract class RapidLoad_ThirdParty
 
     public function rapidload_is_exists(){
         include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-        if(function_exists('is_plugin_active') && is_plugin_active($this->plugin) || $this->is_mu_plugin()){
+        if(function_exists('is_plugin_active') && is_plugin_active($this->plugin) || $this->rapidload_is_mu_plugin()){
             return true;
         }
         return false;

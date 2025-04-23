@@ -71,7 +71,7 @@ class RapidLoad_Sitemap
                     continue;
                 }
 
-                array_push($urls, $this->transform_url($url));
+                array_push($urls, $this->rapidload_util_transform_url($url));
             }
 
             return $urls;

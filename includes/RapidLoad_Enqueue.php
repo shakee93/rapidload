@@ -37,7 +37,7 @@ class RapidLoad_Enqueue {
 
             $this->url = $this->rapidload_util_get_current_url();
 
-            $this->url = $this->transform_url($this->url);
+            $this->url = $this->rapidload_util_transform_url($this->url);
 
             self::$test_mode = isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] === "1";
 

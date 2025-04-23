@@ -283,9 +283,9 @@ class RapidLoad_Admin
             wp_send_json_error('url required');
         }
 
-        $url = $this->transform_url(sanitize_url(wp_unslash($_REQUEST['url'])));
+        $url = $this->rapidload_util_transform_url(sanitize_url(wp_unslash($_REQUEST['url'])));
 
-        if($url === $this->transform_url(site_url())){
+        if($url === $this->rapidload_util_transform_url(site_url())){
             wp_send_json_error('cannot delete home page optimizations');
         }
 
@@ -1170,7 +1170,7 @@ class RapidLoad_Admin
 
         $uucss_api         = new RapidLoad_Api();
         $uucss_api->apiKey = $license_key;
-        $results           = $uucss_api->post( 'connect', [ 'url' => $this->transform_url(get_site_url()), 'type' => 'wordpress' ] );
+        $results           = $uucss_api->post( 'connect', [ 'url' => $this->rapidload_util_transform_url(get_site_url()), 'type' => 'wordpress' ] );
 
         if ( $uucss_api->is_error( $results ) ) {
             if(isset($results->errors) && isset($results->errors[0])){
@@ -1498,7 +1498,7 @@ class RapidLoad_Admin
         $api = new RapidLoad_Api();
 
         $data = $api->get( 'image-usage', [
-            'url' => $this->transform_url(get_site_url()),
+            'url' => $this->rapidload_util_transform_url(get_site_url()),
         ]);
 
         if ( is_wp_error( $data ) ) {
@@ -1553,7 +1553,7 @@ class RapidLoad_Admin
         }
 
         $data = $api->get( 'license', [
-            'url' => $this->transform_url(get_site_url()),
+            'url' => $this->rapidload_util_transform_url(get_site_url()),
             'version' => UUCSS_VERSION,
             'db_version' => RapidLoad_DB::$db_version,
             'db_version_exist' => RapidLoad_DB::$current_version
@@ -1766,7 +1766,7 @@ class RapidLoad_Admin
 
             foreach ($urls as $value){
 
-                $_url = $this->transform_url($value);
+                $_url = $this->rapidload_util_transform_url($value);
 
                 if($this->is_url_allowed($_url)){
 

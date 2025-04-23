@@ -40,7 +40,7 @@ class RapidLoad_Optimole_WP_Compatible extends RapidLoad_ThirdParty {
         return $converted_url;
     }
 
-    public function is_mu_plugin()
+    public function rapidload_is_mu_plugin()
     {
         return false;
     }
