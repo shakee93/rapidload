@@ -9,7 +9,7 @@ trait RapidLoad_Utils {
 
     private static $log_file_system = null;
 
-	public function url_origin( $s, $use_forwarded_host = false ) {
+	public function rapidload_util_url_origin( $s, $use_forwarded_host = false ) {
 		$ssl      = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] === 'on' );
 		$sp       = strtolower( $s['SERVER_PROTOCOL'] );
         $protocol = substr( $sp, 0, strpos( $sp, '/' ) ) . ( ( $ssl ) ? 's' : '' );
@@ -20,7 +20,7 @@ trait RapidLoad_Utils {
         return $protocol . '://' . $host;
     }
 
-    public function get_current_url($post_id = null)
+    public function rapidload_util_get_current_url($post_id = null)
     {
 	    if ( $post_id ) {
 		    return get_permalink( get_post( $post_id ) );
@@ -40,7 +40,7 @@ trait RapidLoad_Utils {
 	    return null;
     }
 
-    public static function get_defined_rules( $with_permalink = false){
+    public static function rapidload_util_get_defined_rules( $with_permalink = false){
 
         $rules = apply_filters('uucss/rules', []);
 
@@ -66,7 +66,7 @@ trait RapidLoad_Utils {
         return $rules_with_permalink;
     }
 
-    public function is_cli(){
+    public function rapidload_util_is_cli(){
 
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
             return true;
@@ -76,21 +76,21 @@ trait RapidLoad_Utils {
         
     }
 
-    public static function get_log_instance(){
+    public static function rapidload_util_get_log_instance(){
 	    if(!self::$log_file_system){
             self::$log_file_system = new RapidLoad_FileSystem();
         }
 	    return self::$log_file_system;
     }
 
-    private static function get_log_option(){
+    private static function rapidload_util_get_log_option(){
 	    $option = RapidLoad_Base::rapidload_fetch_options();
         return  isset($option['uucss_enable_debug']);
     }
 
-    public static function log( $object, $callee = false ) {
+    public static function rapidload_util_log( $object, $callee = false ) {
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::rapidload_util_get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -109,7 +109,7 @@ trait RapidLoad_Utils {
 
         $data = json_encode($data);
 
-        $log_instance = self::get_log_instance();
+        $log_instance = self::rapidload_util_get_log_instance();
 
         if($log_instance->exists(UUCSS_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(UUCSS_LOG_DIR .'debug.log'))){
             $data = ",\n" . $data;
@@ -131,9 +131,9 @@ trait RapidLoad_Utils {
 	    return $object;
     }
 
-    public static function uucss_log($object){
+    public static function rapidload_util_uucss_log($object){
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::rapidload_util_get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
 		    return false;
 	    }
 
@@ -141,7 +141,7 @@ trait RapidLoad_Utils {
 	    error_log( "[UUCSS_LOG] " . $data );
     }
 
-    public static function add_admin_notice($message, $type='error') {
+    public static function rapidload_util_add_admin_notice($message, $type='error') {
 
         add_action('admin_notices', function () use ($message, $type) {
 
@@ -153,7 +153,7 @@ trait RapidLoad_Utils {
 
     }
 
-    public static function add_advanced_admin_notice($notice) {
+    public static function rapidload_util_add_advanced_admin_notice($notice) {
 
         if(!isset($notice)){
             return;
@@ -225,12 +225,12 @@ trait RapidLoad_Utils {
 
     }
 
-    protected function encode($data)
+    protected function rapidload_util_encode($data)
     {
         return rtrim(md5($data));
     }
 
-    function dirSize($directory) {
+    function rapidload_util_dirSize($directory) {
         $size = 0;
         foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)) as $file){
             $size+=$file->getSize();
@@ -239,15 +239,15 @@ trait RapidLoad_Utils {
     }
 
 
-    function human_file_size($bytes, $decimals = 2) {
+    function rapidload_util_human_file_size($bytes, $decimals = 2) {
         $size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
 
 
-    protected function file_name($file, $hash_suffix = null){
-    	$file_hash = $this->encode($file . json_encode($hash_suffix));
+    protected function rapidload_util_file_name($file, $hash_suffix = null){
+    	$file_hash = $this->rapidload_util_encode($file . json_encode($hash_suffix));
 
 	    $file_name = explode( "?", basename( $file ) )[0];
 
@@ -257,14 +257,14 @@ trait RapidLoad_Utils {
             $final_file_name .= '-' . $file_name;
 	    }
 
-	    if ( !$this->str_contains( $final_file_name, '.' ) ) {
+	    if ( !$this->rapidload_util_str_contains( $final_file_name, '.' ) ) {
 		    $final_file_name .= '.css';
 	    }
 
 	    return $final_file_name;
     }
 
-	function str_contains( $string, $find ) {
+	function rapidload_util_str_contains( $string, $find ) {
 
 	    if(empty($find)){
 	        return false;
@@ -277,7 +277,7 @@ trait RapidLoad_Utils {
 		return false;
 	}
 
-	function endsWith( $haystack, $needle ) {
+	function rapidload_util_endsWith( $haystack, $needle ) {
 		$length = strlen( $needle );
 		if( !$length ) {
 			return true;
@@ -285,7 +285,7 @@ trait RapidLoad_Utils {
 		return substr( $haystack, -$length ) === $needle;
 	}
 
-	function transform_url( $url ) {
+	function rapidload_util_transform_url( $url ) {
 
         if (!$url) {
             return $url;
@@ -316,7 +316,7 @@ trait RapidLoad_Utils {
 		return apply_filters('uucss/url', $url);
 	}
 
-	public static function activate_plugin( $plugin, $action = 'activate' ) {
+	public static function rapidload_util_activate_plugin( $plugin, $action = 'activate' ) {
 
 		if ( strpos( $plugin, '/' ) ) {
 			$plugin = str_replace( '\/', '%2F', $plugin );
@@ -330,7 +330,7 @@ trait RapidLoad_Utils {
 		return $url;
 	}
 
-	public function is_uucss_file( $url = null ) {
+	public function rapidload_util_is_uucss_file( $url = null ) {
 
 		if ( ! $url ) {
 			return false;
@@ -339,7 +339,7 @@ trait RapidLoad_Utils {
 		return preg_match( '/uucss\/uucss-[a-z0-9]{32}-/', $url );
 	}
 
-    public static function activation_url( $action, $to = 'options-general.php?page=rapidload' ) {
+    public static function rapidload_util_activation_url( $action, $to = 'options-general.php?page=rapidload' ) {
 
 	    if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
 		    define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
@@ -356,7 +356,7 @@ trait RapidLoad_Utils {
             ] );
     }
 
-    public static function onboard_activation_url( $action, $to = 'options-general.php?page=rapidload-on-board' ) {
+    public static function rapidload_util_onboard_activation_url( $action, $to = 'options-general.php?page=rapidload-on-board' ) {
 
         if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
             define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
@@ -373,7 +373,7 @@ trait RapidLoad_Utils {
             ] );
     }
 
-    public static function serialize($data){
+    public static function rapidload_util_serialize($data){
         if(isset($data)){
             return serialize($data);
         }else{
@@ -381,7 +381,7 @@ trait RapidLoad_Utils {
         }
     }
 
-    public static function unserialize($data){
+    public static function rapidload_util_unserialize($data){
         if(isset($data)){
             return unserialize($data);
         }else{
@@ -389,7 +389,7 @@ trait RapidLoad_Utils {
         }
     }
 
-    public function is_file_excluded( $options, $file ) {
+    public function rapidload_util_is_file_excluded( $options, $file ) {
 
         $files = isset( $options['uucss_excluded_files'] ) && !empty($options['uucss_excluded_files']) ? explode( ',', $options['uucss_excluded_files'] ) : [];
 
@@ -400,9 +400,9 @@ trait RapidLoad_Utils {
 
         foreach ( $files as $excluded_file ) {
 
-            if($this->str_contains( trim($excluded_file), '*' ) && self::is_path_glob_matched($file, trim($excluded_file))){
+            if($this->rapidload_util_str_contains( trim($excluded_file), '*' ) && self::rapidload_util_is_path_glob_matched($file, trim($excluded_file))){
                 return true;
-            }else if ( $this->str_contains( $file, trim($excluded_file) ) ) {
+            }else if ( $this->rapidload_util_str_contains( $file, trim($excluded_file) ) ) {
                 return true;
             }
 
@@ -411,7 +411,7 @@ trait RapidLoad_Utils {
         return false;
     }
 
-    public static function is_url_glob_matched($path, $pattern, $ignoreCase = FALSE) {
+    public static function rapidload_util_is_url_glob_matched($path, $pattern, $ignoreCase = FALSE) {
 
         $expr = preg_replace_callback('/[\\\\^.?*+\\/]/', function($matches) {
             switch ($matches[0]) {
@@ -433,7 +433,7 @@ trait RapidLoad_Utils {
 
     }
 
-    public static function is_path_glob_matched($path, $pattern, $ignoreCase = FALSE) {
+    public static function rapidload_util_is_path_glob_matched($path, $pattern, $ignoreCase = FALSE) {
 
         $expr = preg_replace_callback('/[\\\\^.[\\]|()?*+{}\\-\\/]/', function($matches) {
             switch ($matches[0]) {
@@ -455,46 +455,46 @@ trait RapidLoad_Utils {
 
     }
 
-    public static function remove_white_space($str){
+    public static function rapidload_util_remove_white_space($str){
 
         return preg_replace('/[\n\s+]/', '', $str);
     }
 
-    public function schedule_cron($hook_name, $args){
+    public function rapidload_util_schedule_cron($hook_name, $args){
         return wp_schedule_single_event( time() + 5, $hook_name, $args);
     }
 
-    public function size() {
+    public function rapidload_util_size() {
 
 	    $file_system = new RapidLoad_FileSystem();
         $uucss_size = 0;
         $cpcss_size = 0;
 
         if ( $file_system->exists( UnusedCSS::$base_dir ) ) {
-            $uucss_size = $this->dirSize( UnusedCSS::$base_dir );
+            $uucss_size = $this->rapidload_util_dirSize( UnusedCSS::$base_dir );
         }
 
         if ( $file_system->exists( CriticalCSS::$base_dir ) ) {
-            $cpcss_size = $this->dirSize( CriticalCSS::$base_dir );
+            $cpcss_size = $this->rapidload_util_dirSize( CriticalCSS::$base_dir );
         }
 
-        return $this->human_file_size( $uucss_size + $cpcss_size );
+        return $this->rapidload_util_human_file_size( $uucss_size + $cpcss_size );
     }
 
-    protected function is_doing_api_fetch(){
+    protected function rapidload_util_is_doing_api_fetch(){
 
-        $user_agent = $this->get_user_agent();
+        $user_agent = $this->rapidload_util_get_user_agent();
 
         return strpos( $user_agent, 'UnusedCSS_bot' ) !== false ||
             strpos( $user_agent, 'RapidLoad' ) !== false;
     }
 
-    protected function is_mobile(){
+    protected function rapidload_util_is_mobile(){
 
-        return $this->source_is_mobile();
+        return $this->rapidload_util_source_is_mobile();
     }
 
-    function source_is_mobile() {
+    function rapidload_util_source_is_mobile() {
         if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
             $is_mobile = false;
         } elseif ( strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 'Mobile' ) !== false // Many mobile devices (all iPhone, iPad, etc.)
@@ -512,7 +512,7 @@ trait RapidLoad_Utils {
         return $is_mobile;
     }
 
-    protected function get_user_agent(){
+    protected function rapidload_util_get_user_agent(){
 
         $headers    = [];
 
@@ -531,20 +531,20 @@ trait RapidLoad_Utils {
         return '';
     }
 
-    public function is_valid_url($url){
+    public function rapidload_util_is_valid_url($url){
         $pattern = "/\b(?:https?|ftp):\/\/(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]{2,})+(?:\/[^\s]*)?\b/";
         $url = urldecode($url);
         return preg_match($pattern, $url);
     }
 
-    public function is_url_allowed($url = null, $args = null)
+    public function rapidload_util_is_url_allowed($url = null, $args = null)
     {
 
         if ( ! $url ) {
             return false;
         }
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
             return false;
         }
 
@@ -595,11 +595,11 @@ trait RapidLoad_Utils {
 
                 }
 
-                if(self::str_contains( $pattern, '*' ) && self::is_path_glob_matched(urldecode($url), $pattern)){
-                    $this->log( 'skipped glob matched : ' . $url );
+                if(self::rapidload_util_str_contains( $pattern, '*' ) && self::rapidload_util_is_path_glob_matched(urldecode($url), $pattern)){
+                    $this->rapidload_util_log( 'skipped glob matched : ' . $url );
                     return false;
-                }else if ( self::str_contains( urldecode($url), $pattern ) ) {
-                    $this->log( 'skipped str contains: ' . $url );
+                }else if ( self::rapidload_util_str_contains( urldecode($url), $pattern ) ) {
+                    $this->rapidload_util_log( 'skipped str contains: ' . $url );
                     return false;
                 }
 
@@ -608,20 +608,20 @@ trait RapidLoad_Utils {
 
         $url_parts = wp_parse_url( $url );
 
-        if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
-            $this->log( 'skipped  query contains : ' . $url );
+        if(isset($url_parts['query']) && $this->rapidload_util_str_contains($url_parts['query'], 'customize_changeset_uuid')){
+            $this->rapidload_util_log( 'skipped  query contains : ' . $url );
             return false;
         }
 
         if(!apply_filters('uucss/url/exclude', $url)){
-            $this->log( 'skipped  url exclude : ' . $url );
+            $this->rapidload_util_log( 'skipped  url exclude : ' . $url );
             return false;
         }
 
         return true;
     }
 
-    function is_regex_expression($string) {
+    function rapidload_util_is_regex_expression($string) {
         try {
             @preg_match($string, '');
             return true;
@@ -630,7 +630,7 @@ trait RapidLoad_Utils {
         }
     }
 
-    public static function get_file_path_from_url($url)
+    public static function rapidload_util_get_file_path_from_url($url)
     {
         $file_relative_path = wp_parse_url($url, PHP_URL_PATH);
         $site_path = wp_parse_url(site_url(), PHP_URL_PATH);
@@ -638,7 +638,7 @@ trait RapidLoad_Utils {
         return str_replace("//","/", $file_path);
     }
 
-    public static function get_width_height($file_path){
+    public static function rapidload_util_get_width_height($file_path){
 
         $file_path = urldecode($file_path);
 
@@ -676,7 +676,7 @@ trait RapidLoad_Utils {
 
     }
 
-    public static function verify_nonce($nonce = 'uucss_nonce' ){
+    public static function rapidload_util_verify_nonce($nonce = 'uucss_nonce' ){
 
         if (defined('RAPIDLOAD_DEV_MODE')) {
             return true;
@@ -687,15 +687,15 @@ trait RapidLoad_Utils {
         }
     }
 
-    public static function get_wp_content_dir(){
+    public static function rapidload_util_get_wp_content_dir(){
         return apply_filters('rapidload/root-dir', WP_CONTENT_DIR);
     }
 
-    public static function get_wp_content_url($path = ''){
+    public static function rapidload_util_get_wp_content_url($path = ''){
         return apply_filters('rapidload/root-url', content_url($path));
     }
 
-    public static function get_relative_url($fullUrl) {
+    public static function rapidload_util_get_relative_url($fullUrl) {
         $parsedUrl = wp_parse_url($fullUrl);
 
         if ( strpos( $fullUrl, site_url() ) === false ) {
@@ -717,11 +717,11 @@ trait RapidLoad_Utils {
         return $relativeUrl;
     }
 
-    static function is_wp_cli() {
+    static function rapidload_util_is_wp_cli() {
         return defined('WP_CLI') && WP_CLI;
     }
 
-    public static function get_files_in_dir($directory){
+    public static function rapidload_util_get_files_in_dir($directory){
 
         $files = [];
         $items = scandir($directory);
@@ -734,7 +734,7 @@ trait RapidLoad_Utils {
             $path = $directory . DIRECTORY_SEPARATOR . $item;
 
             if (is_dir($path)) {
-                $files = array_merge($files,  self::get_files_in_dir($path));
+                $files = array_merge($files,  self::rapidload_util_get_files_in_dir($path));
             } else {
                 $files[] = $path;
             }
@@ -744,7 +744,7 @@ trait RapidLoad_Utils {
 
     }
 
-    public function transformRegexToPaths($regex) {
+    public function rapidload_util_transformRegexToPaths($regex) {
         $pattern = trim($regex, '/');
         $paths = explode('|', $pattern);
         $paths = array_map(function($path) {
@@ -755,7 +755,7 @@ trait RapidLoad_Utils {
         return $paths;
     }
 
-    function transformPathsToRegex(array $paths) {
+    function rapidload_util_transformPathsToRegex(array $paths) {
         $escapedPaths = array_map(function($path) {
             if (substr($path, 0, 1) !== '/') {
                 $path = '/' . $path;
@@ -766,11 +766,11 @@ trait RapidLoad_Utils {
         return $regexPattern;
     }
 
-    function is_serialized($string) {
+    function rapidload_util_is_serialized($string) {
         return ($string === serialize(false) || @unserialize($string) !== false);
     }
 
-    public static function debug_log(...$objects)
+    public static function rapidload_util_debug_log(...$objects)
     {
         if(defined('RAPIDLOAD_DEBUG_LOG') && RAPIDLOAD_DEBUG_LOG){
             foreach ($objects as $object) {
@@ -783,7 +783,7 @@ trait RapidLoad_Utils {
         }
     }
 
-    public static function log_user_agent() {
+    public static function rapidload_util_log_user_agent() {
         if (defined('DOING_CRON') && DOING_CRON) {
             return;
         }
@@ -794,16 +794,16 @@ trait RapidLoad_Utils {
 
         if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REQUEST_URI']) && strpos(sanitize_url(wp_unslash($_SERVER['REQUEST_URI'])), '.') === false) {
             $user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
-            self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . " - " . "User Agent: " . $user_agent);
+            self::rapidload_util_debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . " - " . "User Agent: " . $user_agent);
         } else {
             if (isset($_SERVER['REQUEST_URI'])) {
-                self::debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ));
+                self::rapidload_util_debug_log("Request URI: " . sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ));
             }
-            self::debug_log("User Agent: Not available or not an HTML request");
+            self::rapidload_util_debug_log("User Agent: Not available or not an HTML request");
         }
     }
 
-    public static function create_nonce($nonce_name)
+    public static function rapidload_util_create_nonce($nonce_name)
     {
         if(current_user_can('manage_options')){
             return wp_create_nonce( $nonce_name );
@@ -811,7 +811,7 @@ trait RapidLoad_Utils {
         return '';
     }
 
-     public static function get_active_plugins() {
+     public static function rapidload_util_get_active_plugins() {
         $plugins = (array) get_option('active_plugins', []);
         $plugin_details = [];
 
@@ -837,7 +837,7 @@ trait RapidLoad_Utils {
         return array_column($plugin_details, 'name');
     }
 
-    public function get_cron_spawn() {
+    public function rapidload_util_get_cron_spawn() {
 
         $doing_wp_cron = sprintf( '%.22F', microtime( true ) );
 
