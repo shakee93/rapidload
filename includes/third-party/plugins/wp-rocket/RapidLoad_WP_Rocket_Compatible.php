@@ -14,7 +14,7 @@ class RapidLoad_WP_Rocket_Compatible extends RapidLoad_ThirdParty {
         parent::__construct();
     }
 
-    public function init_hooks(){
+    public function rapidload_init_hooks(){
 
         add_filter('uucss/cache/bust', [$this, 'rapidload_add_cache_busting_params'], 10, 1);
         add_action( 'uucss/cached', [$this, 'rapidload_handle'], 10, 2 );

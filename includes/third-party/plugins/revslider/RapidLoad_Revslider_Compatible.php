@@ -14,7 +14,7 @@ class RapidLoad_Revslider_Compatible extends RapidLoad_ThirdParty {
         parent::__construct();
     }
 
-    public function init_hooks()
+    public function rapidload_init_hooks()
     {
         add_filter('rapidload/image/exclude_from_modern_image_format', [$this, 'rapidload_exclude_from_modern_images'], 10, 2);
         add_filter('uucss/enqueue/before/wrap-inline-js', [$this, 'rapidload_handle_before_wrap_inline_js'], 10, 1);

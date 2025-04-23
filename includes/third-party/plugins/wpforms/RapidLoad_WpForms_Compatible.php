@@ -13,7 +13,7 @@ class RapidLoad_WpForms_Compatible extends RapidLoad_ThirdParty{
         parent::__construct();
     }
 
-    public function init_hooks()
+    public function rapidload_init_hooks()
     {
         add_filter('uucss/url/exclude', [$this, 'rapidload_handle']);
     }

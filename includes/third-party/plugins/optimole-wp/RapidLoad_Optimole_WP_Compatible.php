@@ -14,7 +14,7 @@ class RapidLoad_Optimole_WP_Compatible extends RapidLoad_ThirdParty {
         parent::__construct();
     }
 
-    public function init_hooks()
+    public function rapidload_init_hooks()
     {
         add_filter( 'uucss/enqueue/cdn-url', [$this, 'rapidload_handle'], 10, 1 );
     }

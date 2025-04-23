@@ -18,7 +18,7 @@ class RapidLoad_RankMathSEO_Compatible extends RapidLoad_ThirdParty{
         return false;
     }
 
-    public function init_hooks()
+    public function rapidload_init_hooks()
     {
         add_filter('uucss/sitemap-path', [$this, 'rapidload_handle'], 10, 1);
     }

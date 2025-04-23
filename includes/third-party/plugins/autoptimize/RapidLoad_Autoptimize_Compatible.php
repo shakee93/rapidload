@@ -14,7 +14,7 @@ class RapidLoad_Autoptimize_Compatible extends RapidLoad_ThirdParty {
         parent::__construct();
     }
 
-    public function init_hooks(){
+    public function rapidload_init_hooks(){
 
         /*add_filter('uucss/cache-base-dir', function ($value){
             return trailingslashit(defined('AUTOPTIMIZE_CACHE_CHILD_DIR') ? AUTOPTIMIZE_CACHE_CHILD_DIR : '/cache/autoptimize/');
