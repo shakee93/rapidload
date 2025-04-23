@@ -35,7 +35,7 @@ class RapidLoad_Enqueue {
                 return;
             }
 
-            $this->url = $this->get_current_url();
+            $this->url = $this->rapidload_util_get_current_url();
 
             $this->url = $this->transform_url($this->url);
 

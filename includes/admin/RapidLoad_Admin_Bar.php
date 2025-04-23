@@ -70,7 +70,7 @@ class RapidLoad_Admin_Bar {
 
         wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
 
-        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
+        $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->rapidload_util_get_current_url();
 
         if($this->rapidload_is_admin_url($current_url)){
             $current_url = site_url();
@@ -112,7 +112,7 @@ class RapidLoad_Admin_Bar {
                     'href' => wp_nonce_url( add_query_arg( array(
                         '_cache'  => 'rapidload-cache',
                         '_action' => 'clearurl',
-                        '_url' => $this->transform_url($this->get_current_url()),
+                        '_url' => $this->transform_url($this->rapidload_util_get_current_url()),
                     ) ), 'rapidload_cache_clear_cache_nonce' ),
                     'icon' => 'clear_page_cache'
                 ],

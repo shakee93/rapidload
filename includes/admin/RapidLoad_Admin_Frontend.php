@@ -872,7 +872,7 @@ class RapidLoad_Admin_Frontend
             'page_optimizer_base' => UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
             'plugin_url' => UUCSS_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'optimizer_url' => $this->transform_url($this->get_current_url()),
+            'optimizer_url' => $this->transform_url($this->rapidload_util_get_current_url()),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
         );
 

@@ -71,7 +71,7 @@ class RapidLoad_Base
 
         add_action('plugins_loaded', function (){
 
-            RapidLoad_DB::update_db_version();
+            RapidLoad_DB::rapidload_db_update_db_version();
 
             if (isset($_REQUEST['rapidload_preview'])) {
                 add_filter('determine_current_user', function (){
@@ -194,7 +194,7 @@ class RapidLoad_Base
 
     function merge_job_options($option){
 
-        $this->url = $this->get_current_url();
+        $this->url = $this->rapidload_util_get_current_url();
 
         $this->url = $this->transform_url($this->url);
 
