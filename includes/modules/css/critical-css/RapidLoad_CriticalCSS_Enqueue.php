@@ -82,7 +82,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
         $data = CriticalCSS::extract_file_data($data);
 
-        $file_exist = $this->file_system->exists(CriticalCSS::$base_dir . '/' . $data['file_name']);
+        $file_exist = $this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $data['file_name']);
 
         if(!$file_exist &&
             ($this->job_data->attempts <=2 || (time() - strtotime($this->job_data->created_at)) > 86400)) {
@@ -145,11 +145,11 @@ class RapidLoad_CriticalCSS_Enqueue
                 continue;
             }
 
-            if(isset($sheet->id) && $this->str_contains($sheet->id, 'rapidload-google-font')){
+            if(isset($sheet->id) && $this->rapidload_util_str_contains($sheet->id, 'rapidload-google-font')){
                 continue;
             }
 
-            if(isset($sheet->href) && $this->str_contains($sheet->href, 'fonts.googleapis.com')){
+            if(isset($sheet->href) && $this->rapidload_util_str_contains($sheet->href, 'fonts.googleapis.com')){
                 continue;
             }
 
@@ -184,7 +184,7 @@ class RapidLoad_CriticalCSS_Enqueue
         for ($i = 1; $i <= $file_count; $i++) {
             $file_name = ($i === 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
             $index = ($i === 1) ? "" : "-" . $i;
-            if($this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)){
+            if($this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file_name)){
                 $part = $this->file_system->get_contents(CriticalCSS::$base_dir . '/' . $file_name );
                 $part = apply_filters('rapidload/cpcss/minify', $part, $mode);
                 if(!empty($part)){

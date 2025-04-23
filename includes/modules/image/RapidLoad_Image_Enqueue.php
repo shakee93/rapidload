@@ -86,7 +86,7 @@ class RapidLoad_Image_Enqueue
 
                 foreach ( $images as $img ) {
 
-                    if($this->str_contains($img->{$attribute['attr']}, RapidLoad_Image::$image_indpoint)){
+                    if($this->rapidload_util_str_contains($img->{$attribute['attr']}, RapidLoad_Image::$image_indpoint)){
                         continue;
                     }
 
@@ -187,7 +187,7 @@ class RapidLoad_Image_Enqueue
 
             foreach ( $videos as $video ) {
 
-                if($this->str_contains($video->{'poster'}, RapidLoad_Image::$image_indpoint)){
+                if($this->rapidload_util_str_contains($video->{'poster'}, RapidLoad_Image::$image_indpoint)){
                     continue;
                 }
 
@@ -240,7 +240,7 @@ class RapidLoad_Image_Enqueue
 
                 foreach ($style_lines as $style_line) {
 
-                    if (!$this->str_contains($style_line, "background")) {
+                    if (!$this->rapidload_util_str_contains($style_line, "background")) {
                         $_style_lines[] = $style_line;
                     } else {
                         preg_match_all('/background[^;]*url[ ]?\([\'|"]?(.*?\.(?:png|jpg|jpeg|webp))/', $style_line, $matches, PREG_SET_ORDER);
@@ -562,7 +562,7 @@ class RapidLoad_Image_Enqueue
 
     public function is_lcp_image($url){
 
-        if($this->str_contains($url, RapidLoad_Image::$image_indpoint)){
+        if($this->rapidload_util_str_contains($url, RapidLoad_Image::$image_indpoint)){
 
             $url = str_replace(RapidLoad_Image::$image_indpoint, "", $url);
 
@@ -586,7 +586,7 @@ class RapidLoad_Image_Enqueue
 
                     $_image = preg_replace('/-\d+x\d+/', '', $image);
 
-                    if($this->str_contains($_image,$url)){
+                    if($this->rapidload_util_str_contains($_image,$url)){
                         $found = true;
                         break;
                     }
@@ -765,7 +765,7 @@ class RapidLoad_Image_Enqueue
 
             if(!$excluded){
 
-                $excluded = $this->str_contains($file, $exclude_file);
+                $excluded = $this->rapidload_util_str_contains($file, $exclude_file);
 
             }
 

@@ -190,7 +190,7 @@ class RapidLoad_UnusedCSS_Enqueue
                 $_frontend_data['href'] =  $sheet->href;
 
                 // check if we found a script index and the file exists
-                if ( is_numeric( $key ) && $this->file_system->exists( UnusedCSS::$base_dir . '/' . $this->files[ $key ]['uucss'] ) ) {
+                if ( is_numeric( $key ) && $this->file_system->rapidload_file_exists( UnusedCSS::$base_dir . '/' . $this->files[ $key ]['uucss'] ) ) {
 
                     $uucss_file = $this->files[ $key ]['uucss'];
 

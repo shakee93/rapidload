@@ -23,9 +23,9 @@ class RapidLoad_Elementor_Compatible extends RapidLoad_ThirdParty{
         $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
-            ( $this->str_contains($url_parts['query'], 'elementor-preview') || 
-                $this->str_contains($url_parts['query'], 'preview_id') ||
-                $this->str_contains($url_parts['query'], 'elementor_library'))
+            ( $this->rapidload_util_str_contains($url_parts['query'], 'elementor-preview') || 
+                $this->rapidload_util_str_contains($url_parts['query'], 'preview_id') ||
+                $this->rapidload_util_str_contains($url_parts['query'], 'elementor_library'))
         ){
             return false;
         }

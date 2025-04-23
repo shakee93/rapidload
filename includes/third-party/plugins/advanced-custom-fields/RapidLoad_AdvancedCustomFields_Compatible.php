@@ -23,7 +23,7 @@ class RapidLoad_AdvancedCustomFields_Compatible extends RapidLoad_ThirdParty{
         $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
-            ( $this->str_contains($url_parts['query'], 'post_type=acf_field') )
+            ( $this->rapidload_util_str_contains($url_parts['query'], 'post_type=acf_field') )
         ){
             return false;
         }

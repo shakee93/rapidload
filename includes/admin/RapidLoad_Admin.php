@@ -1074,7 +1074,7 @@ class RapidLoad_Admin
 
         $file_system = new RapidLoad_FileSystem();
 
-        if(!$file_system->exists(self::rapidload_util_get_wp_content_dir() . '/uploads/rapidload/')){
+        if(!$file_system->rapidload_file_exists(self::rapidload_util_get_wp_content_dir() . '/uploads/rapidload/')){
             wp_send_json_success(true);
         }
 
@@ -1088,7 +1088,7 @@ class RapidLoad_Admin
 
         $file_system = new RapidLoad_FileSystem();
 
-        if(!$file_system->exists(UUCSS_LOG_DIR . 'debug.log')){
+        if(!$file_system->rapidload_file_exists(UUCSS_LOG_DIR . 'debug.log')){
             wp_send_json_success([]);
         }
 

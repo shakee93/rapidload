@@ -56,7 +56,7 @@ class RapidLoad_CDN_Enqueue
                 continue;
             }
 
-            if($this->str_contains($link->href, site_url())){
+            if($this->rapidload_util_str_contains($link->href, site_url())){
 
                 if($this->is_cdn_enabled()){
                     $link->href = str_replace(trailingslashit(site_url()),trailingslashit($this->options['uucss_cdn_url']),$link->href);
@@ -70,7 +70,7 @@ class RapidLoad_CDN_Enqueue
 
         foreach ($scripts as $script){
 
-            if($this->str_contains($script->src, site_url())){
+            if($this->rapidload_util_str_contains($script->src, site_url())){
 
                 if($this->is_cdn_enabled()){
                     $script->src = str_replace(trailingslashit(site_url()),trailingslashit($this->options['uucss_cdn_url']),$script->src);

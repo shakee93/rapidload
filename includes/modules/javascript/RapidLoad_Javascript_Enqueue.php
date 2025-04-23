@@ -238,7 +238,7 @@ class RapidLoad_Javascript_Enqueue
                 }
             }else{
 
-                if($this->str_contains($link->src,"rapidload.frontend.min.js") || ($original_src && $this->str_contains($original_src,"rapidload.frontend.min.js"))){
+                if($this->rapidload_util_str_contains($link->src,"rapidload.frontend.min.js") || ($original_src && $this->rapidload_util_str_contains($original_src,"rapidload.frontend.min.js"))){
                     return;
                 }
 
@@ -254,7 +254,7 @@ class RapidLoad_Javascript_Enqueue
 
         }else if(self::is_inline_script($link)){
 
-            if(isset($link->id) && $this->str_contains($link->id,"rapidload-")){
+            if(isset($link->id) && $this->rapidload_util_str_contains($link->id,"rapidload-")){
                 return;
             }
 
@@ -311,16 +311,16 @@ class RapidLoad_Javascript_Enqueue
             //return;
         }
 
-        if($this->str_contains($filename, ".min.js")){
+        if($this->rapidload_util_str_contains($filename, ".min.js")){
             $filename = str_replace(".min.js","-{$version}.min.js", $filename);
-        }else if($this->str_contains($filename, ".js" )){
+        }else if($this->rapidload_util_str_contains($filename, ".js" )){
             $filename = str_replace(".js","-{$version}.min.js", $filename);
         }
 
         $minified_file = JavaScript::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/js-minified-url', $filename);
 
-        $file_exist = $this->file_system->exists($minified_file);
+        $file_exist = $this->file_system->rapidload_file_exists($minified_file);
 
         if(!$file_exist){
 
@@ -470,7 +470,7 @@ class RapidLoad_Javascript_Enqueue
 
             if(!$excluded){
 
-                $excluded = $this->str_contains($file, $exclude_file);
+                $excluded = $this->rapidload_util_str_contains($file, $exclude_file);
 
             }
 
@@ -502,7 +502,7 @@ class RapidLoad_Javascript_Enqueue
 
             if(!$excluded){
 
-                $excluded = $this->str_contains($file, $_file);
+                $excluded = $this->rapidload_util_str_contains($file, $_file);
 
             }
 

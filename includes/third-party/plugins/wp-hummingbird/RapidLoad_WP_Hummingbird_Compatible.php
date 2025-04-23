@@ -51,7 +51,7 @@ class RapidLoad_WP_Hummingbird_Compatible extends RapidLoad_ThirdParty{
         $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
-            ( $this->str_contains($url_parts['query'], 'post_type=wphb_minify_group'))
+            ( $this->rapidload_util_str_contains($url_parts['query'], 'post_type=wphb_minify_group'))
         ){
             return false;
         }

@@ -549,7 +549,7 @@ class RapidLoad_UnusedCSS
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
-        if ( $this->file_system->exists( self::$base_dir ) ) {
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ) {
             return true;
         }
 
@@ -573,7 +573,7 @@ class RapidLoad_UnusedCSS
 
         UnusedCSS_DB::clear_data();
 
-        if ( $this->file_system->exists( self::$base_dir ) ){
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
         }
 

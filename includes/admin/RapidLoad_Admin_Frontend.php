@@ -514,11 +514,11 @@ class RapidLoad_Admin_Frontend
         if(isset($files) && !empty($files)){
 
             $cached_files = array_filter($files, function ($file){
-                return !$this->str_contains($file['original'], '//inline-style@');
+                return !$this->rapidload_util_str_contains($file['original'], '//inline-style@');
             });
 
             $original_files = array_filter($files, function ($file){
-                return !$this->str_contains($file['original'], '//inline-style@');
+                return !$this->rapidload_util_str_contains($file['original'], '//inline-style@');
             });
         }
 

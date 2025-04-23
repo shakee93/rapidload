@@ -65,7 +65,7 @@ class RapidLoad_MinifyCSS
         $files = scandir($directory_path);
         foreach ($files as $file) {
             $file_path = $directory_path . '/' . $file;
-            if (is_file($file_path) && $this->str_contains($file_path, 'rpd-inline-style-') && (filemtime($file_path) < ($current_time - ($days_to_keep * 86400)))) {
+            if (is_file($file_path) && $this->rapidload_util_str_contains($file_path, 'rpd-inline-style-') && (filemtime($file_path) < ($current_time - ($days_to_keep * 86400)))) {
                 wp_delete_file($file_path);
             }
         }
@@ -73,7 +73,7 @@ class RapidLoad_MinifyCSS
 
     public function vanish() {
 
-        if ( $this->file_system->exists( self::$base_dir ) ){
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
         }
 
@@ -107,7 +107,7 @@ class RapidLoad_MinifyCSS
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
-        if ( $this->file_system->exists( self::$base_dir ) ) {
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ) {
             return true;
         }
 

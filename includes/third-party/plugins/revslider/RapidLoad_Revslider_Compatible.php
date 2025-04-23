@@ -30,7 +30,7 @@ class RapidLoad_Revslider_Compatible extends RapidLoad_ThirdParty {
 
     public function rapidload_exclude_from_modern_images($value, $src){
 
-        if($this->str_contains($src, '/revslider/public/assets/assets/dummy.png')){
+        if($this->rapidload_util_str_contains($src, '/revslider/public/assets/assets/dummy.png')){
             //return true;
         }
 

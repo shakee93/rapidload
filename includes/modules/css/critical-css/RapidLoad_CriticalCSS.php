@@ -140,7 +140,7 @@ class RapidLoad_CriticalCSS
 
         CriticalCSS_DB::clear_data();
 
-        if ( $this->file_system->exists( self::$base_dir ) ){
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
         }
 
@@ -438,7 +438,7 @@ class RapidLoad_CriticalCSS
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
-        if ( $this->file_system->exists( self::$base_dir ) ) {
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ) {
             return true;
         }
 
@@ -478,13 +478,13 @@ class RapidLoad_CriticalCSS
             }
         }
 
-        if($this->file_system->exists(CriticalCSS::$base_dir)){
+        if($this->file_system->rapidload_file_exists(CriticalCSS::$base_dir)){
             if ($handle = opendir(CriticalCSS::$base_dir)) {
                 while (false !== ($file = readdir($handle))) {
                     if ('.' === $file) continue;
                     if ('..' === $file) continue;
 
-                    if(!in_array($file, $used_files) && $this->file_system->exists(CriticalCSS::$base_dir . '/' . $file)){
+                    if(!in_array($file, $used_files) && $this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file)){
                         $this->file_system->delete(CriticalCSS::$base_dir . '/' . $file);
                     }
                 }

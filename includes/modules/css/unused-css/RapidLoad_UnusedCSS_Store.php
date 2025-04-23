@@ -181,7 +181,7 @@ class RapidLoad_UnusedCSS_Store
                 continue;
             }
 
-            if(!$this->str_contains($file->file,'//inline-style@'))
+            if(!$this->rapidload_util_str_contains($file->file,'//inline-style@'))
             {
 
                 $file->css = apply_filters('rapidload/cache_file_creating/css', $file->css);

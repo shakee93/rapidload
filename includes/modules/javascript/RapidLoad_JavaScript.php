@@ -72,7 +72,7 @@ class RapidLoad_JavaScript
 
     public function vanish() {
 
-        if ( $this->file_system->exists( self::$base_dir ) ){
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
         }
 
@@ -110,7 +110,7 @@ class RapidLoad_JavaScript
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
-        if ( $this->file_system->exists( self::$base_dir ) ) {
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ) {
             return true;
         }
 

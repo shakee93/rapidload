@@ -189,7 +189,7 @@ class RapidLoad_CriticalCSS_Store
 
         if($file_character_length === "0" || $file_character_length === 0){
             $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
-            if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)) {
+            if (!$this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file_name)) {
                 $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $file_name, $css);
             }
             return $file_name;
@@ -204,7 +204,7 @@ class RapidLoad_CriticalCSS_Store
 
         foreach ($parts as $index => $part) {
             $part_file_name = $index === 0 ? $file_name : str_replace('.css', '-' . ($index + 1) . '.css', $file_name);
-            if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $part_file_name)) {
+            if (!$this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $part_file_name)) {
                 $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $part_file_name, $part);
             }
         }

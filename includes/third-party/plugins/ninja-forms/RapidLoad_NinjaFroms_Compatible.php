@@ -21,7 +21,7 @@ class RapidLoad_NinjaFroms_Compatible extends RapidLoad_ThirdParty{
     public function rapidload_handle($args)
     {
 
-        if($this->str_contains("/nf_sub/", $args)){
+        if($this->rapidload_util_str_contains("/nf_sub/", $args)){
             return false;
         }
 

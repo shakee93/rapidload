@@ -84,7 +84,7 @@ class RapidLoad_MinifyCSS_Enqueue
             return;
         }
 
-        if(!$this->str_contains($link->href, ".css")){
+        if(!$this->rapidload_util_str_contains($link->href, ".css")){
             return;
         }
 
@@ -108,16 +108,16 @@ class RapidLoad_MinifyCSS_Enqueue
             return;
         }
 
-        if($this->str_contains($filename, ".min.css")){
+        if($this->rapidload_util_str_contains($filename, ".min.css")){
             return;
-        }else if($this->str_contains($filename, ".css")){
+        }else if($this->rapidload_util_str_contains($filename, ".css")){
             $filename = str_replace(".css","-{$version}.min.css", $filename);
         }
 
         $minified_file = MinifyCSS::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/css-minified-url', $filename);
 
-        $file_exist = $this->file_system->exists($minified_file);
+        $file_exist = $this->file_system->rapidload_file_exists($minified_file);
 
         if(!$file_exist){
             $minifier = new \MatthiasMullie\Minify\CSS($file_path);
@@ -137,24 +137,6 @@ class RapidLoad_MinifyCSS_Enqueue
 
     public function minify_inline_css($style){
 
-        /*$version = substr(md5($style->innertext), 0, 12);
-
-        $filename = $version . '.min.css';
-
-        $minified_file = MinifyCSS::$base_dir . '/rpd-inline-style-' . $filename;
-
-        $file_exist = $this->file_system->exists($minified_file);
-
-        if(!$file_exist){
-            $minifier = new \MatthiasMullie\Minify\CSS();
-            $minifier->add($style->innertext);
-            $minifier->minify($minified_file);
-
-        }
-
-        if($this->file_system->exists($minified_file)){
-            $style->__set('innertext',file_get_contents($minified_file));
-        }*/
         $minifier = new \MatthiasMullie\Minify\CSS();
         $minifier->add($style->innertext);
         $style->__set('innertext',$minifier->minify());
@@ -170,9 +152,9 @@ class RapidLoad_MinifyCSS_Enqueue
 
         foreach ( $files as $excluded_file ) {
 
-            if($this->str_contains( trim($excluded_file), '*' ) && self::is_path_glob_matched($file, trim($excluded_file))){
+            if($this->rapidload_util_str_contains( trim($excluded_file), '*' ) && self::is_path_glob_matched($file, trim($excluded_file))){
                 return true;
-            }else if ( $this->str_contains( $file, trim($excluded_file) ) ) {
+            }else if ( $this->rapidload_util_str_contains( $file, trim($excluded_file) ) ) {
                 return true;
             }
 

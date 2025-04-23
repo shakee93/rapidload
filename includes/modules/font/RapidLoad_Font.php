@@ -84,7 +84,7 @@ class RapidLoad_Font
 
     public function vanish() {
 
-        if ( $this->file_system->exists( self::$base_dir ) ){
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
         }
 
@@ -152,7 +152,7 @@ class RapidLoad_Font
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
         self::$base_url = apply_filters('uucss/enqueue/cdn',untrailingslashit(self::rapidload_util_get_wp_content_url($this->base)));
 
-        if ( $this->file_system->exists( self::$base_dir ) ) {
+        if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ) {
             return true;
         }
 

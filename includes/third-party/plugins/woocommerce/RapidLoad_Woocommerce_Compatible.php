@@ -64,8 +64,8 @@ class RapidLoad_Woocommerce_Compatible extends RapidLoad_ThirdParty{
         $url_parts = wp_parse_url( $args );
 
         if(isset($url_parts['query']) &&
-            ( $this->str_contains($url_parts['query'], 'post_type=shop_coupon') ||
-                $this->str_contains($url_parts['query'], 'post_type=shop_order')
+            ( $this->rapidload_util_str_contains($url_parts['query'], 'post_type=shop_coupon') ||
+                $this->rapidload_util_str_contains($url_parts['query'], 'post_type=shop_order')
             )
         ){
             return false;
@@ -93,7 +93,7 @@ class RapidLoad_Woocommerce_Compatible extends RapidLoad_ThirdParty{
 
             foreach ($excludable_urls as $key => $excludable_url){
 
-                if(!$this->str_contains($args, rtrim($excludable_url,"/"))){
+                if(!$this->rapidload_util_str_contains($args, rtrim($excludable_url,"/"))){
                     unset($excludable_urls[$key]);
                 }
 

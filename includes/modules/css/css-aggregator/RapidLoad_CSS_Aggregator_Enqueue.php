@@ -92,7 +92,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
             return;
         }
 
-        if(!$this->str_contains($link->href, ".css")){
+        if(!$this->rapidload_util_str_contains($link->href, ".css")){
             return;
         }
 

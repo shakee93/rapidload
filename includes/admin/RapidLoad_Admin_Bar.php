@@ -235,7 +235,7 @@ class RapidLoad_Admin_Bar {
 
     function rapidload_is_admin_url($url){
         $_url = wp_parse_url(untrailingslashit(admin_url()));
-        if(isset($_url['path']) && $this->str_contains($url, $_url['path'])){
+        if(isset($_url['path']) && $this->rapidload_util_str_contains($url, $_url['path'])){
             return true;
         }
         return false;

@@ -180,7 +180,7 @@ class RapidLoad_Enqueue {
 
                 if(gettype($dom) !== "string"){
                     foreach ($domains as $domain){
-                        if(!$this->str_contains(site_url(), $domain)){
+                        if(!$this->rapidload_util_str_contains(site_url(), $domain)){
                             $head = $dom->find('head', 0);
                             $preconnect = '<link href="//' . $domain . '" rel="dns-prefetch" crossorigin>';
                             $first_child = $head->first_child();
@@ -254,10 +254,10 @@ class RapidLoad_Enqueue {
 
                 }
 
-                if(self::str_contains( $pattern, '*' ) && self::is_path_glob_matched(urldecode($url), $pattern)){
+                if(self::rapidload_util_str_contains( $pattern, '*' ) && self::is_path_glob_matched(urldecode($url), $pattern)){
                     $this->log( 'skipped glob pattern match : ' . $url );
                     return false;
-                }else if ( self::str_contains( urldecode($url), $pattern ) ) {
+                }else if ( self::rapidload_util_str_contains( urldecode($url), $pattern ) ) {
                     $this->log( 'skipped string contains : ' . $url );
                     return false;
                 }
@@ -267,7 +267,7 @@ class RapidLoad_Enqueue {
 
         $url_parts = wp_parse_url( $url );
 
-        if(isset($url_parts['query']) && $this->str_contains($url_parts['query'], 'customize_changeset_uuid')){
+        if(isset($url_parts['query']) && $this->rapidload_util_str_contains($url_parts['query'], 'customize_changeset_uuid')){
             $this->log( 'skipped query contains: ' . $url );
             return false;
         }

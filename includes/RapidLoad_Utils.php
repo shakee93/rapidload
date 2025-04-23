@@ -111,7 +111,7 @@ trait RapidLoad_Utils {
 
         $log_instance = self::rapidload_util_get_log_instance();
 
-        if($log_instance->exists(UUCSS_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(UUCSS_LOG_DIR .'debug.log'))){
+        if($log_instance->rapidload_file_exists(UUCSS_LOG_DIR .'debug.log') && !empty($log_instance->rapidload_file_get_contents(UUCSS_LOG_DIR .'debug.log'))){
             $data = ",\n" . $data;
         }
 
@@ -470,11 +470,11 @@ trait RapidLoad_Utils {
         $uucss_size = 0;
         $cpcss_size = 0;
 
-        if ( $file_system->exists( UnusedCSS::$base_dir ) ) {
+        if ( $file_system->rapidload_file_exists( UnusedCSS::$base_dir ) ) {
             $uucss_size = $this->rapidload_util_dirSize( UnusedCSS::$base_dir );
         }
 
-        if ( $file_system->exists( CriticalCSS::$base_dir ) ) {
+        if ( $file_system->rapidload_file_exists( CriticalCSS::$base_dir ) ) {
             $cpcss_size = $this->rapidload_util_dirSize( CriticalCSS::$base_dir );
         }
 

@@ -251,7 +251,7 @@ class RapidLoad_Base
 
         $file_system = self::get_log_instance();
 
-        if ( $file_system->exists( UUCSS_LOG_DIR ) ) {
+        if ( $file_system->rapidload_file_exists( UUCSS_LOG_DIR ) ) {
             return true;
         }
 
@@ -259,7 +259,7 @@ class RapidLoad_Base
             return false;
         }
 
-        $created = $file_system->mkdir( UUCSS_LOG_DIR , 0755, !$file_system->exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
+        $created = $file_system->mkdir( UUCSS_LOG_DIR , 0755, !$file_system->rapidload_file_exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
 
         if (!$created || ! $file_system->is_writable( UUCSS_LOG_DIR ) || ! $file_system->is_readable( UUCSS_LOG_DIR ) ) {
             return false;
