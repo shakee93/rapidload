@@ -163,11 +163,11 @@ class RapidLoad_UnusedCSS
     public function uucss_notfound_fallback(){
 
         $original_request = isset($_SERVER['REQUEST_URI']) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '/';
-        $original_path = self::get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
+        $original_path = self::rapidload_util_get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
 
         $options = RapidLoad_Base::rapidload_fetch_options(false);
 
-        if ( strpos( $original_request, wp_basename( self::get_wp_content_dir() ) . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' ) !== false
+        if ( strpos( $original_request, wp_basename( self::rapidload_util_get_wp_content_dir() ) . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' ) !== false
             && !file_exists($original_path)
             //&& isset($options['uucss_disable_add_to_re_queue']) && $options['uucss_disable_add_to_re_queue'] === "1"
         ) {
@@ -239,10 +239,10 @@ class RapidLoad_UnusedCSS
     public function get_cached_file( $file_url, $cdn = null ) {
 
         if ( ! $cdn || empty( $cdn ) ) {
-            $cdn = self::get_wp_content_url();
+            $cdn = self::rapidload_util_get_wp_content_url();
         } else {
 
-            $url_parts = wp_parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::rapidload_util_get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 
@@ -547,7 +547,7 @@ class RapidLoad_UnusedCSS
 
     public function init_base_dir() {
 
-        self::$base_dir = self::get_wp_content_dir() . $this->base;
+        self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
         if ( $this->file_system->exists( self::$base_dir ) ) {
             return true;

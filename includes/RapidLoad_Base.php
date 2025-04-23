@@ -135,7 +135,7 @@ class RapidLoad_Base
 
             if(is_admin()){
 
-                RapidLoad_DB::check_db_updates();
+                RapidLoad_DB::rapidload_db_check_db_updates();
 
                 self::enqueueGlobalScript();
 

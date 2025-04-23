@@ -436,7 +436,7 @@ class RapidLoad_CriticalCSS
 
     public function init_base_dir() {
 
-        self::$base_dir = self::get_wp_content_dir() . $this->base;
+        self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
         if ( $this->file_system->exists( self::$base_dir ) ) {
             return true;

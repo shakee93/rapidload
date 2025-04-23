@@ -51,7 +51,7 @@ class RapidLoad_CSS_Aggregator
 
     public function init_base_dir() {
 
-        self::$base_dir = self::get_wp_content_dir() . $this->base;
+        self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
         if ( $this->file_system->exists( self::$base_dir ) ) {
             return true;
@@ -80,10 +80,10 @@ class RapidLoad_CSS_Aggregator
     public function get_cached_file( $file_url, $cdn = null ) {
 
         if ( ! $cdn || empty( $cdn ) ) {
-            $cdn = self::get_wp_content_url();
+            $cdn = self::rapidload_util_get_wp_content_url();
         } else {
 
-            $url_parts = wp_parse_url( self::get_wp_content_url() );
+            $url_parts = wp_parse_url( self::rapidload_util_get_wp_content_url() );
 
             $cdn = rtrim( $cdn, '/' ) . (isset($url_parts['path']) ? rtrim( $url_parts['path'], '/' ) : '/wp-content');
 
