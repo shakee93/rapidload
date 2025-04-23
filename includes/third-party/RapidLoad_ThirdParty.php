@@ -13,17 +13,17 @@ abstract class RapidLoad_ThirdParty
 
     public function __construct(){
 
-        if($this->is_exists()){
-            $this->register_plugin();
-            $this->init_hooks();
+        if($this->rapidload_is_exists()){
+            $this->rapidload_register_plugin();
+            $this->rapidload_init_hooks();
         }
     }
 
-    abstract public function is_mu_plugin();
+    abstract public function rapidload_is_mu_plugin();
 
-    abstract public function init_hooks();
+    abstract public function rapidload_init_hooks();
 
-    public function is_exists(){
+    public function rapidload_is_exists(){
         include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         if(function_exists('is_plugin_active') && is_plugin_active($this->plugin) || $this->is_mu_plugin()){
             return true;
@@ -31,9 +31,9 @@ abstract class RapidLoad_ThirdParty
         return false;
     }
 
-    abstract public function handle($args);
+    abstract public function rapidload_handle($args);
 
-    public function register_plugin(){
+    public function rapidload_register_plugin(){
 
         add_filter('uucss/third-party/plugins', function ($plugins){
             $plugins[] = [
@@ -47,7 +47,7 @@ abstract class RapidLoad_ThirdParty
 
     }
 
-    public static function plugin_exists($plugin){
+    public static function rapidload_plugin_exists($plugin){
         $third_party_lugins = apply_filters('uucss/third-party/plugins', []);
         if(empty($third_party_lugins)){
             return false;
@@ -56,7 +56,7 @@ abstract class RapidLoad_ThirdParty
         return isset($key) && is_numeric($key);
     }
 
-    public static function initialize(){
+    public static function rapidload_initialize(){
 
         $third_party_plugins_dir = plugin_dir_path(UUCSS_PLUGIN_FILE) . '/includes/third-party/plugins';
 
