@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) or die();
 class RapidLoad_htaccess
 {
 
-    public static function update_htaccess($remove = false){
+    public static function rapidload_update_htaccess($remove = false){
 
         global $is_apache;
 
@@ -36,16 +36,16 @@ class RapidLoad_htaccess
             ]);
         }
 
-        $has_wp_rules = self::has_wp_rules( $htaccess_content );
+        $has_wp_rules = self::rapidload_has_wp_rules( $htaccess_content );
 
         $htaccess_content = preg_replace( '/\s*# BEGIN RapidLoad.*# END RapidLoad\s*?/isU', PHP_EOL . PHP_EOL, $htaccess_content );
         $htaccess_content = ltrim( $htaccess_content );
 
         if ( !$remove ) {
-            $htaccess_content = self::get_htaccess_marker() . PHP_EOL . $htaccess_content;
+            $htaccess_content = self::rapidload_get_htaccess_marker() . PHP_EOL . $htaccess_content;
         }
 
-        if ( $has_wp_rules && ! self::has_wp_rules( $htaccess_content ) ) {
+        if ( $has_wp_rules && ! self::rapidload_has_wp_rules( $htaccess_content ) ) {
             wp_send_json_success([
                 'status' => 'success',
             ]);
@@ -60,18 +60,18 @@ class RapidLoad_htaccess
         ]);
     }
 
-    public static function get_htaccess_marker(){
+    public static function rapidload_get_htaccess_marker(){
 
         $content = '# BEGIN RapidLoad v' . UUCSS_VERSION . PHP_EOL;
 
         $content .= apply_filters( 'before_rapidload_htaccess_rules', '' );
 
-        $content .= self::get_htaccess_charset();
-        $content .= self::get_htaccess_etag();
-        $content .= self::get_htaccess_web_fonts_access();
-        $content .= self::get_htaccess_files_match();
-        $content .= self::get_htaccess_mod_expires();
-        $content .= self::get_htaccess_mod_deflate();
+        $content .= self::rapidload_get_htaccess_charset();
+        $content .= self::rapidload_get_htaccess_etag();
+        $content .= self::rapidload_get_htaccess_web_fonts_access();
+        $content .= self::rapidload_get_htaccess_files_match();
+        $content .= self::rapidload_get_htaccess_mod_expires();
+        $content .= self::rapidload_get_htaccess_mod_deflate();
 
         $content .= apply_filters( 'after_rapidload_htaccess_rules', '' );
 
@@ -82,7 +82,7 @@ class RapidLoad_htaccess
         return $content;
     }
 
-    public static function get_htaccess_mod_deflate() {
+    public static function rapidload_get_htaccess_mod_deflate() {
         $rules = '# Gzip compression' . PHP_EOL;
         $rules .= '<IfModule mod_deflate.c>' . PHP_EOL;
         $rules .= '# Active compression' . PHP_EOL;
@@ -92,7 +92,7 @@ class RapidLoad_htaccess
         $rules .= '<IfModule mod_headers.c>' . PHP_EOL;
         $rules .= 'SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding' . PHP_EOL;
         $rules .= 'RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding' . PHP_EOL;
-        $rules .= '# Don’t compress images and other uncompressible content' . PHP_EOL;
+        $rules .= '# Don't compress images and other uncompressible content' . PHP_EOL;
         $rules .= 'SetEnvIfNoCase Request_URI \\' . PHP_EOL;
         $rules .= '\\.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g|mp4|webm|webp|pdf)$ no-gzip dont-vary' . PHP_EOL;
         $rules .= '</IfModule>' . PHP_EOL;
@@ -126,7 +126,7 @@ class RapidLoad_htaccess
         return $rules;
     }
 
-    public static function get_htaccess_mod_expires() {
+    public static function rapidload_get_htaccess_mod_expires() {
         $rules = '';
         $rules .= '<IfModule mod_mime.c>' . PHP_EOL;
         $rules .= '    AddType image/avif                                  avif' . PHP_EOL;
@@ -179,7 +179,7 @@ class RapidLoad_htaccess
         return $rules;
     }    
 
-    public static function get_htaccess_files_match() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+    public static function rapidload_get_htaccess_files_match() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
         $rules = '<IfModule mod_alias.c>' . PHP_EOL;
         $rules .= '<FilesMatch "\.(html|htm|rtf|rtx|txt|xsd|xsl|xml)$">' . PHP_EOL;
         $rules .= '<IfModule mod_headers.c>' . PHP_EOL;
@@ -209,12 +209,12 @@ class RapidLoad_htaccess
         return $rules;
     }
 
-    public static function get_htaccess_etag() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+    public static function rapidload_get_htaccess_etag() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
         $rules  = '# FileETag None is not enough for every server.' . PHP_EOL;
         $rules .= '<IfModule mod_headers.c>' . PHP_EOL;
         $rules .= 'Header unset ETag' . PHP_EOL;
         $rules .= '</IfModule>' . PHP_EOL . PHP_EOL;
-        $rules .= '# Since we’re sending far-future expires, we don’t need ETags for static content.' . PHP_EOL;
+        $rules .= '# Since we're sending far-future expires, we don't need ETags for static content.' . PHP_EOL;
         $rules .= '# developer.yahoo.com/performance/rules.html#etags' . PHP_EOL;
         $rules .= 'FileETag None' . PHP_EOL . PHP_EOL;
 
@@ -230,7 +230,7 @@ class RapidLoad_htaccess
         return $rules;
     }
 
-    public static function get_htaccess_charset() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+    public static function rapidload_get_htaccess_charset() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
         // Get charset of the blog.
         $charset = preg_replace( '/[^a-zA-Z0-9_\-\.:]+/', '', get_bloginfo( 'charset', 'display' ) );
 
@@ -257,7 +257,7 @@ class RapidLoad_htaccess
         return $rules;
     }
 
-    public static function get_htaccess_web_fonts_access() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+    public static function rapidload_get_htaccess_web_fonts_access() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
         if ( !apply_filters('rapidload/cdn/enabled', false) ) {
             return;
         }
@@ -292,7 +292,7 @@ class RapidLoad_htaccess
         return $rules;
     }
 
-    public static function has_wp_rules($content){
+    public static function rapidload_has_wp_rules($content){
         if ( is_multisite() ) {
             $has_wp_rules = strpos( $content, '# add a trailing slash to /wp-admin' ) !== false;
         } else {
@@ -301,7 +301,7 @@ class RapidLoad_htaccess
         return $has_wp_rules;
     }
 
-    public static function has_rapidload_rules() {
+    public static function rapidload_has_rapidload_rules() {
 
         global $is_apache;
 
