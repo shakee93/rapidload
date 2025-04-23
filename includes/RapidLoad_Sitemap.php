@@ -15,7 +15,7 @@ class RapidLoad_Sitemap
 
     }
 
-    function process_site_map($sitemap_url, array $urls = [] ){
+    function rapidload_process_site_map($sitemap_url, array $urls = [] ){
 
         $args = apply_filters(
             'rapidload/sitemap/request',

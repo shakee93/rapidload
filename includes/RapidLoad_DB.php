@@ -11,7 +11,7 @@ abstract class RapidLoad_DB
     static $current_version = "1.4";
     static $map_key = 'uucss_map';
 
-    public static function initialize_site($new_site, $args){
+    public static function rapidload_db_initialize_site($new_site, $args){
 
         if(!isset($new_site)){
             return;
@@ -24,7 +24,7 @@ abstract class RapidLoad_DB
         }
     }
 
-    public static function uninitialize_site($old_site){
+    public static function rapidload_db_uninitialize_site($old_site){
 
         if(!isset($old_site)){
             return;
@@ -33,7 +33,7 @@ abstract class RapidLoad_DB
         self::drop();
     }
 
-    public static function drop(){
+    public static function rapidload_db_drop(){
         global $wpdb;
 
         $tableArray = [
@@ -56,7 +56,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function create_tables($blog_id = ''){
+    public static function rapidload_db_create_tables($blog_id = ''){
         global $wpdb;
 
         $rapidload_uucss_job = $wpdb->prefix . $blog_id . 'rapidload_uucss_job';
@@ -152,11 +152,11 @@ abstract class RapidLoad_DB
         return $wpdb->last_error;
     }
 
-    public static function update_db_version(){
+    public static function rapidload_db_update_db_version(){
         self::$current_version = RapidLoad_Base::get_option( self::$db_option , "0");
     }
 
-    public static function check_db_updates(){
+    public static function rapidload_db_check_db_updates(){
 
         add_action( 'wp_initialize_site', [get_called_class(), 'initialize_site'] , 10 , 2);
 
@@ -186,7 +186,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function rules_migration_two_point_zero(){
+    public static function rapidload_db_rules_migration_two_point_zero(){
 
         try {
             global $wpdb;
@@ -225,7 +225,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function update_db(){
+    public static function rapidload_db_update_db(){
 
         if(!self::is_wp_cli()){
             self::verify_nonce();
@@ -260,7 +260,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function seed(){
+    public static function rapidload_db_seed(){
 
         global $wpdb;
 
@@ -274,11 +274,11 @@ abstract class RapidLoad_DB
     SELECT id, %s as job_type, 1 as attempts, 0 as hits, %s AS status, created_at  FROM {$wpdb->prefix}rapidload_job", 'cpcss', 'queued'));
     }
 
-    public static function migrated(){
+    public static function rapidload_db_migrated(){
         return true;
     }
 
-    public static function show_db_error($message){
+    public static function rapidload_db_show_db_error($message){
         self::log([
             'log' => $message,
             'type' => 'general',
@@ -286,7 +286,7 @@ abstract class RapidLoad_DB
         ]);
     }
 
-    public static function initialize(){
+    public static function rapidload_db_initialize(){
         $error = self::create_tables();
 
         if(!empty($error)){
@@ -298,7 +298,7 @@ abstract class RapidLoad_DB
         RapidLoad_Base::delete_option(self::$map_key );
     }
 
-    public static function get_rule_names(){
+    public static function rapidload_db_get_rule_names(){
 
         global $wpdb;
 
@@ -313,7 +313,7 @@ abstract class RapidLoad_DB
         return array_unique(array_column($names, 'rule'));
     }
 
-    public static function get_applied_rule($rule, $url){
+    public static function rapidload_db_get_applied_rule($rule, $url){
 
         $rules = self::get_rules_by_rule($rule);
         $applied_rule = false;
@@ -328,7 +328,7 @@ abstract class RapidLoad_DB
         return $applied_rule;
     }
 
-    public static function get_all_rules(){
+    public static function rapidload_db_get_all_rules(){
 
         global $wpdb;
 
@@ -343,7 +343,7 @@ abstract class RapidLoad_DB
         return $rules;
     }   
 
-    public static function get_rules_by_rule($rule){
+    public static function rapidload_db_get_rules_by_rule($rule){
         global $wpdb;
 
         $rules = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s ORDER BY id DESC", $rule), OBJECT);
@@ -357,7 +357,7 @@ abstract class RapidLoad_DB
         return $rules;
     }
 
-    public static function rule_exists_with_error($rule, $regex = '/'){
+    public static function rapidload_db_rule_exists_with_error($rule, $regex = '/'){
         global $wpdb;
 
         $result = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}rapidload_job WHERE rule = %s AND regex = %s", $rule, $regex), OBJECT);
@@ -371,7 +371,7 @@ abstract class RapidLoad_DB
         return isset($result) && !empty($result);
     }
 
-    public static function clear_jobs( $type = 'all', $args = [], $ids = []){
+    public static function rapidload_db_clear_jobs($type = 'all', $args = [], $ids = []){
 
         global $wpdb;
 
@@ -432,7 +432,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function clear_job_data( $type = 'all', $args = [], $ids = []){
+    public static function rapidload_db_clear_job_data($type = 'all', $args = [], $ids = []){
 
         global $wpdb;
 
@@ -495,7 +495,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function get_total_job_count($rules = false){
+    public static function rapidload_db_get_total_job_count($rules = false){
 
         global $wpdb;
 
@@ -520,7 +520,7 @@ abstract class RapidLoad_DB
         return (int)$count;
     }
 
-    public static function get_merged_data($rules = false, $start_from = 0, $limit = 10) {
+    public static function rapidload_db_get_merged_data($rules = false, $start_from = 0, $limit = 10) {
 
         global $wpdb;
 
@@ -575,7 +575,7 @@ abstract class RapidLoad_DB
         return $data;
     }
 
-    public static function transform_link($link, $rule = 'path'){
+    public static function rapidload_db_transform_link($link, $rule = 'path'){
 
         if(empty($link)){
             return null;
@@ -609,7 +609,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function detach_all_rules(){
+    public static function rapidload_db_detach_all_rules(){
 
         global $wpdb;
 
@@ -624,7 +624,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function requeueJob($id){
+    public static function rapidload_db_requeueJob($id){
 
         global $wpdb;
 
@@ -639,7 +639,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function updateUrlJobDataStatusWhere($status = 'queued', $ids = [], $wherStatus = null){
+    public static function rapidload_db_updateUrlJobDataStatusWhere($status = 'queued', $ids = [], $wherStatus = null){
 
         global $wpdb;
 
@@ -669,7 +669,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function updateRuleJobDataStatusWhere($status = 'queued', $ids = [], $wherStatus = null){
+    public static function rapidload_db_updateRuleJobDataStatusWhere($status = 'queued', $ids = [], $wherStatus = null){
 
         global $wpdb;
 
@@ -699,7 +699,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function resetHits($url){
+    public static function rapidload_db_resetHits($url){
 
         global $wpdb;
 
@@ -714,7 +714,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function resetRuleHits($id){
+    public static function rapidload_db_resetRuleHits($id){
 
         global $wpdb;
 
@@ -729,7 +729,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function resetWarningHits(){
+    public static function rapidload_db_resetWarningHits(){
 
         global $wpdb;
 
@@ -744,7 +744,7 @@ abstract class RapidLoad_DB
         return true;
     }
 
-    public static function getUrlsWithWarnings(){
+    public static function rapidload_db_getUrlsWithWarnings(){
 
         global $wpdb;
 
@@ -758,7 +758,7 @@ abstract class RapidLoad_DB
         return [];
     }
 
-    public static function get_first_link(){
+    public static function rapidload_db_get_first_link(){
 
         global $wpdb;
 
@@ -795,7 +795,7 @@ abstract class RapidLoad_DB
 
     }
 
-    public static function flush_all_rapidload($blog_id = ''){
+    public static function rapidload_db_flush_all_rapidload($blog_id = ''){
 
         global $wpdb;
 
@@ -837,7 +837,7 @@ abstract class RapidLoad_DB
         delete_option('rapidload_onboard_skipped');
     }
 
-    public static function get_optimization_count(){
+    public static function rapidload_db_get_optimization_count(){
 
         global $wpdb;
 

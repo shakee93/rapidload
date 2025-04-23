@@ -24,13 +24,13 @@ class RapidLoad_Api
 		$this->apiKey = defined( 'UUCSS_API_KEY' ) ? UUCSS_API_KEY : $key;
 	}
 
-	static function get_key() {
+	static function rapidload_api_get_key() {
 		new self();
 
 		return self::$apiUrl;
 	}
 
-	function get( $endpoint, $data = [] ) {
+	function rapidload_api_get( $endpoint, $data = [] ) {
 
         $data = apply_filters('uucss/request', $data, 'get');
 
@@ -46,7 +46,7 @@ class RapidLoad_Api
 		return $this->handle_response( $response );
 	}
 
-	function post( $endpoint, $data = [] ) {
+	function rapidload_api_post( $endpoint, $data = [] ) {
 
         $data = apply_filters('uucss/request', $data, 'post');
 

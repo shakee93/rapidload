@@ -12,10 +12,10 @@ class RapidLoad_Queue
 
     function __construct()
     {
-        $this->init();
+        $this->rapidload_init();
     }
 
-    function init(){
+    function rapidload_init(){
 
         global $rapidload;
 
@@ -39,15 +39,15 @@ class RapidLoad_Queue
 
         //add_action('uucss_cron_queue', [$this, 'cache'], 2 , 1);
 
-        add_filter( 'cron_schedules', [$this, 'uucss_process_queue_schedule'] );
+        add_filter( 'cron_schedules', [$this, 'rapidload_uucss_process_queue_schedule'] );
 
-        $uucss_cron = $this->cron_exist();
+        $uucss_cron = $this->rapidload_cron_exist();
 
         if ( ! wp_next_scheduled( 'cron_uucss_process_queue' ) && !$uucss_cron) {
             wp_schedule_event( time(), 'uucss_cron_interval', 'cron_uucss_process_queue');
         }
 
-        add_action( 'cron_uucss_process_queue', [$this ,'uucss_process_queue'] );
+        add_action( 'cron_uucss_process_queue', [$this ,'rapidload_uucss_process_queue'] );
 
         self::$post_types = apply_filters('uucss/queue/post_types',array(
             'post',
@@ -55,10 +55,10 @@ class RapidLoad_Queue
             'product',
         ));
 
-        register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'unschedule_cron' ] );
+        register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'rapidload_unschedule_cron' ] );
     }
 
-    function unschedule_cron(){
+    function rapidload_unschedule_cron(){
 
         $timestamp = wp_next_scheduled( 'cron_uucss_process_queue' );
         if(isset($timestamp)){
@@ -67,7 +67,7 @@ class RapidLoad_Queue
 
     }
 
-    function cron_exist($cron_name = 'cron_uucss_process_queue'){
+    function rapidload_cron_exist($cron_name = 'cron_uucss_process_queue'){
 
         $cron_array = _get_cron_array();
 
@@ -96,17 +96,17 @@ class RapidLoad_Queue
         return $uucss_cron;
     }
 
-    static function get_post_types(){
+    static function rapidload_get_post_types(){
         return self::$post_types;
     }
 
-    function uucss_process_queue(){
+    function rapidload_uucss_process_queue(){
 
         do_action('uucss/queue/task');
 
     }
 
-    function uucss_process_queue_schedule($schedules){
+    function rapidload_uucss_process_queue_schedule($schedules){
         $schedules['uucss_cron_interval'] = array(
             'interval' => self::$interval,
             'display'  => __( 'uucss cron interval', 'unusedcss' ),

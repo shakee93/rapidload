@@ -17,7 +17,7 @@ class RapidLoad_Enqueue {
 
     public function __construct()
     {
-        if(!self::should_start()){
+        if(!self::rapidload_should_start()){
             return;
         }
 
@@ -27,7 +27,7 @@ class RapidLoad_Enqueue {
             self::$frontend_debug = true;
         }
 
-        add_filter('uucss/enqueue/content', [$this, 'the_content'], 10, 2);
+        add_filter('uucss/enqueue/content', [$this, 'rapidload_the_content'], 10, 2);
 
         add_action('wp_enqueue_scripts', function (){
 
@@ -45,22 +45,22 @@ class RapidLoad_Enqueue {
                 self::debug_log("test mode enabled");
             }
 
-            if($this->enabled($this->url)){
+            if($this->rapidload_enabled($this->url)){
 
                 if(RapidLoad_Base::get()->rules_enabled()){
 
-                    $this->rule = $this->get_current_rule();
+                    $this->rule = $this->rapidload_get_current_rule();
 
                 }
 
-                $this->handle_job($this->url, []);
+                $this->rapidload_handle_job($this->url, []);
 
             }
 
         });
     }
 
-    public static function should_start(){
+    public static function rapidload_should_start(){
         if(wp_doing_cron()){
             return false;
         }
@@ -76,7 +76,7 @@ class RapidLoad_Enqueue {
         return true;
     }
 
-    public function replace_css($job)
+    public function rapidload_replace_css($job)
     {
         $buffer = apply_filters('uucss/enqueue/buffer','rapidload_buffer');
         add_filter( $buffer, function ( $html ) use($job){
@@ -84,7 +84,7 @@ class RapidLoad_Enqueue {
         }, 10 );
     }
 
-    public function the_content($html, $job){
+    public function rapidload_the_content($html, $job){
 
         if ( ! class_exists( \simplehtmldom\HtmlDocument::class ) ) {
             return $html;
@@ -202,7 +202,7 @@ class RapidLoad_Enqueue {
         return apply_filters('uucss/enqueue/content/after', $html);
     }
 
-    public function is_url_allowed($url = null, $args = null)
+    public function rapidload_is_url_allowed($url = null, $args = null)
     {
 
         if(!$this->is_valid_url($url)){
@@ -280,7 +280,7 @@ class RapidLoad_Enqueue {
         return true;
     }
 
-    public function enabled($url) {
+    public function rapidload_enabled($url) {
 
         if(!RapidLoad_Base::is_api_key_verified()){
             return false;
@@ -339,7 +339,7 @@ class RapidLoad_Enqueue {
 
     }
 
-    public function handle_job($url, $args){
+    public function rapidload_handle_job($url, $args){
 
         global $rapidload;
 
@@ -391,7 +391,7 @@ class RapidLoad_Enqueue {
 
     }
 
-    function get_current_rule(){
+    function rapidload_get_current_rule(){
 
         $rules = RapidLoad_Base::get()->get_pre_defined_rules();
         $user_defined_rules = RapidLoad_DB::get_rule_names();
@@ -417,10 +417,9 @@ class RapidLoad_Enqueue {
         return $related_rule;
     }
 
-    function get_current_group(){
-
-        $current_page_type = $this->get_current_page_type();
-        $current_page_content_type = $this->get_current_content_type();
+    function rapidload_get_current_group(){
+        $current_page_type = $this->rapidload_get_current_page_type();
+        $current_page_content_type = $this->rapidload_get_current_content_type();
         $current_page_id = get_queried_object_id();
         if($current_page_id === "0"){
             $current_page_id = null;
@@ -434,7 +433,7 @@ class RapidLoad_Enqueue {
         ];
     }
 
-    function get_current_page_type() {
+    function rapidload_get_current_page_type() {
         if (is_singular()) {
             if (class_exists('WooCommerce') && is_woocommerce()) {
                 return 'woocommerce';
@@ -449,7 +448,7 @@ class RapidLoad_Enqueue {
         return 'general';
     }
 
-    function get_current_content_type() {
+    function rapidload_get_current_content_type() {
         if (is_front_page()) {
             return 'front_page';
         } elseif (is_page()) {
@@ -513,7 +512,7 @@ class RapidLoad_Enqueue {
         }
     }
 
-    function enabled_frontend() {
+    function rapidload_enabled_frontend() {
 
         if(isset($_REQUEST['rapidload_preview'])){
             return true;

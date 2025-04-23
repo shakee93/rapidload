@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die();
 
 class RapidLoad_FileSystem
 {
-    public function put_contents( $file_location, $css , $mode = null){
+    public function rapidload_file_put_contents( $file_location, $css , $mode = null){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -18,7 +18,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->put_contents($file_location, $css, $mode);
     }
 
-    public function exists( $dir ){
+    public function rapidload_file_exists( $dir ){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -29,7 +29,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->exists( $dir );
     }
 
-    public function mkdir( $dir, $mode = 0755, $recursive = true ) {
+    public function rapidload_file_mkdir( $dir, $mode = 0755, $recursive = true ) {
 
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -49,7 +49,7 @@ class RapidLoad_FileSystem
         }
     }
 
-    public function is_writable( $dir ) {
+    public function rapidload_file_is_writable( $dir ) {
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -60,7 +60,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->is_writable( $dir );
     }
 
-    public function is_readable( $dir ) {
+    public function rapidload_file_is_readable( $dir ) {
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -71,7 +71,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->is_readable( $dir );
     }
 
-    public function delete($path, $recursive = true){
+    public function rapidload_file_delete($path, $recursive = true){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -89,7 +89,7 @@ class RapidLoad_FileSystem
         return true;
     }
 
-    public function size($file){
+    public function rapidload_file_size($file){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -100,7 +100,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->size($file);
     }
 
-    public function get_contents($file){
+    public function rapidload_file_get_contents($file){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -111,7 +111,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->get_contents($file);
     }
 
-    public function delete_folder($dir){
+    public function rapidload_file_delete_folder($dir){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -127,7 +127,7 @@ class RapidLoad_FileSystem
         return false;
     }
 
-    public function copy($source, $destination){
+    public function rapidload_file_copy($source, $destination){
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
         }
@@ -138,7 +138,7 @@ class RapidLoad_FileSystem
         return $wp_filesystem->copy($source, $destination);
     }
 
-    public function format_size_units($bytes) {
+    public function rapidload_file_format_size_units($bytes) {
         if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
         } elseif ($bytes >= 1048576) {
@@ -156,7 +156,7 @@ class RapidLoad_FileSystem
         return $bytes;
     }
 
-    public function get_folder_size_in_bytes($dir) {
+    public function rapidload_file_get_folder_size_in_bytes($dir) {
         $size = 0;
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)) as $file) {
             $size += $file->getSize();
@@ -164,11 +164,11 @@ class RapidLoad_FileSystem
         return $size;
     }
 
-    public function get_folder_size($dir) {
+    public function rapidload_file_get_folder_size($dir) {
         $size = 0;
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)) as $file) {
             $size += $file->getSize();
         }
-        return $this->format_size_units($size);
+        return $this->rapidload_file_format_size_units($size);
     }
 }

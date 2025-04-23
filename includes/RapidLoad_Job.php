@@ -41,7 +41,7 @@ class RapidLoad_Job{
             $this->status = 'processing';
         }
 
-        $exist = $this->exist();
+        $exist = $this->rapidload_job_exist();
 
         if($exist){
 
@@ -58,7 +58,7 @@ class RapidLoad_Job{
             $this->diagnose_data = isset($exist->diagnose_data) ? $exist->diagnose_data : null;
 
             if(isset($this->rule_id) && $this->rule_id !== $this->id && $this->rule === 'is_url'){
-                $this->parent = RapidLoad_Job::find_or_fail($this->rule_id);
+                $this->parent = RapidLoad_Job::rapidload_job_find_or_fail($this->rule_id);
             }
 
         }else{
@@ -68,7 +68,7 @@ class RapidLoad_Job{
 
     }
 
-    public function exist($id = false){
+    public function rapidload_job_exist($id = false){
         global $wpdb;
 
         $exist = null;
@@ -98,7 +98,7 @@ class RapidLoad_Job{
         return $exist;
     }
 
-    public function save($notify = false){
+    public function rapidload_job_save($notify = false){
 
         global $wpdb;
         $data = (array) $this;
@@ -142,7 +142,7 @@ class RapidLoad_Job{
                 $data
             );
 
-            $exist = $this->exist();
+            $exist = $this->rapidload_job_exist();
 
             if($exist){
 
@@ -156,7 +156,7 @@ class RapidLoad_Job{
         }
     }
 
-    static function find_or_fail($id){
+    static function rapidload_job_find_or_fail($id){
 
         global $wpdb;
 
@@ -178,7 +178,7 @@ class RapidLoad_Job{
 
     }
 
-    static function find_by_url($url, $include_failed = false){
+    static function rapidload_job_find_by_url($url, $include_failed = false){
 
         global $wpdb;
 
@@ -214,17 +214,17 @@ class RapidLoad_Job{
 
     }
 
-    static function create($args){
-        (new RapidLoad_Job($args))->save();
+    static function rapidload_job_create($args){
+        (new RapidLoad_Job($args))->rapidload_job_save();
     }
 
-    static function all_rules(){
+    static function rapidload_job_all_rules(){
 
         return RapidLoad_DB::get_all_rules();
 
     }
 
-    function delete() {
+    function rapidload_job_delete() {
         global $wpdb;
 
         $wpdb->query(
@@ -236,7 +236,7 @@ class RapidLoad_Job{
         );
     }
 
-    function get_urls() {
+    function rapidload_job_get_urls() {
         if ($this->rule === "is_url") {
             return [];
         }
@@ -252,7 +252,7 @@ class RapidLoad_Job{
         return [];
     }
 
-    function attach_rule($rule_id = false , $rule = null){
+    function rapidload_job_attach_rule($rule_id = false , $rule = null){
         if(!$rule_id){
             $this->rule_id = NULL;
             $this->rule = 'is_url';
@@ -267,7 +267,7 @@ class RapidLoad_Job{
 
     }
 
-    function get_desktop_options($transformed = false, $recursive = false){
+    function rapidload_job_get_desktop_options($transformed = false, $recursive = false){
 
         if(isset($this->desktop_options) && !empty($this->desktop_options)){
             return !$transformed ? unserialize($this->desktop_options) : $this->transform_individual_file_actions(unserialize($this->desktop_options));
@@ -278,7 +278,7 @@ class RapidLoad_Job{
         return [];
     }
 
-    function get_mobile_options($transformed = false, $recursive = false){
+    function rapidload_job_get_mobile_options($transformed = false, $recursive = false){
 
         if(isset($this->mobile_options) && !empty($this->mobile_options)){
             return !$transformed ? unserialize($this->mobile_options) : $this->transform_individual_file_actions(unserialize($this->mobile_options));
@@ -289,7 +289,7 @@ class RapidLoad_Job{
         return [];
     }
 
-    function get_diagnose_data(){
+    function rapidload_job_get_diagnose_data(){
         if(isset($this->diagnose_data) && !empty($this->diagnose_data)){
             return unserialize($this->diagnose_data);
         }
@@ -299,7 +299,7 @@ class RapidLoad_Job{
         ];
     }   
 
-    function set_desktop_options($options){
+    function rapidload_job_set_desktop_options($options){
 
         if(isset($options) && is_array($options) && !empty($options)){
             $this->desktop_options = serialize($options);
@@ -308,7 +308,7 @@ class RapidLoad_Job{
         }
     }
 
-    function set_mobile_options($options){
+    function rapidload_job_set_mobile_options($options){
 
         if(isset($options) && is_array($options) && !empty($options)){
             $this->mobile_options = serialize($options);
@@ -317,7 +317,7 @@ class RapidLoad_Job{
         }
     }
 
-    function set_diagnose_data($data){
+    function rapidload_job_set_diagnose_data($data){
         if(isset($data) && is_array($data) && !empty($data)){
             $this->diagnose_data = serialize($data);
         }else{
@@ -328,7 +328,7 @@ class RapidLoad_Job{
         }
     }
 
-    function get_optimization_revisions($strategy, $limit = 10) {
+    function rapidload_job_get_optimization_revisions($strategy, $limit = 10) {
         global $wpdb;
 
         if (!isset($this->id)) {
@@ -364,7 +364,7 @@ class RapidLoad_Job{
         return $transformed_data;
     }
 
-    function get_last_optimization_revision_hash($strategy) {
+    function rapidload_job_get_last_optimization_revision_hash($strategy) {
         global $wpdb;
 
         if (!isset($this->id)) {
@@ -378,7 +378,7 @@ class RapidLoad_Job{
         return $data ? hash('md5', $data) : false;
     }
 
-    function get_last_optimization_revision($strategy) {
+    function rapidload_job_get_last_optimization_revision($strategy) {
         global $wpdb;
 
         if (!isset($this->id)) {
@@ -392,14 +392,14 @@ class RapidLoad_Job{
         return $data ? json_decode($data) : false;
     }
 
-    function get_revision_count($strategy) {
+    function rapidload_job_get_revision_count($strategy) {
         global $wpdb;
         return $wpdb->get_var(
             $wpdb->prepare("SELECT count(id) FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id)
         );
     }
 
-    function delete_old_revision($strategy, $revision_count) {
+    function rapidload_job_delete_old_revision($strategy, $revision_count) {
         $revsions = $this->get_revision_ids($strategy);
 
         if (!empty($revsions) && count($revsions) > ($revision_count - 1)) {
@@ -416,13 +416,13 @@ class RapidLoad_Job{
         }
     }
 
-    function get_revision_ids($strategy) {
+    function rapidload_job_get_revision_ids($strategy) {
         global $wpdb;
 
         return $wpdb->get_results($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job_optimizations WHERE strategy = %s AND job_id = %d",$strategy,$this->id), ARRAY_N);
     }
 
-    function delete_all_revisions(){
+    function rapidload_job_delete_all_revisions(){
         global $wpdb;
         $id = $this->id;
         $wpdb->query(
@@ -430,7 +430,7 @@ class RapidLoad_Job{
         );
     }
 
-    function transform_individual_file_actions($options){
+    function rapidload_job_transform_individual_file_actions($options){
 
         $files = [];
 
@@ -520,7 +520,7 @@ class RapidLoad_Job{
         return $regexPattern;
     }
 
-    public static function get_all_optimizations_data_for($strategy, $start_from, $limit = 10, $s = null){
+    public static function rapidload_job_get_all_optimizations_data_for($strategy, $start_from, $limit = 10, $s = null){
         global $wpdb;
         $data = [];
 
@@ -578,7 +578,7 @@ class RapidLoad_Job{
         return $data;
     }
 
-    public static function get_first_and_last_optimization_score($url, $strategy) {
+    public static function rapidload_job_get_first_and_last_optimization_score($url, $strategy) {
         global $wpdb;
 
         $job_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}rapidload_job WHERE url = %s LIMIT 1", $url));

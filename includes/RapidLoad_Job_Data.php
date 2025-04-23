@@ -54,7 +54,7 @@ class RapidLoad_Job_Data{
 
     }
 
-    public function save($exclude = []){
+    public function rapidload_job_data_save($exclude = []){
 
         global $wpdb;
         $data = (array) $this;
@@ -85,7 +85,7 @@ class RapidLoad_Job_Data{
                 $data
             );
 
-            $exist = $this->exist();
+            $exist = $this->rapidload_job_data_exist();
 
             if($exist){
 
@@ -97,7 +97,7 @@ class RapidLoad_Job_Data{
 
     }
 
-    public function exist(){
+    public function rapidload_job_data_exist(){
 
         global $wpdb;
 
@@ -112,7 +112,7 @@ class RapidLoad_Job_Data{
 
     }
 
-    public function requeue($attempts = -1){
+    public function rapidload_job_data_requeue($attempts = -1){
         $this->status = 'queued';
         $this->queue_job_id = null;
         $this->attempts = $attempts >= 0 ? $attempts : $this->attempts + 1;
@@ -121,22 +121,22 @@ class RapidLoad_Job_Data{
         $this->warnings = null;
         $this->error = null;
         $this->created_at = gmdate( "Y-m-d H:m:s", time() );
-        $this->clearFiles();
+        $this->rapidload_job_data_clearFiles();
     }
 
-    public function clearFiles(){
+    public function rapidload_job_data_clearFiles(){
 
     }
 
-    public function mark_as_failed($error){
+    public function rapidload_job_data_mark_as_failed($error){
         $this->data = null;
         $this->status = 'failed';
         $this->error = serialize($error);
         $this->hits = 0;
-        $this->clearFiles();
+        $this->rapidload_job_data_clearFiles();
     }
 
-    public function mark_as_success($data, $stats, $warnings, $status = 'success', $job_type = 'uucss'){
+    public function rapidload_job_data_mark_as_success($data, $stats, $warnings, $status = 'success', $job_type = 'uucss'){
         $this->data = isset($data) ? is_string($data) ? $data : serialize($data) : null;
         if($job_type === 'uucss'){
             $this->status = $status;
@@ -149,31 +149,31 @@ class RapidLoad_Job_Data{
         $this->error = null;
     }
 
-    public function mark_as_successful_hit(){
+    public function rapidload_job_data_mark_as_successful_hit(){
         $this->attempts = 0;
         $this->hits++;
         $this->error = NULL;
     }
 
-    public function get_warnings(){
+    public function rapidload_job_data_get_warnings(){
         if(isset($this->warnings) && !empty($this->warnings)){
             return unserialize($this->warnings);
         }
         return [];
     }
 
-    public function get_files(){
+    public function rapidload_job_data_get_files(){
         if(isset($this->data) && !empty($this->data)){
             return unserialize($this->data);
         }
         return [];
     }
 
-    public function get_cpcss_data(){
-        return self::transform_cpcss_data_to_array($this->data);
+    public function rapidload_job_data_get_cpcss_data(){
+        return self::rapidload_job_data_transform_cpcss_data_to_array($this->data);
     }
 
-    public static function transform_cpcss_data_to_array($input) {
+    public static function rapidload_job_data_transform_cpcss_data_to_array($input) {
         if (is_string($input) && is_serialized($input)) {
             $array = unserialize($input);
         } elseif (is_string($input)) {
@@ -187,14 +187,14 @@ class RapidLoad_Job_Data{
         return $array;
     }
 
-    public function get_stats(){
+    public function rapidload_job_data_get_stats(){
         if(isset($this->stats) && !empty($this->stats)){
             return unserialize($this->stats);
         }
         return [];
     }
 
-    public function get_error(){
+    public function rapidload_job_data_get_error(){
         if(isset($this->error) && !empty($this->error)){
             return unserialize($this->error);
         }
@@ -204,7 +204,7 @@ class RapidLoad_Job_Data{
         ];
     }
 
-    public static function find_or_fail($id, $job_type){
+    public static function rapidload_job_data_find_or_fail($id, $job_type){
         global $wpdb;
         $job_data = false;
 
@@ -225,7 +225,7 @@ class RapidLoad_Job_Data{
         return $job_data;
     }
 
-    public function set_warnings($warnings){
+    public function rapidload_job_data_set_warnings($warnings){
         if(isset($warnings) && count($warnings) > 0){
             $this->hits = 0;
             $this->warnings = serialize($warnings);
