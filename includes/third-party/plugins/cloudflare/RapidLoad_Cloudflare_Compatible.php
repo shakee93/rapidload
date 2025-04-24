@@ -37,7 +37,7 @@ class RapidLoad_Cloudflare_Compatible extends RapidLoad_ThirdParty{
             $url = null;
 
             if ( isset( $args['url'] ) ) {
-                $url = $this->transform_url( $args['url'] );
+                $url = $this->rapidload_util_transform_url( $args['url'] );
             }
 
             $post_id = url_to_postid( $url );

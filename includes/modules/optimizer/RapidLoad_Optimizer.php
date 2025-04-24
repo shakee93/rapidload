@@ -76,7 +76,7 @@ class RapidLoad_Optimizer
     }
 
     public function rapidload_privacy_policy_acceptance(){
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
         $accepted = isset($_REQUEST['accepted']) && boolval(sanitize_text_field(wp_unslash($_REQUEST['accepted']))) ? true : false;
         update_option('rapidload_privacy_policy_accepted', $accepted);
         wp_send_json_success('success');
@@ -84,7 +84,7 @@ class RapidLoad_Optimizer
 
     public function rapidload_server_info(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         // check if crawler is working
 
@@ -162,9 +162,9 @@ class RapidLoad_Optimizer
 
     public function rapidload_diagnose_data(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
-        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : $this->transform_url(site_url());
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : $this->rapidload_util_transform_url(site_url());
         $strategy = isset($_REQUEST['strategy']) ? sanitize_text_field(wp_unslash($_REQUEST['strategy'])) : 'desktop';
 
         $body = file_get_contents('php://input');
@@ -180,7 +180,7 @@ class RapidLoad_Optimizer
         }
 
         if($data){
-            $diagnose_data = $job->get_diagnose_data();
+            $diagnose_data = $job->rapidload_job_get_diagnose_data();
             if($strategy === 'desktop'){
                 $diagnose_data['desktop'] = $data;
                 $job->set_diagnose_data($diagnose_data);
@@ -192,7 +192,7 @@ class RapidLoad_Optimizer
         }
 
         wp_send_json_success([
-            'diagnose_data' => $job->get_diagnose_data(),
+            'diagnose_data' => $job->rapidload_job_get_diagnose_data(),
             'strategy' => $strategy
         ]);
     }
@@ -203,7 +203,7 @@ class RapidLoad_Optimizer
 
     public function rapidload_titan_home_page_performance(){
 
-        $performance_data = RapidLoad_Job::get_first_and_last_optimization_score($this->transform_url(site_url()), 'desktop');
+        $performance_data = RapidLoad_Job::get_first_and_last_optimization_score($this->rapidload_util_transform_url(site_url()), 'desktop');
 
         wp_send_json_success($performance_data);
     }
@@ -431,12 +431,12 @@ class RapidLoad_Optimizer
 
     public function rapidload_css_job_status(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : site_url();
         $types = isset($_REQUEST['types']) ? explode(",", sanitize_text_field(wp_unslash($_REQUEST['types']))) : [];
 
-        $url = $this->transform_url($url);
+        $url = $this->rapidload_util_transform_url($url);
 
         $job = new RapidLoad_Job([
             'url' => $url
@@ -464,7 +464,7 @@ class RapidLoad_Optimizer
                 }
                 case 'cpcss' :{
                     $job_data_cpcss = new RapidLoad_Job_Data($job,'cpcss');
-                    $cpcss_data = $job_data_cpcss->get_cpcss_data();
+                    $cpcss_data = $job_data_cpcss->rapidload_job_data_get_cpcss_data();
                     $response[$type] = [
                         'status' => isset($job_data_cpcss->id) ? $job_data_cpcss->status : 'queued',
                         'error' => isset($job_data_cpcss->id) && isset($job_data_cpcss->error) ? unserialize($job_data_cpcss->error) : null,
@@ -499,7 +499,7 @@ class RapidLoad_Optimizer
                 }
                 case 'cache_policy':{
 
-                    $response[$type] = RapidLoad_htaccess::has_rapidload_rules();
+                    $response[$type] = RapidLoad_htaccess::rapidload_has_rapidload_rules();
                 }
             }
         }
@@ -510,19 +510,19 @@ class RapidLoad_Optimizer
 
     public function latest_page_speed(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $job = new RapidLoad_Job([
-            'url' => $this->transform_url(site_url())
+            'url' => $this->rapidload_util_transform_url(site_url())
         ]);
         if(!isset($job->id)){
             wp_send_json_error();
         }
 
-        $last_metrics = $job->get_last_optimization_revision('desktop');
+        $last_metrics = $job->rapidload_job_get_last_optimization_revision('desktop');
 
         if(!$last_metrics){
-            $last_metrics = $job->get_last_optimization_revision('mobile');
+            $last_metrics = $job->rapidload_job_get_last_optimization_revision('mobile');
         }
 
         wp_send_json_success($last_metrics);
@@ -531,7 +531,7 @@ class RapidLoad_Optimizer
 
     public function update_titan_performance_gear(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['titan_gear']) || empty($_REQUEST['titan_gear'])){
             wp_send_json_error('titan gear required');
@@ -544,7 +544,7 @@ class RapidLoad_Optimizer
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
         $titan_gear = sanitize_text_field(wp_unslash($_REQUEST['titan_gear']));
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
@@ -589,7 +589,7 @@ class RapidLoad_Optimizer
 
     public function fetch_titan_settings(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['url']) || empty($_REQUEST['url'])){
             wp_send_json_error('url required');
@@ -597,7 +597,7 @@ class RapidLoad_Optimizer
 
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
@@ -634,7 +634,7 @@ class RapidLoad_Optimizer
     public function update_titan_settings()
     {
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['url']) || empty($_REQUEST['url'])){
             wp_send_json_error('url required');
@@ -642,7 +642,7 @@ class RapidLoad_Optimizer
 
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
@@ -671,7 +671,7 @@ class RapidLoad_Optimizer
 
     public function  pre_optimizer_function($url, $strategy, $global, $can_be_saved = false){
 
-        $url = $this->transform_url(urldecode($url));
+        $url = $this->rapidload_util_transform_url(urldecode($url));
 
         self::$job = new RapidLoad_Job([
             'url' => $url
@@ -687,7 +687,7 @@ class RapidLoad_Optimizer
 
         self::$global = $global;
 
-        self::$options = self::$strategy === "desktop" ? isset(self::$job->id) ? self::$job->get_desktop_options() : self::$job->get_mobile_options() : self::$global_options;
+        self::$options = self::$strategy === "desktop" ? isset(self::$job->id) ? self::$job->rapidload_job_get_desktop_options() : self::$job->rapidload_job_get_mobile_options() : self::$global_options;
 
         self::$previous_options = self::$options;
 
@@ -812,7 +812,7 @@ class RapidLoad_Optimizer
             self::$job->set_mobile_options(self::$options);
         }
 
-        self::$job->save(!self::$job->exist());
+        self::$job->save(!self::$job->rapidload_job_exist());
 
         $options = [
             //css
@@ -886,7 +886,7 @@ class RapidLoad_Optimizer
 
     public function handle_ajax_fetch_page_speed(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['url']) || empty($_REQUEST['url'])){
             wp_send_json_error('url required');
@@ -894,7 +894,7 @@ class RapidLoad_Optimizer
 
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
            wp_send_json_error('url not valid');
         }
 
@@ -912,7 +912,7 @@ class RapidLoad_Optimizer
         }
 
         if(!$result){
-            $result = self::$job->get_last_optimization_revision(self::$strategy);
+            $result = self::$job->rapidload_job_get_last_optimization_revision(self::$strategy);
         }
 
         $response = $this->fetch_page_speed($url, $result);
@@ -938,9 +938,9 @@ class RapidLoad_Optimizer
 
         $result->job_id = isset(self::$job) ? self::$job->id : null;
 
-        $hash = self::$job->get_last_optimization_revision_hash(self::$strategy);
+        $hash = self::$job->rapidload_job_get_last_optimization_revision_hash(self::$strategy);
         $new_hash = hash('md5', json_encode($result));
-        $revision_count = self::$job->get_revision_count(self::$strategy);
+        $revision_count = self::$job->rapidload_job_get_revision_count(self::$strategy);
 
         if(($hash !== $new_hash) || $revision_count === 0){
 
@@ -958,7 +958,7 @@ class RapidLoad_Optimizer
             'success' => true,
             'job_id' => isset(self::$job) ? self::$job->id : null,
             'page_speed' => $result,
-            'revisions' => self::$job->get_optimization_revisions(self::$strategy, self::$revision_limit),
+            'revisions' => self::$job->rapidload_job_get_optimization_revisions(self::$strategy, self::$revision_limit),
             'options' => self::$options,
             'merged_options' => self::$merged_options,
             'global_options' => self::$global_options,
@@ -1484,7 +1484,7 @@ class RapidLoad_Optimizer
                 $input = $input_map[$key];
                 $input['key'] = $key;
                 if($input['key'] === "uucss_exclude_files_from_delay_js"){
-                    $input['control_values'] = JavaScript::get_dynamic_exclusion_list();
+                    $input['control_values'] = RapidLoad_JavaScript::get_dynamic_exclusion_list();
                     $input['value'] = "";
                     if(isset($options['uucss_dynamic_js_exclusion_list']) && !empty($options['uucss_dynamic_js_exclusion_list'])){
                         $input['value'] = $options['uucss_dynamic_js_exclusion_list'];
@@ -1498,7 +1498,7 @@ class RapidLoad_Optimizer
                     $data = new RapidLoad_Job_Data(self::$job, 'uucss');
                     $settings['status'] =  isset($options[$input['key']]) && $options[$input['key']] === "1" ? [
                         'status' => isset($data->id) ? $data->status : 'queued',
-                        'error' =>  isset($data->id) ? $data->get_error() : null,
+                        'error' =>  isset($data->id) ? $data->rapidload_job_data_get_error() : null,
                         'meta' => [
                             'stats' =>  isset($data->id) ? $data->get_stats() : null,
                             'warnings' =>  isset($data->id) ? $data->get_warnings() : null,
@@ -1506,13 +1506,13 @@ class RapidLoad_Optimizer
                     ] : null;
                     $input['value'] = isset($options[$input['key']]) ? $options[$input['key']] : ( isset($input['default']) ? $input['default'] : null) ;
                 }else if($input['key'] === "update_htaccess_file"){
-                    $settings['status'] = RapidLoad_htaccess::has_rapidload_rules();
+                    $settings['status'] = RapidLoad_htaccess::rapidload_has_rapidload_rules();
                 }else if($input['key'] === "uucss_enable_cpcss"){
                     $data = new RapidLoad_Job_Data(self::$job, 'cpcss');
-                    $cpcss_data = $data->get_cpcss_data();
+                    $cpcss_data = $data->rapidload_job_data_get_cpcss_data();
                     $settings['status'] = isset($options[$input['key']]) && $options[$input['key']] === "1" ? [
                         'status' => isset($data->id) ? $data->status : 'queued',
-                        'error' => isset($data->id) ? $data->get_error() : null,
+                        'error' => isset($data->id) ? $data->rapidload_job_data_get_error() : null,
                         'meta' => [
                             'desktop' => isset($data->id) && isset($cpcss_data['desktop']) && !empty($cpcss_data['desktop']) ? $cpcss_data['desktop'] : null,
                             'mobile' => isset($data->id) && isset($cpcss_data['mobile']) && !empty($cpcss_data['mobile']) ? $cpcss_data['mobile'] : null,
@@ -1549,7 +1549,7 @@ class RapidLoad_Optimizer
                 }else if($input['key'] === "mobile_cache"){
                     $input['value'] = isset($rapidload_cache_args[$input['key']]) ? (string)$rapidload_cache_args[$input['key']] : null;
                 }else if($input['key'] === "excluded_page_paths") {
-                    $input['value'] = isset($rapidload_cache_args[$input['key']]) ? implode("\n", $this->transformRegexToPaths($rapidload_cache_args[$input['key']])) : '';
+                    $input['value'] = isset($rapidload_cache_args[$input['key']]) ? implode("\n", $this->rapidload_util_transformRegexToPaths($rapidload_cache_args[$input['key']])) : '';
                 }else if($input['key'] === "rapidload_js_delay_method"){
                     $input['value'] = isset($options['uucss_load_scripts_on_user_interaction']) && !empty($options['uucss_load_scripts_on_user_interaction']) ? 'Selected Files' : 'All Files' ;
                 }else if($input['key'] === "uucss_misc_options"){
@@ -1820,7 +1820,7 @@ class RapidLoad_Optimizer
 
     public function preload_page(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['url'])){
             wp_send_json_error('url required');

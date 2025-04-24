@@ -418,7 +418,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
         return [
             'size'    => $this->file_system->size( $file ),
-            'content' => $this->file_system->get_contents( $file )
+            'content' => $this->file_system->rapidload_file_get_contents( $file )
         ];
     }
 

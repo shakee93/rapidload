@@ -8,7 +8,7 @@ class RapidLoad_OptimizerStyle
 
         add_action('rapidload/enqueue/after-optimize-css', function ($sheet, $job_data, $strategy){
 
-            $options = $strategy === "mobile" ? $job_data->job->get_mobile_options(true) : $job_data->job->get_desktop_options(true);
+            $options = $strategy === "mobile" ? $job_data->job->rapidload_job_get_mobile_options(true) : $job_data->job->rapidload_job_get_desktop_options(true);
 
             if(isset($options['individual-file-actions']) && !empty($options['individual-file-actions']) && is_array($options['individual-file-actions'])){
                 foreach ($options['individual-file-actions'] as $file_action){
@@ -30,7 +30,7 @@ class RapidLoad_OptimizerStyle
 
         add_action('rapidload/enqueue/after-minify-css', function ($sheet, $job, $strategy){
 
-            $options = $strategy === "mobile" ? $job->get_mobile_options(true) : $job->get_desktop_options(true);
+            $options = $strategy === "mobile" ? $job->rapidload_job_get_mobile_options(true) : $job->rapidload_job_get_desktop_options(true);
 
             if(isset($options['individual-file-actions']) && !empty($options['individual-file-actions']) && is_array($options['individual-file-actions'])){
                 foreach ($options['individual-file-actions'] as $file_action){

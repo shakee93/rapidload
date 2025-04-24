@@ -242,7 +242,7 @@ class RapidLoad_CriticalCSS
 
     function cpcss_purge_url()
     {
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
@@ -253,7 +253,7 @@ class RapidLoad_CriticalCSS
             }
 
             $job = new RapidLoad_Job([
-                'url' => $this->transform_url($url)
+                'url' => $this->rapidload_util_transform_url($url)
             ]);
 
             if (!isset($job->id)) {
@@ -408,19 +408,6 @@ class RapidLoad_CriticalCSS
 
     public function initFileSystem() {
 
-        // Todo cache base setup
-        /*$cache_base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR);
-
-        $cache_base_option = RapidLoad_Base::get_option('rapidload_cache_base', null);
-
-        if(!isset($cache_base_option)){
-
-            $cache_base_option = $cache_base;
-            RapidLoad_Base::update_option('rapidload_cache_base', $cache_base_option);
-        }
-
-        $this->base = RapidLoad_ThirdParty::plugin_exists('autoptimize') ? $cache_base_option . 'cpcss' : $cache_base . 'cpcss';*/
-
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'cpcss';
 
         if ( ! $this->file_system ) {
@@ -446,7 +433,7 @@ class RapidLoad_CriticalCSS
         //$created = $this->file_system->mkdir( self::$base_dir );.
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 

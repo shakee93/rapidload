@@ -8,7 +8,7 @@ class RapidLoad_OptimizerImage
     {
         add_filter('rapidload/enqueue/preload/images', function ($urls, $job, $strategy){
 
-            $options = $strategy === "mobile" ? $job->get_mobile_options(true) : $job->get_desktop_options(true);
+            $options = $strategy === "mobile" ? $job->rapidload_job_get_mobile_options(true) : $job->rapidload_job_get_desktop_options(true);
 
             if(isset($options['individual-file-actions']) && !empty($options['individual-file-actions']) && is_array($options['individual-file-actions'])){
                 foreach ($options['individual-file-actions'] as $file_action){

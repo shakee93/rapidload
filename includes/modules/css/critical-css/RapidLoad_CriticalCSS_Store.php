@@ -42,7 +42,7 @@ class RapidLoad_CriticalCSS_Store
             if(isset($this->args['titan']) && isset($this->args['options']) && isset($this->args['options']['strategy'])){
 
                 $strategy = $this->args['options']['strategy'];
-                $cpcss_data = $this->job_data->get_cpcss_data();
+                $cpcss_data = $this->job_data->rapidload_job_data_get_cpcss_data();
 
                 if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status === 'success' || $this->job_data->status === 'processing')){
                     $discontinue = true;
@@ -89,7 +89,7 @@ class RapidLoad_CriticalCSS_Store
             if(isset($this->args['titan']) && isset($this->args['options']) && isset($this->args['options']['strategy'])){
 
                 $strategy = $this->args['options']['strategy'];
-                $cpcss_data = $this->job_data->get_cpcss_data();
+                $cpcss_data = $this->job_data->rapidload_job_data_get_cpcss_data();
 
                 if(isset($cpcss_data[$strategy]) && !empty($cpcss_data[$strategy]) && ($this->job_data->status === 'success' || $this->job_data->status === 'processing')){
                     $discontinue = true;
@@ -163,7 +163,7 @@ class RapidLoad_CriticalCSS_Store
             $warnings[] = array("message" => "Clear your page cache");
         }
 
-        $data = $this->job_data->get_cpcss_data();
+        $data = $this->job_data->rapidload_job_data_get_cpcss_data();
         $file_chunk_enabled = isset($this->options['rapidload_enable_cpcss_file_chunk']) && $this->options['rapidload_enable_cpcss_file_chunk'] === "1";
         $file_character_length = $file_chunk_enabled && isset($this->options['rapidload_cpcss_file_character_length']) ? $this->options['rapidload_cpcss_file_character_length'] : 0;
         $file_character_length = apply_filters('rapidload/cpcss/file-character-length', $file_character_length);

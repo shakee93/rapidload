@@ -79,14 +79,14 @@ class RapidLoad_Admin
     }
 
     public function rapidload_onboard_skipped(){
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
         update_option('rapidload_onboard_skipped', true);
         wp_send_json_success(true);
     }
 
     function rapidload_image_optimization_status(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if (!isset($_REQUEST['image_urls'])) {
             wp_send_json_error('No image URLs provided');
@@ -257,7 +257,7 @@ class RapidLoad_Admin
 
     public function rapidload_titan_optimizations_data(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $start_from = 0;
         $limit = 10;
@@ -347,7 +347,7 @@ class RapidLoad_Admin
 
     public function rapidload_switch_test_mode(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $options = RapidLoad_Base::rapidload_fetch_options();
 
@@ -377,7 +377,7 @@ class RapidLoad_Admin
 
     public function rapidload_titan_checklist_status(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(isset($_REQUEST['status'])){
             RapidLoad_Base::update_option('titan_checklist_status', sanitize_text_field(wp_unslash($_REQUEST['status'])));
@@ -395,7 +395,7 @@ class RapidLoad_Admin
 
     public function rapidload_titan_checklist_plugins(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $cnflict_plugins = apply_filters('uucss/third-party/plugins',[]);
 
@@ -416,7 +416,7 @@ class RapidLoad_Admin
 
     public function rapidload_titan_checklist_crawler(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $api = new RapidLoad_Api();
 
@@ -435,7 +435,7 @@ class RapidLoad_Admin
 
     public function rapidload_titan_checklist_cron(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         // Create server array first
         $server_info = array(
@@ -505,7 +505,7 @@ class RapidLoad_Admin
 
     public function rapidload_purge_rapidload_cdn(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $options = RapidLoad_Base::rapidload_fetch_options();
 
@@ -522,7 +522,7 @@ class RapidLoad_Admin
 
     public function rapidload_update_rapidload_settings(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $options = RapidLoad_Base::rapidload_fetch_options();
 
@@ -984,7 +984,7 @@ class RapidLoad_Admin
     }
 
     public function rapidload_list_module(){
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
         wp_send_json_success(RapidLoad_Base::get()->modules()->active_modules());
     }
 
@@ -996,7 +996,7 @@ class RapidLoad_Admin
 
     public function rapidload_attach_rule(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : false;
         $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
@@ -1046,7 +1046,7 @@ class RapidLoad_Admin
     public function rapidload_verify_api_key() {
 
         if(is_ajax()){
-            self::verify_nonce();
+            self::rapidload_util_verify_nonce();
         }
 
         if ( ! isset( $_POST['api_key'] ) ) {
@@ -1070,7 +1070,7 @@ class RapidLoad_Admin
 
     public function rapidload_clear_rapidload_logs(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $file_system = new RapidLoad_FileSystem();
 
@@ -1084,7 +1084,7 @@ class RapidLoad_Admin
 
     public function rapidload_logs(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $file_system = new RapidLoad_FileSystem();
 
@@ -1092,7 +1092,7 @@ class RapidLoad_Admin
             wp_send_json_success([]);
         }
 
-        $data = $file_system->get_contents(UUCSS_LOG_DIR . 'debug.log');
+        $data = $file_system->rapidload_file_get_contents(UUCSS_LOG_DIR . 'debug.log');
 
         if(empty($data)){
             wp_send_json_success([]);
@@ -1105,7 +1105,7 @@ class RapidLoad_Admin
 
     public function rapidload_clear_page_cache(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
         $rule = isset($_REQUEST['rule']) ? sanitize_text_field(wp_unslash($_REQUEST['rule'])) : false;
@@ -1160,7 +1160,7 @@ class RapidLoad_Admin
 
     public function rapidload_uucss_connect(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if ( ! isset( $_REQUEST['license_key'] ) || empty( $_REQUEST['license_key'] ) ) {
             wp_send_json_error( 'License Key required' );
@@ -1227,7 +1227,7 @@ class RapidLoad_Admin
 
     public function rapidload_ajax_deactivate() {
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $options = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
 
@@ -1493,7 +1493,7 @@ class RapidLoad_Admin
 
     public function rapidload_image_usage(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $api = new RapidLoad_Api();
 
@@ -1510,7 +1510,7 @@ class RapidLoad_Admin
 
     public function rapidload_cdn_usage(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $api = new RapidLoad_Api();
 
@@ -1529,7 +1529,7 @@ class RapidLoad_Admin
 
     public function rapidload_uucss_license() {
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $api = new RapidLoad_Api();
 
@@ -1585,7 +1585,7 @@ class RapidLoad_Admin
 
     public function rapidload_frontend_logs(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $args = [];
 
@@ -1710,7 +1710,7 @@ class RapidLoad_Admin
 
     public function rapidload_get_robots_text(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $robotsUrl = trailingslashit(get_site_url()) . "robots.txt";
 

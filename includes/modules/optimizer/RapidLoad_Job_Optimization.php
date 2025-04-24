@@ -22,7 +22,7 @@ class RapidLoad_Job_Optimization
 
         $this->job_id = $this->job->id;
 
-        $exist = $this->exist();
+        $exist = $this->rapidload_job_optimization_exist();
 
         if($exist){
             $this->data = $exist->data;
@@ -32,7 +32,7 @@ class RapidLoad_Job_Optimization
         }
     }
 
-    public function save($exclude = []){
+    public function rapidload_job_optimization_save($exclude = []){
 
         global $wpdb;
         $data = (array) $this;
@@ -63,7 +63,7 @@ class RapidLoad_Job_Optimization
                 $data
             );
 
-            $exist = $this->exist();
+            $exist = $this->rapidload_job_optimization_exist();
 
             if($exist){
 
@@ -74,7 +74,7 @@ class RapidLoad_Job_Optimization
         }
     }
 
-    public function exist(){
+    public function rapidload_job_optimization_exist(){
 
         global $wpdb;
 
@@ -91,14 +91,14 @@ class RapidLoad_Job_Optimization
         return false;
     }
 
-    public function get_data(){
+    public function rapidload_job_optimization_get_data(){
         if(isset($this->data) && !empty($this->data)){
             return unserialize($this->data);
         }
         return null;
     }
 
-    public function set_data($data){
+    public function rapidload_job_optimization_set_data($data){
         $this->data = json_encode($data);
     }
 }

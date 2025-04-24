@@ -351,7 +351,7 @@ trait RapidLoad_Utils {
 			    'site'   => trailingslashit(get_site_url()),
 			    'back'   => admin_url( $to ),
 			    'goto'   => UUCSS_ACTIVATION_URL,
-                'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
+                'utm_source' => RapidLoad_ThirdParty::rapidload_plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
 		        'utm_medium' => 'plugin'
             ] );
     }
@@ -368,7 +368,7 @@ trait RapidLoad_Utils {
                 'site'   => trailingslashit(get_site_url()),
                 'back'   => admin_url( $to ),
                 'goto'   => UUCSS_ACTIVATION_URL,
-                'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
+                'utm_source' => RapidLoad_ThirdParty::rapidload_plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
                 'utm_medium' => 'plugin'
             ] );
     }

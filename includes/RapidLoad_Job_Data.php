@@ -28,7 +28,7 @@ class RapidLoad_Job_Data{
 
         $this->job_id = isset($this->job->parent) && $this->job->parent ? $this->job->parent->id : $this->job->id;
 
-        $exist = $this->exist();
+        $exist = $this->rapidload_job_data_exist();
 
         if($exist){
 

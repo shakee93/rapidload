@@ -29,7 +29,7 @@ class RapidLoad_LiteSpeed_Cache_Compatible  extends RapidLoad_ThirdParty{
             $url = null;
 
             if ( isset( $args['url'] ) ) {
-                $url = $this->transform_url( $args['url'] );
+                $url = $this->rapidload_util_transform_url( $args['url'] );
             }
 
             if($url){

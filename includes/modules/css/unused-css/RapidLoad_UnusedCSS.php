@@ -380,7 +380,7 @@ class RapidLoad_UnusedCSS
     function uucss_purge_url()
     {
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if (isset($_REQUEST['url']) && !empty($_REQUEST['url'])) {
 
@@ -391,7 +391,7 @@ class RapidLoad_UnusedCSS
             }
 
             $job = new RapidLoad_Job([
-                'url' => $this->transform_url($url)
+                'url' => $this->rapidload_util_transform_url($url)
             ]);
 
             if (!isset($job->id)) {
@@ -556,7 +556,7 @@ class RapidLoad_UnusedCSS
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 

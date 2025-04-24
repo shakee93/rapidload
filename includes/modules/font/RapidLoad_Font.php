@@ -159,7 +159,7 @@ class RapidLoad_Font
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 

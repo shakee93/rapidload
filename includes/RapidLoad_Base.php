@@ -209,9 +209,9 @@ class RapidLoad_Base
             $strategy = $this->is_mobile() ? 'mobile' : 'desktop';
 
             if($strategy === "mobile"){
-                $page_options = RapidLoad_Enqueue::$job->get_mobile_options(true);
+                $page_options = RapidLoad_Enqueue::$job->rapidload_job_get_mobile_options(true);
             }else{
-                $page_options = RapidLoad_Enqueue::$job->get_desktop_options(true);
+                $page_options = RapidLoad_Enqueue::$job->rapidload_job_get_desktop_options(true);
             }
 
             foreach ($page_options as $key => $op){
@@ -261,7 +261,7 @@ class RapidLoad_Base
 
         $created = $file_system->mkdir( UUCSS_LOG_DIR , 0755, !$file_system->rapidload_file_exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
 
-        if (!$created || ! $file_system->is_writable( UUCSS_LOG_DIR ) || ! $file_system->is_readable( UUCSS_LOG_DIR ) ) {
+        if (!$created || ! $file_system->is_writable( UUCSS_LOG_DIR ) || ! $file_system->rapidload_file_is_readable( UUCSS_LOG_DIR ) ) {
             return false;
         }
 
@@ -308,12 +308,12 @@ class RapidLoad_Base
                 'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
                 'on_board_complete' => self::is_api_key_verified() || self::get_option('rapidload_onboard_skipped', false),
                 'home_url' => home_url(),
-                'api_url' => RapidLoad_Api::get_key(),
+                'api_url' => RapidLoad_Api::rapidload_api_get_key(),
                 'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
                 'active_modules' => (array)self::get()->modules()->active_modules(),
                 'notifications' => apply_filters('uucss/notifications', []),
-                'activation_url' => self::activation_url('authorize' ),
-                'onboard_activation_url' => self::onboard_activation_url('authorize' ),
+                'activation_url' => self::rapidload_util_activation_url('authorize' ),
+                'onboard_activation_url' => self::rapidload_util_onboard_activation_url('authorize' ),
                 'app_url' => defined('UUCSS_APP_URL') ? trailingslashit(UUCSS_APP_URL) : 'https://app.rapidload.io/',
                 'db_tobe_updated' => RapidLoad_DB::$current_version < 1.6,
                 "test_mode" => isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] === "1",

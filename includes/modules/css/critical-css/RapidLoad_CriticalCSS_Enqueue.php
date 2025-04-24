@@ -25,7 +25,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
         $this->job_data = $job_data;
 
-        $this->data = $job_data->get_cpcss_data();
+        $this->data = $job_data->rapidload_job_data_get_cpcss_data();
 
         $this->warnings = $this->job_data->get_warnings();
 
@@ -185,7 +185,7 @@ class RapidLoad_CriticalCSS_Enqueue
             $file_name = ($i === 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
             $index = ($i === 1) ? "" : "-" . $i;
             if($this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file_name)){
-                $part = $this->file_system->get_contents(CriticalCSS::$base_dir . '/' . $file_name );
+                $part = $this->file_system->rapidload_file_get_contents(CriticalCSS::$base_dir . '/' . $file_name );
                 $part = apply_filters('rapidload/cpcss/minify', $part, $mode);
                 if(!empty($part)){
                     $critical_css_with_tag .= '<style id="rapidload-critical-css' . $index .'" data-mode="'. $mode .'">' . $part . '</style>';

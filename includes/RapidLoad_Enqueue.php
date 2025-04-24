@@ -205,7 +205,7 @@ class RapidLoad_Enqueue {
     public function rapidload_is_url_allowed($url = null, $args = null)
     {
 
-        if(!$this->is_valid_url($url)){
+        if(!$this->rapidload_util_is_valid_url($url)){
             return false;
         }
 
@@ -286,16 +286,16 @@ class RapidLoad_Enqueue {
             return false;
         }
 
-        if ( $this->is_doing_api_fetch() ) {
+        if ( $this->rapidload_util_is_doing_api_fetch() ) {
             return false;
         }
 
         // fix for uucss fallback css files being purged as url's
-        if ( $this->is_uucss_file() ) {
+        if ( $this->rapidload_util_is_uucss_file() ) {
             return false;
         }
 
-        if ( ! $this->is_url_allowed($url) ) {
+        if ( ! $this->rapidload_is_url_allowed($url) ) {
             return false;
         }
 

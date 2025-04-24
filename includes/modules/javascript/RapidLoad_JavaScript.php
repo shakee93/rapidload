@@ -80,19 +80,6 @@ class RapidLoad_JavaScript
 
     public function initFileSystem() {
 
-        // Todo cache base setup
-        /*$cache_base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR);
-
-        $cache_base_option = RapidLoad_Base::get_option('rapidload_cache_base', null);
-
-        if(!isset($cache_base_option)){
-
-            $cache_base_option = $cache_base;
-            RapidLoad_Base::update_option('rapidload_cache_base', $cache_base_option);
-        }
-
-        $this->base = RapidLoad_ThirdParty::plugin_exists('autoptimize') ? $cache_base_option . 'cpcss' : $cache_base . 'cpcss';*/
-
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'js';
 
         if ( ! $this->file_system ) {
@@ -117,7 +104,7 @@ class RapidLoad_JavaScript
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 
@@ -143,7 +130,7 @@ class RapidLoad_JavaScript
 
                     wp_localize_script( 'rapidload-js-optimizer', 'rapidload_js_optimizer', [
                         'post_id' => $post->ID,
-                        'current_url' => $this->transform_url(get_permalink($post->ID)),
+                        'current_url' => $this->rapidload_util_transform_url(get_permalink($post->ID)),
                         'ajax_url' => admin_url( 'admin-ajax.php' ),
                         'settings' => get_post_meta($post->ID, 'rapidload_js_settings')
                     ] );

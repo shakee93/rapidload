@@ -141,7 +141,7 @@ class RapidLoad_Admin_Frontend
 
     public function wp_ajax_update_htaccess_file(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         RapidLoad_htaccess::update_htaccess(isset($_REQUEST['remove']));
 
@@ -150,13 +150,13 @@ class RapidLoad_Admin_Frontend
     }
 
     public function suggest_whitelist_packs(){
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
         RapidLoad_Base::suggest_whitelist_packs();
     }
 
     public function mark_notice_read(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $notice_id = isset($_REQUEST['notice_id']) ? sanitize_text_field(wp_unslash($_REQUEST['notice_id'])) : false;
 
@@ -169,7 +169,7 @@ class RapidLoad_Admin_Frontend
 
     public function mark_faqs_read(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         RapidLoad_Base::update_option('rapidload_faqs_read', true);
         wp_send_json_success(true);
@@ -177,7 +177,7 @@ class RapidLoad_Admin_Frontend
 
     public function uucss_update_rule(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if( !isset($_REQUEST['rule']) || empty($_REQUEST['rule']) ||
             !isset($_REQUEST['url']) || empty($_REQUEST['url'])
@@ -263,7 +263,7 @@ class RapidLoad_Admin_Frontend
 
     function rapidload_notifications(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         wp_send_json_success([
             'faqs' => $this->get_faqs(),
@@ -341,7 +341,7 @@ class RapidLoad_Admin_Frontend
 
     public function uucss_test_url(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         global $uucss;
 
@@ -379,7 +379,7 @@ class RapidLoad_Admin_Frontend
 
     public function uucss_data(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $type = isset($_REQUEST['type']) ? sanitize_text_field(wp_unslash($_REQUEST['type'])) : 'path';
 
@@ -489,7 +489,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_run_gpsi_status_check_for_all(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $spawned = wp_schedule_single_event( time() + 5, 'rapidload_run_gpsi_test_for_all');
 
@@ -565,7 +565,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_purge_all(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $job_type = isset($_REQUEST['job_type']) ? sanitize_text_field(wp_unslash($_REQUEST['job_type'])    ) : 'all';
         $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
@@ -761,7 +761,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_upload_rules(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         if(!isset($_REQUEST['rules'])){
             wp_send_json_error('rules required');
@@ -788,7 +788,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_get_all_rules(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         wp_send_json_success(RapidLoad_Job::all_rules());
 
@@ -942,7 +942,7 @@ class RapidLoad_Admin_Frontend
         global $rapidload;
 
         $data = array(
-            'api' => RapidLoad_Api::get_key(),
+            'api' => RapidLoad_Api::rapidload_api_get_key(),
             'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
             'url' => site_url(),
             'ajax_url'          => admin_url( 'admin-ajax.php' ),

@@ -284,7 +284,7 @@ class RapidLoad_Job{
             return !$transformed ? unserialize($this->mobile_options) : $this->transform_individual_file_actions(unserialize($this->mobile_options));
         }
         if(!$recursive){
-            return $this->get_desktop_options($transformed, true);
+            return $this->rapidload_job_get_desktop_options($transformed, true);
         }
         return [];
     }

@@ -27,7 +27,7 @@ class RapidLoad_htaccess
             ]);
         }
 
-        $htaccess_content = $file_system->get_contents( $htaccess_file );
+        $htaccess_content = $file_system->rapidload_file_get_contents( $htaccess_file );
 
         if ( false === $htaccess_content ) {
             wp_send_json_error([
@@ -92,7 +92,7 @@ class RapidLoad_htaccess
         $rules .= '<IfModule mod_headers.c>' . PHP_EOL;
         $rules .= 'SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding' . PHP_EOL;
         $rules .= 'RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding' . PHP_EOL;
-        $rules .= '# Don't compress images and other uncompressible content' . PHP_EOL;
+        $rules .= '# Don\'t compress images and other uncompressible content' . PHP_EOL;
         $rules .= 'SetEnvIfNoCase Request_URI \\' . PHP_EOL;
         $rules .= '\\.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g|mp4|webm|webp|pdf)$ no-gzip dont-vary' . PHP_EOL;
         $rules .= '</IfModule>' . PHP_EOL;
@@ -214,7 +214,7 @@ class RapidLoad_htaccess
         $rules .= '<IfModule mod_headers.c>' . PHP_EOL;
         $rules .= 'Header unset ETag' . PHP_EOL;
         $rules .= '</IfModule>' . PHP_EOL . PHP_EOL;
-        $rules .= '# Since we're sending far-future expires, we don't need ETags for static content.' . PHP_EOL;
+        $rules .= '# Since we\'re sending far-future expires, we don\'t need ETags for static content.' . PHP_EOL;
         $rules .= '# developer.yahoo.com/performance/rules.html#etags' . PHP_EOL;
         $rules .= 'FileETag None' . PHP_EOL . PHP_EOL;
 
@@ -323,7 +323,7 @@ class RapidLoad_htaccess
 
         $file_system = new RapidLoad_FileSystem();
 
-        if(!$file_system->is_readable($htaccess_file)){
+        if(!$file_system->rapidload_file_is_readable($htaccess_file)){
             return [
                 'status' => 'failed',
                 'error' => [
@@ -337,7 +337,7 @@ class RapidLoad_htaccess
             ];
         }
 
-        $htaccess_content = $file_system->get_contents( $htaccess_file );
+        $htaccess_content = $file_system->rapidload_file_get_contents( $htaccess_file );
 
         if ( false === $htaccess_content ) {
             return [

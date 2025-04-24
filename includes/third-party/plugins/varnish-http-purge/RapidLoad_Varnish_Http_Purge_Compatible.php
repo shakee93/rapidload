@@ -38,7 +38,7 @@ class RapidLoad_Varnish_Http_Purge_Compatible extends RapidLoad_ThirdParty {
             $url = null;
 
             if ( isset( $args['url'] ) ) {
-                $url = $this->transform_url( $args['url'] );
+                $url = $this->rapidload_util_transform_url( $args['url'] );
             }
 
             if ( $url ) {

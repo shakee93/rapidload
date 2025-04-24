@@ -173,7 +173,7 @@ class RapidLoad_UnusedCSS_Store
 
         foreach ( $purged_files as $file ) {
 
-            if ( $this->is_uucss_file( $file->file ) ) {
+            if ( $this->rapidload_util_is_uucss_file( $file->file ) ) {
                 continue;
             }
 

@@ -228,7 +228,7 @@ abstract class RapidLoad_DB
     public static function rapidload_db_update_db(){
 
         if(!self::is_wp_cli()){
-            self::verify_nonce();
+            self::rapidload_util_verify_nonce();
         }
 
         if ( self::$current_version < self::$db_version ) {

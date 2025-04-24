@@ -147,7 +147,7 @@ class RapidLoad_Module
 
     function activate_module(){
 
-        self::verify_nonce();
+        self::rapidload_util_verify_nonce();
 
         $module = isset($_REQUEST['module']) ? sanitize_text_field(wp_unslash($_REQUEST['module'])) : false;
         $active = isset($_REQUEST['active']) ? sanitize_text_field(wp_unslash($_REQUEST['active'])) : 'off';
