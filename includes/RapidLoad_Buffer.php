@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Buffer')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Buffer
+ */
 class RapidLoad_Buffer
 {
 
