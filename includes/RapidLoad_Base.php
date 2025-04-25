@@ -206,7 +206,7 @@ class RapidLoad_Base
 
         if(isset(RapidLoad_Enqueue::$job->id)){
 
-            $strategy = $this->is_mobile() ? 'mobile' : 'desktop';
+            $strategy = $this->rapidload_util_is_mobile() ? 'mobile' : 'desktop';
 
             if($strategy === "mobile"){
                 $page_options = RapidLoad_Enqueue::$job->rapidload_job_get_mobile_options(true);
@@ -249,7 +249,7 @@ class RapidLoad_Base
             return false;
         }
 
-        $file_system = self::get_log_instance();
+        $file_system = self::rapidload_util_get_log_instance();
 
         if ( $file_system->rapidload_file_exists( UUCSS_LOG_DIR ) ) {
             return true;

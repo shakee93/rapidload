@@ -63,7 +63,7 @@ class RapidLoad_CriticalCSS_Enqueue
             ];
         }
 
-        $this->is_mobile = $this->is_mobile();
+        $this->is_mobile = $this->rapidload_util_is_mobile();
 
         $data = isset($this->data['desktop']) ? $this->data['desktop'] : null;
 

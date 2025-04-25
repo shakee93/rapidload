@@ -120,7 +120,7 @@ class RapidLoad_Enqueue {
 
             $inject->parsed_html = true;
 
-            $strategy = $this->is_mobile() ? 'mobile' : 'desktop';
+            $strategy = $this->rapidload_util_is_mobile() ? 'mobile' : 'desktop';
 
             $state = apply_filters('uucss/enqueue/content/update',[
                 'dom' => $dom,

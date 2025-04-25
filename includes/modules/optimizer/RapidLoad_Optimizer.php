@@ -203,7 +203,7 @@ class RapidLoad_Optimizer
 
     public function rapidload_titan_home_page_performance(){
 
-        $performance_data = RapidLoad_Job::get_first_and_last_optimization_score($this->rapidload_util_transform_url(site_url()), 'desktop');
+        $performance_data = RapidLoad_Job::rapidload_job_get_first_and_last_optimization_score($this->rapidload_util_transform_url(site_url()), 'desktop');
 
         wp_send_json_success($performance_data);
     }
@@ -223,7 +223,7 @@ class RapidLoad_Optimizer
                 ]
             ],
             'js_cache_dir' => [
-                'path' => JavaScript::$base_dir,
+                'path' => RapidLoad_JavaScript::$base_dir,
                 'label' => 'JavaScript Cache',
                 'action' => [
                     'href' => wp_nonce_url( add_query_arg( array(
@@ -250,21 +250,21 @@ class RapidLoad_Optimizer
 
         $css_folders = [
             'cpcss_cache_dir' => [
-                'path' => CriticalCSS::$base_dir,
+                'path' => RapidLoad_CriticalCSS::$base_dir,
                 'label' => 'Critical CSS Cache'
             ],
             'uucss_cache_dir' => [
-                'path' => UnusedCSS::$base_dir,
+                'path' => RapidLoad_UnusedCSS::$base_dir,
                 'label' => 'Unused CSS Cache'
             ],
             'minified_css_cache_dir' => [
-                'path' => MinifyCSS::$base_dir,
+                'path' => RapidLoad_MinifyCSS::$base_dir,
                 'label' => 'Minified CSS Cache'
             ]
         ];
 
         $folder_sizes = [];
-        $file_system = RapidLoad_Base::get_log_instance();
+        $file_system = RapidLoad_Base::rapidload_util_get_log_instance();
 
         foreach ($cache_folders as $key => $folder) {
             if (isset($folder['path']) && file_exists($folder['path'])) {
@@ -273,7 +273,7 @@ class RapidLoad_Optimizer
                     'label' => $folder['label'],
                     'size' => [
                         'folder_name' => $folder['path'],
-                        'size' => $file_system->get_folder_size($folder['path'])
+                        'size' => $file_system->rapidload_file_get_folder_size($folder['path'])
                     ],
                     'action' => $folder['action']
                 ];
@@ -292,8 +292,8 @@ class RapidLoad_Optimizer
 
         $css_total_size = 0;
         foreach ($css_folders as $folder) {
-            if (file_exists($folder['path'])) {
-                $css_total_size += $file_system->get_folder_size_in_bytes($folder['path']);
+            if ($file_system->rapidload_file_exists($folder['path'])) {
+                $css_total_size += $file_system->rapidload_file_get_folder_size_in_bytes($folder['path']);
             }
         }
 
@@ -302,7 +302,7 @@ class RapidLoad_Optimizer
             'label' => 'CSS Cache',
             'size' => [
                 'folder_name' => 'CSS Cache Folders (Combined)',
-                'size' => $file_system->format_size_units($css_total_size)
+                'size' => $file_system->rapidload_file_format_size_units($css_total_size)
             ],
             'action' => [
                 'href' => wp_nonce_url( add_query_arg( array(
