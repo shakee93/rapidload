@@ -115,7 +115,7 @@ trait RapidLoad_Utils {
             $data = ",\n" . $data;
         }
 
-        $log_instance->put_contents(UUCSS_LOG_DIR .'debug.log', $data, FILE_APPEND);
+        $log_instance->rapidload_file_put_contents(UUCSS_LOG_DIR .'debug.log', $data, FILE_APPEND);
 
 	    if ( $callee ) {
 
@@ -470,12 +470,12 @@ trait RapidLoad_Utils {
         $uucss_size = 0;
         $cpcss_size = 0;
 
-        if ( $file_system->rapidload_file_exists( UnusedCSS::$base_dir ) ) {
-            $uucss_size = $this->rapidload_util_dirSize( UnusedCSS::$base_dir );
+        if ( $file_system->rapidload_file_exists( RapidLoad_UnusedCSS::$base_dir ) ) {
+            $uucss_size = $this->rapidload_util_dirSize( RapidLoad_UnusedCSS::$base_dir );
         }
 
-        if ( $file_system->rapidload_file_exists( CriticalCSS::$base_dir ) ) {
-            $cpcss_size = $this->rapidload_util_dirSize( CriticalCSS::$base_dir );
+        if ( $file_system->rapidload_file_exists( RapidLoad_CriticalCSS::$base_dir ) ) {
+            $cpcss_size = $this->rapidload_util_dirSize( RapidLoad_CriticalCSS::$base_dir );
         }
 
         return $this->rapidload_util_human_file_size( $uucss_size + $cpcss_size );
