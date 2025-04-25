@@ -702,7 +702,7 @@ class RapidLoad_Cache
 
     public function cache_page($state){
 
-        self::debug_log('doing cache page');
+        self::rapidload_util_debug_log('doing cache page');
 
         if(isset($state['dom']) && RapidLoad_Cache_Engine::$to_be_cached){
 

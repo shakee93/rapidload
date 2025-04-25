@@ -29,7 +29,7 @@ class RapidLoad_Image_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing image optimization');
+        self::rapidload_util_debug_log('doing image optimization');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];
@@ -676,9 +676,9 @@ class RapidLoad_Image_Enqueue
 
                         $url = $this->extractUrl($img->{$attribute['attr']});
 
-                        $file_path = self::get_file_path_from_url($url);
+                        $file_path = self::rapidload_util_get_file_path_from_url($url);
 
-                        $dimension = self::get_width_height($file_path);
+                        $dimension = self::rapidload_util_get_width_height($file_path);
 
                         if ($dimension && isset($dimension['width']) && isset($dimension['height'])) {
 

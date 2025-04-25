@@ -28,7 +28,7 @@ class RapidLoad_Font_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing font optimization');
+        self::rapidload_util_debug_log('doing font optimization');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];

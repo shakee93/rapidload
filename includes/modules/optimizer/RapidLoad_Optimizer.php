@@ -378,7 +378,7 @@ class RapidLoad_Optimizer
 
     public function update_content($state){
 
-        self::debug_log('doing titan');
+        self::rapidload_util_debug_log('doing titan');
 
         if(isset($state['dom']) && isset($_REQUEST['rapidload_preview'])){
 

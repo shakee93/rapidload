@@ -63,7 +63,7 @@ class RapidLoad_Javascript_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing js optimization');
+        self::rapidload_util_debug_log('doing js optimization');
 
         global $wp_scripts;
 
@@ -285,7 +285,7 @@ class RapidLoad_Javascript_Enqueue
 
         $_frontend_data['src'] = $link->src;
 
-        $file_path = self::get_file_path_from_url(apply_filters('uucss/enqueue/js-url', $link->src));
+        $file_path = self::rapidload_util_get_file_path_from_url(apply_filters('uucss/enqueue/js-url', $link->src));
 
         if(!file_exists($file_path)){
             return;
@@ -666,7 +666,7 @@ class RapidLoad_Javascript_Enqueue
     private function containsFunctionCall($node) {
         // Check if the node itself is a CallExpression
         if ($node->getType() === 'CallExpression') {
-            //self::debug_log('found CallExpression', $node->render(new PrettyPrint()));
+            //self::rapidload_util_debug_log('found CallExpression', $node->render(new PrettyPrint()));
             return true;
         }
 
@@ -674,7 +674,7 @@ class RapidLoad_Javascript_Enqueue
         if (method_exists($node, 'getExpression')) {
             $expression = $node->getExpression();
             if ($expression && $this->containsFunctionCall($expression)) {
-                //self::debug_log('found getExpression', $expression->render(new PrettyPrint()));
+                //self::rapidload_util_debug_log('found getExpression', $expression->render(new PrettyPrint()));
                 return true;
             }
         }
@@ -683,7 +683,7 @@ class RapidLoad_Javascript_Enqueue
             $declarations = $node->getDeclarations();
             foreach ($declarations as $declaration) {
                 if ($this->containsFunctionCall($declaration)) {
-                    //self::debug_log('found getDeclarations', $declaration->render(new PrettyPrint()));
+                    //self::rapidload_util_debug_log('found getDeclarations', $declaration->render(new PrettyPrint()));
                     return true;
                 }
             }
@@ -693,7 +693,7 @@ class RapidLoad_Javascript_Enqueue
             $arguments = $node->getArguments();
             foreach ($arguments as $arg) {
                 if ($this->containsFunctionCall($arg)) {
-                    //self::debug_log('found getArguments', $arg->render(new PrettyPrint()));
+                    //self::rapidload_util_debug_log('found getArguments', $arg->render(new PrettyPrint()));
                     return true;
                 }
             }
@@ -702,7 +702,7 @@ class RapidLoad_Javascript_Enqueue
         if (method_exists($node, 'getCallee')) {
             $callee = $node->getCallee();
             if ($callee && $this->containsFunctionCall($callee)) {
-                //self::debug_log('found getCallee', $callee->render(new PrettyPrint()));
+                //self::rapidload_util_debug_log('found getCallee', $callee->render(new PrettyPrint()));
                 return true;
             }
         }

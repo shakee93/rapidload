@@ -42,7 +42,7 @@ class RapidLoad_Enqueue {
             self::$test_mode = isset($this->options['rapidload_test_mode']) && $this->options['rapidload_test_mode'] === "1";
 
             if(self::$test_mode){
-                self::debug_log("test mode enabled");
+                self::rapidload_util_debug_log("test mode enabled");
             }
 
             if($this->rapidload_enabled($this->url)){
@@ -315,7 +315,7 @@ class RapidLoad_Enqueue {
             return false;
         }
 
-        if ( $this->is_cli() ) {
+        if ( $this->rapidload_util_is_cli() ) {
             return false;
         }
 
@@ -382,11 +382,11 @@ class RapidLoad_Enqueue {
         do_action('rapidload/job/handle', RapidLoad_Enqueue::$job, $args);
 
         $front_end_enabled['job_id_set'] = isset(RapidLoad_Enqueue::$job->id);
-        $front_end_enabled['enabled'] = $this->enabled_frontend();
+        $front_end_enabled['enabled'] = $this->rapidload_enabled_frontend();
 
         if($front_end_enabled['job_id_set'] && $front_end_enabled['enabled']){
-            $this->replace_css(RapidLoad_Enqueue::$job);
-            self::debug_log('modify html content');
+            $this->rapidload_replace_css(RapidLoad_Enqueue::$job);
+            self::rapidload_util_debug_log('modify html content');
         }
 
     }

@@ -27,7 +27,7 @@ class RapidLoad_Link_Preload_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing preload links');
+        self::rapidload_util_debug_log('doing preload links');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];

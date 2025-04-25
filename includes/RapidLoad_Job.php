@@ -270,7 +270,7 @@ class RapidLoad_Job{
     function rapidload_job_get_desktop_options($transformed = false, $recursive = false){
 
         if(isset($this->desktop_options) && !empty($this->desktop_options)){
-            return !$transformed ? unserialize($this->desktop_options) : $this->transform_individual_file_actions(unserialize($this->desktop_options));
+            return !$transformed ? unserialize($this->desktop_options) : $this->rapidload_job_transform_individual_file_actions(unserialize($this->desktop_options));
         }
         if(!$recursive){
             return $this->get_mobile_options($transformed, true);
@@ -281,7 +281,7 @@ class RapidLoad_Job{
     function rapidload_job_get_mobile_options($transformed = false, $recursive = false){
 
         if(isset($this->mobile_options) && !empty($this->mobile_options)){
-            return !$transformed ? unserialize($this->mobile_options) : $this->transform_individual_file_actions(unserialize($this->mobile_options));
+            return !$transformed ? unserialize($this->mobile_options) : $this->rapidload_job_transform_individual_file_actions(unserialize($this->mobile_options));
         }
         if(!$recursive){
             return $this->rapidload_job_get_desktop_options($transformed, true);

@@ -27,7 +27,7 @@ class RapidLoad_MinifyCSS_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing minify css');
+        self::rapidload_util_debug_log('doing minify css');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];
@@ -90,7 +90,7 @@ class RapidLoad_MinifyCSS_Enqueue
 
         $_frontend_data['href'] =  $link->href;
 
-        $file_path = self::get_file_path_from_url($link->href);
+        $file_path = self::rapidload_util_get_file_path_from_url($link->href);
 
         if(!$file_path){
             return;

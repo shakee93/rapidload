@@ -34,7 +34,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
     function update_content($state){
 
-        self::debug_log('doing critical css');
+        self::rapidload_util_debug_log('doing critical css');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];

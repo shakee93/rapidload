@@ -27,7 +27,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
 
     public function update_content($state){
 
-        self::debug_log('doing aggregate css');
+        self::rapidload_util_debug_log('doing aggregate css');
 
         if(isset($state['dom'])){
             $this->dom = $state['dom'];
@@ -96,7 +96,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
             return;
         }
 
-        $file_path = self::get_file_path_from_url($link->href);
+        $file_path = self::rapidload_util_get_file_path_from_url($link->href);
 
         if(!$file_path){
             return;
