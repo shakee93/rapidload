@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_DB')){
+    return;
+}
+
+/**
+ * Class RapidLoad_DB
+ */
 abstract class RapidLoad_DB
 {
     use RapidLoad_Utils;
@@ -17,10 +24,10 @@ abstract class RapidLoad_DB
             return;
         }
 
-        $error = self::create_tables($new_site->blog_id . '_');
+        $error = self::rapidload_db_create_tables($new_site->blog_id . '_');
 
         if(empty($error)){
-            RapidLoad_Base::update_option( self::$db_option, self::$db_version );
+            RapidLoad_Base::rapidload_update_option( self::$db_option, self::$db_version );
         }
     }
 
@@ -30,7 +37,7 @@ abstract class RapidLoad_DB
             return;
         }
 
-        self::drop();
+        self::rapidload_db_drop();
     }
 
     public static function rapidload_db_drop(){
@@ -50,7 +57,7 @@ abstract class RapidLoad_DB
 
         if(empty($wpdb->last_error)){
 
-            RapidLoad_Base::delete_option(self::$db_option);
+            RapidLoad_Base::rapidload_delete_option(self::$db_option);
 
         }
 
@@ -153,18 +160,18 @@ abstract class RapidLoad_DB
     }
 
     public static function rapidload_db_update_db_version(){
-        self::$current_version = RapidLoad_Base::get_option( self::$db_option , "0");
+        self::$current_version = RapidLoad_Base::rapidload_get_option( self::$db_option , "0");
     }
 
     public static function rapidload_db_check_db_updates(){
 
-        add_action( 'wp_initialize_site', [get_called_class(), 'initialize_site'] , 10 , 2);
+        add_action( 'wp_initialize_site', [get_called_class(), 'rapidload_db_initialize_site'] , 10 , 2);
 
-        add_action('wp_uninitialize_site', [get_called_class(), 'uninitialize_site'], 10, 1);
+        add_action('wp_uninitialize_site', [get_called_class(), 'rapidload_db_uninitialize_site'], 10, 1);
 
         if(self::$current_version < 1.5){
 
-            self::rules_migration_two_point_zero();
+            self::rapidload_db_rules_migration_two_point_zero();
 
         }
 
@@ -180,8 +187,8 @@ abstract class RapidLoad_DB
                 ],
                 'type'        => 'warning'
             ];
-            self::add_advanced_admin_notice($notice);
-            add_action( "wp_ajax_rapidload_db_update", 'RapidLoad_DB::update_db' );
+            self::rapidload_util_add_advanced_admin_notice($notice);
+            add_action( "wp_ajax_rapidload_db_update", 'RapidLoad_DB::rapidload_db_update_db' );
         }
 
     }
@@ -215,7 +222,7 @@ abstract class RapidLoad_DB
                     $job_data->hits = $data[0]->hits;
                 }
 
-                $job_data->save();
+                $job_data->rapidload_job_data_save();
 
             }
 
@@ -234,7 +241,7 @@ abstract class RapidLoad_DB
         if ( self::$current_version < self::$db_version ) {
 
             try{
-                $status = self::create_tables();
+                $status = self::rapidload_db_create_tables();
 
                 if(!empty($status)){
                     wp_send_json_error(array(
@@ -243,10 +250,10 @@ abstract class RapidLoad_DB
                 }
 
                 if(self::$current_version < 1.3){
-                    self::seed();
+                    self::rapidload_db_seed();
                 }
 
-                RapidLoad_Base::update_option( self::$db_option, self::$db_version );
+                RapidLoad_Base::rapidload_update_option( self::$db_option, self::$db_version );
 
                 wp_send_json_success([
                     'db_updated' => true
@@ -287,15 +294,15 @@ abstract class RapidLoad_DB
     }
 
     public static function rapidload_db_initialize(){
-        $error = self::create_tables();
+        $error = self::rapidload_db_create_tables();
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
             return;
         }
 
-        RapidLoad_Base::update_option( self::$db_option, self::$db_version );
-        RapidLoad_Base::delete_option(self::$map_key );
+        RapidLoad_Base::rapidload_update_option( self::$db_option, self::$db_version );
+        RapidLoad_Base::rapidload_delete_option(self::$map_key );
     }
 
     public static function rapidload_db_get_rule_names(){
@@ -307,7 +314,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return array_unique(array_column($names, 'rule'));
@@ -315,11 +322,11 @@ abstract class RapidLoad_DB
 
     public static function rapidload_db_get_applied_rule($rule, $url){
 
-        $rules = self::get_rules_by_rule($rule);
+        $rules = self::rapidload_db_get_rules_by_rule($rule);
         $applied_rule = false;
 
         foreach ($rules as $rule){
-            if(self::is_url_glob_matched($url,$rule->regex)){
+            if(self::rapidload_util_is_url_glob_matched($url,$rule->regex)){
                 $applied_rule = $rule;
                 break;
             }
@@ -337,7 +344,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return $rules;
@@ -351,7 +358,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return $rules;
@@ -365,7 +372,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return isset($result) && !empty($result);
@@ -427,7 +434,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
     }
@@ -490,7 +497,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
     }
@@ -514,7 +521,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return (int)$count;
@@ -569,7 +576,7 @@ abstract class RapidLoad_DB
         ), OBJECT);
 
         $data = array_map(function ($job) {
-            return self::transform_link($job);
+            return self::rapidload_db_transform_link($job);
         }, $data);
 
         return $data;
@@ -597,7 +604,7 @@ abstract class RapidLoad_DB
         $data['time'] = isset( $link->created_at ) ? strtotime( $link->created_at ) * 1000 : null;
         $data['status'] = isset( $link->status ) ? $link->status : null;
         if(isset($data['rule_id'])){
-            $job_url = RapidLoad_Job::find_or_fail($data['rule_id']);
+            $job_url = RapidLoad_Job::rapidload_job_find_or_fail($data['rule_id']);
             $data['base'] = $job_url->url;
             if($data['rule'] === "is_url"){
                 $data['status'] = 'rule-based';
@@ -618,7 +625,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -633,7 +640,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -663,7 +670,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -693,7 +700,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -708,7 +715,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -723,7 +730,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -738,7 +745,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return true;
@@ -780,11 +787,11 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if ( ! empty( $error ) ) {
-            self::show_db_error( $error );
+            self::rapidload_db_show_db_error( $error );
         }
 
         if ( count( $link ) > 0 ) {
-            $first_link = self::transform_link($link[0]);
+            $first_link = self::rapidload_db_transform_link($link[0]);
         }
 
         if(!isset($first_link['status']) || ($first_link['status'] !== "success" && $first_link['status'] !== "failed")){
@@ -846,7 +853,7 @@ abstract class RapidLoad_DB
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         return (int)$count;
