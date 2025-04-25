@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Feedback')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Feedback
+ */
 class RapidLoad_Feedback {
 
 	function __construct() {
