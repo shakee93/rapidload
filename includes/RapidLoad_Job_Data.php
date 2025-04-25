@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Job_Data')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Job_Data
+ */
 class RapidLoad_Job_Data{
 
     use RapidLoad_Utils;
@@ -218,7 +225,7 @@ class RapidLoad_Job_Data{
         );
 
         if($exist){
-            $job = RapidLoad_Job::find_or_fail($exist->job_id);
+            $job = RapidLoad_Job::rapidload_job_find_or_fail($exist->job_id);
             $job_data = new RapidLoad_Job_Data($job, $job_type);
         }
 
