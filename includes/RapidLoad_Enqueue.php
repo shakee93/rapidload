@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Enqueue')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Enqueue
+ */
 class RapidLoad_Enqueue {
 
     use RapidLoad_Utils;
@@ -21,7 +28,7 @@ class RapidLoad_Enqueue {
             return;
         }
 
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         if(isset($_COOKIE['rapidload_debug']) && $_COOKIE['rapidload_debug'] === "1" || apply_filters('rapidload/enable/frontend_rapidload_debug', false)){
             self::$frontend_debug = true;
@@ -47,7 +54,7 @@ class RapidLoad_Enqueue {
 
             if($this->rapidload_enabled($this->url)){
 
-                if(RapidLoad_Base::get()->rules_enabled()){
+                if(RapidLoad_Base::rapidload_get()->rapidload_rules_enabled()){
 
                     $this->rule = $this->rapidload_get_current_rule();
 
@@ -226,7 +233,7 @@ class RapidLoad_Enqueue {
         }
 
         if ( $_post ) {
-            $page_options = RapidLoad_Base::get_page_options( $_post->ID );
+            $page_options = RapidLoad_Base::rapidload_get_page_options( $_post->ID );
             if ( isset( $page_options['exclude'] ) && $page_options['exclude'] === "on" ) {
                 return false;
             }
@@ -254,11 +261,11 @@ class RapidLoad_Enqueue {
 
                 }
 
-                if(self::rapidload_util_str_contains( $pattern, '*' ) && self::is_path_glob_matched(urldecode($url), $pattern)){
-                    $this->log( 'skipped glob pattern match : ' . $url );
+                if(self::rapidload_util_str_contains( $pattern, '*' ) && self::rapidload_util_is_path_glob_matched(urldecode($url), $pattern)){
+                    self::rapidload_util_log( 'skipped glob pattern match : ' . $url );
                     return false;
                 }else if ( self::rapidload_util_str_contains( urldecode($url), $pattern ) ) {
-                    $this->log( 'skipped string contains : ' . $url );
+                    self::rapidload_util_log( 'skipped string contains : ' . $url );
                     return false;
                 }
 
@@ -267,13 +274,13 @@ class RapidLoad_Enqueue {
 
         $url_parts = wp_parse_url( $url );
 
-        if(isset($url_parts['query']) && $this->rapidload_util_str_contains($url_parts['query'], 'customize_changeset_uuid')){
-            $this->log( 'skipped query contains: ' . $url );
+        if(isset($url_parts['query']) && self::rapidload_util_str_contains($url_parts['query'], 'customize_changeset_uuid')){
+            self::rapidload_util_log( 'skipped query contains: ' . $url );
             return false;
         }
 
         if(!apply_filters('uucss/url/exclude', $url)){
-            $this->log( 'skipped url exclude : ' . $url );
+            self::rapidload_util_log( 'skipped url exclude : ' . $url );
             return false;
         }
 
@@ -282,7 +289,7 @@ class RapidLoad_Enqueue {
 
     public function rapidload_enabled($url) {
 
-        if(!RapidLoad_Base::is_api_key_verified()){
+        if(!RapidLoad_Base::rapidload_is_api_key_verified()){
             return false;
         }
 
@@ -364,7 +371,7 @@ class RapidLoad_Enqueue {
             RapidLoad_Enqueue::$job->rule_id = $rule->id;
             RapidLoad_Enqueue::$job->status = 'rule-based';
             RapidLoad_Enqueue::$job->parent = $rule;
-            RapidLoad_Enqueue::$job->save();
+            RapidLoad_Enqueue::$job->rapidload_job_save();
 
         }
 
@@ -375,7 +382,7 @@ class RapidLoad_Enqueue {
 
         if(!isset(RapidLoad_Enqueue::$job->id) && $front_end_enabled['add_queue_enabled']){
 
-            RapidLoad_Enqueue::$job->save();
+            RapidLoad_Enqueue::$job->rapidload_job_save();
 
         }
 
@@ -393,8 +400,8 @@ class RapidLoad_Enqueue {
 
     function rapidload_get_current_rule(){
 
-        $rules = RapidLoad_Base::get()->get_pre_defined_rules();
-        $user_defined_rules = RapidLoad_DB::get_rule_names();
+        $rules = RapidLoad_Base::rapidload_get()->rapidload_get_pre_defined_rules();
+        $user_defined_rules = RapidLoad_DB::rapidload_db_get_rule_names();
 
         $related_rule = false;
 
@@ -404,7 +411,7 @@ class RapidLoad_Enqueue {
 
             if(is_numeric($key) && isset($rules[$key]) && isset($rules[$key]['callback']) && is_callable($rules[$key]['callback']) && $rules[$key]['callback']()){
 
-                $related_rule = RapidLoad_Base::get()->get_applicable_rule($this->url, $rules[$key]);
+                $related_rule = RapidLoad_Base::rapidload_get()->rapidload_get_applicable_rule($this->url, $rules[$key]);
 
                 if($related_rule){
                     break;
