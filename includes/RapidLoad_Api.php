@@ -43,7 +43,7 @@ class RapidLoad_Api
 			]
 		] );
 
-		return $this->handle_response( $response );
+		return $this->rapidload_api_handle_response( $response );
 	}
 
 	function rapidload_api_post( $endpoint, $data = [] ) {
@@ -62,7 +62,7 @@ class RapidLoad_Api
 			'body'    => $data
 		] );
 
-		return $this->handle_response( $response , $data);
+		return $this->rapidload_api_handle_response( $response , $data);
 	}
 
 
@@ -71,7 +71,7 @@ class RapidLoad_Api
 	 *
 	 * @return mixed|null
 	 */
-	public function handle_response( $response , $data = null) {
+	public function rapidload_api_handle_response( $response , $data = null) {
 
 		if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
@@ -89,11 +89,11 @@ class RapidLoad_Api
 
 	}
 
-	public function is_error( $result ) {
+	public function rapidload_api_is_error( $result ) {
 		return ! isset( $result ) || isset( $result->errors ) || ( gettype( $result ) === 'string' && strpos( $result, 'cURL error' ) !== false );
 	}
 
-    public function extract_error( $result ) {
+    public function rapidload_api_extract_error( $result ) {
 
         if(!isset($result)){
             return [
