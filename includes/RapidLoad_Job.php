@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Job')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Job
+ */
 class RapidLoad_Job{
 
     use RapidLoad_Utils;
@@ -220,7 +227,7 @@ class RapidLoad_Job{
 
     static function rapidload_job_all_rules(){
 
-        return RapidLoad_DB::get_all_rules();
+        return RapidLoad_DB::rapidload_db_get_all_rules();
 
     }
 
@@ -273,7 +280,7 @@ class RapidLoad_Job{
             return !$transformed ? unserialize($this->desktop_options) : $this->rapidload_job_transform_individual_file_actions(unserialize($this->desktop_options));
         }
         if(!$recursive){
-            return $this->get_mobile_options($transformed, true);
+            return $this->rapidload_job_get_mobile_options($transformed, true);
         }
         return [];
     }
@@ -400,7 +407,7 @@ class RapidLoad_Job{
     }
 
     function rapidload_job_delete_old_revision($strategy, $revision_count) {
-        $revsions = $this->get_revision_ids($strategy);
+        $revsions = $this->rapidload_job_get_revision_ids($strategy);
 
         if (!empty($revsions) && count($revsions) > ($revision_count - 1)) {
             $revsions = array_slice($revsions, -($revision_count - 1));
@@ -444,7 +451,7 @@ class RapidLoad_Job{
                         'url' => $action->url,
                         'type' => $action->url_object->file_type->value,
                         'action' => isset($action->action) && isset($action->action->value) ? $action->action->value : (object)[],
-                        'regex' => isset($action->url_object) && isset($action->url_object->regex) ? $action->url_object->regex : $this->generateUrlRegex($action->url)
+                        'regex' => isset($action->url_object) && isset($action->url_object->regex) ? $action->url_object->regex : $this->rapidload_job_generateUrlRegex($action->url)
                     ];
 
                 }
@@ -465,7 +472,7 @@ class RapidLoad_Job{
         return $options;
     }
 
-    function generateUrlRegex($url) {
+    function rapidload_job_generateUrlRegex($url) {
         // Escape characters with special meanings in regex
         $urlParts = wp_parse_url($url);
         if (isset($urlParts['path'])) {
