@@ -489,7 +489,23 @@ class RapidLoad_Image_Enqueue
             }
             $iframe->src = $youtube_embed_url;
 
-            $styles = '<style>@media only screen and (max-width:768px){.rapidload-yt-play-button-' . $video_id . '{width:42px!important;height:32px!important;}}.rapidload-yt-video-container-' . $video_id . '{position: relative;top: 0;left:0;width:100%;height:100%;display:flex;justify-content:center;background-color:black}.rapidload-yt-poster-image-' . $video_id . '{display:block;}.rapidload-yt-play-button-' . $video_id . '{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:85px;height:65px;background-image:url(\'data:image/svg+xml,%3Csvg width=%2740%27 height=%2730%27 viewBox=%270%200%2040%2030%27 fill=%27none%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Crect x=%2712.1055%27 y=%278.10596%27 width=%2715.7895%27 height=%2714.2105%27 fill=%27white%27/%3E%3Cpath d=%27M31.6925 0.737305H8.30749C3.71938 0.737305 0 4.45669 0 9.04479V20.7348C0 25.3229 3.71938 29.0423 8.30749 29.0423H31.6925C36.2806 29.0423 40 25.3229 40 20.7348V9.04479C40 4.45669 36.2806 0.737305 31.6925 0.737305ZM26.0742 15.4586L15.1363 20.6753C14.8448 20.8143 14.5082 20.6018 14.5082 20.279V9.51941C14.5082 9.19195 14.8537 8.97972 15.1457 9.12774L26.0837 14.6705C26.4089 14.8353 26.4032 15.3017 26.0742 15.4586Z%27 fill=%27%23F61C0D%27/%3E%3C/svg%3E%0A\');background-size:cover;cursor:pointer;z-index: 10000;}</style>';
+            $iframe_content_styles = apply_filters('rapidload/enqueue/iframe/content/styles', [
+                'position' => 'relative',
+                'top' => '0',
+                'left' => '0',
+                'width' => '100%',
+                'height' => '100%',
+                'display' => 'flex',
+                'justify-content' => 'center',
+                'background-color' => 'black'
+            ], $this->strategy);
+
+            $iframe_content_styles_str = '';
+            foreach($iframe_content_styles as $key => $value){
+                $iframe_content_styles_str .= $key . ':' . $value . ';';
+            }
+
+            $styles = '<style>@media only screen and (max-width:768px){.rapidload-yt-play-button-' . $video_id . '{width:42px!important;height:32px!important;}}.rapidload-yt-video-container-' . $video_id . '{'. $iframe_content_styles_str .'}.rapidload-yt-poster-image-' . $video_id . '{display:block;}.rapidload-yt-play-button-' . $video_id . '{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:85px;height:65px;background-image:url(\'data:image/svg+xml,%3Csvg width=%2740%27 height=%2730%27 viewBox=%270%200%2040%2030%27 fill=%27none%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Crect x=%2712.1055%27 y=%278.10596%27 width=%2715.7895%27 height=%2714.2105%27 fill=%27white%27/%3E%3Cpath d=%27M31.6925 0.737305H8.30749C3.71938 0.737305 0 4.45669 0 9.04479V20.7348C0 25.3229 3.71938 29.0423 8.30749 29.0423H31.6925C36.2806 29.0423 40 25.3229 40 20.7348V9.04479C40 4.45669 36.2806 0.737305 31.6925 0.737305ZM26.0742 15.4586L15.1363 20.6753C14.8448 20.8143 14.5082 20.6018 14.5082 20.279V9.51941C14.5082 9.19195 14.8537 8.97972 15.1457 9.12774L26.0837 14.6705C26.4089 14.8353 26.4032 15.3017 26.0742 15.4586Z%27 fill=%27%23F61C0D%27/%3E%3C/svg%3E%0A\');background-size:cover;cursor:pointer;z-index: 10000;}</style>';
 
             $play_button = $styles . '<div class="rapidload-yt-play-button rapidload-yt-play-button-' . $video_id . '"></div>';
 
