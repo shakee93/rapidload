@@ -5,6 +5,13 @@ defined( 'ABSPATH' ) or die();
 use vipnytt\SitemapParser;
 use vipnytt\SitemapParser\Exceptions\SitemapParserException;
 
+if(class_exists('RapidLoad_Sitemap')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Sitemap
+ */
 class RapidLoad_Sitemap
 {
     use RapidLoad_Utils;
@@ -83,7 +90,7 @@ class RapidLoad_Sitemap
 
         for ( $i = 0; $i < $sitemap_children; $i++ ) {
             $sub_sitemap_url = (string) $xml->sitemap[ $i ]->loc;
-            $urls = $this->process_site_map( $sub_sitemap_url, $urls );
+            $urls = $this->rapidload_process_site_map( $sub_sitemap_url, $urls );
         }
 
         return $urls;
