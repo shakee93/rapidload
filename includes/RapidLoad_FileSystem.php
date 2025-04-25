@@ -1,6 +1,10 @@
 <?php
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_FileSystem')){
+    return;
+}
+
 /**
  * Class RapidLoad_FileSystem
  */
