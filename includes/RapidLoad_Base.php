@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Base')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Base
+ */
 class RapidLoad_Base
 {
     use RapidLoad_Utils;
@@ -17,7 +24,7 @@ class RapidLoad_Base
 
     private static $base_instance = null;
 
-    public static function get(){
+    public static function rapidload_get(){
         if(!self::$base_instance){
             self::$base_instance = new RapidLoad_Base();
         }
@@ -84,11 +91,11 @@ class RapidLoad_Base
 
             add_filter('rapidload/options', [$this, 'merge_job_options']);
 
-            self::get_merged_options();
+            self::rapidload_get_merged_options();
 
-            self::activateByLicenseKey();
-            self::activate();
-            self::flush_rapidload();
+            self::rapidload_activate_by_license_key();
+            self::rapidload_activate();
+            self::rapidload_flush_rapidload();
 
             if(is_admin()){
 
@@ -96,13 +103,13 @@ class RapidLoad_Base
 
             }
 
-            $this->check_dependencies();
+            $this->rapidload_check_dependencies();
 
-            $this->init_log_dir();
+            $this->rapidload_init_log_dir();
 
             RapidLoad_ThirdParty::rapidload_initialize();
 
-            register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'vanish' ] );
+            register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'rapidload_vanish' ] );
 
             add_filter('uucss/cache-base-dir', function ($dir){
 
@@ -124,41 +131,41 @@ class RapidLoad_Base
 
             }, 10 , 1);
 
-            add_filter('plugin_row_meta',[$this, 'add_plugin_row_meta_links'],10,4);
+            add_filter('plugin_row_meta',[$this, 'rapidload_add_plugin_row_meta_links'],10,4);
 
             add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), [
                 $this,
-                'add_plugin_action_link'
+                'rapidload_add_plugin_action_link'
             ] );
 
-            $this->add_plugin_update_message();
+            $this->rapidload_add_plugin_update_message();
 
             if(is_admin()){
 
                 RapidLoad_DB::rapidload_db_check_db_updates();
 
-                self::enqueueGlobalScript();
+                self::rapidload_enqueueGlobalScript();
 
             }
 
             $this->container['feedback'] = new RapidLoad_Feedback();
             $this->container['buffer'] = new RapidLoad_Buffer();
-            $this->container['modules'] = RapidLoad_Module::get();
+            $this->container['modules'] = RapidLoad_Module::rapidload_get();
             $this->container['queue'] = new RapidLoad_Queue();
             $this->container['admin'] = new RapidLoad_Admin();
             $this->container['admin_frontend'] = new RapidLoad_Admin_Frontend();
-            $this->container['rest_api'] = new RapidLoadRestApi();
+            $this->container['rest_api'] = new RapidLoad_Rest_Api();
             $this->container['enqueue'] = new RapidLoad_Enqueue();
 
         });
 
         add_action( 'admin_init', array( 'PAnD', 'init' ) );
 
-        $this->enqueue_diagnose_script();
+        $this->rapidload_enqueue_diagnose_script();
 
     }
 
-    public function enqueue_diagnose_script(){
+    public function rapidload_enqueue_diagnose_script(){
 
         if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE) {
             $diagnose_script_content = file_get_contents(plugin_dir_path(UUCSS_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.js');
@@ -182,7 +189,7 @@ class RapidLoad_Base
 
     }
 
-    public static function get_license_key(){
+    public static function rapidload_get_license_key(){
 
         $options = self::rapidload_fetch_options();
 
@@ -192,7 +199,7 @@ class RapidLoad_Base
         return null;
     }
 
-    function merge_job_options($option){
+    public function rapidload_merge_job_options($option){
 
         $this->url = $this->rapidload_util_get_current_url();
 
@@ -223,7 +230,7 @@ class RapidLoad_Base
         return $option;
     }
 
-    public function add_plugin_action_link( $links ) {
+    public function rapidload_add_plugin_action_link( $links ) {
 
         $_links = array(
             '<a href="' . admin_url( 'admin.php?page=rapidload' ) . '">Settings</a>',
@@ -232,9 +239,9 @@ class RapidLoad_Base
         return array_merge( $_links, $links );
     }
 
-    public function check_dependencies() {
+    public function rapidload_check_dependencies() {
 
-        if(self::is_api_key_verified()) {
+        if(self::rapidload_is_api_key_verified()) {
             return true;
         }else {
             self::rapidload_display_get_start_link();
@@ -243,7 +250,7 @@ class RapidLoad_Base
         return false;
     }
 
-    public function init_log_dir(){
+    public function rapidload_init_log_dir(){
 
         if(!self::rapidload_util_get_log_option()){
             return false;
@@ -255,13 +262,13 @@ class RapidLoad_Base
             return true;
         }
 
-        if( $file_system->is_writable( UUCSS_LOG_DIR ) ){
+        if( $file_system->rapidload_file_is_writable( UUCSS_LOG_DIR ) ){
             return false;
         }
 
-        $created = $file_system->mkdir( UUCSS_LOG_DIR , 0755, !$file_system->rapidload_file_exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
+        $created = $file_system->rapidload_file_mkdir( UUCSS_LOG_DIR , 0755, !$file_system->rapidload_file_exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
 
-        if (!$created || ! $file_system->is_writable( UUCSS_LOG_DIR ) || ! $file_system->rapidload_file_is_readable( UUCSS_LOG_DIR ) ) {
+        if (!$created || ! $file_system->rapidload_file_is_writable( UUCSS_LOG_DIR ) || ! $file_system->rapidload_file_is_readable( UUCSS_LOG_DIR ) ) {
             return false;
         }
 
@@ -270,11 +277,11 @@ class RapidLoad_Base
         return true;
     }
 
-    public function modules(){
+    public function rapidload_modules(){
         return isset($this->container['modules']) ? $this->container['modules'] : null;
     }
 
-    public static function enqueueGlobalScript() {
+    public static function rapidload_enqueueGlobalScript() {
         add_action( 'admin_enqueue_scripts', function () {
 
             $deregister_scripts = apply_filters('uucss/scripts/global/deregister', ['popper']);
@@ -306,11 +313,11 @@ class RapidLoad_Base
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
                 'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
-                'on_board_complete' => self::is_api_key_verified() || self::get_option('rapidload_onboard_skipped', false),
+                'on_board_complete' => self::rapidload_is_api_key_verified() || self::rapidload_get_option('rapidload_onboard_skipped', false),
                 'home_url' => home_url(),
                 'api_url' => RapidLoad_Api::rapidload_api_get_key(),
                 'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
-                'active_modules' => (array)self::get()->modules()->active_modules(),
+                'active_modules' => (array)self::rapidload_get()->rapidload_modules()->rapidload_modules_active_modules(),
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::rapidload_util_activation_url('authorize' ),
                 'onboard_activation_url' => self::rapidload_util_onboard_activation_url('authorize' ),
@@ -328,7 +335,7 @@ class RapidLoad_Base
 
     }
 
-    function add_plugin_update_message(){
+    function rapidload_add_plugin_update_message(){
 
         global $pagenow;
 
@@ -337,12 +344,12 @@ class RapidLoad_Base
             $file   = basename( UUCSS_PLUGIN_FILE );
             $folder = basename( dirname( UUCSS_PLUGIN_FILE ) );
             $hook = "in_plugin_update_message-{$folder}/{$file}";
-            add_action( $hook, [$this, 'render_update_message'], 20, 2 );
+            add_action( $hook, [$this, 'rapidload_render_update_message'], 20, 2 );
         }
 
     }
 
-    function render_update_message($plugin_data, $r ){
+    function rapidload_render_update_message($plugin_data, $r ){
 
         $response = wp_remote_get( 'https://raw.githubusercontent.com/shakee93/autoptimize-unusedcss/master/readme.txt?format=txt' );
         
@@ -399,7 +406,7 @@ class RapidLoad_Base
 
     }
 
-    function add_plugin_row_meta_links($plugin_meta, $plugin_file, $plugin_data, $status)
+    function rapidload_add_plugin_row_meta_links($plugin_meta, $plugin_file, $plugin_data, $status)
     {
         if(isset($plugin_data['TextDomain']) && $plugin_data['TextDomain'] === 'autoptimize-unusedcss'){
             $plugin_meta[] = '<a href="https://docs.rapidload.io/" target="_blank">Documentation</a>';
@@ -408,17 +415,17 @@ class RapidLoad_Base
         return $plugin_meta;
     }
 
-    public function vanish(){
+    public function rapidload_vanish(){
 
         do_action('rapidload/vanish');
 
-        $this->clear_jobs('url');
+        $this->rapidload_clear_jobs('url');
 
     }
 
-    public function clear_jobs($type = 'all'){
+    public function rapidload_clear_jobs($type = 'all'){
 
-        RapidLoad_DB::clear_jobs($type);
+        RapidLoad_DB::rapidload_db_clear_jobs($type);
 
     }
 
@@ -433,11 +440,11 @@ class RapidLoad_Base
 
         if($is_multisite){
 
-            self::$options = get_blog_option(get_current_blog_id(), 'autoptimize_uucss_settings', self::get_default_options());
+            self::$options = get_blog_option(get_current_blog_id(), 'autoptimize_uucss_settings', self::rapidload_get_default_options());
 
         }else{
 
-            self::$options = get_site_option( 'autoptimize_uucss_settings', self::get_default_options() );
+            self::$options = get_site_option( 'autoptimize_uucss_settings', self::rapidload_get_default_options() );
         }
 
         foreach (self::$modules as $module){
@@ -458,7 +465,7 @@ class RapidLoad_Base
         return self::$options;
     }
 
-    public static function get_merged_options(){
+    public static function rapidload_get_merged_options(){
 
         if(!isset(self::$options)){
             self::$options = self::rapidload_fetch_options();
@@ -486,7 +493,7 @@ class RapidLoad_Base
         return self::$paged_options;
     }
 
-    public static function get_option($name, $default = null)
+    public static function rapidload_get_option($name, $default = null)
     {
         if(is_multisite()){
 
@@ -496,7 +503,7 @@ class RapidLoad_Base
         return get_site_option( $name, $default );
     }
 
-    public static function get_page_options($post_id)
+    public static function rapidload_get_page_options($post_id)
     {
         $options = [];
 
@@ -511,7 +518,7 @@ class RapidLoad_Base
         return $options;
     }
 
-    public static function update_option($name, $default)
+    public static function rapidload_update_option($name, $default)
     {
         if(is_multisite()){
 
@@ -521,7 +528,7 @@ class RapidLoad_Base
         return update_site_option( $name, $default );
     }
 
-    public static function delete_option($name)
+    public static function rapidload_delete_option($name)
     {
         if(is_multisite()){
 
@@ -531,7 +538,7 @@ class RapidLoad_Base
         return delete_site_option( $name );
     }
 
-    public static function get_default_options(){
+    public static function rapidload_get_default_options(){
         return [
             'uucss_enable_css' => "1",
             'uucss_fontface' => "1",
@@ -561,18 +568,18 @@ class RapidLoad_Base
         ];
     }
 
-    public static function uucss_activate() {
+    public static function rapidload_uucss_activate() {
 
-        $default_options = self::get_option('autoptimize_uucss_settings',self::get_default_options());
+        $default_options = self::rapidload_get_option('autoptimize_uucss_settings',self::rapidload_get_default_options());
 
         if(!isset($default_options['uucss_api_key'])){
-            self::update_option('autoptimize_uucss_settings', $default_options);
+            self::rapidload_update_option('autoptimize_uucss_settings', $default_options);
         }
 
         add_option( 'rapidload_do_activation_redirect', true );
     }
 
-    public static function activateByLicenseKey(){
+    public static function rapidload_activate_by_license_key(){
 
         if(!isset($_REQUEST['rapidload_license']) || empty($_REQUEST['rapidload_license'])){
             return;
@@ -580,7 +587,7 @@ class RapidLoad_Base
 
         $token = sanitize_text_field( wp_unslash( $_REQUEST['rapidload_license'] ) );
 
-        $options = self::get_option( 'autoptimize_uucss_settings' , []);
+        $options = self::rapidload_get_option( 'autoptimize_uucss_settings' , []);
 
         if ( ! isset( $options ) || empty( $options ) || ! $options ) {
             $options = [];
@@ -590,12 +597,12 @@ class RapidLoad_Base
         $uucss_api->apiKey = $token;
         $results           = $uucss_api->rapidload_api_post( 'connect', [ 'url' => trailingslashit(home_url()), 'type' => 'wordpress' ] );
 
-        if ( !$uucss_api->is_error( $results ) ) {
+        if ( !$uucss_api->rapidload_api_is_error( $results ) ) {
 
             $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $token;
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::rapidload_update_option( 'autoptimize_uucss_settings', $options );
 
             header( 'Location: ' . admin_url( 'admin.php?page=rapidload') );
             exit;
@@ -603,22 +610,22 @@ class RapidLoad_Base
 
     }
 
-    public static function flush_rapidload(){
+    public static function rapidload_flush_rapidload(){
 
         if(isset($_REQUEST['flush_rapidload'])){
-            RapidLoad_DB::flush_all_rapidload(get_current_blog_id());
+            RapidLoad_DB::rapidload_db_flush_all_rapidload(get_current_blog_id());
         }
 
     }
 
-    public static function activate() {
+    public static function rapidload_activate() {
 
         if ( ! isset( $_REQUEST['token'] ) || empty( $_REQUEST['token'] ) ) {
             return;
         }
 
         if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'uucss_activation' ) ) {
-            self::add_admin_notice( 'RapidLoad : Request verification failed for Activation. Contact support if the problem persists.', 'error' );
+            self::rapidload_add_admin_notice( 'RapidLoad : Request verification failed for Activation. Contact support if the problem persists.', 'error' );
 
             return;
         }
@@ -626,7 +633,7 @@ class RapidLoad_Base
         $token = sanitize_text_field( wp_unslash( $_REQUEST['token'] ) );
 
         if ( strlen( $token ) !== 32 ) {
-            self::add_admin_notice( 'RapidLoad : Invalid Api Token Received from the Activation. Contact support if the problem persists.', 'error' );
+            self::rapidload_add_admin_notice( 'RapidLoad : Invalid Api Token Received from the Activation. Contact support if the problem persists.', 'error' );
 
             return;
         }
@@ -641,11 +648,11 @@ class RapidLoad_Base
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $token;
 
-        self::update_option( 'autoptimize_uucss_settings', $options );
+        self::rapidload_update_option( 'autoptimize_uucss_settings', $options );
 
         if(!isset($options['whitelist_packs']) || isset($options['whitelist_packs']) && empty($options['whitelist_packs'])){
 
-            $data        = self::suggest_whitelist_packs();
+            $data        = self::rapidload_suggest_whitelist_packs();
             $white_packs = isset($data) ? $data : [];
 
             $options['whitelist_packs'] = array();
@@ -653,15 +660,15 @@ class RapidLoad_Base
                 $options['whitelist_packs'][] = $white_pack->id . ':' . $white_pack->name;
             }
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::rapidload_update_option( 'autoptimize_uucss_settings', $options );
         }
 
         self::rapidload_fetch_options(false);
 
-        self::add_admin_notice( 'RapidLoad : 🙏 Thank you for using our plugin. if you have any questions feel free to contact us.', 'success' );
+        self::rapidload_add_admin_notice( 'RapidLoad : 🙏 Thank you for using our plugin. if you have any questions feel free to contact us.', 'success' );
     }
 
-    public static function suggest_whitelist_packs($from = null) {
+    public static function rapidload_suggest_whitelist_packs($from = null) {
 
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -685,7 +692,7 @@ class RapidLoad_Base
 
         if(isset($data) && isset($data->data) && is_array($data->data)){
             self::$options['suggested_whitelist_packs'] = $data->data;
-            self::update_option( 'autoptimize_uucss_settings', self::$options );
+            self::rapidload_update_option( 'autoptimize_uucss_settings', self::$options );
 
             if(wp_doing_ajax()){
                 wp_send_json_success( $data->data);
@@ -695,7 +702,7 @@ class RapidLoad_Base
         return isset($data) && isset($data->data) && is_array($data->data) ? $data->data : [];
     }
 
-    public function rules_enabled(){
+    public function rapidload_rules_enabled(){
         return
             isset(self::$options['uucss_enable_rules']) &&
             self::$options['uucss_enable_rules'] === "1" &&
@@ -703,20 +710,20 @@ class RapidLoad_Base
             apply_filters('uucss/rules/enable', true);
     }
 
-    public function critical_css_enabled(){
+    public function rapidload_critical_css_enabled(){
         return
             isset(self::$options['uucss_enable_cpcss']) &&
             self::$options['uucss_enable_cpcss'] === "1" &&
             RapidLoad_DB::$current_version > 1.2;
     }
 
-    public function get_applicable_rule($url, $args = []){
+    public function rapidload_get_applicable_rule($url, $args = []){
 
         if(!$this->applicable_rule){
 
-            if(isset($args['rule']) && self::get()->rules_enabled()){
+            if(isset($args['rule']) && self::rapidload_get()->rapidload_rules_enabled()){
 
-                $this->applicable_rule = RapidLoad_DB::get_applied_rule($args['rule'], $url);
+                $this->applicable_rule = RapidLoad_DB::rapidload_db_get_applied_rule($args['rule'], $url);
 
             }
 
@@ -725,23 +732,23 @@ class RapidLoad_Base
         return $this->applicable_rule;
     }
 
-    public static function is_domain_verified(){
+    public static function rapidload_is_domain_verified(){
         $options = self::rapidload_fetch_options();
         return  $options['valid_domain'];
     }
 
-    public function get_pre_defined_rules($with_permalink = false){
+    public function rapidload_get_pre_defined_rules($with_permalink = false){
 
         if(!$this->defined_rules){
 
-            $this->defined_rules = self::get_defined_rules($with_permalink);
+            $this->defined_rules = self::rapidload_get_defined_rules($with_permalink);
         }
 
         return $this->defined_rules;
     }
 
-    public static function cache_file_count(){
-        $uucss_files = isset(UnusedCSS::$base_dir) && !empty(UnusedCSS::$base_dir) ? scandir(UnusedCSS::$base_dir) : [];
+    public static function rapidload_cache_file_count(){
+        $uucss_files = isset(RapidLoad_UnusedCSS::$base_dir) && !empty(RapidLoad_UnusedCSS::$base_dir) ? scandir(RapidLoad_UnusedCSS::$base_dir) : [];
         if(is_array($uucss_files)){
             $uucss_files = array_filter($uucss_files, function ($file){
                 return false !== strpos($file, '.css');
@@ -749,7 +756,7 @@ class RapidLoad_Base
         }else{
             $uucss_files = [];
         }
-        $cpcss_files = isset(CriticalCSS::$base_dir) && !empty(CriticalCSS::$base_dir) ? scandir(CriticalCSS::$base_dir) : [];
+        $cpcss_files = isset(RapidLoad_CriticalCSS::$base_dir) && !empty(RapidLoad_CriticalCSS::$base_dir) ? scandir(RapidLoad_CriticalCSS::$base_dir) : [];
         if(is_array($cpcss_files)){
             $cpcss_files = array_filter($cpcss_files, function ($file){
                 return false !== strpos($file, '.css');
@@ -760,7 +767,7 @@ class RapidLoad_Base
         return count($uucss_files) + count($cpcss_files);
     }
 
-    public static function is_api_key_verified() {
+    public static function rapidload_is_api_key_verified() {
 
         $api_key_status = isset( self::$options['uucss_api_key_verified'] ) ? self::$options['uucss_api_key_verified'] : '';
 
