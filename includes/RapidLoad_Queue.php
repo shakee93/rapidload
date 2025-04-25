@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Queue')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Queue
+ */
 class RapidLoad_Queue
 {
     use RapidLoad_Utils;
@@ -31,13 +38,11 @@ class RapidLoad_Queue
             self::$job_count = defined('UUCSS_JOB_COUNT_PER_QUEUE') ? UUCSS_JOB_COUNT_PER_QUEUE : (int) $options['uucss_jobs_per_queue'];
 
             if(self::$job_count > 8){
-                self::$job_count = self::$job_count / count($rapidload->modules()->active_modules());
+                self::$job_count = self::$job_count / count($rapidload->rapidload_modules()->rapidload_active_modules());
             }
         }else{
             self::$job_count = 1;
         }
-
-        //add_action('uucss_cron_queue', [$this, 'cache'], 2 , 1);
 
         add_filter( 'cron_schedules', [$this, 'rapidload_uucss_process_queue_schedule'] );
 
