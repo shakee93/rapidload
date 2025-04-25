@@ -2,7 +2,14 @@
 
 defined( 'ABSPATH' ) or die();
 
-class RapidLoadRestApi {
+if(class_exists('RapidLoad_Rest_Api')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Rest_Api
+ */
+class RapidLoad_Rest_Api {
 
     public static $namespace = 'rapidload/v1';
 
@@ -15,7 +22,7 @@ class RapidLoadRestApi {
 
     }
 
-    public static function rest_url()
+    public static function rapidload_rest_url()
     {
         return rest_url(self::$namespace);
     }
