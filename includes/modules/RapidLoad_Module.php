@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Module')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Module
+ */
 class RapidLoad_Module
 {
     use RapidLoad_Utils;
@@ -11,20 +18,20 @@ class RapidLoad_Module
 
     public function __construct()
     {
-        $this->init();
-        $this->load_modules();
+        $this->rapidload_init();
+        $this->rapidload_load_modules();
     }
 
     private static $module_instance = null;
 
-    public static function get(){
+    public static function rapidload_get(){
         if(!self::$module_instance){
             self::$module_instance = new RapidLoad_Module();
         }
         return self::$module_instance;
     }
 
-    function init(){
+    function rapidload_init(){
 
         $this->modules['critical-css'] = [
             'id' => 'critical-css',
@@ -32,7 +39,7 @@ class RapidLoad_Module
             'description' => 'Removing render blocking and increase your page scores, you can boost your site with this option',
             'group' => 'css',
             'status' => 'on',
-            'class' => CriticalCSS::class,
+            'class' => RapidLoad_CriticalCSS::class,
             'global' => 'cpcss'
         ];
 
@@ -42,7 +49,7 @@ class RapidLoad_Module
             'description' => 'Removing unused css and increase your page scores, you can boost your site with this option',
             'group' => 'css',
             'status' => 'on',
-            'class' => UnusedCSS::class,
+            'class' => RapidLoad_UnusedCSS::class,
             'global' => 'uucss'
         ];
 
@@ -52,7 +59,7 @@ class RapidLoad_Module
             'description' => 'Minify CSS',
             'group' => 'css',
             'status' => 'on',
-            'class' => MinifyCSS::class,
+            'class' => RapidLoad_MinifyCSS::class,
             'global' => 'mincss'
         ];
 
@@ -62,7 +69,7 @@ class RapidLoad_Module
             'description' => 'Optimize Javascript',
             'group' => 'javascript',
             'status' => 'on',
-            'class' => JavaScript::class,
+            'class' => RapidLoad_JavaScript::class,
             'global' => 'javascript'
         ];
 
@@ -108,11 +115,11 @@ class RapidLoad_Module
 
     }
 
-    function get_module_instance($id){
+    function rapidload_get_module_instance($id){
         return isset($this->modules_instances[$id]) ? $this->modules_instances[$id] : false;
     }
 
-    function load_modules(){
+    function rapidload_load_modules(){
 
         global $uucss;
 
@@ -138,14 +145,14 @@ class RapidLoad_Module
 
     }
 
-    function is_active($module){
+    function rapidload_is_active($module){
 
         return isset($this->modules) && isset($this->modules[$module]) &&
             isset($this->modules[$module]['status']) && $this->modules[$module]['status'] === "on";
 
     }
 
-    function activate_module(){
+    function rapidload_activate_module(){
 
         self::rapidload_util_verify_nonce();
 
@@ -163,17 +170,17 @@ class RapidLoad_Module
                 if($onboard){
                     $css = "1";
                 }
-                RapidLoad_Base::update_option('rapidload_module_css',$css);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_css',$css);
                 break;
             }
             case 'javascript' : {
                 $js = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_js',$js);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_js',$js);
                 break;
             }
             case 'image-delivery' : {
                 $image = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_image',$image);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_image',$image);
                 $api = new RapidLoad_Api();
                 if($image === "1"){
                     $api->rapidload_api_post('spai-associate-host',[
@@ -190,12 +197,12 @@ class RapidLoad_Module
             }
             case 'font' : {
                 $font = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_font',$font);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_font',$font);
                 break;
             }
             case 'cdn' : {
                 $cdn = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_cdn',$cdn);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_cdn',$cdn);
                 $api = new RapidLoad_Api();
                 $options = RapidLoad_Base::rapidload_fetch_options();
                 if($cdn === "1" && !isset($options['uucss_cdn_url'])){
@@ -234,30 +241,30 @@ class RapidLoad_Module
                     }
 
                 }
-                RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+                RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings', $options);
                 break;
             }
             case 'cache': {
 
                 $cache = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_cache',$cache);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_cache',$cache);
 
                 RapidLoad_Cache::setup_cache($cache);
                 break;
             }
             case 'page-optimizer' : {
                 $titan = $active === "on" ? "1" : "";
-                RapidLoad_Base::update_option('rapidload_module_titan',$titan);
+                RapidLoad_Base::rapidload_update_option('rapidload_module_titan',$titan);
                 break;
             }
         }
 
 
 
-        wp_send_json_success($this->active_modules(false));
+        wp_send_json_success($this->rapidload_active_modules(false));
     }
 
-    public function active_modules($cache = true){
+    public function rapidload_active_modules($cache = true){
 
         $options = RapidLoad_Base::rapidload_fetch_options($cache);
         $cache_options = RapidLoad_Cache::get_settings();
