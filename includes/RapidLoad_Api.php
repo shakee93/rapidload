@@ -2,6 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Api')){
+    return;
+}
+
+/**
+ * Class RapidLoad_Api
+ */
 class RapidLoad_Api
 {
     use RapidLoad_Utils;
