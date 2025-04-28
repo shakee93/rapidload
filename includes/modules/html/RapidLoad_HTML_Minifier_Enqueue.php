@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_HTML_Minifier_Enqueue')){
+    return;
+}
+
 class RapidLoad_HTML_Minifier_Enqueue
 {
     use RapidLoad_Utils;
@@ -17,10 +21,10 @@ class RapidLoad_HTML_Minifier_Enqueue
     {
         $this->job = $job;
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 99);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 99);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing HTML minify');
 
