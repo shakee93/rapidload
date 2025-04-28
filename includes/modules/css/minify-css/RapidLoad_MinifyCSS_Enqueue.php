@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_MinifyCSS_Enqueue')){
+    return;
+}
+
 class RapidLoad_MinifyCSS_Enqueue
 {
     use RapidLoad_Utils;
@@ -22,10 +26,10 @@ class RapidLoad_MinifyCSS_Enqueue
         $this->job = $job;
         $this->file_system = new RapidLoad_FileSystem();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 40);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 40);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing minify css');
 
@@ -50,7 +54,7 @@ class RapidLoad_MinifyCSS_Enqueue
         foreach ( $links as $link ) {
 
 
-            $this->minify_css($link);
+            $this->rapidload_minify_css($link);
 
             do_action('rapidload/enqueue/after-minify-css', $link, $this->job, $this->strategy);
 
@@ -60,7 +64,7 @@ class RapidLoad_MinifyCSS_Enqueue
 
         foreach ($styles as $style){
 
-            $this->minify_inline_css($style);
+            $this->rapidload_minify_inline_css($style);
 
         }
 
@@ -76,11 +80,11 @@ class RapidLoad_MinifyCSS_Enqueue
         ];
     }
 
-    public function minify_css($link){
+    public function rapidload_minify_css($link){
 
         $_frontend_data = [];
 
-        if(!self::is_css($link) || $this->is_file_excluded($link->href)){
+        if(!self::rapidload_is_css($link) || $this->rapidload_is_file_excluded($link->href)){
             return;
         }
 
@@ -114,7 +118,7 @@ class RapidLoad_MinifyCSS_Enqueue
             $filename = str_replace(".css","-{$version}.min.css", $filename);
         }
 
-        $minified_file = MinifyCSS::$base_dir . '/' . $filename;
+        $minified_file = RapidLoad_MinifyCSS::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/css-minified-url', $filename);
 
         $file_exist = $this->file_system->rapidload_file_exists($minified_file);
@@ -135,24 +139,24 @@ class RapidLoad_MinifyCSS_Enqueue
         }
     }
 
-    public function minify_inline_css($style){
+    public function rapidload_minify_inline_css($style){
 
         $minifier = new \MatthiasMullie\Minify\CSS();
         $minifier->add($style->innertext);
         $style->__set('innertext',$minifier->minify());
     }
 
-    private static function is_css( $el ) {
+    private static function rapidload_is_css( $el ) {
         return $el->rel === 'stylesheet' || ($el->rel === 'preload' && $el->as === 'style');
     }
 
-    private function is_file_excluded($file) {
+    private function rapidload_is_file_excluded($file) {
 
         $files = isset( $this->options['uucss_minify_excluded_files'] ) && !empty($this->options['uucss_minify_excluded_files']) ? explode( "\n", $this->options['uucss_minify_excluded_files'] ) : [];
 
         foreach ( $files as $excluded_file ) {
 
-            if($this->rapidload_util_str_contains( trim($excluded_file), '*' ) && self::is_path_glob_matched($file, trim($excluded_file))){
+            if($this->rapidload_util_str_contains( trim($excluded_file), '*' ) && self::rapidload_util_is_path_glob_matched($file, trim($excluded_file))){
                 return true;
             }else if ( $this->rapidload_util_str_contains( $file, trim($excluded_file) ) ) {
                 return true;
