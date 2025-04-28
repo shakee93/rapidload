@@ -1,6 +1,11 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
+
+if(class_exists('RapidLoad_CriticalCSS_Enqueue')){
+    return;
+}
+
 class RapidLoad_CriticalCSS_Enqueue
 {
     use RapidLoad_Utils;
@@ -27,12 +32,12 @@ class RapidLoad_CriticalCSS_Enqueue
 
         $this->data = $job_data->rapidload_job_data_get_cpcss_data();
 
-        $this->warnings = $this->job_data->get_warnings();
+        $this->warnings = $this->job_data->rapidload_job_data_get_warnings();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 20);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 20);
     }
 
-    function update_content($state){
+    function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing critical css');
 
@@ -80,18 +85,18 @@ class RapidLoad_CriticalCSS_Enqueue
             ];
         }
 
-        $data = CriticalCSS::extract_file_data($data);
+        $data = RapidLoad_CriticalCSS::rapidload_extract_file_data($data);
 
-        $file_exist = $this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $data['file_name']);
+        $file_exist = $this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir . '/' . $data['file_name']);
 
         if(!$file_exist &&
             ($this->job_data->attempts <=2 || (time() - strtotime($this->job_data->created_at)) > 86400)) {
-            self::log([
+            self::rapidload_util_log([
                 'log' =>  'requeue-> critical css file not found and attempts less than two or last generated days more than one',
                 'url' => $this->job_data->job->url,
             ]);
-            $this->job_data->requeue();
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_requeue();
+            $this->job_data->rapidload_job_data_save();
             //$this->inject->successfully_injected = false;
             return [
                 'dom' => $this->dom,
@@ -103,7 +108,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
         if($file_exist && $this->dom && $this->inject){
 
-            $this->enqueue_cpcss($data['file_name'], $data['file_count']);
+            $this->rapidload_enqueue_cpcss($data['file_name'], $data['file_count']);
 
             return [
                 'dom' => $this->dom,
@@ -117,13 +122,13 @@ class RapidLoad_CriticalCSS_Enqueue
 
     }
 
-    function update_noscript(){
+    function rapidload_update_noscript(){
 
         foreach ( $this->dom->find( 'link' ) as $key => $sheet ) {
 
             $parent = $sheet->parent();
 
-            if(isset($parent) && $parent->tag === 'noscript' || !self::is_css($sheet)){
+            if(isset($parent) && $parent->tag === 'noscript' || !self::rapidload_is_css($sheet)){
                 continue;
             }
 
@@ -176,7 +181,7 @@ class RapidLoad_CriticalCSS_Enqueue
         }
     }
 
-    function enqueue_cpcss($cpcss_file, $file_count = 1){
+    function rapidload_enqueue_cpcss($cpcss_file, $file_count = 1){
 
         $critical_css_with_tag = '';
         $mode = $this->is_mobile ? 'mobile' : 'desktop';
@@ -184,8 +189,8 @@ class RapidLoad_CriticalCSS_Enqueue
         for ($i = 1; $i <= $file_count; $i++) {
             $file_name = ($i === 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
             $index = ($i === 1) ? "" : "-" . $i;
-            if($this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file_name)){
-                $part = $this->file_system->rapidload_file_get_contents(CriticalCSS::$base_dir . '/' . $file_name );
+            if($this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name)){
+                $part = $this->file_system->rapidload_file_get_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name );
                 $part = apply_filters('rapidload/cpcss/minify', $part, $mode);
                 if(!empty($part)){
                     $critical_css_with_tag .= '<style id="rapidload-critical-css' . $index .'" data-mode="'. $mode .'">' . $part . '</style>';
@@ -201,7 +206,7 @@ class RapidLoad_CriticalCSS_Enqueue
         }
 
         $_frontend_data['data-mode'] = $mode;
-        $_frontend_data['cpcss-file'] = CriticalCSS::$base_dir . '/' . $cpcss_file;
+        $_frontend_data['cpcss-file'] = RapidLoad_CriticalCSS::$base_dir . '/' . $cpcss_file;
 
         if(isset($this->dom->find( 'title' )[0])){
 
@@ -209,7 +214,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
             $this->dom->find( 'title' )[0]->__set('outertext', $title_content . $critical_css_with_tag);
 
-            $this->update_noscript();
+            $this->rapidload_update_noscript();
 
             if(!defined('RAPIDLOAD_UUCSS_ENABLED')){
 
@@ -236,8 +241,8 @@ class RapidLoad_CriticalCSS_Enqueue
 
         }
 
-        $this->job_data->mark_as_successful_hit();
-        $this->job_data->save();
+        $this->job_data->rapidload_job_data_mark_as_successful_hit();
+        $this->job_data->rapidload_job_data_save();
 
         if(isset($this->options['remove_cpcss_on_user_interaction']) && $this->options['remove_cpcss_on_user_interaction'] === "1"){
 
@@ -264,7 +269,7 @@ class RapidLoad_CriticalCSS_Enqueue
 
     }
 
-    private static function is_css( $el ) {
+    private static function rapidload_is_css( $el ) {
         return $el->rel === 'stylesheet' || ($el->rel === 'preload' && $el->as === 'style');
     }
 }

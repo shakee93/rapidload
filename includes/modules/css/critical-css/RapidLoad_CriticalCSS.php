@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_CriticalCSS')){
+    return;
+}
+
 class RapidLoad_CriticalCSS
 {
     use RapidLoad_Utils;
@@ -20,61 +24,61 @@ class RapidLoad_CriticalCSS
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         $this->file_system = new RapidLoad_FileSystem();
 
-        add_action('wp_ajax_cpcss_purge_url', [$this, 'cpcss_purge_url']);
-        add_action('wp_ajax_nopriv_cpcss_purge_url', [$this, 'cpcss_purge_url']);
+        add_action('wp_ajax_cpcss_purge_url', [$this, 'rapidload_cpcss_purge_url']);
+        add_action('wp_ajax_nopriv_cpcss_purge_url', [$this, 'rapidload_cpcss_purge_url']);
 
         self::$cpcss_other_plugins = apply_filters('cpcss/other-plugins', []);
 
-        if( ! $this->initFileSystem() ){
+        if( ! $this->rapidload_initFileSystem() ){
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_cpcss'] !== "1" || !empty(self::$cpcss_other_plugins) || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_cpcss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_cpcss'] !== "1" || !empty(self::$cpcss_other_plugins) || !RapidLoad_Base::rapidload_is_api_key_verified()){
             return;
         }
 
-        new CriticalCSS_Queue();
+        new RapidLoad_CriticalCSS_Queue();
 
-        add_action('uucss/options/css', [$this, 'render_options']);
+        add_action('uucss/options/css', [$this, 'rapidload_render_options']);
 
-        add_action('cpcss_async_queue', [$this, 'init_async_store'], 10, 2);
+        add_action('cpcss_async_queue', [$this, 'rapidload_init_async_store'], 10, 2);
 
         if ((!isset($this->options['enable_uucss_on_cpcss']) || isset($this->options['enable_uucss_on_cpcss']) && $this->options['enable_uucss_on_cpcss'] !== "1" ) && !defined('RAPIDLOAD_CPCSS_ENABLED')) {
             define('RAPIDLOAD_CPCSS_ENABLED', true);
         }
 
-        add_action('rapidload/vanish', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/vanish/css', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish/css', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/job/purge', [$this, 'cache_cpcss'], 10, 2);
+        add_action('rapidload/job/purge', [$this, 'rapidload_cache_cpcss'], 10, 2);
 
-        add_action('rapidload/job/handle', [$this, 'cache_cpcss'], 10, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_cache_cpcss'], 10, 2);
 
-        add_action('rapidload/job/handle', [$this, 'enqueue_cpcss'], 20, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_enqueue_cpcss'], 20, 2);
 
-        add_filter('uucss/link', [$this, 'update_link']);
+        add_filter('uucss/link', [$this, 'rapidload_update_link']);
 
-        add_action('rapidload/job/updated', [$this, 'handle_job_updated'], 10 , 2);
+        add_action('rapidload/job/updated', [$this, 'rapidload_handle_job_updated'], 10 , 2);
 
-        add_action('rapidload/cdn/validated', [$this, 'update_cdn_url_in_cached_files']);
+        add_action('rapidload/cdn/validated', [$this, 'rapidload_update_cdn_url_in_cached_files']);
 
         if(is_admin()){
 
-            $this->cache_trigger_hooks();
+            $this->rapidload_cache_trigger_hooks();
 
         }
 
-        add_action('rapidload/admin-bar-actions', [$this, 'add_admin_clear_action']);
+        add_action('rapidload/admin-bar-actions', [$this, 'rapidload_add_admin_clear_action']);
 
-        add_action('rapidload/cpcss/job/handle', [$this, 'initiate_cpcss_job'], 10, 3);
+        add_action('rapidload/cpcss/job/handle', [$this, 'rapidload_initiate_cpcss_job'], 10, 3);
     }
 
-    public function add_admin_clear_action($wp_admin_bar){
+    public function rapidload_add_admin_clear_action($wp_admin_bar){
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-css-cache',
             'title' => '<span class="ab-label">' . __( 'Clear CSS Optimizations', 'unusedcss' ) . '</span>',
@@ -89,7 +93,7 @@ class RapidLoad_CriticalCSS
         ));
     }
 
-    public function initiate_cpcss_job($job, $first_arg, $second_arg = null){
+    public function rapidload_initiate_cpcss_job($job, $first_arg, $second_arg = null){
 
         if(!isset($job)){
             return;
@@ -97,7 +101,7 @@ class RapidLoad_CriticalCSS
 
         $job_data = new RapidLoad_Job_Data($job, 'cpcss');
         if(!isset($job_data->id)){
-            $job_data->save();
+            $job_data->rapidload_job_data_save();
         }
 
         do_action('cpcss_async_queue', $job_data, $first_arg);
@@ -106,17 +110,17 @@ class RapidLoad_CriticalCSS
         }
     }
 
-    public function update_cdn_url_in_cached_files($args) {
-        RapidLoad_CDN::update_cdn_url_in_cached_files(self::$base_dir, $args);
+    public function rapidload_update_cdn_url_in_cached_files($args) {
+        RapidLoad_CDN::rapidload_update_cdn_url_in_cached_files(self::$base_dir, $args);
     }
 
-    public function render_options($args){
+    public function rapidload_render_options($args){
         $options = $args;
         include_once 'parts/options.html.php';
 
     }
 
-    public function handle_job_updated($job, $new){
+    public function rapidload_handle_job_updated($job, $new){
 
         if($new){
 
@@ -124,29 +128,29 @@ class RapidLoad_CriticalCSS
 
             if(!isset($job_data->id)){
 
-                $job_data->save();
+                $job_data->rapidload_job_data_save();
 
             }
         }
     }
 
-    public function cache_trigger_hooks() {
-        add_action( 'save_post', [ $this, 'cache_on_actions' ], 110, 3 );
-        add_action( 'untrash_post', [ $this, 'cache_on_actions' ], 10, 1 );
-        add_action( 'wp_trash_post', [ $this, 'clear_on_actions' ], 10, 1 );
+    public function rapidload_cache_trigger_hooks() {
+        add_action( 'save_post', [ $this, 'rapidload_cache_on_actions' ], 110, 3 );
+        add_action( 'untrash_post', [ $this, 'rapidload_cache_on_actions' ], 10, 1 );
+        add_action( 'wp_trash_post', [ $this, 'rapidload_clear_on_actions' ], 10, 1 );
     }
 
-    public function vanish() {
+    public function rapidload_vanish() {
 
-        CriticalCSS_DB::clear_data();
+        RapidLoad_CriticalCSS_DB::rapidload_clear_data();
 
         if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
-            $this->file_system->delete( self::$base_dir, true );
+            $this->file_system->rapidload_file_delete( self::$base_dir, true );
         }
 
     }
 
-    public function refresh( $url, $args = [] ) {
+    public function rapidload_refresh( $url, $args = [] ) {
 
         $job = null;
 
@@ -158,11 +162,11 @@ class RapidLoad_CriticalCSS
 
         }
 
-        $this->clear_cache( $job );
-        $this->cache_cpcss( $job, $args );
+        $this->rapidload_clear_cache( $job );
+        $this->rapidload_cache_cpcss( $job, $args );
     }
 
-    public function clear_on_actions($post_id)
+    public function rapidload_clear_on_actions($post_id)
     {
         if(!$post_id){
             return;
@@ -178,13 +182,13 @@ class RapidLoad_CriticalCSS
 
             if(isset($job->id)){
 
-                $this->clear_cache($job);
+                $this->rapidload_clear_cache($job);
 
             }
         }
     }
 
-    public function cache_on_actions($post_id, $post = null, $update = null)
+    public function rapidload_cache_on_actions($post_id, $post = null, $update = null)
     {
         if(!$post_id){
             return;
@@ -194,22 +198,22 @@ class RapidLoad_CriticalCSS
 
         if($post->post_status === "publish") {
 
-            $this->clear_on_actions( $post->ID );
+            $this->rapidload_clear_on_actions( $post->ID );
 
             $job = new RapidLoad_Job([
                 'url' => get_permalink( $post )
             ]);
 
-            if(isset($job->id) || !RapidLoad_Base::get()->rules_enabled()){
+            if(isset($job->id) || !RapidLoad_Base::rapidload_get()->rules_enabled()){
 
-                $this->cache_cpcss($job);
+                $this->rapidload_cache_cpcss($job);
 
             }
 
         }
     }
 
-    function clear_cache($job = null, $args = []){
+    function rapidload_clear_cache($job = null, $args = []){
 
         if($job){
 
@@ -217,30 +221,30 @@ class RapidLoad_CriticalCSS
 
             if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule === "is_url" || $job_data->job->rule !== "is_url")){
 
-                $this->clear_files($job_data);
-                self::log([
+                $this->rapidload_clear_files($job_data);
+                self::rapidload_util_log([
                     'log' =>  'requeue-> cpcss clear cache by id manually',
                     'url' => $job_data->job->url,
                 ]);
-                $job_data->requeue();
-                $job_data->save();
+                $job_data->rapidload_job_data_requeue();
+                $job_data->rapidload_job_data_save();
 
             }
 
         }else{
 
-            CriticalCSS_DB::clear_data(isset($args['soft']));
-            $this->clear_files();
+            RapidLoad_CriticalCSS_DB::rapidload_clear_data(isset($args['soft']));
+            $this->rapidload_clear_files();
 
         }
 
     }
 
-    function clear_files($job_data = null){
+    function rapidload_clear_files($job_data = null){
 
     }
 
-    function cpcss_purge_url()
+    function rapidload_cpcss_purge_url()
     {
         self::rapidload_util_verify_nonce();
 
@@ -257,10 +261,10 @@ class RapidLoad_CriticalCSS
             ]);
 
             if (!isset($job->id)) {
-                $job->save();
+                $job->rapidload_job_save();
             }
 
-            $this->cache_cpcss($job, ['immediate' => true]);
+            $this->rapidload_cache_cpcss($job, ['immediate' => true]);
 
         }
 
@@ -277,22 +281,22 @@ class RapidLoad_CriticalCSS
                 }
                 case 'warnings':
                 {
-                    CriticalCSS_DB::requeue_where_status('success');
+                    RapidLoad_CriticalCSS_DB::rapidload_requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    CriticalCSS_DB::requeue_where_status('failed');
+                    RapidLoad_CriticalCSS_DB::rapidload_requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    CriticalCSS_DB::requeue_where_status('processing');
+                    RapidLoad_CriticalCSS_DB::rapidload_requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    CriticalCSS_DB::requeue_where_status('');
+                    RapidLoad_CriticalCSS_DB::rapidload_requeue_where_status('');
                     break;
                 }
             }
@@ -300,16 +304,16 @@ class RapidLoad_CriticalCSS
 
         if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] === 'true') ) {
 
-            $this->clear_cache();
+            $this->rapidload_clear_cache();
 
         }
 
-        $this->cleanCacheFiles();
+        $this->rapidload_cleanCacheFiles();
 
         wp_send_json_success('Successfully purged');
     }
 
-    function update_link($link){
+    function rapidload_update_link($link){
 
         if(isset($link['url'])){
 
@@ -329,7 +333,7 @@ class RapidLoad_CriticalCSS
                     if($job->rule !== 'is_url'){
                         $link['rule_status'] = $job_data->status;
                         $link['rule_hits'] = $job_data->hits;
-                        $link['applied_links'] = count($job->get_urls());
+                        $link['applied_links'] = count($job->rapidload_job_get_urls());
                     }
 
                 }
@@ -341,7 +345,7 @@ class RapidLoad_CriticalCSS
         return $link;
     }
 
-    function cache_cpcss($job, $args = []){
+    function rapidload_cache_cpcss($job, $args = []){
 
         if(!$job || !isset($job->id)){
             return false;
@@ -351,14 +355,14 @@ class RapidLoad_CriticalCSS
             return false;
         }
 
-        if(!$this->is_url_allowed($job->url, $args)){
+        if(!$this->rapidload_util_is_url_allowed($job->url, $args)){
             return false;
         }
 
         $this->job_data = new RapidLoad_Job_Data($job, 'cpcss');
 
         if(!isset($this->job_data->id)){
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_save();
         }
 
         if($this->job_data->status === 'failed' && $this->job_data->attempts >= 2 && !isset($args['immediate'])){
@@ -370,19 +374,19 @@ class RapidLoad_CriticalCSS
                 'log' =>  'requeue-> cpcss requeue manually',
                 'url' => $this->job_data->job->url,
             ]);
-            $this->job_data->requeue(isset( $args['immediate']) || isset( $args['requeue']) ? 1 : -1);
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_requeue(isset( $args['immediate']) || isset( $args['requeue']) ? 1 : -1);
+            $this->job_data->rapidload_job_data_save();
         }
 
         $this->async = apply_filters('uucss/purge/async',true);
 
         if (! $this->async ) {
 
-            $this->init_async_store($this->job_data, $args);
+            $this->rapidload_init_async_store($this->job_data, $args);
 
         }else if(isset( $args['immediate'] )){
 
-            $this->schedule_cron('cpcss_async_queue', [
+            $this->rapidload_schedule_cron('cpcss_async_queue', [
                 'job_data' => $this->job_data,
                 'args'     => $args
             ]);
@@ -392,7 +396,7 @@ class RapidLoad_CriticalCSS
         return true;
     }
 
-    function enqueue_cpcss($job, $args){
+    function rapidload_enqueue_cpcss($job, $args){
 
         if(!$job || !isset($job->id) || isset( $_REQUEST['no_cpcss'] )){
             return false;
@@ -402,11 +406,11 @@ class RapidLoad_CriticalCSS
             $this->job_data = new RapidLoad_Job_Data($job, 'cpcss');
         }
 
-        new CriticalCSS_Enqueue($this->job_data);
+        new RapidLoad_CriticalCSS_Enqueue($this->job_data);
 
     }
 
-    public function initFileSystem() {
+    public function rapidload_initFileSystem() {
 
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'cpcss';
 
@@ -414,14 +418,14 @@ class RapidLoad_CriticalCSS
             return false;
         }
 
-        if ( ! $this->init_base_dir() ) {
+        if ( ! $this->rapidload_init_base_dir() ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_base_dir() {
+    public function rapidload_init_base_dir() {
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
@@ -433,30 +437,30 @@ class RapidLoad_CriticalCSS
         //$created = $this->file_system->mkdir( self::$base_dir );.
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->rapidload_file_is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_async_store($job_data, $args)
+    public function rapidload_init_async_store($job_data, $args)
     {
-        $store = new CriticalCSS_Store($job_data, $args);
-        $store->purge_css();
+        $store = new RapidLoad_CriticalCSS_Store($job_data, $args);
+        $store->rapidload_purge_css();
     }
 
-    public function cleanCacheFiles(){
+    public function rapidload_cleanCacheFiles(){
 
-        $data = CriticalCSS_DB::get_success_data();
+        $data = RapidLoad_CriticalCSS_DB::rapidload_get_success_data();
 
         $used_files = [];
 
         foreach ($data as $value){
             if(!empty($value->data)){
-                $files = RapidLoad_Job_Data::transform_cpcss_data_to_array($value->data);
+                $files = RapidLoad_Job_Data::rapidload_job_data_transform_cpcss_data_to_array($value->data);
                 foreach ($files as $file){
-                    $file_data = self::extract_file_data($file);
+                    $file_data = self::rapidload_extract_file_data($file);
                     for ($i = 1; $i <= $file_data['file_count']; $i++) {
                         $file_name = ($i === 1) ? $file_data['file_name'] : str_replace(".css","-" . $i . ".css", $file_data['file_name']);
                         array_push($used_files,$file_name);
@@ -465,14 +469,14 @@ class RapidLoad_CriticalCSS
             }
         }
 
-        if($this->file_system->rapidload_file_exists(CriticalCSS::$base_dir)){
-            if ($handle = opendir(CriticalCSS::$base_dir)) {
+        if($this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir)){
+            if ($handle = opendir(RapidLoad_CriticalCSS::$base_dir)) {
                 while (false !== ($file = readdir($handle))) {
                     if ('.' === $file) continue;
                     if ('..' === $file) continue;
 
-                    if(!in_array($file, $used_files) && $this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file)){
-                        $this->file_system->delete(CriticalCSS::$base_dir . '/' . $file);
+                    if(!in_array($file, $used_files) && $this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file)){
+                        $this->file_system->rapidload_file_delete(RapidLoad_CriticalCSS::$base_dir . '/' . $file);
                     }
                 }
                 closedir($handle);
@@ -480,7 +484,7 @@ class RapidLoad_CriticalCSS
         }
     }
 
-    public static function extract_file_data($fileName){
+    public static function rapidload_extract_file_data($fileName){
         $pattern = '/(.*)\[(\d+)\]\.css$/';
         if (preg_match($pattern, $fileName, $matches)) {
             return [
@@ -494,7 +498,7 @@ class RapidLoad_CriticalCSS
         ];
     }
 
-    public static function breakCSSIntoParts($cssContent, $maxLength = 60000) {
+    public static function rapidload_breakCSSIntoParts($cssContent, $maxLength = 60000) {
         $parser = new \Sabberworm\CSS\Parser($cssContent);
         $cssDocument = $parser->parse();
         $cssParts = [];

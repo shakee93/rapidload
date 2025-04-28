@@ -1,6 +1,11 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
+
+if(class_exists('RapidLoad_CriticalCSS_Queue')){
+    return;
+}
+
 class RapidLoad_CriticalCSS_Queue
 {
     use RapidLoad_Utils;
@@ -11,13 +16,13 @@ class RapidLoad_CriticalCSS_Queue
             return;
         }
 
-        add_action('uucss/queue/task',[$this, 'fetch_job_id'], 10);
-        add_action('uucss/queue/task',[$this, 'fetch_result'], 20);
+        add_action('uucss/queue/task',[$this, 'rapidload_fetch_job_id'], 10);
+        add_action('uucss/queue/task',[$this, 'rapidload_fetch_result'], 20);
     }
 
-    function fetch_job_id(){
+    function rapidload_fetch_job_id(){
 
-        $current_waiting = CriticalCSS_DB::get_current_waiting_tasks_count();
+        $current_waiting = RapidLoad_CriticalCSS_DB::rapidload_get_current_waiting_tasks_count();
 
         if( (RapidLoad_Queue::$job_count - $current_waiting) <= 0 ){
             return;
@@ -25,24 +30,24 @@ class RapidLoad_CriticalCSS_Queue
 
         global $wpdb;
 
-        $links = CriticalCSS_DB::get_current_queued_tasks_job_ids(RapidLoad_Queue::$job_count - $current_waiting);
+        $links = RapidLoad_CriticalCSS_DB::rapidload_get_current_queued_tasks_job_ids(RapidLoad_Queue::$job_count - $current_waiting);
 
         if(!empty($links)){
 
             foreach ($links as $link){
 
-                $job = RapidLoad_Job::find_or_fail($link->job_id);
+                $job = RapidLoad_Job::rapidload_job_find_or_fail($link->job_id);
 
                 if($job){
 
                     $job_data = new RapidLoad_Job_Data($job, 'cpcss');
 
-                    $store = new CriticalCSS_Store($job_data, apply_filters('rapidload/purge/args', []));
-                    $store->purge_css();
+                    $store = new RapidLoad_CriticalCSS_Store($job_data, apply_filters('rapidload/purge/args', []));
+                    $store->rapidload_purge_css();
 
                 }else{
 
-                    CriticalCSS_DB::delete_by_job_id($link->job_id);
+                    RapidLoad_CriticalCSS_DB::rapidload_delete_by_job_id($link->job_id);
 
                 }
 
@@ -52,26 +57,26 @@ class RapidLoad_CriticalCSS_Queue
 
     }
 
-    function fetch_result(){
+    function rapidload_fetch_result(){
 
-        $links = CriticalCSS_DB::get_current_processing_tasks_job_ids(RapidLoad_Queue::$job_count);
+        $links = RapidLoad_CriticalCSS_DB::rapidload_get_current_processing_tasks_job_ids(RapidLoad_Queue::$job_count);
 
         if(!empty($links)){
 
             foreach ($links as $link){
 
-                $job = RapidLoad_Job::find_or_fail($link->job_id);
+                $job = RapidLoad_Job::rapidload_job_find_or_fail($link->job_id);
 
                 if($job){
 
                     $job_data = new RapidLoad_Job_Data($job, 'cpcss');
 
-                    $store = new CriticalCSS_Store($job_data, []);
-                    $store->update_css();
+                    $store = new RapidLoad_CriticalCSS_Store($job_data, []);
+                    $store->rapidload_update_css();
 
                 }else{
 
-                    CriticalCSS_DB::delete_by_job_id($link->job_id);
+                    RapidLoad_CriticalCSS_DB::rapidload_delete_by_job_id($link->job_id);
 
                 }
 

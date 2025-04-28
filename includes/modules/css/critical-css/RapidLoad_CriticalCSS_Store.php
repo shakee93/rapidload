@@ -1,6 +1,11 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
+
+if(class_exists('RapidLoad_CriticalCSS_Store')){
+    return;
+}
+
 class RapidLoad_CriticalCSS_Store
 {
     use RapidLoad_Utils;
@@ -22,12 +27,12 @@ class RapidLoad_CriticalCSS_Store
 
         $this->job_data = $job_data;
         $this->args = $args;
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
         $this->file_system = new RapidLoad_FileSystem();
 
     }
 
-    function purge_css(){
+    function rapidload_purge_css(){
 
         $uucss_api = new RapidLoad_Api();
 
@@ -69,8 +74,8 @@ class RapidLoad_CriticalCSS_Store
 
             if ( ! isset( $result ) || isset( $result->errors ) || ( gettype( $result ) === 'string' && strpos( $result, 'cURL error' ) !== false ) ) {
 
-                $this->job_data->mark_as_failed($uucss_api->extract_error( $result ));
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_mark_as_failed($uucss_api->rapidload_api_extract_error( $result ));
+                $this->job_data->rapidload_job_data_save();
 
                 return;
             }
@@ -79,8 +84,8 @@ class RapidLoad_CriticalCSS_Store
             $this->purged_css = $result->data;
             $this->purged_mobile_css = $result->data_mobile;
 
-            $this->cache_file($this->purged_css, $this->purged_mobile_css);
-            $this->cpcss_cached($this->job_data->job->url);
+            $this->rapidload_cache_file($this->purged_css, $this->purged_mobile_css);
+            $this->rapidload_cpcss_cached($this->job_data->job->url);
 
         }else{
 
@@ -118,16 +123,16 @@ class RapidLoad_CriticalCSS_Store
 
                 ) );
 
-            if($uucss_api->is_error($result)){
+            if($uucss_api->rapidload_api_is_error($result)){
 
-                $this->job_data->mark_as_failed($uucss_api->extract_error( $result ));
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_mark_as_failed($uucss_api->rapidload_api_extract_error( $result ));
+                $this->job_data->rapidload_job_data_save();
 
-                $this->log( [
+                self::rapidload_util_log([
                     'log' => 'fetched data stored status failed',
                     'url' => $this->job_data->job->url,
                     'type' => 'uucss-cron'
-                ] );
+                ]);
 
                 return;
             }
@@ -136,7 +141,7 @@ class RapidLoad_CriticalCSS_Store
 
                 $this->job_data->queue_job_id = $result->id;
                 $this->job_data->status = 'waiting';
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_save();
 
             }else if($result->completed){
 
@@ -144,15 +149,15 @@ class RapidLoad_CriticalCSS_Store
                 $this->purged_css = $result->data;
                 $this->purged_mobile_css = $result->data_mobile;
 
-                $this->cache_file($this->purged_css, $this->purged_mobile_css);
-                $this->cpcss_cached($this->job_data->job->url);
+                $this->rapidload_cache_file($this->purged_css, $this->purged_mobile_css);
+                $this->rapidload_cpcss_cached($this->job_data->job->url);
 
             }
 
         }
     }
 
-    function cache_file($purged_css, $purged_mobile = false, $result = false) {
+    function rapidload_cache_file($purged_css, $purged_mobile = false, $result = false) {
         if ($result) {
             $this->result = $result;
         }
@@ -170,42 +175,42 @@ class RapidLoad_CriticalCSS_Store
 
         if (!empty($purged_css)) {
             $purged_css = apply_filters('rapidload/cache_file_creating/css', $purged_css);
-            $data['desktop'] = $this->handle_css_parts($purged_css, '', $file_character_length);
+            $data['desktop'] = $this->rapidload_handle_css_parts($purged_css, '', $file_character_length);
         }
 
         if (!empty($purged_mobile)) {
             $purged_mobile = apply_filters('rapidload/cache_file_creating/css', $purged_mobile);
-            $data['mobile'] = $this->handle_css_parts($purged_mobile, '-mobile', $file_character_length);
+            $data['mobile'] = $this->rapidload_handle_css_parts($purged_mobile, '-mobile', $file_character_length);
         }
 
         if ($this->job_data) {
-            $this->job_data->mark_as_success($data, null, $warnings, 'success', 'cpcss');
-            $this->job_data->save();
-            $this->cpcss_cached($this->job_data->job->url);
+            $this->job_data->rapidload_job_data_mark_as_success($data, null, $warnings, 'success', 'cpcss');
+            $this->job_data->rapidload_job_data_save();
+            $this->rapidload_cpcss_cached($this->job_data->job->url);
         }
     }
 
-    function handle_css_parts($css, $suffix, $file_character_length) {
+    function rapidload_handle_css_parts($css, $suffix, $file_character_length) {
 
         if($file_character_length === "0" || $file_character_length === 0){
-            $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
-            if (!$this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $file_name)) {
-                $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $file_name, $css);
+            $file_name = 'cpcss-' . $this->rapidload_util_encode($css) . $suffix . '.css';
+            if (!$this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name)) {
+                $this->file_system->rapidload_file_put_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name, $css);
             }
             return $file_name;
         }
 
-        $parts = CriticalCSS::breakCSSIntoParts($css, $file_character_length);
+        $parts = RapidLoad_CriticalCSS::rapidload_breakCSSIntoParts($css, $file_character_length);
         $file_count = count($parts);
         $file_suffix = $file_count > 1 ? "[$file_count]" : "";
 
-        $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
+        $file_name = 'cpcss-' . $this->rapidload_util_encode($css) . $suffix . '.css';
         $final_file_name = str_replace('.css', $file_suffix . '.css', $file_name);
 
         foreach ($parts as $index => $part) {
             $part_file_name = $index === 0 ? $file_name : str_replace('.css', '-' . ($index + 1) . '.css', $file_name);
-            if (!$this->file_system->rapidload_file_exists(CriticalCSS::$base_dir . '/' . $part_file_name)) {
-                $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $part_file_name, $part);
+            if (!$this->file_system->rapidload_file_exists(RapidLoad_CriticalCSS::$base_dir . '/' . $part_file_name)) {
+                $this->file_system->rapidload_file_put_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $part_file_name, $part);
             }
         }
 
@@ -213,13 +218,13 @@ class RapidLoad_CriticalCSS_Store
     }
 
 
-    public function cpcss_cached($url){
+    public function rapidload_cpcss_cached($url){
         do_action( 'uucss/cached', [
             'url' => $url
         ]);
     }
 
-    function update_css(){
+    function rapidload_update_css(){
 
         if(!$this->job_data->queue_job_id || $this->job_data->status === "success" || $this->job_data->status === "failed"){
             return;
@@ -231,22 +236,22 @@ class RapidLoad_CriticalCSS_Store
 
         if ( ! isset( $result ) || isset( $result->errors ) || ( gettype( $result ) === 'string' && strpos( $result, 'cURL error' ) !== false ) ) {
 
-            $error = $uucss_api->extract_error( $result );
+            $error = $uucss_api->rapidload_api_extract_error( $result );
 
             if(isset($error['message']) && ($error['message'] === 'Job processing failed in queue' || $error['message'] === 'Error')){
 
-                self::log([
+                self::rapidload_util_log([
                     'log' =>  'requeue-> cpcss job processing failed in queue',
                     'url' => $this->job_data->job->url,
                 ]);
-                $this->job_data->requeue();
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_requeue();
+                $this->job_data->rapidload_job_data_save();
 
                 return;
             }
 
-            $this->job_data->mark_as_failed($error);
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_mark_as_failed($error);
+            $this->job_data->rapidload_job_data_save();
 
             do_action( 'uucss/cache_cleared', [
                 'url' => $this->job_data->job->url
@@ -257,8 +262,8 @@ class RapidLoad_CriticalCSS_Store
 
         if(isset($result->state) && $result->state === 'failed'){
 
-            $this->job_data->mark_as_failed('Unknown error occurred');
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_mark_as_failed('Unknown error occurred');
+            $this->job_data->rapidload_job_data_save();
 
             do_action( 'uucss/cache_cleared', [
                 'url' => $this->job_data->job->url
@@ -271,17 +276,17 @@ class RapidLoad_CriticalCSS_Store
 
             if($result->state === 'waiting' || $result->state === 'delayed' || $result->state === 'created' || $result->state === 'stalling'){
                 $this->job_data->status = 'waiting';
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_save();
             }else if($result->state === 'active'){
                 $this->job_data->status = 'processing';
-                $this->job_data->save();
+                $this->job_data->rapidload_job_data_save();
             }
 
         }
 
         if(isset($result->completed) && $result->completed){
 
-            $this->cache_file($result->data, $result->data_mobile, $result);
+            $this->rapidload_cache_file($result->data, $result->data_mobile, $result);
 
         }
     }
