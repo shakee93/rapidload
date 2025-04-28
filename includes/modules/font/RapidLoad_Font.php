@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Font')){
+    return;
+}
+
 class RapidLoad_Font
 {
     use RapidLoad_Utils;
