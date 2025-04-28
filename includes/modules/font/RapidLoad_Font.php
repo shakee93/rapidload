@@ -14,7 +14,7 @@ class RapidLoad_Font
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         if(!isset($this->options['uucss_enable_font_optimization']) || $this->options['uucss_enable_font_optimization'] !== "1"){
             return;
@@ -22,34 +22,34 @@ class RapidLoad_Font
 
         $this->file_system = new RapidLoad_FileSystem();
 
-        if( ! $this->initFileSystem() ){
+        if( ! $this->rapidload_initFileSystem() ){
             return;
         }
 
-        add_action('rapidload/job/handle', [$this, 'optimize_font'], 30, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_optimize_font'], 30, 2);
 
-        add_filter('rapidload/cpcss/minify', [$this, 'add_display_swap_to_inline_styles']);
+        add_filter('rapidload/cpcss/minify', [$this, 'rapidload_add_display_swap_to_inline_styles']);
 
-        add_filter('uucss/excluded-files', [$this, 'exclude_google_font_uucss']);
+        add_filter('uucss/excluded-files', [$this, 'rapidload_exclude_google_font_uucss']);
 
-        add_filter('rapidload/cache_file_creating/css', [$this, 'add_display_swap_to_inline_styles'], 10 , 1);
+        add_filter('rapidload/cache_file_creating/css', [$this, 'rapidload_add_display_swap_to_inline_styles'], 10 , 1);
 
-        add_action('rapidload/vanish', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/vanish/font', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish/font', [ $this, 'rapidload_vanish' ]);
 
-        add_filter('rapidload/webfont/handle', [$this, 'handle_web_font_js'], 10, 2);
+        add_filter('rapidload/webfont/handle', [$this, 'rapidload_handle_web_font_js'], 10, 2);
 
-        add_action('rapidload/admin-bar-actions', [$this, 'add_admin_clear_action']);
+        add_action('rapidload/admin-bar-actions', [$this, 'rapidload_add_admin_clear_action']);
 
-        add_action('rapidload/cdn/validated', [$this, 'update_cdn_url_in_cached_files']);
+        add_action('rapidload/cdn/validated', [$this, 'rapidload_update_cdn_url_in_cached_files']);
     }
 
-    public function update_cdn_url_in_cached_files($args) {
-        RapidLoad_CDN::update_cdn_url_in_cached_files(self::$base_dir, $args);
+    public function rapidload_update_cdn_url_in_cached_files($args) {
+        RapidLoad_CDN::rapidload_update_cdn_url_in_cached_files(self::$base_dir, $args);
     }
 
-    public function add_admin_clear_action($wp_admin_bar){
+    public function rapidload_add_admin_clear_action($wp_admin_bar){
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-font-cache',
             'title' => '<span class="ab-label">' . __( 'Clear Font Optimizations', 'unusedcss' ) . '</span>',
@@ -64,14 +64,14 @@ class RapidLoad_Font
         ));
     }
 
-    public function handle_web_font_js($handle, $link){
+    public function rapidload_handle_web_font_js($handle, $link){
 
         $ids = isset($this->options['web_font_loader_ids']) ? explode(",", $this->options['web_font_loader_ids']) : [];
 
-        return $this->array_search_partial($link->id, $ids);
+        return $this->rapidload_array_search_partial($link->id, $ids);
     }
 
-    public function array_search_partial($needle, $haystack){
+    public function rapidload_array_search_partial($needle, $haystack){
         $results = array();
         foreach ($haystack as $value) {
             if (strpos($needle, $value) !== false) { $results[] = $value; }
@@ -82,19 +82,19 @@ class RapidLoad_Font
         return false;
     }
 
-    public function vanish() {
+    public function rapidload_vanish() {
 
         if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
-            $this->file_system->delete( self::$base_dir, true );
+            $this->file_system->rapidload_file_delete( self::$base_dir, true );
         }
 
     }
 
-    public function self_host_gstatic_fonts($css){
+    public function rapidload_self_host_gstatic_fonts($css){
 
-        $font_urls = self::get_font_urls($css);
+        $font_urls = self::rapidload_get_font_urls($css);
 
-        self::download_urls_in_parallel($font_urls);
+        self::rapidload_download_urls_in_parallel($font_urls);
 
         foreach ($font_urls as $font_url) {
             $cached_font_url = self::$base_url . '/' . basename($font_url);
@@ -104,18 +104,18 @@ class RapidLoad_Font
         return $css;
     }
 
-    public function exclude_google_font_uucss($args){
+    public function rapidload_exclude_google_font_uucss($args){
 
         $args[] = 'fonts.googleapis.com';
 
         return $args;
     }
 
-    public function add_display_swap_to_inline_styles($content){
-        return self::add_display_swap($content);
+    public function rapidload_add_display_swap_to_inline_styles($content){
+        return self::rapidload_add_display_swap($content);
     }
 
-    public static function add_display_swap($content){
+    public static function rapidload_add_display_swap($content){
         $content = preg_replace_callback('/@font-face\s*{[^}]*}/', function($matches) {
             $font_face_block = $matches[0];
             if (preg_match('/font-display\s*:/', $font_face_block)) {
@@ -132,7 +132,7 @@ class RapidLoad_Font
         return $content;
     }
 
-    public function initFileSystem() {
+    public function rapidload_initFileSystem() {
 
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'font';
 
@@ -140,14 +140,14 @@ class RapidLoad_Font
             return false;
         }
 
-        if ( ! $this->init_base_dir() ) {
+        if ( ! $this->rapidload_init_base_dir() ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_base_dir() {
+    public function rapidload_init_base_dir() {
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
         self::$base_url = apply_filters('uucss/enqueue/cdn',untrailingslashit(self::rapidload_util_get_wp_content_url($this->base)));
@@ -159,14 +159,14 @@ class RapidLoad_Font
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->rapidload_file_is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 
         return true;
     }
 
-    public function optimize_font($job, $args){
+    public function rapidload_optimize_font($job, $args){
 
         if(!$job || !isset($job->id) || isset( $_REQUEST['no_rapidload_font'] )){
             return false;
@@ -176,7 +176,7 @@ class RapidLoad_Font
 
     }
 
-    public static function self_host_style_sheet($url, $file_path)
+    public static function rapidload_self_host_style_sheet($url, $file_path)
     {
 
         if (substr($url, 0, 2) === '//') {
@@ -197,9 +197,9 @@ class RapidLoad_Font
 
         $css = $css_file_response['body'];
 
-        $font_urls = self::get_font_urls($css);
+        $font_urls = self::rapidload_get_font_urls($css);
 
-        self::download_urls_in_parallel($font_urls);
+        self::rapidload_download_urls_in_parallel($font_urls);
 
         foreach ($font_urls as $font_url) {
             $cached_font_url = self::$base_url . '/' . basename($font_url);
@@ -211,19 +211,19 @@ class RapidLoad_Font
         file_put_contents($file_path, $css);
     }
 
-    private static function get_font_urls($css)
+    private static function rapidload_get_font_urls($css)
     {
         $regex = '/url\((https:\/\/fonts\.gstatic\.com\/.*?)\)/';
         preg_match_all($regex, $css, $matches);
         return array_unique($matches[1]);
     }
 
-    public static function download_urls_in_parallel($urls)
+    public static function rapidload_download_urls_in_parallel($urls)
     {
 
         $file_system = new RapidLoad_FileSystem();
 
-        if(!$file_system->is_writable(self::$base_dir)){
+        if(!$file_system->rapidload_file_is_writable(self::$base_dir)){
             return;
         }
         

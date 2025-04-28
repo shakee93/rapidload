@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Font_Enqueue')){
+    return;
+}
+
 class RapidLoad_Font_Enqueue
 {
     use RapidLoad_Utils;
@@ -23,10 +27,10 @@ class RapidLoad_Font_Enqueue
         $this->file_system = new RapidLoad_FileSystem();
         $this->font_handler = $font_handler;
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 70);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 70);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing font optimization');
 
@@ -46,19 +50,19 @@ class RapidLoad_Font_Enqueue
             $this->strategy = $state['strategy'];
         }
 
-        $this->add_display_swap_to_inline_styles();
+        $this->rapidload_add_display_swap_to_inline_styles();
 
-        $this->add_display_swap_to_google_fonts();
+        $this->rapidload_add_display_swap_to_google_fonts();
 
         if(isset($this->options['uucss_self_host_google_fonts']) && $this->options['uucss_self_host_google_fonts'] === "1"){
 
-            $this->self_host_google_fonts();
+            $this->rapidload_self_host_google_fonts();
 
         }
 
-        $this->preload_font_urls();
+        $this->rapidload_preload_font_urls();
 
-        $this->load_web_fonts_on_user_interaction();
+        $this->rapidload_load_web_fonts_on_user_interaction();
 
         return [
             'dom' => $this->dom,
@@ -68,7 +72,7 @@ class RapidLoad_Font_Enqueue
         ];
     }
 
-    public function load_web_fonts_on_user_interaction(){
+    public function rapidload_load_web_fonts_on_user_interaction(){
 
         $ids = isset($this->options['web_font_loader_ids']) ?
             explode(",", $this->options['web_font_loader_ids']) :
@@ -96,7 +100,7 @@ class RapidLoad_Font_Enqueue
 
     }
 
-    public function preload_font_urls()
+    public function rapidload_preload_font_urls()
     {
 
         $font_urls = isset($this->options['uucss_preload_font_urls']) ?
@@ -119,7 +123,7 @@ class RapidLoad_Font_Enqueue
 
     }
 
-    public function add_display_swap_to_google_fonts(){
+    public function rapidload_add_display_swap_to_google_fonts(){
 
         $google_fonts = $this->dom->find('link[href*=fonts.googleapis.com/css]');
         foreach ($google_fonts as $google_font) {
@@ -132,16 +136,16 @@ class RapidLoad_Font_Enqueue
 
     }
 
-    public function add_display_swap_to_inline_styles(){
+    public function rapidload_add_display_swap_to_inline_styles(){
 
         $styles = $this->dom->find('style');
         foreach ($styles as $style){
-            $inner_text = RapidLoad_Font::add_display_swap($style->innertext);
+            $inner_text = RapidLoad_Font::rapidload_add_display_swap($style->innertext);
             $style->__set('innertext', $inner_text);
         }
     }
 
-    public function self_host_google_fonts(){
+    public function rapidload_self_host_google_fonts(){
 
         $google_fonts = $this->dom->find('link[href*=fonts.googleapis.com]');
 
@@ -162,7 +166,7 @@ class RapidLoad_Font_Enqueue
             $file_url = RapidLoad_Font::$base_url . '/' . $filename;
 
             if (!is_file($file_path)) {
-                RapidLoad_Font::self_host_style_sheet($google_font->href, $file_path);
+                RapidLoad_Font::rapidload_self_host_style_sheet($google_font->href, $file_path);
             }
 
             if (is_file($file_path)) {
@@ -170,7 +174,7 @@ class RapidLoad_Font_Enqueue
                 if(apply_filters('uucss/enqueue/inline/google-font', true)){
                     $content = @file_get_contents($file_path);
                     if($this->font_handler){
-                        $content = $this->font_handler->add_display_swap_to_inline_styles($content);
+                        $content = $this->font_handler->rapidload_add_display_swap_to_inline_styles($content);
                     }
                     $minifier = new \MatthiasMullie\Minify\CSS();
                     $minifier->add($content);
@@ -215,7 +219,7 @@ class RapidLoad_Font_Enqueue
                     $file_path = RapidLoad_Font::$base_dir . '/' . $filename;
 
                     if (!is_file($file_path)) {
-                        RapidLoad_Font::self_host_style_sheet($googleFontsUrl, $file_path);
+                        RapidLoad_Font::rapidload_self_host_style_sheet($googleFontsUrl, $file_path);
                     }
 
                     if (is_file($file_path)) {
