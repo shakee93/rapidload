@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Link_Preload_Enqueue')){
+    return;
+}
+
 class RapidLoad_Link_Preload_Enqueue
 {
     use RapidLoad_Utils;
@@ -22,10 +26,10 @@ class RapidLoad_Link_Preload_Enqueue
         $this->job = $job;
         $this->file_system = new RapidLoad_FileSystem();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 30);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 30);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing preload links');
 
