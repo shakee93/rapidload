@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Nginx_Helper_Compatible')){
+    return;
+}
+
 class RapidLoad_Nginx_Helper_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

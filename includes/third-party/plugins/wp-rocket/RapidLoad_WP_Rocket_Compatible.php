@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_WP_Rocket_Compatible')){
+    return;
+}
+
 class RapidLoad_WP_Rocket_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

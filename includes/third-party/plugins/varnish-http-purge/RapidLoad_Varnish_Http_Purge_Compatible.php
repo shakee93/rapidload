@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Varnish_Http_Purge_Compatible')){
+    return;
+}
+
 class RapidLoad_Varnish_Http_Purge_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

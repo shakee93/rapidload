@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Nitropack_Compatible')){
+    return;
+}
+
 class RapidLoad_Nitropack_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

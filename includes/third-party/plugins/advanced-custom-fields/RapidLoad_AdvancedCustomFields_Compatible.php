@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_AdvancedCustomFields_Compatible')){
+    return;
+}
+
 class RapidLoad_AdvancedCustomFields_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

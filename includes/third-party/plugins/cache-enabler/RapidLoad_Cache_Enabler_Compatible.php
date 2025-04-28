@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Cache_Enabler_Compatible')){
+    return;
+}
+
 class RapidLoad_Cache_Enabler_Compatible  extends RapidLoad_ThirdParty {
 
     function __construct(){

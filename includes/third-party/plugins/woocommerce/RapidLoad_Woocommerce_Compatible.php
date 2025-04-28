@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_Woocommerce_Compatible')){
+    return;
+}
+
 class RapidLoad_Woocommerce_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

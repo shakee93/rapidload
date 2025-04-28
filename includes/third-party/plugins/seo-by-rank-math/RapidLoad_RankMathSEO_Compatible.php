@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_RankMathSEO_Compatible')){
+    return;
+}
+
 class RapidLoad_RankMathSEO_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

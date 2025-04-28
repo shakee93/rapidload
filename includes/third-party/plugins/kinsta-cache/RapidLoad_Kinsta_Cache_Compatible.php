@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_Kinsta_Cache_Compatible')){
+    return;
+}
+
 class RapidLoad_Kinsta_Cache_Compatible extends RapidLoad_ThirdParty{
 
     public $kinsta_cache;

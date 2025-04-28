@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_AMP_Compatible')){
+    return;
+}
+
 class RapidLoad_AMP_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

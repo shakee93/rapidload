@@ -1,6 +1,11 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
+
+if(class_exists('RapidLoad_WP_Asset_Clean_Up_Compatible')){
+    return;
+}
+
 class RapidLoad_WP_Asset_Clean_Up_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

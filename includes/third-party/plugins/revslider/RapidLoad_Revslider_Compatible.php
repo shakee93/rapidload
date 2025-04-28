@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Revslider_Compatible')){
+    return;
+}
+
 class RapidLoad_Revslider_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

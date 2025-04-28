@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_YoastSEO_Compatible')){
+    return;
+}
+
 class RapidLoad_YoastSEO_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

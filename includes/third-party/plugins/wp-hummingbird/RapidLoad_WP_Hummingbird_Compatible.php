@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_WP_Hummingbird_Compatible')){
+    return;
+}
+
 class RapidLoad_WP_Hummingbird_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

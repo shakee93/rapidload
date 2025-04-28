@@ -2,7 +2,11 @@
 
 defined( 'ABSPATH' ) or die();
 
-class RapidLoad_WpForms_Lite_Compatible extends RapidLoad_ThirdParty{
+if(class_exists('RapidLoad_WpFormsLite_Compatible')){
+    return;
+}
+
+class RapidLoad_WpFormsLite_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){
 

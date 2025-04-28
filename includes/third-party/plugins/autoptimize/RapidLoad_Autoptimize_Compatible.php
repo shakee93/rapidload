@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Autoptimize_Compatible')){
+    return;
+}
+
 class RapidLoad_Autoptimize_Compatible extends RapidLoad_ThirdParty {
 
     function __construct(){

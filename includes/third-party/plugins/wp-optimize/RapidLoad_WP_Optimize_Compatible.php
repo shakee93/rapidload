@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_WP_Optimize_Compatible')){
+    return;
+}
+
 class RapidLoad_WP_Optimize_Compatible  extends RapidLoad_ThirdParty{
 
     function __construct(){

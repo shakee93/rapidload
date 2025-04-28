@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_GoogleModPageSpeedCompatible')){
+    return;
+}
+
 class RapidLoad_GoogleModPageSpeedCompatible extends RapidLoad_ThirdParty{
 
     function __construct(){

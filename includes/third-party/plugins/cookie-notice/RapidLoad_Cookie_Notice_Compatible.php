@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if(class_exists('RapidLoad_Cookie_Notice_Compatible')){
+    return;
+}
+
 class RapidLoad_Cookie_Notice_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){

@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_NinjaFroms_Compatible')){
+    return;
+}
+
 class RapidLoad_NinjaFroms_Compatible extends RapidLoad_ThirdParty{
 
     function __construct(){
