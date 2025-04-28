@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_OptimizerFont')){
+    return;
+}
+
 class RapidLoad_OptimizerFont
 {
 

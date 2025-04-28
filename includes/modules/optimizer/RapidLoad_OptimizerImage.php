@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_OptimizerImage')){
+    return;
+}
+
 class RapidLoad_OptimizerImage
 {
     public function __construct()

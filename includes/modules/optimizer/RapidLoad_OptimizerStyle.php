@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_OptimizerStyle')){
+    return;
+}
+
 class RapidLoad_OptimizerStyle
 {
     public function __construct(){

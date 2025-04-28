@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Job_Optimization')){
+    return;
+}
+
 class RapidLoad_Job_Optimization
 {
     use RapidLoad_Utils;
