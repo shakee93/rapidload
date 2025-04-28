@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Image_Enqueue')){
+    return;
+}
+
 class RapidLoad_Image_Enqueue
 {
     use RapidLoad_Utils;
@@ -24,10 +28,10 @@ class RapidLoad_Image_Enqueue
         $this->imgExt = ["jpg", "jpeg", "png", "webp"];
         $this->cdn = RapidLoad_Image::$image_indpoint;
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 50);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 50);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing image optimization');
 
@@ -52,14 +56,14 @@ class RapidLoad_Image_Enqueue
         }
 
         if(isset($this->options['preload_lcp_images']) && $this->options['preload_lcp_images'] === "1"){
-            $this->preload_images();
+            $this->rapidload_preload_images();
         }
 
-        $this->set_width_and_height();
+        $this->rapidload_set_width_and_height();
 
-        $this->lazy_load_images();
+        $this->rapidload_lazy_load_images();
 
-        $this->lazy_load_iframes();
+        $this->rapidload_lazy_load_iframes();
 
         // replacing urls
 
@@ -90,11 +94,11 @@ class RapidLoad_Image_Enqueue
                         continue;
                     }
 
-                    if($this->is_file_excluded($img->{$attribute['attr']})){
+                    if($this->rapidload_is_file_excluded($img->{$attribute['attr']})){
                         continue;
                     }
 
-                    if($this->is_file_excluded($img->{$attribute['attr']}, 'uucss_exclude_images_from_modern_images')){
+                    if($this->rapidload_is_file_excluded($img->{$attribute['attr']}, 'uucss_exclude_images_from_modern_images')){
                         continue;
                     }
 
@@ -102,14 +106,14 @@ class RapidLoad_Image_Enqueue
                         continue;
                     }
 
-                    $url = $this->extractUrl($img->{$attribute['attr']});
+                    $url = $this->rapidload_extractUrl($img->{$attribute['attr']});
 
                     $urlExt = pathinfo($url, PATHINFO_EXTENSION);
 
                     if (in_array($urlExt, $this->imgExt)) {
 
                         $data_src = 'data-rp-src';
-                        $img->{$attribute['attr']} = RapidLoad_Image::get_replaced_url($url, null, $img->width, $img->height, [
+                        $img->{$attribute['attr']} = RapidLoad_Image::rapidload_get_replaced_url($url, null, $img->width, $img->height, [
                             'optimize_level' => 'lqip'
                         ]);
                         //$this->get_placeholder($img);
@@ -156,7 +160,7 @@ class RapidLoad_Image_Enqueue
                                             if(isset($match[1]) && isset($match[2])){
                                                 $url = $match[1];
                                                 $width = intval($match[2]);
-                                                $_replaced = RapidLoad_Image::get_replaced_url($url,RapidLoad_Image::$image_indpoint, str_replace("w", "",$width), false, ['retina' => 'ret_img']);
+                                                $_replaced = RapidLoad_Image::rapidload_get_replaced_url($url,RapidLoad_Image::$image_indpoint, str_replace("w", "",$width), false, ['retina' => 'ret_img']);
                                                 $srcset->{$srcset_attribute['attr']} = str_replace($url . " " .  $width,$_replaced . " " . $width, $srcset->{$srcset_attribute['attr']});
                                             }
                                         }
@@ -191,22 +195,22 @@ class RapidLoad_Image_Enqueue
                     continue;
                 }
 
-                if($this->is_file_excluded($video->{'poster'})){
+                if($this->rapidload_is_file_excluded($video->{'poster'})){
                     continue;
                 }
 
-                if($this->is_file_excluded($video->{'poster'},'uucss_exclude_images_from_modern_images')){
+                if($this->rapidload_is_file_excluded($video->{'poster'},'uucss_exclude_images_from_modern_images')){
                     continue;
                 }
 
-                $url = $this->extractUrl($video->{'poster'});
+                $url = $this->rapidload_extractUrl($video->{'poster'});
 
                 $urlExt = pathinfo($url, PATHINFO_EXTENSION);
 
                 if (in_array($urlExt, $this->imgExt)) {
 
                     $data_src = 'data-rp-poster';
-                    $video->{'poster'} = RapidLoad_Image::get_replaced_url($url, null, $video->width, $video->height, [
+                    $video->{'poster'} = RapidLoad_Image::rapidload_get_replaced_url($url, null, $video->width, $video->height, [
                         'optimize_level' => 'lqip'
                     ]);
                     //$this->get_placeholder($img);
@@ -225,7 +229,7 @@ class RapidLoad_Image_Enqueue
 
                 if(!empty($_data_attribute) && isset($_data_attribute[0])){
                     $_data_attribute = $_data_attribute[0];
-                    $_data_attribute->{$data_attribute} = RapidLoad_Image::get_replaced_url($_data_attribute->{$data_attribute}, null, null, null, ['retina' => 'ret_img']);
+                    $_data_attribute->{$data_attribute} = RapidLoad_Image::rapidload_get_replaced_url($_data_attribute->{$data_attribute}, null, null, null, ['retina' => 'ret_img']);
                 }
             }
 
@@ -261,9 +265,9 @@ class RapidLoad_Image_Enqueue
                                     $_style_lines[] = preg_replace('/\burl\([^)]*\)/', '', $style_line);
                                 }
 
-                                $url = $this->extractUrl($match[1]);
+                                $url = $this->rapidload_extractUrl($match[1]);
 
-                                if ($this->is_file_excluded($url,'uucss_exclude_images_from_lazy_load')) {
+                                if ($this->rapidload_is_file_excluded($url,'uucss_exclude_images_from_lazy_load')) {
                                     continue;
                                 }
 
@@ -271,7 +275,7 @@ class RapidLoad_Image_Enqueue
 
                                 if (in_array($urlExt, $this->imgExt)) {
                                     $background_image_found = true;
-                                    $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn);
+                                    $replace_url = RapidLoad_Image::rapidload_get_replaced_url($url, $this->cdn);
                                     if($style_tag === "background-image"){
                                         $style_line = str_replace($match[1], $replace_url, $style_line);
                                     }
@@ -323,16 +327,16 @@ class RapidLoad_Image_Enqueue
 
                         $urlExt = pathinfo($url, PATHINFO_EXTENSION);
 
-                        if($this->is_file_excluded($url,'uucss_exclude_images_from_modern_images')){
+                        if($this->rapidload_is_file_excluded($url,'uucss_exclude_images_from_modern_images')){
                             continue;
                         }
 
-                        if($this->is_file_excluded($url)){
+                        if($this->rapidload_is_file_excluded($url)){
                             continue;
                         }
 
                         if(in_array($urlExt, $this->imgExt)){
-                            $replace_url = RapidLoad_Image::get_replaced_url($url, $this->cdn, false, false, [
+                            $replace_url = RapidLoad_Image::rapidload_get_replaced_url($url, $this->cdn, false, false, [
                                 'retina' => 'ret_img'
                             ]);
                             $style->innertext = str_replace($url, $replace_url, $style->innertext);
@@ -346,10 +350,10 @@ class RapidLoad_Image_Enqueue
                     $cssDocument = $parser->parse();
                     foreach ($cssDocument->getAllValues() as $value) {
                         if( $value instanceof \Sabberworm\CSS\Value\URL){
-                            $url = $this->extractUrl($value->getURL()->getString());
+                            $url = $this->rapidload_extractUrl($value->getURL()->getString());
                             $urlExt = pathinfo($url, PATHINFO_EXTENSION);
                             if (in_array($urlExt, $this->imgExt)) {
-                                $replace_url = RapidLoad_Image::get_replaced_url($url,$this->cdn);
+                                $replace_url = RapidLoad_Image::rapidload_get_replaced_url($url,$this->cdn);
                                 $value->setURL(new \Sabberworm\CSS\Value\CSSString($replace_url));
                             }
                         }
@@ -368,7 +372,7 @@ class RapidLoad_Image_Enqueue
         ];
     }
 
-    public function preload_images(){
+    public function rapidload_preload_images(){
 
         $preloaded_images = $this->dom->find('link[as*=image]');
 
@@ -379,7 +383,7 @@ class RapidLoad_Image_Enqueue
                 if(isset($preloaded_image->href)){
 
                     if(filter_var($preloaded_image->href, FILTER_VALIDATE_URL)){
-                        $preloaded_image->href = RapidLoad_Image::get_replaced_url($preloaded_image->href, null, null, null, ['retina' => 'ret_img']);
+                        $preloaded_image->href = RapidLoad_Image::rapidload_get_replaced_url($preloaded_image->href, null, null, null, ['retina' => 'ret_img']);
                     }
 
                 }
@@ -398,7 +402,7 @@ class RapidLoad_Image_Enqueue
 
             $preloaded_file = str_replace("\r", "", $preloaded_file);
             if(filter_var($preloaded_file, FILTER_VALIDATE_URL)){
-                $preload_image = '<link rel="preload" href="' . RapidLoad_Image::get_replaced_url($preloaded_file, null, null, null, ['retina' => 'ret_img']) .'" as="image" > ';
+                $preload_image = '<link rel="preload" href="' . RapidLoad_Image::rapidload_get_replaced_url($preloaded_file, null, null, null, ['retina' => 'ret_img']) .'" as="image" > ';
                 $title_content = $this->dom->find( 'title' )[0]->outertext;
                 $this->dom->find( 'title' )[0]->__set('outertext', $title_content . $preload_image);
             }
@@ -407,7 +411,7 @@ class RapidLoad_Image_Enqueue
 
     }
 
-    public function lazy_load_iframes(){
+    public function rapidload_lazy_load_iframes(){
 
         if(isset($this->options['uucss_lazy_load_iframes']) && $this->options['uucss_lazy_load_iframes'] === "1"){
 
@@ -423,16 +427,16 @@ class RapidLoad_Image_Enqueue
 
                 if ($iframe->srcdoc) {
 
-                    if($this->is_file_excluded($iframe->srcdoc, 'uucss_exclude_iframes_from_lazy_load')){
+                    if($this->rapidload_is_file_excluded($iframe->srcdoc, 'uucss_exclude_iframes_from_lazy_load')){
                         continue;
                     }
 
-                    if($this->is_file_excluded($iframe->srcdoc)){
+                    if($this->rapidload_is_file_excluded($iframe->srcdoc)){
                         continue;
                     }
 
-                    if($this->is_youtube_iframe($iframe->srcdoc)){
-                        $this->handle_youtube_iframe($iframe, $iframe->srcdoc);
+                    if($this->rapidload_is_youtube_iframe($iframe->srcdoc)){
+                        $this->rapidload_handle_youtube_iframe($iframe, $iframe->srcdoc);
                     }else{
                         $iframe->{'data-rapidload-lazy-srcdoc'} = $iframe->srcdoc;
                         $iframe->{'data-rapidload-lazy-src'} = $iframe->src ? $iframe->src : $iframe->{'data-src'};
@@ -447,16 +451,16 @@ class RapidLoad_Image_Enqueue
 
                 }else{
 
-                    if($this->is_file_excluded($iframe->src, 'uucss_exclude_iframes_from_lazy_load')){
+                    if($this->rapidload_is_file_excluded($iframe->src, 'uucss_exclude_iframes_from_lazy_load')){
                         continue;
                     }
 
-                    if($this->is_file_excluded($iframe->src)){
+                    if($this->rapidload_is_file_excluded($iframe->src)){
                         continue;
                     }
 
-                    if($this->is_youtube_iframe($iframe->src)){
-                        $this->handle_youtube_iframe($iframe, $iframe->src);
+                    if($this->rapidload_is_youtube_iframe($iframe->src)){
+                        $this->rapidload_handle_youtube_iframe($iframe, $iframe->src);
                     }else{
                         $iframe->{'data-rapidload-lazy-src'} = $iframe->src ? $iframe->src : $iframe->{'data-src'};
                         $iframe->{'data-rapidload-lazy-method'} = 'viewport';
@@ -472,9 +476,9 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    function handle_youtube_iframe($iframe, $src) {
-        $video_id = $this->get_youtube_video_id($src);
-        $video_poster = $this->get_youtube_poster($video_id);
+    function rapidload_handle_youtube_iframe($iframe, $src) {
+        $video_id = $this->rapidload_get_youtube_video_id($src);
+        $video_poster = $this->rapidload_get_youtube_poster($video_id);
 
         if ($video_poster) {
             $youtube_embed_url = $src;
@@ -509,14 +513,14 @@ class RapidLoad_Image_Enqueue
 
             $play_button = $styles . '<div class="rapidload-yt-play-button rapidload-yt-play-button-' . $video_id . '"></div>';
 
-            $place_holder_image = RapidLoad_Image::get_replaced_url(UUCSS_PLUGIN_URL . 'assets/images/yt-placeholder.svg', null, $iframe->width, $iframe->height, ['retina' => 'ret_img']);
+            $place_holder_image = RapidLoad_Image::rapidload_get_replaced_url(UUCSS_PLUGIN_URL . 'assets/images/yt-placeholder.svg', null, $iframe->width, $iframe->height, ['retina' => 'ret_img']);
 
             $iframe->outertext = '<div class="rapidload-yt-video-container rapidload-yt-video-container-' . $video_id . '" style="width: 100%">' . $play_button . '<noscript>' . $iframe->outertext . '</noscript>' . '<img class="rapidload-yt-poster-image rapidload-yt-poster-image-' . $video_id . '" alt="' . $place_holder_image . '" src="' . $place_holder_image . '" width="' . $iframe->width . '" height="' . $iframe->height . '" data-video-id="' . $video_id . '"/></div>';
         }
     }
 
 
-    function is_youtube_iframe($iframe_src) {
+    function rapidload_is_youtube_iframe($iframe_src) {
         $domain = wp_parse_url($iframe_src, PHP_URL_HOST);
         if (strpos($domain, 'youtube.com') !== false) {
             return true;
@@ -525,7 +529,7 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    public function get_youtube_video_id($embedUrl) {
+    public function rapidload_get_youtube_video_id($embedUrl) {
         $pattern = '/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/';
         preg_match($pattern, $embedUrl, $matches);
         if (isset($matches[1])) {
@@ -535,14 +539,14 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    public function get_youtube_poster($videoId) {
+    public function rapidload_get_youtube_poster($videoId) {
         if ($videoId) {
-            return $this->fetch_highest_res_youtube_poster($videoId);
+            return $this->rapidload_fetch_highest_res_youtube_poster($videoId);
         }
         return false;
     }
 
-    public function fetch_highest_res_youtube_poster($videoid) {
+    public function rapidload_fetch_highest_res_youtube_poster($videoid) {
         $resolutions = ['maxresdefault', 'hqdefault', 'mqdefault'];
         foreach($resolutions as $res) {
             $imgUrl = "https://i.ytimg.com/vi/{$videoid}/{$res}.jpg";
@@ -551,14 +555,14 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    public function lazy_load_images(){
+    public function rapidload_lazy_load_images(){
 
         if(isset($this->options['uucss_lazy_load_images']) && $this->options['uucss_lazy_load_images'] === "1"){
             $images = $this->dom->find( 'img[src]' );
 
             foreach ( $images as $index => $img ) {
 
-                if($this->is_file_excluded($img->src, 'uucss_exclude_images_from_lazy_load') || $this->is_file_excluded($img->src) || $this->is_lcp_image($img->src)){
+                if($this->rapidload_is_file_excluded($img->src, 'uucss_exclude_images_from_lazy_load') || $this->rapidload_is_file_excluded($img->src) || $this->rapidload_is_lcp_image($img->src)){
                     $img->loading = "eager";
                     $img->decoding = "sync";
                     $img->fetchpriority = "high";
@@ -576,7 +580,7 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    public function is_lcp_image($url){
+    public function rapidload_is_lcp_image($url){
 
         if($this->rapidload_util_str_contains($url, RapidLoad_Image::$image_indpoint)){
 
@@ -615,7 +619,7 @@ class RapidLoad_Image_Enqueue
         return $found;
     }
 
-    public function set_width_and_height(){
+    public function rapidload_set_width_and_height(){
 
         $attributes = [
             [
@@ -636,11 +640,11 @@ class RapidLoad_Image_Enqueue
 
                 foreach ( $images as $img ) {
 
-                    if($this->is_file_excluded($img->{$attribute['attr']},'uucss_exclude_images_from_set_width_and_height')){
+                    if($this->rapidload_is_file_excluded($img->{$attribute['attr']},'uucss_exclude_images_from_set_width_and_height')){
                         continue;
                     }
 
-                    if($this->is_file_excluded($img->{$attribute['attr']},'uucss_exclude_images')){
+                    if($this->rapidload_is_file_excluded($img->{$attribute['attr']},'uucss_exclude_images')){
                         continue;
                     }
 
@@ -674,7 +678,7 @@ class RapidLoad_Image_Enqueue
 
                     } else {
 
-                        $url = $this->extractUrl($img->{$attribute['attr']});
+                        $url = $this->rapidload_extractUrl($img->{$attribute['attr']});
 
                         $file_path = self::rapidload_util_get_file_path_from_url($url);
 
@@ -687,7 +691,7 @@ class RapidLoad_Image_Enqueue
                             }
 
                             if (!isset($img->height) || $img->height === "auto") {
-                                $img->height = $this->calculateSecondImageHeight($dimension['width'],  $dimension['height'], $img->width);
+                                $img->height = $this->rapidload_calculateSecondImageHeight($dimension['width'],  $dimension['height'], $img->width);
                             }
 
                         }
@@ -701,7 +705,7 @@ class RapidLoad_Image_Enqueue
 
     }
 
-    public function calculateSecondImageHeight($firstImageWidth, $firstImageHeight, $secondImageWidth) {
+    public function rapidload_calculateSecondImageHeight($firstImageWidth, $firstImageHeight, $secondImageWidth) {
         if (is_numeric($firstImageWidth) && is_numeric($firstImageHeight) && $firstImageWidth > 0 && $firstImageHeight > 0 &&$firstImageHeight >= $firstImageWidth) {
             $aspectRatio = $firstImageHeight / $firstImageWidth;
             $secondImageHeight = $aspectRatio * $secondImageWidth;
@@ -715,11 +719,11 @@ class RapidLoad_Image_Enqueue
         }
     }
 
-    public function extractUrl($url){
+    public function rapidload_extractUrl($url){
 
-        if(!$this->isAbsolute($url)){
+        if(!$this->rapidload_isAbsolute($url)){
 
-            $url = $this->makeURLAbsolute($url, site_url());
+            $url = $this->rapidload_makeURLAbsolute($url, site_url());
         }
 
         if (substr($url, 0, 2) === '//') {
@@ -735,11 +739,11 @@ class RapidLoad_Image_Enqueue
         return $url;
     }
 
-    function isAbsolute($url) {
+    function rapidload_isAbsolute($url) {
         return isset(wp_parse_url($url)['host']);
     }
 
-    function makeURLAbsolute($relative_url, $base_url) {
+    function rapidload_makeURLAbsolute($relative_url, $base_url) {
 
         $parsed_base_url = wp_parse_url($base_url);
 
@@ -755,7 +759,7 @@ class RapidLoad_Image_Enqueue
         return $absolute_url;
     }
 
-    function get_placeholder($image)
+    function rapidload_get_placeholder($image)
     {
         if ($image->width && $image->height) {
             return $image->src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 $image->width $image->height'%2F%3E";
@@ -763,7 +767,7 @@ class RapidLoad_Image_Enqueue
         return 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw';
     }
 
-    private function is_file_excluded($file, $option_name = 'uucss_exclude_images'){
+    private function rapidload_is_file_excluded($file, $option_name = 'uucss_exclude_images'){
 
         $exclude_files = isset($this->options[$option_name]) && !empty($this->options[$option_name]) ? explode("\n", $this->options[$option_name]) : [];
 
@@ -773,7 +777,7 @@ class RapidLoad_Image_Enqueue
 
             $exclude_file = str_replace("\r", "", $exclude_file);
 
-            if(self::is_regex_expression($exclude_file)){
+            if(self::rapidload_util_is_regex_expression($exclude_file)){
 
                 $excluded = @preg_match($exclude_file, $file);
 
@@ -795,7 +799,7 @@ class RapidLoad_Image_Enqueue
         return $excluded;
     }
 
-    public function convertImageUrlToDataUri($imageUrl) {
+    public function rapidload_convertImageUrlToDataUri($imageUrl) {
         // Get image data using WordPress HTTP API
         $response = wp_remote_get($imageUrl);
 

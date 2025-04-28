@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Image')){
+    return;
+}
+
 class RapidLoad_Image
 {
     use RapidLoad_Utils;
@@ -14,7 +18,7 @@ class RapidLoad_Image
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         if(!isset($this->options['uucss_enable_image_delivery']) || $this->options['uucss_enable_image_delivery'] !== "1"){
             return;
@@ -22,7 +26,7 @@ class RapidLoad_Image
 
         self::$image_indpoint = "https://images.rapidload-cdn.io/spai/";
 
-        add_action('init', [$this, 'enqueue_frontend_js'], 90);
+        add_action('init', [$this, 'rapidload_enqueue_frontend_js'], 90);
 
         /*add_filter('wp_calculate_image_srcset', function ($a, $b, $c, $d, $e){
             foreach ($a as $index => $src){
@@ -33,7 +37,7 @@ class RapidLoad_Image
             return $a;
         }, 10, 5);*/
 
-        add_action('rapidload/job/handle', [$this, 'optimize_image'], 30, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_optimize_image'], 30, 2);
 
         if(isset($this->options['rapidload_disable_thumbnails']) && $this->options['rapidload_disable_thumbnails'] === "1"){
             add_filter('intermediate_image_sizes_advanced',function (){
@@ -41,12 +45,12 @@ class RapidLoad_Image
             }, 90);
         }
 
-        add_filter('rapidload/cache_file_creating/css', [$this, 'optimize_css_file_images'], 10 , 1);
+        add_filter('rapidload/cache_file_creating/css', [$this, 'rapidload_optimize_css_file_images'], 10 , 1);
 
         self::$instance = $this;
     }
 
-    public function optimize_css_file_images($css) {
+    public function rapidload_optimize_css_file_images($css) {
         $regex = '/url\(\s*(["\']?)(.*?)\1\s*\)/i';
         $site_url = site_url();
 
@@ -61,7 +65,7 @@ class RapidLoad_Image
                     $urlExt = pathinfo($url, PATHINFO_EXTENSION);
 
                     if (in_array(strtolower($urlExt), ["jpg", "jpeg", "png", "webp"])) {
-                        $replace_url = RapidLoad_Image::get_replaced_url($url, self::$image_indpoint);
+                        $replace_url = self::rapidload_get_replaced_url($url, self::$image_indpoint);
                         return 'url("' . $replace_url . '")';
                     }
                 }
@@ -71,8 +75,8 @@ class RapidLoad_Image
         }, $css);
     }
 
-    public function enqueue_frontend_js() {
-        if (!RapidLoad_Base::is_api_key_verified()) {
+    public function rapidload_enqueue_frontend_js() {
+        if (!RapidLoad_Base::rapidload_is_api_key_verified()) {
             return;
         }
     
@@ -103,7 +107,7 @@ class RapidLoad_Image
     
     }
 
-    public function optimize_image($job, $args){
+    public function rapidload_optimize_image($job, $args){
 
         if(!$job || !isset($job->id) || isset( $_REQUEST['no_rapidload_image'] )){
             return false;
@@ -113,10 +117,10 @@ class RapidLoad_Image
 
     }
 
-    public static function get_replaced_url($url, $cdn = null, $width = false, $height = false, $args = [])
+    public static function rapidload_get_replaced_url($url, $cdn = null, $width = false, $height = false, $args = [])
     {
 
-        if(!RapidLoad_Base::is_api_key_verified()){
+        if(!RapidLoad_Base::rapidload_is_api_key_verified()){
             return $url;
         }
 
@@ -165,20 +169,20 @@ class RapidLoad_Image
         return $cdn . $options . '/' . $url;
     }
 
-    public function extractUrl($url){
+    public function rapidload_extractUrl($url){
 
-        if(!$this->isAbsolute($url)){
-            $url = $this->makeURLAbsolute($url, site_url());
+        if(!$this->rapidload_isAbsolute($url)){
+            $url = $this->rapidload_makeURLAbsolute($url, site_url());
         }
 
         return $url;
     }
 
-    function isAbsolute($url) {
+    function rapidload_isAbsolute($url) {
         return isset(wp_parse_url($url)['host']);
     }
 
-    function makeURLAbsolute($relative_url, $base_url) {
+    function rapidload_makeURLAbsolute($relative_url, $base_url) {
 
         $parsed_base_url = wp_parse_url($base_url);
 
