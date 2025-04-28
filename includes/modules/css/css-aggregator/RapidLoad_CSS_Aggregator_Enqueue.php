@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_CSS_Aggregator_Enqueue')){
+    return;
+}
+
 class RapidLoad_CSS_Aggregator_Enqueue
 {
     use RapidLoad_Utils;
@@ -22,10 +26,10 @@ class RapidLoad_CSS_Aggregator_Enqueue
         $this->job = $job;
         $this->file_system = new RapidLoad_FileSystem();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 30);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 30);
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing aggregate css');
 
@@ -49,7 +53,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
 
         foreach ($links as $link){
 
-            $this->aggregate_css($link);
+            $this->rapidload_aggregate_css($link);
 
         }
 
@@ -58,7 +62,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
         $aggregated_file = RapidLoad_CSS_Aggregator::$base_dir . '/rapidload-aggreated-css-' . $version . '.css';
         $aggregated_file_url = apply_filters('uucss/enqueue/aggregated-css-url', 'rapidload-aggreated-css-' . $version . '.css');
 
-        $this->file_system->put_contents($aggregated_file, $this->aggregated_css);
+        $this->file_system->rapidload_file_put_contents($aggregated_file, $this->aggregated_css);
 
         $body = $this->dom->find('head', 0);
         $node = $this->dom->createElement('link', "");
@@ -86,9 +90,9 @@ class RapidLoad_CSS_Aggregator_Enqueue
         ];
     }
 
-    public function aggregate_css($link){
+    public function rapidload_aggregate_css($link){
 
-        if(!self::is_css($link) || $this->is_file_excluded($this->options, $link->href)){
+        if(!self::rapidload_is_css($link) || $this->rapidload_util_is_file_excluded($this->options, $link->href)){
             return;
         }
 
@@ -112,7 +116,7 @@ class RapidLoad_CSS_Aggregator_Enqueue
 
     }
 
-    private static function is_css( $el ) {
+    private static function rapidload_is_css( $el ) {
         return $el->rel === 'stylesheet' || ($el->rel === 'preload' && $el->as === 'style');
     }
 }
