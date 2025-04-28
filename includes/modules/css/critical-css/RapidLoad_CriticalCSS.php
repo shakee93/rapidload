@@ -204,7 +204,7 @@ class RapidLoad_CriticalCSS
                 'url' => get_permalink( $post )
             ]);
 
-            if(isset($job->id) || !RapidLoad_Base::rapidload_get()->rules_enabled()){
+            if(isset($job->id) || !RapidLoad_Base::rapidload_get()->rapidload_rules_enabled()){
 
                 $this->rapidload_cache_cpcss($job);
 

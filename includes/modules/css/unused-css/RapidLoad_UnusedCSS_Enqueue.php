@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_UnusedCSS_Enqueue')){
+    return;
+}
+
 class RapidLoad_UnusedCSS_Enqueue
 {
     use RapidLoad_Utils;
@@ -22,7 +26,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
     public function __construct($job_data)
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         $this->file_system = new RapidLoad_FileSystem();
 
@@ -30,14 +34,14 @@ class RapidLoad_UnusedCSS_Enqueue
 
         $this->files = isset($job_data->data) ? unserialize($job_data->data) : [];
 
-        $this->enqueue_frontend_scripts();
+        $this->rapidload_enqueue_frontend_scripts();
 
-        $this->warnings = $this->job_data->get_warnings();
+        $this->warnings = $this->job_data->rapidload_job_data_get_warnings();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 10);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 10);
     }
 
-    function enqueue_frontend_scripts(){
+    function rapidload_enqueue_frontend_scripts(){
 
         if(isset($this->job_data->id) && $this->job_data->status === 'success' && !empty($this->files)){
 
@@ -52,7 +56,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
     }
 
-    function update_content($state){
+    function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing unused css');
 
@@ -109,11 +113,11 @@ class RapidLoad_UnusedCSS_Enqueue
                 $this->dom->find( 'html' )[0]->uucss = true;
             }
 
-            $this->replace_stylesheets();
+            $this->rapidload_replace_stylesheets();
 
-            $this->replace_inline_css();
+            $this->rapidload_replace_inline_css();
 
-            $this->enqueue_completed();
+            $this->rapidload_enqueue_completed();
 
             return [
                 'dom' => $this->dom,
@@ -128,7 +132,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
     }
 
-    public function replace_stylesheets(){
+    public function rapidload_replace_stylesheets(){
 
         $sheets = $this->dom->find( 'link' );
 
@@ -150,13 +154,13 @@ class RapidLoad_UnusedCSS_Enqueue
 
             $file_missing_error = "RapidLoad optimized version for the file missing.";
 
-            if ( self::is_css( $sheet ) && !$this->is_file_excluded($this->options, $link)) {
+            if ( self::rapidload_is_css( $sheet ) && !$this->rapidload_util_is_file_excluded($this->options, $link)) {
 
                 array_push( $this->inject->found_css_files, $link );
 
                 $key = false;
 
-                if(apply_filters('uucss/enqueue/path-based-search', true) && self::endsWith(basename(preg_replace('/\?.*/', '', $link)),'.css')){
+                if(apply_filters('uucss/enqueue/path-based-search', true) && self::rapidload_util_endsWith(basename(preg_replace('/\?.*/', '', $link)),'.css')){
 
                     $url_parts = wp_parse_url( $link );
 
@@ -221,7 +225,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
                     if ( isset( $this->options['uucss_inline_css'] ) && $this->options['uucss_inline_css'] === "1" && apply_filters('rapidload/enqueue/inline-small-css/enable', false)) {
 
-                        $this->inline_sheet($sheet, $uucss_file);
+                        $this->rapidload_inline_sheet($sheet, $uucss_file);
                     }
 
                     array_push( $this->inject->injected_css_files, $newLink );
@@ -231,7 +235,7 @@ class RapidLoad_UnusedCSS_Enqueue
                 }
                 else {
 
-                    if(!$sheet->uucss && !$this->is_file_excluded($this->options, $link)){
+                    if(!$sheet->uucss && !$this->rapidload_util_is_file_excluded($this->options, $link)){
 
                         $this->inject->successfully_injected = false;
 
@@ -266,7 +270,7 @@ class RapidLoad_UnusedCSS_Enqueue
         });
     }
 
-    public function replace_inline_css(){
+    public function rapidload_replace_inline_css(){
 
         $inline_styles = $this->dom->find('style');
 
@@ -295,7 +299,7 @@ class RapidLoad_UnusedCSS_Enqueue
                     continue;
                 }
 
-                $search = '//inline-style@' . md5(self::remove_white_space($style->innertext));
+                $search = '//inline-style@' . md5(self::rapidload_util_remove_white_space($style->innertext));
 
                 $file_key = array_search( $search, array_column( $this->files, 'original' ) );
 
@@ -347,7 +351,7 @@ class RapidLoad_UnusedCSS_Enqueue
         return $this->dom;
     }
 
-    public function enqueue_completed(){
+    public function rapidload_enqueue_completed(){
 
         global $uucss;
 
@@ -359,7 +363,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
         if($this->inject->successfully_injected){
 
-            $this->job_data->mark_as_successful_hit();
+            $this->job_data->rapidload_job_data_mark_as_successful_hit();
 
             if(RapidLoad_Enqueue::$frontend_debug){
                 $this->dom->find( 'body' )[0]->uucss = true;
@@ -375,25 +379,25 @@ class RapidLoad_UnusedCSS_Enqueue
                 'log' =>  'requeue-> uucss requeue due to warnings',
                 'url' => $this->job_data->job->url,
             ]);
-            $this->job_data->requeue();
+            $this->job_data->rapidload_job_data_requeue();
 
         }else{
 
-            $this->job_data->set_warnings($this->warnings);
+            $this->job_data->rapidload_job_data_set_warnings($this->warnings);
 
         }
 
-        $this->job_data->save(['data', 'stats']);
+        $this->job_data->rapidload_job_data_save(['data', 'stats']);
 
     }
 
-    private function inline_sheet( $sheet, $link ) {
+    private function rapidload_inline_sheet( $sheet, $link ) {
 
         if(isset($sheet->{'data-media'}) && $sheet->{'data-media'} === "print"){
             return;
         }
 
-        $inline = $this->get_inline_content( $link );
+        $inline = $this->rapidload_get_inline_content( $link );
 
         if ( ! isset( $inline['size'] ) || $inline['size'] >= apply_filters( 'uucss/enqueue/inline-css-limit', 5 * 1000 ) ) {
             return;
@@ -409,25 +413,25 @@ class RapidLoad_UnusedCSS_Enqueue
 
     }
 
-    private function get_inline_content( $file_name ) {
+    private function rapidload_get_inline_content( $file_name ) {
 
         $file = implode( '/', [
-            UnusedCSS::$base_dir,
+            RapidLoad_UnusedCSS::$base_dir,
             $file_name
         ] );
 
         return [
-            'size'    => $this->file_system->size( $file ),
+            'size'    => $this->file_system->rapidload_file_size( $file ),
             'content' => $this->file_system->rapidload_file_get_contents( $file )
         ];
     }
 
-    private static function is_css( $el ) {
+    private static function rapidload_is_css( $el ) {
         return $el->rel === 'stylesheet' || ($el->rel === 'preload' && $el->as === 'style');
     }
 
-    private function log_action($message){
-        self::log([
+    private function rapidload_log_action($message){
+        self::rapidload_util_log([
             'log' => $message,
             'url' => $this->job_data->job->url,
             'type' => 'injection'

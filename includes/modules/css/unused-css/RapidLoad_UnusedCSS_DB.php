@@ -2,9 +2,13 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_UnusedCSS_DB')){
+    return;
+}
+
 class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
 
-    public static function requeue_where_status($status = ''){
+    public static function rapidload_requeue_where_status($status = ''){
 
         global $wpdb;
 
@@ -35,11 +39,11 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         $error = $wpdb->last_error;
 
         if (!empty($error)) {
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
     }
 
-    public static function clear_data($soft = false){
+    public static function rapidload_clear_data($soft = false){
 
         global $wpdb;
 
@@ -52,11 +56,11 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         $error = $wpdb->last_error;
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
     }
 
-    public static function delete_by_job_id($id){
+    public static function rapidload_delete_by_job_id($id){
 
         if(!$id){
             return;
@@ -67,11 +71,11 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}rapidload_job_data WHERE job_type='uucss' AND job_id = %d", $id ) );
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
     }
 
-    public static function get_used_files_exclude($id){
+    public static function rapidload_get_used_files_exclude($id){
 
         if(!$id){
             return [];
@@ -82,7 +86,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         $result = $wpdb->get_results( $wpdb->prepare( "SELECT data FROM {$wpdb->prefix}rapidload_job_data WHERE job_type='uucss' AND status = 'success' AND job_id != %d", $id ), ARRAY_A );
 
         if(!empty($error)){
-            self::show_db_error($error);
+            self::rapidload_db_show_db_error($error);
         }
 
         $used = [];
@@ -105,7 +109,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return array_values(array_unique($used));
     }
 
-    public static function get_original_file_name($path){
+    public static function rapidload_get_original_file_name($path){
 
         $orinal_file_name = null;
 
@@ -131,7 +135,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return $orinal_file_name;
     }
 
-    public static function get_current_waiting_tasks_count(){
+    public static function rapidload_get_current_waiting_tasks_count(){
         global $wpdb;
 
         $count = $wpdb->get_var(
@@ -144,7 +148,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return (int)$count;
     }
 
-    public static function get_current_queued_tasks_job_ids($limit = 1){
+    public static function rapidload_get_current_queued_tasks_job_ids($limit = 1){
         global $wpdb;
 
         $job_ids = $wpdb->get_results(
@@ -159,7 +163,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return $job_ids;
     }
 
-    public static function get_current_processing_tasks_job_ids($limit = 1){
+    public static function rapidload_get_current_processing_tasks_job_ids($limit = 1){
         global $wpdb;
 
         $job_ids = $wpdb->get_results(
@@ -174,7 +178,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return $job_ids;
     }
 
-    public static function get_success_data($limit = 1){
+    public static function rapidload_get_success_data($limit = 1){
         global $wpdb;
 
         $data = $wpdb->get_results(
@@ -189,7 +193,7 @@ class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
         return $data;
     }
 
-    public static function get_data_for_gpsi_test($limit = 1){
+    public static function rapidload_get_data_for_gpsi_test($limit = 1){
         global $wpdb;
 
         $data = $wpdb->get_results(

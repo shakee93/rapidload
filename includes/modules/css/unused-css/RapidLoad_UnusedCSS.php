@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_UnusedCSS')){
+    return;
+}
+
 class RapidLoad_UnusedCSS
 {
     use RapidLoad_Utils;
@@ -18,15 +22,15 @@ class RapidLoad_UnusedCSS
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         $this->file_system = new RapidLoad_FileSystem();
 
-        if( ! $this->initFileSystem() ){
+        if( ! $this->rapidload_initFileSystem() ){
             return;
         }
 
-        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_uucss'] !== "1" || !RapidLoad_Base::is_api_key_verified()){
+        if(!isset($this->options['uucss_enable_css']) || !isset($this->options['uucss_enable_uucss']) || $this->options['uucss_enable_css'] !== "1" || $this->options['uucss_enable_uucss'] !== "1" || !RapidLoad_Base::rapidload_is_api_key_verified()){
             return;
         }
 
@@ -38,48 +42,48 @@ class RapidLoad_UnusedCSS
             define('RAPIDLOAD_UUCSS_ENABLED', true);
         }
 
-        new UnusedCSS_Queue();
+        new RapidLoad_UnusedCSS_Queue();
 
-        add_action('rapidload/job/purge', [$this, 'cache_uucss'], 10, 2);
+        add_action('rapidload/job/purge', [$this, 'rapidload_cache_uucss'], 10, 2);
 
-        add_action('uucss_async_queue', [$this, 'init_async_store'], 10, 2);
+        add_action('uucss_async_queue', [$this, 'rapidload_init_async_store'], 10, 2);
 
         if(apply_filters('uucss/enable/notfound_fallback', true)){
-            add_action( 'template_redirect', [$this, 'uucss_notfound_fallback'] );
+            add_action( 'template_redirect', [$this, 'rapidload_uucss_notfound_fallback'] );
         }
 
-        add_action('rapidload/vanish', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/vanish/css', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish/css', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/job/handle', [$this, 'cache_uucss'], 10, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_cache_uucss'], 10, 2);
 
-        add_action('rapidload/job/handle', [$this, 'enqueue_uucss'], 20, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_enqueue_uucss'], 20, 2);
 
-        add_filter('uucss/link', [$this, 'update_link']);
+        add_filter('uucss/link', [$this, 'rapidload_update_link']);
 
-        add_action('rapidload/job/updated', [$this, 'handle_job_updated'], 10 , 2);
+        add_action('rapidload/job/updated', [$this, 'rapidload_handle_job_updated'], 10 , 2);
 
         add_filter('uucss/enqueue/cache-file-url', function ($uucss_file){
-            return $this->get_cached_file($uucss_file, apply_filters('uucss/enqueue/cache-file-url/cdn', null));
+            return $this->rapidload_get_cached_file($uucss_file, apply_filters('uucss/enqueue/cache-file-url/cdn', null));
         },10,1);
 
         if(is_admin()){
 
-            $this->cache_trigger_hooks();
+            $this->rapidload_cache_trigger_hooks();
 
-            add_action( 'add_meta_boxes', [$this, 'add_meta_boxes'] );
-            add_action( 'save_post', [$this, 'save_meta_box_options'] , 10, 2);
+            add_action( 'add_meta_boxes', [$this, 'rapidload_add_meta_boxes'] );
+            add_action( 'save_post', [$this, 'rapidload_save_meta_box_options'] , 10, 2);
         }
 
-        add_action('rapidload/admin-bar-actions', [$this, 'add_admin_clear_action']);
+        add_action('rapidload/admin-bar-actions', [$this, 'rapidload_add_admin_clear_action']);
 
-        add_action('rapidload/cdn/validated', [$this, 'update_cdn_url_in_cached_files']);
+        add_action('rapidload/cdn/validated', [$this, 'rapidload_update_cdn_url_in_cached_files']);
 
-        add_action('rapidload/uucss/job/handle', [$this, 'initiate_uucss_job'], 10, 2);
+        add_action('rapidload/uucss/job/handle', [$this, 'rapidload_initiate_uucss_job'], 10, 2);
     }
 
-    public function initiate_uucss_job($job, $args){
+    public function rapidload_initiate_uucss_job($job, $args){
 
         if(!isset($job)){
             return;
@@ -87,17 +91,17 @@ class RapidLoad_UnusedCSS
 
         $job_data = new RapidLoad_Job_Data($job, 'uucss');
         if(!isset($job_data->id)){
-            $job_data->save();
+            $job_data->rapidload_job_data_save();
         }
 
         do_action('uucss_async_queue', $job_data, $args);
     }
 
-    public function update_cdn_url_in_cached_files($args) {
-        RapidLoad_CDN::update_cdn_url_in_cached_files(self::$base_dir, $args);
+    public function rapidload_update_cdn_url_in_cached_files($args) {
+        RapidLoad_CDN::rapidload_update_cdn_url_in_cached_files(self::$base_dir, $args);
     }
 
-    public function add_admin_clear_action($wp_admin_bar){
+    public function rapidload_add_admin_clear_action($wp_admin_bar){
 
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-css-cache',
@@ -113,25 +117,25 @@ class RapidLoad_UnusedCSS
         ));
     }
 
-    public function add_meta_boxes()
+    public function rapidload_add_meta_boxes()
     {
         add_meta_box(
             'uucss-options',
             __( 'RapidLoad Options', 'unusedcss' ),
-            [$this, 'meta_box'],
+            [$this, 'rapidload_meta_box'],
             get_post_types(),
             'side'
         );
     }
 
-    public function meta_box( $post ) {
+    public function rapidload_meta_box( $post ) {
 
-        $options = RapidLoad_Base::get_page_options($post->ID);
+        $options = RapidLoad_Base::rapidload_get_page_options($post->ID);
 
         include('parts/admin-post.html.php');
     }
 
-    public function save_meta_box_options($post_id, $post)
+    public function rapidload_save_meta_box_options($post_id, $post)
     {
         if ( !isset( $_POST['uucss_nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['uucss_nonce'] ) ), 'uucss_option_save' ) ) {
             return;
@@ -141,11 +145,11 @@ class RapidLoad_UnusedCSS
             return;
         }
 
-        $this->update_meta($post_id);
+        $this->rapidload_update_meta($post_id);
 
     }
 
-    public function update_meta($post_id)
+    public function rapidload_update_meta($post_id)
     {
         foreach (RapidLoad_Base::$page_options as $option) {
 
@@ -160,7 +164,7 @@ class RapidLoad_UnusedCSS
         }
     }
 
-    public function uucss_notfound_fallback(){
+    public function rapidload_uucss_notfound_fallback(){
 
         $original_request = isset($_SERVER['REQUEST_URI']) ? strtok( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '?' ) : '/';
         $original_path = self::rapidload_util_get_wp_content_dir() . apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR)  . 'uucss' . "/" . basename($original_request);
@@ -175,7 +179,7 @@ class RapidLoad_UnusedCSS
             global $wp_query;
             $wp_query->is_404 = false;
 
-            $fallback_target = UnusedCSS_DB::get_original_file_name($original_request);
+            $fallback_target = RapidLoad_UnusedCSS_DB::rapidload_get_original_file_name($original_request);
 
             if ( isset($fallback_target) ) {
 
@@ -188,7 +192,7 @@ class RapidLoad_UnusedCSS
 
     }
 
-    function update_link($link){
+    function rapidload_update_link($link){
 
         if(isset($link['url'])){
 
@@ -214,9 +218,9 @@ class RapidLoad_UnusedCSS
                         $link['status'] = $job_data->status;
                     }
                     $link['success_count'] = $job_data->hits;
-                    $link['files'] = $job_data->get_files();
+                    $link['files'] = $job_data->rapidload_job_data_get_files();
                     $link['meta']['id'] = $job_data->job->id;
-                    $link['meta']['warnings'] = $job_data->get_warnings();
+                    $link['meta']['warnings'] = $job_data->rapidload_job_data_get_warnings();
                     $link['meta']['stats'] = isset($job_data->stats) ? unserialize($job_data->stats) : null;
                     $link['meta']['error'] = isset($job_data->error) ? unserialize($job_data->error) : null;
                     $link['meta']['status'] = isset( $job_data->status ) ? $job_data->status : null;
@@ -236,7 +240,7 @@ class RapidLoad_UnusedCSS
         return $link;
     }
 
-    public function get_cached_file( $file_url, $cdn = null ) {
+    public function rapidload_get_cached_file( $file_url, $cdn = null ) {
 
         if ( ! $cdn || empty( $cdn ) ) {
             $cdn = self::rapidload_util_get_wp_content_url();
@@ -255,7 +259,7 @@ class RapidLoad_UnusedCSS
         ] );
     }
 
-    public function handle_job_updated($job, $new){
+    public function rapidload_handle_job_updated($job, $new){
 
         if($new){
 
@@ -263,20 +267,20 @@ class RapidLoad_UnusedCSS
 
             if(!isset($job_data->id)){
 
-                $job_data->save();
+                $job_data->rapidload_job_data_save();
 
             }
         }
     }
 
-    public function cache_trigger_hooks() {
-        add_action( 'save_post', [ $this, 'cache_on_actions' ], 110, 3 );
-        add_action( 'untrash_post', [ $this, 'cache_on_actions' ], 10, 1 );
-        add_action( 'wp_trash_post', [ $this, 'clear_on_actions' ], 10, 1 );
-        add_action('wp_ajax_uucss_purge_url', [$this, 'uucss_purge_url']);
+    public function rapidload_cache_trigger_hooks() {
+        add_action( 'save_post', [ $this, 'rapidload_cache_on_actions' ], 110, 3 );
+        add_action( 'untrash_post', [ $this, 'rapidload_cache_on_actions' ], 10, 1 );
+        add_action( 'wp_trash_post', [ $this, 'rapidload_clear_on_actions' ], 10, 1 );
+        add_action('wp_ajax_uucss_purge_url', [$this, 'rapidload_uucss_purge_url']);
     }
 
-    function enqueue_uucss($job, $args){
+    function rapidload_enqueue_uucss($job, $args){
 
         if(!$job || !isset($job->id) || isset( $_REQUEST['no_uucss'] )){
             return false;
@@ -286,11 +290,11 @@ class RapidLoad_UnusedCSS
             $this->job_data = new RapidLoad_Job_Data($job, 'uucss');
         }
 
-        new UnusedCSS_Enqueue($this->job_data);
+        new RapidLoad_UnusedCSS_Enqueue($this->job_data);
 
     }
 
-    public function cache_on_actions($post_id, $post = null, $update = null)
+    public function rapidload_cache_on_actions($post_id, $post = null, $update = null)
     {
         if(!$post_id){
             return;
@@ -300,22 +304,22 @@ class RapidLoad_UnusedCSS
 
         if($post->post_status === "publish") {
 
-            $this->clear_on_actions( $post->ID );
+            $this->rapidload_clear_on_actions( $post->ID );
 
             $job = new RapidLoad_Job([
                 'url' => get_permalink( $post )
             ]);
 
-            if(isset($job->id) || !RapidLoad_Base::get()->rules_enabled()){
+            if(isset($job->id) || !RapidLoad_Base::rapidload_get()->rapidload_rules_enabled()){
 
-                $this->cache_uucss($job);
+                $this->rapidload_cache_uucss($job);
 
             }
 
         }
     }
 
-    function cache_uucss($job, $args = []){
+    function rapidload_cache_uucss($job, $args = []){
 
         if(!$job || !isset($job->id)){
             return false;
@@ -325,14 +329,14 @@ class RapidLoad_UnusedCSS
             return false;
         }
 
-        if(!$this->is_url_allowed($job->url, $args)){
+        if(!$this->rapidload_util_is_url_allowed($job->url, $args)){
             return false;
         }
 
         $this->job_data = new RapidLoad_Job_Data($job, 'uucss');
 
         if(!isset($this->job_data->id)){
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_save();
         }
 
         if($this->job_data->status === 'failed' && $this->job_data->attempts >= 2 && (!isset($args['immediate']) || !isset( $args['requeue']))){
@@ -344,32 +348,32 @@ class RapidLoad_UnusedCSS
                 'log' =>  'requeue-> uucss requeue manually',
                 'url' => $this->job_data->job->url,
             ]);
-            $this->job_data->requeue(isset( $args['immediate']) || isset( $args['requeue']) ? 1 : -1);
+            $this->job_data->rapidload_job_data_requeue(isset( $args['immediate']) || isset( $args['requeue']) ? 1 : -1);
             if(isset( $args['immediate'])){
                 $this->job_data->status = 'processing';
             }
-            $this->job_data->save();
+            $this->job_data->rapidload_job_data_save();
         }
 
         if(!isset($args['options'])){
-            $args['options'] = $this->api_options(isset($args['post_id']) ? $args['post_id'] : null);
+            $args['options'] = $this->rapidload_api_options(isset($args['post_id']) ? $args['post_id'] : null);
         }
 
         $this->async = apply_filters('uucss/purge/async',true);
 
         if (! $this->async ) {
 
-            $this->init_async_store($this->job_data, $args);
+            $this->rapidload_init_async_store($this->job_data, $args);
 
         }else if(isset( $args['immediate'] )){
 
-            $spawned = $this->schedule_cron('uucss_async_queue', [
+            $spawned = $this->rapidload_schedule_cron('uucss_async_queue', [
                 'job_data' => $this->job_data,
                 'args'     => $args
             ]);
 
             if(!$spawned){
-                $this->init_async_store($this->job_data, $args);
+                $this->rapidload_init_async_store($this->job_data, $args);
             }
 
         }
@@ -377,7 +381,7 @@ class RapidLoad_UnusedCSS
         return true;
     }
 
-    function uucss_purge_url()
+    function rapidload_uucss_purge_url()
     {
 
         self::rapidload_util_verify_nonce();
@@ -386,7 +390,7 @@ class RapidLoad_UnusedCSS
 
             $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
-            if(!$this->is_url_allowed($url)){
+            if(!$this->rapidload_util_is_url_allowed($url)){
                 wp_send_json_error('url not allowed');
             }
 
@@ -398,7 +402,7 @@ class RapidLoad_UnusedCSS
                 $job->save();
             }
 
-            $this->cache_uucss($job, ['immediate' => true]);
+            $this->rapidload_cache_uucss($job, ['immediate' => true]);
 
         }
 
@@ -415,22 +419,22 @@ class RapidLoad_UnusedCSS
                 }
                 case 'warnings':
                 {
-                    UnusedCSS_DB::requeue_where_status('success');
+                    RapidLoad_UnusedCSS_DB::rapidload_requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    UnusedCSS_DB::requeue_where_status('failed');
+                    RapidLoad_UnusedCSS_DB::rapidload_requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    UnusedCSS_DB::requeue_where_status('processing');
+                    RapidLoad_UnusedCSS_DB::rapidload_requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    UnusedCSS_DB::requeue_where_status('');
+                    RapidLoad_UnusedCSS_DB::rapidload_requeue_where_status('');
                     break;
                 }
             }
@@ -438,20 +442,20 @@ class RapidLoad_UnusedCSS
 
         if ( isset( $_REQUEST['clear'] ) && boolval($_REQUEST['clear'] === 'true') ) {
 
-            $this->clear_cache();
+            $this->rapidload_clear_cache();
 
         }
 
-        $this->cleanCacheFiles();
+        $this->rapidload_cleanCacheFiles();
 
         wp_send_json_success('Successfully purged');
     }
 
-    public function cleanCacheFiles(){
+    public function rapidload_cleanCacheFiles(){
 
     }
 
-    public function clear_on_actions($post_id)
+    public function rapidload_clear_on_actions($post_id)
     {
         if(!$post_id){
             return;
@@ -467,13 +471,13 @@ class RapidLoad_UnusedCSS
 
             if(isset($job->id)){
 
-                $this->clear_cache($job);
+                $this->rapidload_clear_cache($job);
 
             }
         }
     }
 
-    function clear_cache($job = null, $args = []){
+    function rapidload_clear_cache($job = null, $args = []){
 
         if($job){
 
@@ -481,26 +485,26 @@ class RapidLoad_UnusedCSS
 
             if(isset($job_data->id) && (!isset($job_data->job->rule_id) && $job_data->job->rule === "is_url" || $job_data->job->rule !== "is_url")){
 
-                $this->clear_files($job_data);
+                $this->rapidload_clear_files($job_data);
                 self::log([
                     'log' =>  'requeue-> clear cache by job id manually',
                     'url' => $job_data->job->url,
                 ]);
-                $job_data->requeue();
-                $job_data->save();
+                $job_data->rapidload_job_data_requeue();
+                $job_data->rapidload_job_data_save();
 
             }
 
         }else{
 
-            UnusedCSS_DB::clear_data(isset($args['soft']));
-            $this->clear_files();
+            RapidLoad_UnusedCSS_DB::rapidload_clear_data(isset($args['soft']));
+            $this->rapidload_clear_files();
 
         }
 
     }
 
-    function clear_files($job_data = null){
+    function rapidload_clear_files($job_data = null){
 
         if($job_data){
 
@@ -508,7 +512,7 @@ class RapidLoad_UnusedCSS
 
                 $files = isset($job_data->data) && !empty($job_data->data) ? unserialize($job_data->data) : [];
 
-                $used_files = UnusedCSS_DB::get_used_files_exclude($job_data->id);
+                $used_files = RapidLoad_UnusedCSS_DB::rapidload_get_used_files_exclude($job_data->id);
 
                 foreach ($files as $file){
 
@@ -516,7 +520,7 @@ class RapidLoad_UnusedCSS
 
                     if ( !isset($key) || empty($key)){
 
-                        $this->file_system->delete( self::$base_dir . '/' . $used_files[$key] );
+                        $this->file_system->rapidload_file_delete( self::$base_dir . '/' . $used_files[$key] );
 
                     }
                 }
@@ -524,13 +528,13 @@ class RapidLoad_UnusedCSS
 
         }else{
 
-            $this->file_system->delete( self::$base_dir );
+            $this->file_system->rapidload_file_delete( self::$base_dir );
 
         }
 
     }
 
-    public function initFileSystem() {
+    public function rapidload_initFileSystem() {
 
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'uucss';
 
@@ -538,14 +542,14 @@ class RapidLoad_UnusedCSS
             return false;
         }
 
-        if ( ! $this->init_base_dir() ) {
+        if ( ! $this->rapidload_init_base_dir() ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_base_dir() {
+    public function rapidload_init_base_dir() {
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
@@ -556,30 +560,30 @@ class RapidLoad_UnusedCSS
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->rapidload_file_is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_async_store($job_data, $args)
+    public function rapidload_init_async_store($job_data, $args)
     {
-        $store = new UnusedCSS_Store($job_data, $args);
-        $store->purge_css();
+        $store = new RapidLoad_UnusedCSS_Store($job_data, $args);
+        $store->rapidload_purge_css();
     }
 
-    public function vanish() {
+    public function rapidload_vanish() {
 
-        UnusedCSS_DB::clear_data();
+        RapidLoad_UnusedCSS_DB::rapidload_clear_data();
 
         if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
-            $this->file_system->delete( self::$base_dir, true );
+            $this->file_system->rapidload_file_delete( self::$base_dir, true );
         }
 
     }
 
-    public function api_options( $post_id = null ) {
+    public function rapidload_api_options( $post_id = null ) {
 
         $whitelist_packs = [ 'wp' ];
 
@@ -595,7 +599,7 @@ class RapidLoad_UnusedCSS
 
         }
 
-        $post_options = $post_id ? RapidLoad_Base::get_page_options( $post_id ) : [];
+        $post_options = $post_id ? RapidLoad_Base::rapidload_get_page_options( $post_id ) : [];
 
         $safelist = isset( $this->options['uucss_safelist'] ) ? json_decode( $this->options['uucss_safelist'] ) : [];
 
