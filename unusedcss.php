@@ -47,11 +47,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 if(is_admin()){
 
-    register_activation_hook( UUCSS_PLUGIN_FILE, 'RapidLoad_Base::uucss_activate' );
+    register_activation_hook( UUCSS_PLUGIN_FILE, 'RapidLoad_Base::rapidload_uucss_activate' );
 
-    register_activation_hook( UUCSS_PLUGIN_FILE, 'RapidLoad_DB::initialize' );
+    register_activation_hook( UUCSS_PLUGIN_FILE, 'RapidLoad_DB::rapidload_db_initialize' );
 
-    register_uninstall_hook(UUCSS_PLUGIN_FILE, 'RapidLoad_DB::drop');
+    register_uninstall_hook(UUCSS_PLUGIN_FILE, 'RapidLoad_DB::rapidload_db_drop');
 
     register_activation_hook( UUCSS_PLUGIN_FILE, 'RapidLoad_Cache::on_activation' );
 
@@ -65,7 +65,7 @@ if(is_admin()){
 
 global $rapidload;
 
-$rapidload = RapidLoad_Base::get();
+$rapidload = RapidLoad_Base::rapidload_get();
 
 
 
