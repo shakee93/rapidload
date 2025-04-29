@@ -154,26 +154,26 @@ abstract class RapidLoad_DB
 
     public static function update_db_version(){
         self::$current_version = RapidLoad_Base::get_option( self::$db_option , "0");
-        self::migrate_old_settings();
+        self::migrate_old_settings('autoptimize_uucss_settings', 'rapidload_settings');
     }
 
-    public static function migrate_old_settings(){
+    public static function migrate_old_settings($old_settings_option_name, $new_settings_option_name){
 
         $old_settings = null;
 
         if(is_multisite()){
-            $old_settings = get_blog_option(get_current_blog_id(), 'autoptimize_uucss_settings', null);
+            $old_settings = get_blog_option(get_current_blog_id(), $old_settings_option_name, null);
         }else{
-            $old_settings = get_site_option('autoptimize_uucss_settings', null);
+            $old_settings = get_site_option($old_settings_option_name, null);
         }
 
         if ( $old_settings ) {
 
-            $new_settings = get_option( 'rapidload_settings' , null);
+            $new_settings = get_option( $new_settings_option_name , null);
 
             if ( ! $new_settings ) {
-                update_option( 'rapidload_settings', $old_settings );
-                delete_option( 'autoptimize_uucss_settings' );
+                update_option( $new_settings_option_name, $old_settings );
+                delete_option( $old_settings_option_name );
             }
         }
             

@@ -38,11 +38,8 @@ class RapidLoad_Admin
             add_action('wp_ajax_rapidload_fetch_post_types_with_links', [$this, 'rapidload_fetch_post_types_with_links']);
             add_action('wp_ajax_rapidload_fetch_post_search_by_title_or_permalink', [$this, 'rapidload_fetch_post_search_by_title_or_permalink']);
 
-
-            add_action('wp_ajax_titan_checklist_crawler', [$this, 'titan_checklist_crawler']);
             add_action('wp_ajax_titan_checklist_cron', [$this, 'titan_checklist_cron']);
             add_action('wp_ajax_titan_checklist_plugins', [$this, 'titan_checklist_plugins']);
-            add_action('wp_ajax_titan_checklist_status', [$this, 'titan_checklist_status']);
             add_action('wp_ajax_rapidload_switch_test_mode', [$this, 'rapidload_switch_test_mode']);
             add_action('wp_ajax_rapidload_onboard_skipped', [$this, 'rapidload_onboard_skipped']);
             
@@ -51,11 +48,9 @@ class RapidLoad_Admin
                 add_action('wp_ajax_nopriv_uucss_license', [ $this, 'uucss_license' ] );
                 add_action('wp_ajax_nopriv_uucss_connect', [ $this, 'uucss_connect' ] );
                 add_action('wp_ajax_nopriv_rapidload_switch_test_mode', [$this, 'rapidload_switch_test_mode']);
-                add_action('wp_ajax_nopriv_titan_checklist_crawler', [$this, 'titan_checklist_crawler']);
                 add_action('wp_ajax_nopriv_clear_page_cache', [$this, 'clear_page_cache']);
                 add_action('wp_ajax_nopriv_titan_checklist_cron', [$this, 'titan_checklist_cron']);
                 add_action('wp_ajax_nopriv_titan_checklist_plugins', [$this, 'titan_checklist_plugins']);
-                add_action('wp_ajax_nopriv_titan_checklist_status', [$this, 'titan_checklist_status']);
                 add_action('wp_ajax_nopriv_rapidload_delete_titan_optimizations', [$this, 'rapidload_delete_titan_optimizations']);
                 add_action('wp_ajax_nopriv_rapidload_titan_optimizations_data', [$this, 'rapidload_titan_optimizations_data']);
                 add_action('wp_ajax_nopriv_rapidload_fetch_post_types_with_links', [$this, 'rapidload_fetch_post_types_with_links']);
@@ -66,10 +61,6 @@ class RapidLoad_Admin
 
         add_action('wp_ajax_rapidload_image_optimization_status', [ $this, 'rapidload_image_optimization_status' ] );
         add_action('wp_ajax_nopriv_rapidload_image_optimization_status', [ $this, 'rapidload_image_optimization_status' ] );
-
-        add_action('cron_check_rapidload', function (){
-            update_option('cron_check_rapidload_success',"1");
-        });
 
         add_filter('uucss/api/options', [$this, 'inject_cloudflare_settings'], 10 , 1);
         add_filter('uucss/rules', [$this, 'rapidload_rule_types'], 90 , 1);
@@ -374,24 +365,6 @@ class RapidLoad_Admin
 
     }
 
-    public function titan_checklist_status(){
-
-        self::verify_nonce();
-
-        if(isset($_REQUEST['status'])){
-            RapidLoad_Base::update_option('titan_checklist_status', sanitize_text_field(wp_unslash($_REQUEST['status'])));
-            wp_send_json_success(true);
-        }
-
-        $updated_status = RapidLoad_Base::get_option('titan_checklist_status', 'pending');
-
-        if(isset($updated_status) && !empty($updated_status)){
-            wp_send_json_success($updated_status);
-        }
-
-        wp_send_json_error();
-    }
-
     public function titan_checklist_plugins(){
 
         self::verify_nonce();
@@ -410,25 +383,6 @@ class RapidLoad_Admin
         }
 
         wp_send_json_success($conflict_plugin_names);
-
-    }
-
-    public function titan_checklist_crawler(){
-
-        self::verify_nonce();
-
-        $api = new RapidLoad_Api();
-
-        $result = $api->post('crawler-check',[
-            'url' => site_url()
-        ]);
-
-        if($result === "200"){
-            update_option('crawler_check_rapidload_success',"1");
-            wp_send_json_success(true);
-        }
-
-        wp_send_json_error(false);
 
     }
 
