@@ -2,6 +2,10 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_Admin')){
+    return;
+}
+
 class RapidLoad_Admin
 {
     use RapidLoad_Utils;
@@ -273,7 +277,7 @@ class RapidLoad_Admin
             $s = sanitize_text_field(wp_unslash($_REQUEST['s']));
         }
 
-        wp_send_json_success(RapidLoad_Job::get_all_optimizations_data_for('desktop', $start_from, $limit, $s));
+        wp_send_json_success(RapidLoad_Job::rapidload_job_get_all_optimizations_data_for('desktop', $start_from, $limit, $s));
 
     }
 
@@ -295,10 +299,10 @@ class RapidLoad_Admin
             wp_send_json_error('job not found');
         }
 
-        $job->delete_all_revisions();
-        $job->set_desktop_options(null);
-        $job->set_mobile_options(null);
-        $job->save();
+        $job->rapidload_job_delete_all_revisions();
+        $job->rapidload_job_set_desktop_options(null);
+        $job->rapidload_job_set_mobile_options(null);
+        $job->rapidload_job_save();
 
         wp_send_json_success('successfully deleted all optimizations data');
     }
@@ -317,8 +321,8 @@ class RapidLoad_Admin
            'zone_id' =>  $options['uucss_cdn_zone_id']
         ]);
 
-        if(is_wp_error($response)){
-            wp_send_json_error($api->extract_error($response));
+        if($api->rapidload_api_is_error($response)){
+            wp_send_json_error($api->rapidload_api_extract_error($response));
         }
 
         wp_send_json_success([
@@ -335,8 +339,8 @@ class RapidLoad_Admin
             'url' =>  site_url()
         ]);
 
-        if(is_wp_error($response)){
-            wp_send_json_error($api->extract_error($response));
+        if($api->rapidload_api_is_error($response)){
+            wp_send_json_error($api->rapidload_api_extract_error($response));
         }
 
         wp_send_json_success([
@@ -367,7 +371,7 @@ class RapidLoad_Admin
 
         $options['rapidload_test_mode'] = $status;
 
-        RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+        RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings', $options);
 
         wp_send_json_success([
             'status' => $options['rapidload_test_mode'] === "1"
@@ -380,11 +384,11 @@ class RapidLoad_Admin
         self::rapidload_util_verify_nonce();
 
         if(isset($_REQUEST['status'])){
-            RapidLoad_Base::update_option('titan_checklist_status', sanitize_text_field(wp_unslash($_REQUEST['status'])));
+            RapidLoad_Base::rapidload_update_option('titan_checklist_status', sanitize_text_field(wp_unslash($_REQUEST['status'])));
             wp_send_json_success(true);
         }
 
-        $updated_status = RapidLoad_Base::get_option('titan_checklist_status', 'pending');
+        $updated_status = RapidLoad_Base::rapidload_get_option('titan_checklist_status', 'pending');
 
         if(isset($updated_status) && !empty($updated_status)){
             wp_send_json_success($updated_status);
@@ -458,7 +462,7 @@ class RapidLoad_Admin
             ] );
         }
 
-        $spawn = $this->get_cron_spawn();
+        $spawn = $this->rapidload_util_get_cron_spawn();
 
         if ( is_wp_error( $spawn ) ) {
             wp_send_json_error( [
@@ -978,19 +982,19 @@ class RapidLoad_Admin
             $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) === 'true' ? 1 : 0;
         }
 
-        RapidLoad_Base::update_option('autoptimize_uucss_settings',$options);
+        RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings',$options);
 
-        wp_send_json_success(RapidLoad_Base::get()->modules()->active_modules());
+        wp_send_json_success(RapidLoad_Base::rapidload_get()->rapidload_modules()->rapidload_active_modules());
     }
 
     public function rapidload_list_module(){
         self::rapidload_util_verify_nonce();
-        wp_send_json_success(RapidLoad_Base::get()->modules()->active_modules());
+        wp_send_json_success(RapidLoad_Base::rapidload_get()->rapidload_modules()->rapidload_active_modules());
     }
 
     public function rapidload_activate_module(){
 
-        RapidLoad_Base::get()->modules()->activate_module();
+        RapidLoad_Base::rapidload_get()->rapidload_modules()->rapidload_activate_module();
 
     }
 
@@ -1011,8 +1015,8 @@ class RapidLoad_Admin
             $path = new RapidLoad_Job([
                 'url' => $url
             ]);
-            $path->attach_rule();
-            $path->save();
+            $path->rapidload_job_attach_rule();
+            $path->rapidload_job_save();
             wp_send_json_success('Successfully detached from rule');
         }
 
@@ -1022,7 +1026,7 @@ class RapidLoad_Admin
 
         if($type === 'attach'){
 
-            $rule = RapidLoad_Job::find_or_fail($rule_id);
+            $rule = RapidLoad_Job::rapidload_job_find_or_fail($rule_id);
 
             if(!$rule){
                 wp_send_json_error('Rule not found');
@@ -1032,12 +1036,12 @@ class RapidLoad_Admin
                 'url' => $url
             ]);
 
-            if(!self::is_url_glob_matched($url, $rule->regex)){
+            if(!$this->rapidload_util_is_url_glob_matched($url, $rule->regex)){
                 wp_send_json_success('Pattern not matched');
             }
 
-            $path->attach_rule($rule->id, $rule->rule);
-            $path->save();
+            $path->rapidload_job_attach_rule($rule->id, $rule->rule);
+            $path->rapidload_job_save();
             wp_send_json_success('Successfully attached to rule');
         }
 
@@ -1078,7 +1082,7 @@ class RapidLoad_Admin
             wp_send_json_success(true);
         }
 
-        $file_system->delete_folder(self::rapidload_util_get_wp_content_dir() . '/uploads/rapidload/');
+        $file_system->rapidload_file_delete_folder(self::rapidload_util_get_wp_content_dir() . '/uploads/rapidload/');
         wp_send_json_success(true);
     }
 
@@ -1115,7 +1119,7 @@ class RapidLoad_Admin
 
         if($url){
 
-            RapidLoad_DB::resetHits($url);
+            RapidLoad_DB::rapidload_db_resetHits($url);
             do_action( 'uucss/cached', [
                 'url' => $url
             ] );
@@ -1132,8 +1136,8 @@ class RapidLoad_Admin
 
             if(isset($rule_object->id)){
 
-                RapidLoad_DB::resetRuleHits($rule_object->id);
-                $links = $rule_object->get_urls();
+                RapidLoad_DB::rapidload_db_resetRuleHits($rule_object->id);
+                $links = $rule_object->rapidload_job_get_urls();
                 array_push($links, $rule_object->url);
 
             }
@@ -1141,8 +1145,8 @@ class RapidLoad_Admin
 
         if($status === 'warnings'){
 
-            RapidLoad_DB::resetWarningHits();
-            $links = RapidLoad_DB::getUrlsWithWarnings();
+            RapidLoad_DB::rapidload_db_resetWarningHits();
+            $links = RapidLoad_DB::rapidload_db_getUrlsWithWarnings();
 
         }
 
@@ -1172,7 +1176,7 @@ class RapidLoad_Admin
         $uucss_api->apiKey = $license_key;
         $results           = $uucss_api->rapidload_api_post( 'connect', [ 'url' => $this->rapidload_util_transform_url(get_site_url()), 'type' => 'wordpress' ] );
 
-        if ( $uucss_api->is_error( $results ) ) {
+        if ( $uucss_api->rapidload_api_is_error( $results ) ) {
             if(isset($results->errors) && isset($results->errors[0])){
                 wp_send_json_error($results->errors[0]->detail);
             }else{
@@ -1183,7 +1187,7 @@ class RapidLoad_Admin
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $license_key;
 
-        RapidLoad_Base::update_option( 'autoptimize_uucss_settings', $options );
+        RapidLoad_Base::rapidload_update_option( 'autoptimize_uucss_settings', $options );
 
         wp_send_json_success([
             'success' => true,
@@ -1199,7 +1203,7 @@ class RapidLoad_Admin
             return;
         }
 
-        $options   = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
+        $options   = RapidLoad_Base::rapidload_get_option( 'autoptimize_uucss_settings' );
 
         if(!isset( $options['uucss_api_key_verified'] ) || $options['uucss_api_key_verified'] !== '1'){
             return;
@@ -1213,15 +1217,15 @@ class RapidLoad_Admin
 
         $results = $uucss_api->rapidload_api_get( 'verify', [ 'url' => site_url(), 'token' => $options['uucss_api_key'] ] );
 
-        if($uucss_api->is_error($results)){
+        if($uucss_api->rapidload_api_is_error($results)){
             $options['valid_domain'] = false;
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings', $options);
             return;
         }
 
         if(!isset($options['valid_domain']) || !$options['valid_domain']){
             $options['valid_domain'] = true;
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings', $options);
         }
     }
 
@@ -1229,10 +1233,10 @@ class RapidLoad_Admin
 
         self::rapidload_util_verify_nonce();
 
-        $options = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
+        $options = RapidLoad_Base::rapidload_get_option( 'autoptimize_uucss_settings' );
 
         $cache_key = 'pand-' . md5( 'first-uucss-job' );
-        RapidLoad_Base::delete_option( $cache_key );
+        RapidLoad_Base::rapidload_delete_option( $cache_key );
 
         do_action('rapidload/vanish');
 
@@ -1247,7 +1251,7 @@ class RapidLoad_Admin
         unset( $options['uucss_api_key'] );
         unset( $options['whitelist_packs'] );
 
-        RapidLoad_Base::update_option( 'autoptimize_uucss_settings', $options );
+        RapidLoad_Base::rapidload_update_option( 'autoptimize_uucss_settings', $options );
 
         wp_send_json_success( true );
     }
@@ -1476,7 +1480,7 @@ class RapidLoad_Admin
             }
 
             if(isset( $diffs['uucss_enable_rules'] )){
-                RapidLoad_DB::detach_all_rules();
+                RapidLoad_DB::rapidload_db_detach_all_rules();
             }
 
             if ( $needs_to_cleared ) {
@@ -1541,11 +1545,11 @@ class RapidLoad_Admin
             unset($options['uucss_api_key_verified']);
             unset($options['uucss_api_key']);
             unset($options['valid_domain']);
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::rapidload_update_option('autoptimize_uucss_settings', $options);
             RapidLoad_Base::rapidload_fetch_options(false);
 
             $cache_key = 'pand-' . md5( 'first-uucss-job' );
-            RapidLoad_Base::delete_option( $cache_key );
+            RapidLoad_Base::rapidload_delete_option( $cache_key );
 
             do_action('rapidload/vanish');
 
@@ -1760,7 +1764,7 @@ class RapidLoad_Admin
         }
 
         $site_map = new RapidLoad_Sitemap();
-        $urls = $site_map->process_site_map($url);
+        $urls = $site_map->rapidload_process_site_map($url);
 
         if(isset($urls) && !empty($urls)){
 
@@ -1768,32 +1772,16 @@ class RapidLoad_Admin
 
                 $_url = $this->rapidload_util_transform_url($value);
 
-                if($this->is_url_allowed($_url)){
+                if($this->rapidload_util_is_url_allowed($_url)){
 
                     $job = new RapidLoad_Job([
                        'url' => $_url
                     ]);
-                    $job->save(true);
+                    $job->rapidload_job_save(true);
                 }
 
             }
         }
-    }
-
-    public function rapidload_get_cron_spawn() {
-        // ... existing code ...
-    }
-
-    public function rapidload_is_url_glob_matched($url, $pattern) {
-        // ... existing code ...
-    }
-
-    public function rapidload_is_url_allowed($url) {
-        // ... existing code ...
-    }
-
-    public function rapidload_transform_url($url) {
-        // ... existing code ...
     }
 
 }

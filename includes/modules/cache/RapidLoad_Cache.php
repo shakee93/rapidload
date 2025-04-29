@@ -21,7 +21,7 @@ class RapidLoad_Cache
 
         add_action( 'uucss/cache_cleared', [$this, 'clear_cache'], 10, 2 );
 
-        $cache_module_enabled = RapidLoad_Base::get_option('rapidload_module_cache');
+        $cache_module_enabled = RapidLoad_Base::rapidload_get_option('rapidload_module_cache');
 
         if(isset(self::$options['uucss_disable_wp_emoji']) && self::$options['uucss_disable_wp_emoji'] === "1"){
             $this->disable_wp_emojis();

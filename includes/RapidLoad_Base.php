@@ -317,7 +317,7 @@ class RapidLoad_Base
                 'home_url' => home_url(),
                 'api_url' => RapidLoad_Api::rapidload_api_get_key(),
                 'nonce' => self::rapidload_util_create_nonce( 'uucss_nonce' ),
-                'active_modules' => (array)self::rapidload_get()->rapidload_modules()->rapidload_modules_active_modules(),
+                'active_modules' => (array)self::rapidload_get()->rapidload_modules()->rapidload_active_modules(),
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::rapidload_util_activation_url('authorize' ),
                 'onboard_activation_url' => self::rapidload_util_onboard_activation_url('authorize' ),

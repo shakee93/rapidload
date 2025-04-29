@@ -19,7 +19,7 @@ class RapidLoad_Admin_Frontend
 
         add_action('init', function (){
 
-            if($this->is_rapidload_legacy_page()){
+            if($this->rapidload_is_rapidload_legacy_page()){
 
                 $this->rapidload_load_legacy_scripts();
 
