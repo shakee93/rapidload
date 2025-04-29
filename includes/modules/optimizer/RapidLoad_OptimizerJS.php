@@ -12,7 +12,7 @@ class RapidLoad_OptimizerJS
     {
 
         add_filter('rapidload/js/delay-excluded', function ($value, $link, $job, $strategy, $options){
-            if(!Javascript_Enqueue::is_js($link)){
+            if(!RapidLoad_Javascript_Enqueue::is_js($link)){
                 return $value;
             }
             $options = $strategy === "mobile" ? $job->get_mobile_options(true) : $job->get_desktop_options(true);
@@ -45,14 +45,14 @@ class RapidLoad_OptimizerJS
                             if(isset($file_action->action)){
                                 switch ($file_action->action){
                                     case 'defer' : {
-                                        if(Javascript_Enqueue::is_js($link)){
+                                        if(RapidLoad_Javascript_Enqueue::is_js($link)){
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->src)){
                                                    $link->defer = true;
                                                     unset($link->async);
                                                 }
                                             }
-                                        }elseif (Javascript_Enqueue::is_inline_script($link)){
+                                        }elseif (RapidLoad_Javascript_Enqueue::is_inline_script($link)){
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->innertext())){
                                                     $link->__set('outertext','<script ' . ( $link->id ? 'id="' . $link->id . '"' : '' ) .' type="text/javascript"> window.addEventListener("DOMContentLoaded", function() { ' . $link->innertext() . ' }); </script>');
@@ -62,7 +62,7 @@ class RapidLoad_OptimizerJS
                                         break;
                                     }
                                     case 'delay' : {
-                                        if(Javascript_Enqueue::is_js($link)){
+                                        if(RapidLoad_Javascript_Enqueue::is_js($link)){
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->src)){
                                                     $data_attr = "data-rapidload-src";
@@ -71,7 +71,7 @@ class RapidLoad_OptimizerJS
                                                     $this->add_delay_script();
                                                 }
                                             }
-                                        }elseif (Javascript_Enqueue::is_inline_script($link)){
+                                        }elseif (RapidLoad_Javascript_Enqueue::is_inline_script($link)){
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->innertext())){
                                                     $link->__set('outertext',"<noscript data-rapidload-delayed>" . $link->innertext() . "</noscript>");
@@ -82,7 +82,7 @@ class RapidLoad_OptimizerJS
                                         break;
                                     }
                                     case 'remove' : {
-                                        if(Javascript_Enqueue::is_js($link)){
+                                        if(RapidLoad_Javascript_Enqueue::is_js($link)){
 
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->src)){
@@ -94,7 +94,7 @@ class RapidLoad_OptimizerJS
                                                     $link->__set('outertext',"<noscript data-rapidload-removed>" . $link->outertext() . "</noscript>");
                                                 }
                                             }
-                                        }elseif (Javascript_Enqueue::is_inline_script($link)){
+                                        }elseif (RapidLoad_Javascript_Enqueue::is_inline_script($link)){
                                             if(isset($file_action->regex) && $file_action->regex){
                                                 if(preg_match($file_action->regex, $link->innertext())){
                                                     if($link->{'data-rapidload-removed'}){

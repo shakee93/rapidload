@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) or die();
 
 /**
- * Class UnusedCSS
+ * Class RapidLoad_Utils
  */
 trait RapidLoad_Utils {
 

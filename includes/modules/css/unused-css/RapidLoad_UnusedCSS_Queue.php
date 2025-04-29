@@ -67,7 +67,7 @@ class RapidLoad_UnusedCSS_Queue
 
                     $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
-                    $store = new RapidLoad_sUnusedCSS_Store($job_data, []);
+                    $store = new RapidLoad_UnusedCSS_Store($job_data, []);
                     $store->update_css();
 
                 }else{
