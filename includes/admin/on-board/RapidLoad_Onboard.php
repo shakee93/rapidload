@@ -30,7 +30,7 @@ class RapidLoad_Onboard{
     function rapidload_run_first_job(){
         self::rapidload_util_verify_nonce();
 
-        if(!RapidLoad_Base::is_api_key_verified()){
+        if(!RapidLoad_Base::rapidload_is_api_key_verified()){
             wp_send_json_error(false);
         }
 
@@ -39,16 +39,16 @@ class RapidLoad_Onboard{
         $job = new RapidLoad_Job([
             'url' => $site_url
         ]);
-        $job->save(true);
+        $job->rapidload_job_save(true);
 
         $job_data = new RapidLoad_Job_Data($job, 'uucss');
 
         if(!isset($job_data->id)){
-            $job_data->save();
+            $job_data->rapidload_job_data_save();
         }
 
-        $store = new UnusedCSS_Store($job_data, [ 'immediate' => true ]);
-        $store->purge_css();
+        $store = new RapidLoad_UnusedCSS_Store($job_data, [ 'immediate' => true ]);
+        $store->rapidload_purge_css();
 
         $this->rapidload_configured();
     }
@@ -57,9 +57,9 @@ class RapidLoad_Onboard{
         self::rapidload_util_verify_nonce();
 
         $status = [];
-        $status['rapidload_connected'] = RapidLoad_Base::is_api_key_verified();
-        $status['uucss_first_job_done'] = (bool)RapidLoad_DB::get_first_link();
-        $status['uucss_first_job'] = RapidLoad_DB::get_first_link();
+        $status['rapidload_connected'] = RapidLoad_Base::rapidload_is_api_key_verified();
+        $status['uucss_first_job_done'] = (bool)RapidLoad_DB::rapidload_db_get_first_link();
+        $status['uucss_first_job'] = RapidLoad_DB::rapidload_db_get_first_link();
 
         if(wp_doing_ajax()){
             wp_send_json_success($status);
@@ -85,7 +85,7 @@ class RapidLoad_Onboard{
     }
 
     public static function rapidload_on_board_completed(){
-        return RapidLoad_Base::is_api_key_verified() || RapidLoad_Base::get_option('rapidload_onboard_skipped', false);
+        return RapidLoad_Base::rapidload_is_api_key_verified() || RapidLoad_Base::rapidload_get_option('rapidload_onboard_skipped', false);
     }
 
     public function rapidload_redirect() {
@@ -94,8 +94,8 @@ class RapidLoad_Onboard{
         if ( strpos( home_url( $request_uri ), '/options-general.php?page=rapidload-on-board' ) &&
             self::rapidload_on_board_completed() && !strpos( home_url( $request_uri ), 'nonce' )) {
             wp_safe_redirect( admin_url( 'admin.php?page=rapidload' ) );
-        } else if ( RapidLoad_Base::get_option( 'rapidload_do_activation_redirect' ) ) {
-            RapidLoad_Base::delete_option( 'rapidload_do_activation_redirect' );
+        } else if ( RapidLoad_Base::rapidload_get_option( 'rapidload_do_activation_redirect' ) ) {
+            RapidLoad_Base::rapidload_delete_option( 'rapidload_do_activation_redirect' );
             wp_safe_redirect( '/wp-admin/options-general.php?page=rapidload#/onboard' );
         }
     }
