@@ -126,56 +126,56 @@ class RapidLoad_Admin_Frontend
             add_action("wp_ajax_get_all_rules", [$this, 'rapidload_get_all_rules']);
             add_action("wp_ajax_upload_rules", [$this, 'rapidload_upload_rules']);
             add_action("wp_ajax_rapidload_purge_all", [$this, 'rapidload_purge_all']);
-            add_action("wp_ajax_uucss_test_url", [ $this, 'uucss_test_url' ] );
-            add_action("wp_ajax_uucss_data", [ $this, 'uucss_data' ] );
+            add_action("wp_ajax_uucss_test_url", [ $this, 'rapidload_uucss_test_url' ] );
+            add_action("wp_ajax_uucss_data", [ $this, 'rapidload_uucss_data' ] );
             add_action("wp_ajax_rapidload_notifications", [$this, 'rapidload_notifications']);
-            add_action("wp_ajax_uucss_update_rule", [ $this, 'uucss_update_rule' ] );
-            add_action("wp_ajax_mark_faqs_read", [$this, 'mark_faqs_read']);
-            add_action("wp_ajax_mark_notice_read", [$this, 'mark_notice_read']);
-            add_action("wp_ajax_suggest_whitelist_packs", [ $this, 'suggest_whitelist_packs' ] );
-            add_action("wp_ajax_update_htaccess_file", [$this, "wp_ajax_update_htaccess_file"]);
-            add_action("wp_ajax_nopriv_update_htaccess_file", [$this, "wp_ajax_update_htaccess_file"]);
+            add_action("wp_ajax_uucss_update_rule", [ $this, 'rapidload_uucss_update_rule' ] );
+            add_action("wp_ajax_mark_faqs_read", [$this, 'rapidload_mark_faqs_read']);
+            add_action("wp_ajax_mark_notice_read", [$this, 'rapidload_mark_notice_read']);
+            add_action("wp_ajax_suggest_whitelist_packs", [ $this, 'rapidload_suggest_whitelist_packs' ] );
+            add_action("wp_ajax_update_htaccess_file", [$this, "rapidload_update_htaccess_file"]);
+            add_action("wp_ajax_nopriv_update_htaccess_file", [$this, "rapidload_update_htaccess_file"]);
         }
 
     }
 
-    public function wp_ajax_update_htaccess_file(){
+    public function rapidload_update_htaccess_file(){
 
         self::rapidload_util_verify_nonce();
 
-        RapidLoad_htaccess::update_htaccess(isset($_REQUEST['remove']));
+        RapidLoad_htaccess::rapidload_update_htaccess(isset($_REQUEST['remove']));
 
         wp_send_json_success(true);
 
     }
 
-    public function suggest_whitelist_packs(){
+    public function rapidload_suggest_whitelist_packs(){
         self::rapidload_util_verify_nonce();
-        RapidLoad_Base::suggest_whitelist_packs();
+        RapidLoad_Base::rapidload_suggest_whitelist_packs();
     }
 
-    public function mark_notice_read(){
+    public function rapidload_mark_notice_read(){
 
         self::rapidload_util_verify_nonce();
 
         $notice_id = isset($_REQUEST['notice_id']) ? sanitize_text_field(wp_unslash($_REQUEST['notice_id'])) : false;
 
         if($notice_id){
-            RapidLoad_Base::update_option('uucss_notice_' . $notice_id . '_read', true);
+            RapidLoad_Base::rapidload_update_option('uucss_notice_' . $notice_id . '_read', true);
         }
 
         wp_send_json_success(true);
     }
 
-    public function mark_faqs_read(){
+    public function rapidload_mark_faqs_read(){
 
         self::rapidload_util_verify_nonce();
 
-        RapidLoad_Base::update_option('rapidload_faqs_read', true);
+        RapidLoad_Base::rapidload_update_option('rapidload_faqs_read', true);
         wp_send_json_success(true);
     }
 
-    public function uucss_update_rule(){
+    public function rapidload_uucss_update_rule(){
 
         self::rapidload_util_verify_nonce();
 
@@ -193,11 +193,11 @@ class RapidLoad_Admin_Frontend
 
         global $uucss;
 
-        if(!$this->is_url_allowed($url)){
+        if(!$this->rapidload_util_is_url_allowed($url)){
             wp_send_json_error('URL not allowed');
         }
 
-        if(!self::is_url_glob_matched($url, $regex)){
+        if(!$this->rapidload_util_is_url_glob_matched($url, $regex)){
             wp_send_json_error('Invalid regex for the url');
         }
 
@@ -216,7 +216,7 @@ class RapidLoad_Admin_Frontend
             ]);
 
             if(isset($new_rule->id) && $new_rule->rule === "is_url"){
-               $new_rule->delete();
+               $new_rule->rapidload_job_delete();
             }
 
             if(isset($rule_exist->id)){
@@ -224,12 +224,12 @@ class RapidLoad_Admin_Frontend
                 $rule_exist->url = $url;
                 $rule_exist->rule = $rule;
                 $rule_exist->regex = $regex;
-                $rule_exist->save(true);
+                $rule_exist->rapidload_job_save(true);
 
                 if(isset($_REQUEST['old_url']) && sanitize_text_field(wp_unslash($_REQUEST['old_url'])) !== $url ||
                     sanitize_text_field(wp_unslash($_REQUEST['old_rule'])) !== $rule || sanitize_text_field(wp_unslash($_REQUEST['old_regex'])) !== $regex){
                     if(isset($_REQUEST['requeue']) && sanitize_text_field(wp_unslash($_REQUEST['requeue'])) === "1"){
-                        RapidLoad_DB::requeueJob($rule_exist->id);
+                        RapidLoad_DB::rapidload_db_requeue_job($rule_exist->id);
                     }
                 }
 
@@ -243,7 +243,7 @@ class RapidLoad_Admin_Frontend
         ]);
 
         if(isset($new_rule->id) && $new_rule->rule === "is_url"){
-            $new_rule->delete();
+            $new_rule->rapidload_job_delete();
         }
 
         $rule = new RapidLoad_Job([
@@ -256,7 +256,7 @@ class RapidLoad_Admin_Frontend
         }
 
         $rule->url = $url;
-        $rule->save(true);
+        $rule->rapidload_job_save(true);
 
         wp_send_json_success('Rule updated successfully');
     }
@@ -266,22 +266,22 @@ class RapidLoad_Admin_Frontend
         self::rapidload_util_verify_nonce();
 
         wp_send_json_success([
-            'faqs' => $this->get_faqs(),
-            'notifications' => $this->get_public_notices()
+            'faqs' => $this->rapidload_get_faqs(),
+            'notifications' => $this->rapidload_get_public_notices()
         ]);
 
     }
 
-    public function get_public_notices(){
+    public function rapidload_get_public_notices(){
 
         $api = new RapidLoad_Api();
 
         $result = $api->rapidload_api_get('notification');
 
-        $data = !$api->is_error($result) && isset($result->data) ? $result->data : [];
+        $data = !$api->rapidload_api_is_error($result) && isset($result->data) ? $result->data : [];
 
         $data = array_filter($data, function ($notice){
-            $notice_read = RapidLoad_Base::get_option('uucss_notice_' . $notice->id . '_read');
+            $notice_read = RapidLoad_Base::rapidload_get_option('uucss_notice_' . $notice->id . '_read');
             return empty($notice_read);
         });
 
@@ -300,9 +300,9 @@ class RapidLoad_Admin_Frontend
         return $notices;
     }
 
-    public function get_faqs(){
+    public function rapidload_get_faqs(){
 
-        $rapidload_faqs_read = RapidLoad_Base::get_option('rapidload_faqs_read');
+        $rapidload_faqs_read = RapidLoad_Base::rapidload_get_option('rapidload_faqs_read');
 
         if(!empty($rapidload_faqs_read)){
             return [];
@@ -335,11 +335,11 @@ class RapidLoad_Admin_Frontend
             ]
         ];
 
-        return !$api->is_error($result) && isset($result->data) ? $result->data : $default;
+        return !$api->rapidload_api_is_error($result) && isset($result->data) ? $result->data : $default;
     }
 
 
-    public function uucss_test_url(){
+    public function rapidload_uucss_test_url(){
 
         self::rapidload_util_verify_nonce();
 
@@ -364,9 +364,9 @@ class RapidLoad_Admin_Frontend
 
         $link = $type === 'path' ? new RapidLoad_Job(['url' => $url]) : new RapidLoad_Job(['rule' => sanitize_text_field(wp_unslash($_REQUEST['rule'])), 'regex' => sanitize_text_field(wp_unslash($_REQUEST['regex']))]);
 
-        $result = $this->get_gpsi_test_result(new RapidLoad_Job_Data($link, 'uucss'));
+        $result = $this->rapidload_get_gpsi_test_result(new RapidLoad_Job_Data($link, 'uucss'));
 
-        if ( $uucss_api->is_error( $result ) ) {
+        if ( $uucss_api->rapidload_api_is_error( $result ) ) {
             if(isset($result->errors) && isset($result->errors[0])){
                 wp_send_json_error($result->errors[0]->detail);
             }else{
@@ -377,7 +377,7 @@ class RapidLoad_Admin_Frontend
         wp_send_json_success($result);
     }
 
-    public function uucss_data(){
+    public function rapidload_uucss_data(){
 
         self::rapidload_util_verify_nonce();
 
@@ -455,13 +455,13 @@ class RapidLoad_Admin_Frontend
 
         }
 
-        $data  = RapidLoad_DB::get_merged_data($type === "rule", $start, $length);
+        $data  = RapidLoad_DB::rapidload_db_get_merged_data($type === "rule", $start, $length);
 
         wp_send_json([
             'data' => $data,
             "draw" => (int)$draw,
-            "recordsTotal" => RapidLoad_DB::get_total_job_count($type === "path" ? " where rule = 'is_url' and regex = '/'" : " where rule !== 'is_url'"),
-            "recordsFiltered" => RapidLoad_DB::get_total_job_count($where_clause),
+            "recordsTotal" => RapidLoad_DB::rapidload_db_get_total_job_count($type === "path" ? " where rule = 'is_url' and regex = '/'" : " where rule !== 'is_url'"),
+            "recordsFiltered" => RapidLoad_DB::rapidload_db_get_total_job_count($where_clause),
             "success" => true
         ]);
 
@@ -469,7 +469,7 @@ class RapidLoad_Admin_Frontend
 
     public function rapidload_run_gpsi_test_for_all(){
 
-        $links = UnusedCSS_DB::get_data_for_gpsi_test();
+        $links = RapidLoad_UnusedCSS_DB::rapidload_get_data_for_gpsi_test();
 
         if(!empty($links)){
 
@@ -479,7 +479,7 @@ class RapidLoad_Admin_Frontend
                     continue;
                 }
 
-                $this->get_gpsi_test_result(RapidLoad_Job_Data::find_or_fail($link->id, 'uucss'));
+                $this->rapidload_get_gpsi_test_result(RapidLoad_Job_Data::rapidload_job_data_find_or_fail($link->id, 'uucss'));
 
             }
 
@@ -498,7 +498,7 @@ class RapidLoad_Admin_Frontend
         ]);
     }
 
-    public function get_gpsi_test_result($job_data){
+    public function rapidload_get_gpsi_test_result($job_data){
 
         if(!$job_data){
             return null;
@@ -509,7 +509,7 @@ class RapidLoad_Admin_Frontend
         $cached_files = [];
         $original_files = [];
 
-        $files = $job_data->get_files();
+        $files = $job_data->rapidload_job_data_get_files();
 
         if(isset($files) && !empty($files)){
 
@@ -547,15 +547,15 @@ class RapidLoad_Admin_Frontend
 
         if($clear){
             if ($url){
-                RapidLoad_DB::clear_job_data($job_type, [
+                RapidLoad_DB::rapidload_db_clear_job_data($job_type, [
                     'url' => $url
                 ]);
-                RapidLoad_DB::clear_jobs($job_type, [
+                RapidLoad_DB::rapidload_db_clear_jobs($job_type, [
                     'url' => $url
                 ]);
             }else{
                 //RapidLoad_DB::clear_job_data($job_type);
-                RapidLoad_DB::clear_jobs($job_type);
+                RapidLoad_DB::rapidload_db_clear_jobs($job_type);
                 do_action('rapidload/vanish');
             }
 
@@ -581,17 +581,17 @@ class RapidLoad_Admin_Frontend
                 self::log([
                    'log' => 'all jobs cleared'
                 ]);
-                RapidLoad_DB::clear_job_data($job_type, [], $url_list);
-                RapidLoad_DB::clear_jobs($job_type, [], $url_list);
+                RapidLoad_DB::rapidload_db_clear_job_data($job_type, [], $url_list);
+                RapidLoad_DB::rapidload_db_clear_jobs($job_type, [], $url_list);
 
             }else{
 
                 if($rule && $regex){
-                    RapidLoad_DB::clear_job_data($job_type, [
+                    RapidLoad_DB::rapidload_db_clear_job_data($job_type, [
                         'rule' => $rule,
                         'regex' => $regex
                     ]);
-                    RapidLoad_DB::clear_jobs($job_type, [
+                    RapidLoad_DB::rapidload_db_clear_jobs($job_type, [
                         'rule' => $rule,
                         'regex' => $regex
                     ]);
@@ -602,15 +602,15 @@ class RapidLoad_Admin_Frontend
                 }elseif ($job_type === "fonts"){
                     do_action('rapidload/vanish/font');
                 }elseif ($url){
-                    RapidLoad_DB::clear_job_data($job_type, [
+                    RapidLoad_DB::rapidload_db_clear_job_data($job_type, [
                         'url' => $url
                     ]);
-                    RapidLoad_DB::clear_jobs($job_type, [
+                    RapidLoad_DB::rapidload_db_clear_jobs($job_type, [
                         'url' => $url
                     ]);
                 }else{
                     //RapidLoad_DB::clear_job_data($job_type);
-                    RapidLoad_DB::clear_jobs($job_type);
+                    RapidLoad_DB::rapidload_db_clear_jobs($job_type);
                     do_action('rapidload/vanish');
                 }
 
@@ -625,52 +625,52 @@ class RapidLoad_Admin_Frontend
 
                 case 'requeue_all_rule': {
                     if (!empty($url_list)) {
-                        RapidLoad_DB::updateRuleJobDataStatusWhere("queued", $url_list);
+                        RapidLoad_DB::rapidload_db_updateRuleJobDataStatusWhere("queued", $url_list);
                     } else {
-                        RapidLoad_DB::updateRuleJobDataStatusWhere("queued", []);
+                        RapidLoad_DB::rapidload_db_updateRuleJobDataStatusWhere("queued", []);
                     }
                     break;
                 }
                 case 'requeue_all_rule_processing': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "processing");
+                    RapidLoad_DB::rapidload_db_updateRuleJobDataStatusWhere("queued", [], "processing");
                     break;
                 }
                 case 'requeue_all_rule_warnings': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "success");
+                    RapidLoad_DB::rapidload_db_updateRuleJobDataStatusWhere("queued", [], "success");
                     break;
                 }
                 case 'requeue_all_rule_failed': {
-                    RapidLoad_DB::updateRuleJobDataStatusWhere("queued", [], "failed");
+                    RapidLoad_DB::rapidload_db_updateRuleJobDataStatusWhere("queued", [], "failed");
                     break;
                 }
                 case 'requeue_all_url': {
                     if (!empty($url_list)) {
-                        RapidLoad_DB::updateUrlJobDataStatusWhere("queued", $url_list);
+                        RapidLoad_DB::rapidload_db_updateUrlJobDataStatusWhere("queued", $url_list);
                     } else {
-                        RapidLoad_DB::updateUrlJobDataStatusWhere("queued", []);
+                        RapidLoad_DB::rapidload_db_updateUrlJobDataStatusWhere("queued", []);
                     }
                     break;
                 }
                 case 'requeue_all_url_processing':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "processing");
+                    RapidLoad_DB::rapidload_db_updateUrlJobDataStatusWhere("queued", [], "processing");
                     break;
                 }
                 case 'requeue_all_url_warnings':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "success");
+                    RapidLoad_DB::rapidload_db_updateUrlJobDataStatusWhere("queued", [], "success");
                     break;
                 }
                 case 'requeue_all_url_failed':{
-                    RapidLoad_DB::updateUrlJobDataStatusWhere("queued", [], "failed");
+                    RapidLoad_DB::rapidload_db_updateUrlJobDataStatusWhere("queued", [], "failed");
                     break;
                 }
                 case 'url':{
 
                     if($url){
 
-                        if($this->is_url_allowed($url)){
+                        if($this->rapidload_util_is_url_allowed($url)){
 
                             $job = new RapidLoad_Job(['url' => $url]);
-                            $job->save(true);
+                            $job->rapidload_job_save(true);
 
                             $args = [
                                 'requeue' => true
@@ -690,7 +690,7 @@ class RapidLoad_Admin_Frontend
 
                     if($url && $rule && $regex){
 
-                        $this->update_rule((object)[
+                        $this->rapidload_update_rule((object)[
                             'url' => $url,
                             'rule' => $rule,
                             'regex' => $regex,
@@ -704,7 +704,7 @@ class RapidLoad_Admin_Frontend
 
                     if($url){
 
-                        $spawned = $this->schedule_cron('add_sitemap_to_jobs',[
+                        $spawned = $this->rapidload_schedule_cron('add_sitemap_to_jobs',[
                             'url' => $url
                         ]);
                     }
@@ -715,7 +715,7 @@ class RapidLoad_Admin_Frontend
                     if($url){
 
                         $job = new RapidLoad_Job(['url' => $url]);
-                        $job->save(true);
+                        $job->rapidload_job_save(true);
 
                         $args = [
                             'requeue' => true
@@ -742,10 +742,10 @@ class RapidLoad_Admin_Frontend
 
                             $url = $this->rapidload_util_transform_url(get_the_permalink(get_the_ID()));
 
-                            if($this->is_url_allowed($url)){
+                            if($this->rapidload_util_is_url_allowed($url)){
 
                                 $job = new RapidLoad_Job(['url' => $url]);
-                                $job->save(true);
+                                $job->rapidload_job_save(true);
                             }
                         }
                     }
@@ -780,7 +780,7 @@ class RapidLoad_Admin_Frontend
                 'rule' => $rule->rule,
                 'regex' => $rule->regex
             ]);
-            $rule_job->save(true);
+            $rule_job->rapidload_job_save(true);
         }
 
         wp_send_json_success('success');
@@ -790,7 +790,7 @@ class RapidLoad_Admin_Frontend
 
         self::rapidload_util_verify_nonce();
 
-        wp_send_json_success(RapidLoad_Job::all_rules());
+        wp_send_json_success(RapidLoad_Job::rapidload_job_all_rules());
 
     }
 
@@ -833,12 +833,12 @@ class RapidLoad_Admin_Frontend
         return isset($_GET['page']) && $_GET['page'] === 'rapidload-on-board';
     }
 
-    public function is_rapidload_page_optimizer()
+    public function rapidload_is_rapidload_page_optimizer()
     {
         return isset($_GET['page']) && $_GET['page'] === 'rapidload-page-optimizer';
     }
 
-    public function is_rapidload_legacy_page()
+    public function rapidload_is_rapidload_legacy_page()
     {
         return isset($_GET['page']) && $_GET['page'] === 'uucss_legacy';
     }
@@ -948,13 +948,13 @@ class RapidLoad_Admin_Frontend
             'ajax_url'          => admin_url( 'admin-ajax.php' ),
             'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
             'on_board_complete' => apply_filters('uucss/on-board/complete', RapidLoad_Onboard::rapidload_on_board_completed()),
-            'api_key_verified' => RapidLoad_Base::is_api_key_verified(),
-            'notifications' => $this->getNotifications(),
+            'api_key_verified' => RapidLoad_Base::rapidload_is_api_key_verified(),
+            'notifications' => $this->rapidload_get_notifications(),
             'faqs' => [],
             'public_notices' => [],
             'dev_mode' => apply_filters('uucss/dev_mode', isset($this->options['uucss_dev_mode'])) && $this->options['uucss_dev_mode'] === "1",
-            'rules_enabled' => $rapidload->rules_enabled(),
-            'cpcss_enabled' => $rapidload->critical_css_enabled(),
+            'rules_enabled' => $rapidload->rapidload_rules_enabled(),
+            'cpcss_enabled' => $rapidload->rapidload_critical_css_enabled(),
             'home_url' => home_url(),
             'uucss_enable_debug' => ! empty( $this->options['uucss_enable_debug'] ) && '1' === $this->options['uucss_enable_debug'],
         );
@@ -968,7 +968,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function getNotifications() {
+    public function rapidload_get_notifications() {
 
         return apply_filters('uucss/notifications', []);
     }
@@ -998,7 +998,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function update_rule($args, $old = false){
+    public function rapidload_update_rule($args, $old = false){
 
         $job = null;
 
@@ -1012,7 +1012,7 @@ class RapidLoad_Admin_Frontend
             $job->rule = $args->rule;
             $job->regex = $args->regex;
 
-            $job->save();
+            $job->rapidload_job_save();
 
         }else{
 
@@ -1022,7 +1022,7 @@ class RapidLoad_Admin_Frontend
             $job->rule = $args->rule;
             $job->regex = $args->regex;
 
-            $job->save();
+            $job->rapidload_job_save();
 
         }
 
@@ -1041,7 +1041,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function page_legacy(){
+    public function rapidload_page_legacy(){
 
         ?>
         <style>
@@ -1057,7 +1057,7 @@ class RapidLoad_Admin_Frontend
 
     }
 
-    public function page(){
+    public function rapidload_page(){
 
         ?>
         <div id="rapidload-page-optimizer">  </div>
