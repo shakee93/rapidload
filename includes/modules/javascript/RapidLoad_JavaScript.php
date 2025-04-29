@@ -2,6 +2,12 @@
 
 defined( 'ABSPATH' ) or die();
 
+if(class_exists('RapidLoad_JavaScript')){
+    return;
+}
+
+require_once 'RapidLoad_Javascript_Enqueue.php';
+
 class RapidLoad_JavaScript
 {
 
@@ -17,7 +23,7 @@ class RapidLoad_JavaScript
 
     public function __construct()
     {
-        $this->options = RapidLoad_Base::get_merged_options();
+        $this->options = RapidLoad_Base::rapidload_get_merged_options();
 
         add_action('uucss/options/js', [$this, 'render_options']);
 
@@ -27,11 +33,11 @@ class RapidLoad_JavaScript
 
         $this->file_system = new RapidLoad_FileSystem();
 
-        if( ! $this->initFileSystem() ){
+        if( ! $this->rapidload_initFileSystem() ){
             return;
         }
 
-        add_action('rapidload/job/handle', [$this, 'optimize_javascript'], 30, 2);
+        add_action('rapidload/job/handle', [$this, 'rapidload_optimize_javascript'], 30, 2);
 
         //add_action( 'admin_bar_menu', [$this, 'add_admin_bar_items' ], 90 );
 
@@ -41,21 +47,21 @@ class RapidLoad_JavaScript
 
         //$this->enqueue_admin_scripts();
 
-        add_action('rapidload/vanish', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish', [ $this, 'rapidload_vanish' ]);
 
-        add_action('rapidload/vanish/js', [ $this, 'vanish' ]);
+        add_action('rapidload/vanish/js', [ $this, 'rapidload_vanish' ]);
 
         add_filter('rapidload/js/excluded-files', function ($list){
             if(defined('RAPIDLOAD_PAGE_OPTIMIZER_ENABLED') && RAPIDLOAD_PAGE_OPTIMIZER_ENABLED){
-                $list = $this->get_dynamic_exclusions($list);
+                $list = $this->rapidload_get_dynamic_exclusions($list);
             }
             return $list;
         }, 10);
 
-        add_action('rapidload/admin-bar-actions', [$this, 'add_admin_clear_action']);
+        add_action('rapidload/admin-bar-actions', [$this, 'rapidload_add_admin_clear_action']);
     }
 
-    public function add_admin_clear_action($wp_admin_bar){
+    public function rapidload_add_admin_clear_action($wp_admin_bar){
         $wp_admin_bar->add_node( array(
             'id'    => 'rapidload-clear-js-cache',
             'title' => '<span class="ab-label">' . __( 'Clear JS Optimizations', 'unusedcss' ) . '</span>',
@@ -70,15 +76,15 @@ class RapidLoad_JavaScript
         ));
     }
 
-    public function vanish() {
+    public function rapidload_vanish() {
 
         if ( $this->file_system->rapidload_file_exists( self::$base_dir ) ){
-            $this->file_system->delete( self::$base_dir, true );
+            $this->file_system->rapidload_file_delete( self::$base_dir, true );
         }
 
     }
 
-    public function initFileSystem() {
+    public function rapidload_initFileSystem() {
 
         $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'js';
 
@@ -86,14 +92,14 @@ class RapidLoad_JavaScript
             return false;
         }
 
-        if ( ! $this->init_base_dir() ) {
+        if ( ! $this->rapidload_init_base_dir() ) {
             return false;
         }
 
         return true;
     }
 
-    public function init_base_dir() {
+    public function rapidload_init_base_dir() {
 
         self::$base_dir = self::rapidload_util_get_wp_content_dir() . $this->base;
 
@@ -104,14 +110,14 @@ class RapidLoad_JavaScript
         // make dir if not exists
         $created = RapidLoad_Cache_Store::mkdir_p( self::$base_dir );
 
-        if (!$created || ! $this->file_system->is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
+        if (!$created || ! $this->file_system->rapidload_file_is_writable( self::$base_dir ) || ! $this->file_system->rapidload_file_is_readable( self::$base_dir ) ) {
             return false;
         }
 
         return true;
     }
 
-    public function enqueue_admin_scripts(){
+    public function rapidload_enqueue_admin_scripts(){
         if(is_user_logged_in()){
 
             add_action('wp', function (){
@@ -143,7 +149,7 @@ class RapidLoad_JavaScript
         }
     }
 
-    public function add_admin_bar_items($wp_admin_bar){
+    public function rapidload_add_admin_bar_items($wp_admin_bar){
 
         global $post;
 
@@ -163,23 +169,23 @@ class RapidLoad_JavaScript
 
     }
 
-    public function render_options($args){
+    public function rapidload_render_options($args){
         $options = $args;
         include_once 'parts/options.html.php';
 
     }
 
-    public function optimize_javascript($job, $args){
+    public function rapidload_optimize_javascript($job, $args){
 
         if(!$job || !isset($job->id) || isset( $_REQUEST['no_rapidload_js'] )){
             return false;
         }
 
-        new Javascript_Enqueue($job);
+        new RapidLoad_JavaScript_Enqueue($job);
 
     }
 
-    public function get_cached_file( $file_url, $cdn = null ) {
+    public function rapidload_get_cached_file( $file_url, $cdn = null ) {
 
         if ( ! $cdn || empty( $cdn ) ) {
             $cdn = self::rapidload_util_get_wp_content_url();
@@ -198,7 +204,7 @@ class RapidLoad_JavaScript
         ] );
     }
 
-    public static function get_third_party_scripts(){
+    public static function rapidload_get_third_party_scripts(){
         return[
             [
                 'type' => "third_party",
@@ -283,8 +289,8 @@ class RapidLoad_JavaScript
         ];
     }
 
-    public static function get_dynamic_exclusion_list(){
-        $plugins = self::get_active_plugins();
+    public static function rapidload_get_dynamic_exclusion_list(){
+        $plugins = self::rapidload_get_active_plugins();
         $exclusion_list = [];
         foreach ($plugins as $plugin){
             $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
@@ -308,19 +314,19 @@ class RapidLoad_JavaScript
         }
         $exclusion_list[] = [
             'type' => "theme",
-            'name' => self::get_active_theme(),
-            'id' => str_replace(" ","_", strtolower(self::get_active_theme())),
+            'name' => self::rapidload_get_active_theme(),
+            'id' => str_replace(" ","_", strtolower(self::rapidload_get_active_theme())),
             'exclusions' => [
                 get_template_directory_uri(),
                 "/jquery-?[0-9.](.*)(.min|.slim|.slim.min)?.js/",
                 "/jquery-migrate(.min)?.js/",
             ],
         ];
-        $third_party_scripts = self::get_third_party_scripts();
+        $third_party_scripts = self::rapidload_get_third_party_scripts();
         return array_merge($third_party_scripts, $exclusion_list);
     }
 
-    public static function get_active_theme() {
+    public static function rapidload_get_active_theme() {
         $theme = wp_get_theme();
         $parent = $theme->get_template();
         if ( ! empty( $parent ) ) {
@@ -329,7 +335,7 @@ class RapidLoad_JavaScript
         return $theme->rapidload_api_get( 'Name' );
     }
 
-    public static function get_active_plugins() {
+    public static function rapidload_get_active_plugins() {
         $plugins = (array) get_option( 'active_plugins', [] );
 
         if ( ! is_multisite() ) {
@@ -342,9 +348,9 @@ class RapidLoad_JavaScript
         );
     }
 
-    public function get_dynamic_exclusions($exclude = []){
+    public function rapidload_get_dynamic_exclusions($exclude = []){
 
-        $exclusions = self::get_dynamic_exclusion_list();
+        $exclusions = self::rapidload_get_dynamic_exclusion_list();
 
         $dynamic_js_exclusion = isset($this->options['uucss_dynamic_js_exclusion_list']) && !empty($this->options['uucss_dynamic_js_exclusion_list']) ? explode("\n", $this->options['uucss_dynamic_js_exclusion_list']) : [];
 

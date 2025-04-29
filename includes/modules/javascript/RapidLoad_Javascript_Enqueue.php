@@ -10,6 +10,10 @@ use Peast\Renderer;
 use Peast\Formatter\PrettyPrint;
 use Peast\Formatter\Compact;
 
+if (class_exists('RapidLoad_Javascript_Enqueue')) {
+    return;
+}
+
 class RapidLoad_Javascript_Enqueue
 {
     use RapidLoad_Utils;
@@ -33,17 +37,17 @@ class RapidLoad_Javascript_Enqueue
     {
         $this->job = $job;
         $this->file_system = new RapidLoad_FileSystem();
-        $this->init();
+        $this->rapidload_init();
 
-        add_filter('uucss/enqueue/content/update', [$this, 'update_content'], 60);
+        add_filter('uucss/enqueue/content/update', [$this, 'rapidload_update_content'], 60);
     }
 
-    public function init(){
+    public function rapidload_init(){
 
         $this->default_inline_js_exclusion_pattern = "";
         $this->default_js_exclusion_pattern = "";
-        $default_inline_js_exclusion_list = $this->get_default_inline_js_exclusions();
-        $default_js_exclusion_list = $this->get_default_js_exclusions();
+        $default_inline_js_exclusion_list = $this->rapidload_get_default_inline_js_exclusions();
+        $default_js_exclusion_list = $this->rapidload_get_default_js_exclusions();
 
         foreach ($default_inline_js_exclusion_list as $exclusion){
             $this->default_inline_js_exclusion_pattern .= preg_quote( (string) $exclusion, '#' ) . '|';
@@ -61,7 +65,7 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public function update_content($state){
+    public function rapidload_update_content($state){
 
         self::rapidload_util_debug_log('doing js optimization');
 
@@ -100,24 +104,24 @@ class RapidLoad_Javascript_Enqueue
                 continue;
             }
 
-            $original_src = self::is_js($link) ? $link->src : null;
+            $original_src = self::rapidload_is_js($link) ? $link->src : null;
 
-            if(isset($link->src) && self::is_file_excluded($link->src)){
+            if(isset($link->src) && self::rapidload_is_file_excluded($link->src)){
                 continue;
             }
 
-            if($original_src && self::is_file_excluded($original_src)){
+            if($original_src && self::rapidload_is_file_excluded($original_src)){
                 continue;
             }
 
-            $this->optimize_js_delivery($link);
+            $this->rapidload_optimize_js_delivery($link);
 
             // legacy delay starts here
 
             if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1"){
 
                 if(!apply_filters('rapidload/js/delay-excluded', false, $link, $this->job, $this->strategy, $this->options)){
-                    $this->load_scripts_on_user_interaction($link, $original_src);
+                    $this->rapidload_load_scripts_on_user_interaction($link, $original_src);
                 }
 
             }
@@ -125,7 +129,7 @@ class RapidLoad_Javascript_Enqueue
             // legacy delay ended
 
             if(isset($this->options['minify_js']) && $this->options['minify_js'] === "1"){
-                $this->minify_js($link);
+                $this->rapidload_minify_js($link);
             }
 
             do_action('rapidload/enqueue/optimize-js', $link, $this->job, $this->strategy, $this->options);
@@ -134,7 +138,7 @@ class RapidLoad_Javascript_Enqueue
 
         if(isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1" || apply_filters('rapidload/delay-script/enable', false)){
 
-            $this->add_call_back_script();
+            $this->rapidload_add_call_back_script();
 
             // Inject header delay script
             $title = $this->dom->find('title')[0];
@@ -194,7 +198,7 @@ class RapidLoad_Javascript_Enqueue
         ];
     }
 
-    public function add_call_back_script(){
+    public function rapidload_add_call_back_script(){
 
         $body = $this->dom->find('body', 0);
 
@@ -202,7 +206,7 @@ class RapidLoad_Javascript_Enqueue
 
         if(!empty($content)){
 
-            $node = $this->dom->createElement('script', "" . $this->wrapWithJavaScriptEvent("DOMContentLoaded", stripslashes($content)) . "");
+            $node = $this->dom->createElement('script', "" . $this->rapidload_wrapWithJavaScriptEvent("DOMContentLoaded", stripslashes($content)) . "");
 
             $node->setAttribute('type', 'text/javascript');
             $node->setAttribute('id', 'rapidload-delay-script-callback');
@@ -211,24 +215,24 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public function load_scripts_on_user_interaction($link, $original_src = null){
+    public function rapidload_load_scripts_on_user_interaction($link, $original_src = null){
 
         $_frontend_data = [];
 
-        if(self::is_js($link)){
+        if(self::rapidload_is_js($link)){
 
             $_frontend_data['src'] = $link->src;
 
-            if(self::is_file_excluded($link->src) || self::is_file_excluded($link->src,'uucss_exclude_files_from_delay_js')){
+            if(self::rapidload_is_file_excluded($link->src) || self::rapidload_is_file_excluded($link->src,'uucss_exclude_files_from_delay_js')){
                 return;
             }
 
-            if(self::is_file_excluded($original_src) || self::is_file_excluded($original_src,'uucss_exclude_files_from_delay_js')){
+            if(self::rapidload_is_file_excluded($original_src) || self::rapidload_is_file_excluded($original_src,'uucss_exclude_files_from_delay_js')){
                 return;
             }
 
             if(isset($this->options['uucss_load_scripts_on_user_interaction']) && !empty($this->options['uucss_load_scripts_on_user_interaction'])){
-                if(self::is_load_on_user_interaction($link->src) || self::is_load_on_user_interaction($original_src)){
+                if(self::rapidload_is_load_on_user_interaction($link->src) || self::rapidload_is_load_on_user_interaction($original_src)){
 
                     $_frontend_data['delayed'] = true;
                     $data_attr = "data-rapidload-src";
@@ -252,17 +256,17 @@ class RapidLoad_Javascript_Enqueue
             }
 
 
-        }else if(self::is_inline_script($link)){
+        }else if(self::rapidload_is_inline_script($link)){
 
             if(isset($link->id) && $this->rapidload_util_str_contains($link->id,"rapidload-")){
                 return;
             }
 
-            if(self::is_file_excluded($link->innertext()) || self::is_file_excluded($link->innertext(),'uucss_exclude_files_from_delay_js')){
+            if(self::rapidload_is_file_excluded($link->innertext()) || self::rapidload_is_file_excluded($link->innertext(),'uucss_exclude_files_from_delay_js')){
                 return;
             }
 
-            if(isset($this->options['uucss_load_scripts_on_user_interaction']) && !empty($this->options['uucss_load_scripts_on_user_interaction']) && self::is_load_on_user_interaction($link->innertext())
+            if(isset($this->options['uucss_load_scripts_on_user_interaction']) && !empty($this->options['uucss_load_scripts_on_user_interaction']) && self::rapidload_is_load_on_user_interaction($link->innertext())
                 || isset($link->{"data-rapidload-delayed"})){
 
                 $link->__set('outertext',"<noscript data-rapidload-delayed>" . $link->innertext() . "</noscript>");
@@ -275,11 +279,11 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public function minify_js($link){
+    public function rapidload_minify_js($link){
 
         $_frontend_data = [];
 
-        if(!self::is_js($link) || self::is_file_excluded($link->src, 'uucss_exclude_files_from_minify_js')){
+        if(!self::rapidload_is_js($link) || self::rapidload_is_file_excluded($link->src, 'uucss_exclude_files_from_minify_js')){
             return;
         }
 
@@ -317,7 +321,7 @@ class RapidLoad_Javascript_Enqueue
             $filename = str_replace(".js","-{$version}.min.js", $filename);
         }
 
-        $minified_file = JavaScript::$base_dir . '/' . $filename;
+        $minified_file = RapidLoad_JavaScript::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/js-minified-url', $filename);
 
         $file_exist = $this->file_system->rapidload_file_exists($minified_file);
@@ -340,7 +344,7 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public function optimize_js_delivery($link){
+    public function rapidload_optimize_js_delivery($link){
 
         $_frontend_data = [];
 
@@ -357,13 +361,13 @@ class RapidLoad_Javascript_Enqueue
 
         $js_to_be_delay = isset($this->options['delay_javascript']) && $this->options['delay_javascript'] === "1" && (!isset($this->options['uucss_load_scripts_on_user_interaction']) || empty($this->options['uucss_load_scripts_on_user_interaction']));
 
-        if(self::is_js($link)){
+        if(self::rapidload_is_js($link)){
 
             $_frontend_data['src'] = $link->src;
 
             if($js_to_be_defer){
 
-                if(!self::is_file_excluded($link->src) && !self::is_file_excluded($link->src, 'uucss_excluded_js_files_from_defer')){
+                if(!self::rapidload_is_file_excluded($link->src) && !self::rapidload_is_file_excluded($link->src, 'uucss_excluded_js_files_from_defer')){
 
                     if(isset($link->defer) || isset($link->async)){
                         return;
@@ -382,12 +386,12 @@ class RapidLoad_Javascript_Enqueue
 
             }
 
-        }elseif (self::is_inline_script($link)){
+        }elseif (self::rapidload_is_inline_script($link)){
 
-            if(($js_to_be_delay && !self::is_file_excluded($link->innertext(), 'uucss_exclude_files_from_delay_js') && !self::is_file_excluded($link->innertext())) ||
-                ($js_to_be_defer && !self::is_file_excluded($link->innertext(), 'uucss_excluded_js_files_from_defer'))){
+            if(($js_to_be_delay && !self::rapidload_is_file_excluded($link->innertext(), 'uucss_exclude_files_from_delay_js') && !self::rapidload_is_file_excluded($link->innertext())) ||
+                ($js_to_be_defer && !self::rapidload_is_file_excluded($link->innertext(), 'uucss_excluded_js_files_from_defer'))){
 
-                $this->defer_inline_js($link);
+                $this->rapidload_defer_inline_js($link);
 
             }
 
@@ -399,7 +403,7 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public function defer_inline_js($link){
+    public function rapidload_defer_inline_js($link){
 
         $inner_text = $link->innertext();
 
@@ -422,7 +426,7 @@ class RapidLoad_Javascript_Enqueue
                 return;
             }
 
-            $manipulated_snippet = $this->analyzeJavaScriptCode($inner_text, $link);
+            $manipulated_snippet = $this->rapidload_analyzeJavaScriptCode($inner_text, $link);
 
             if (!$manipulated_snippet) {
                 return;
@@ -434,7 +438,7 @@ class RapidLoad_Javascript_Enqueue
 
     }
 
-    public static function is_js( $el ) {
+    public static function rapidload_is_js( $el ) {
         if (isset($el->src) && preg_match("#" . preg_quote("googletagmanager.com/gtag/js", "#") . "#", $el->src)) {
             return true;
         }
@@ -444,11 +448,11 @@ class RapidLoad_Javascript_Enqueue
         return !empty($el->src) && strpos($el->src,".js");
     }
 
-    public static function is_inline_script( $el ) {
+    public static function rapidload_is_inline_script( $el ) {
         return !empty($el->type) && $el->type === "text/javascript" && !isset($el->src);
     }
 
-    private function is_file_excluded($file, $option_name = 'uucss_excluded_js_files'){
+    private function rapidload_is_file_excluded($file, $option_name = 'uucss_excluded_js_files'){
 
         $exclude_files = isset($this->options[$option_name]) && !empty($this->options[$option_name]) ? explode("\n", $this->options[$option_name]) : [];
 
@@ -462,7 +466,7 @@ class RapidLoad_Javascript_Enqueue
 
             $exclude_file = str_replace("\r", "", $exclude_file);
 
-            if(self::is_regex_expression($exclude_file)){
+            if(self::rapidload_util_is_regex_expression($exclude_file)){
 
                 $excluded = @preg_match($exclude_file, $file);
 
@@ -484,7 +488,7 @@ class RapidLoad_Javascript_Enqueue
         return $excluded;
     }
 
-    private function is_load_on_user_interaction($file){
+    private function rapidload_is_load_on_user_interaction($file){
 
         $files = isset($this->options['uucss_load_scripts_on_user_interaction']) && !empty($this->options['uucss_load_scripts_on_user_interaction']) ? explode("\n", $this->options['uucss_load_scripts_on_user_interaction']) : [];
 
@@ -494,7 +498,7 @@ class RapidLoad_Javascript_Enqueue
 
             $_file = str_replace("\r", "", $_file);
 
-            if(self::is_regex_expression($_file)){
+            if(self::rapidload_util_is_regex_expression($_file)){
 
                 $excluded = @preg_match($_file, $file);
 
@@ -516,7 +520,7 @@ class RapidLoad_Javascript_Enqueue
         return $excluded;
     }
 
-    public function get_default_inline_js_exclusions(){
+    public function rapidload_get_default_inline_js_exclusions(){
         $list = [
             //"DOMContentLoaded",
             "document.write",
@@ -533,7 +537,7 @@ class RapidLoad_Javascript_Enqueue
         return apply_filters('rapidload/defer/exclusions/inline_js', $list);
     }
 
-    public function get_default_js_exclusions(){
+    public function rapidload_get_default_js_exclusions(){
         $list = [
             "gist.github.com",
             "content.jwplatform.com",
@@ -577,7 +581,7 @@ class RapidLoad_Javascript_Enqueue
         return apply_filters('rapidload/defer/exclusions/js', $list);
     }
 
-    public function analyzeJavaScriptCode($jsSnippet, $script)
+    public function rapidload_analyzeJavaScriptCode($jsSnippet, $script)
     {
         try {
             // Determine the global event based on the 'delay_javascript' option
@@ -641,8 +645,8 @@ class RapidLoad_Javascript_Enqueue
 
                 } else {
                     // Delay only function calls (CallExpression)
-                    if ($rootStatement->type === 'ExpressionStatement' && $this->containsFunctionCall($rootStatement->node)) {
-                        $snippets .= $this->wrapWithJavaScriptEvent($eventToBind, $inner_content) . "\n";
+                    if ($rootStatement->type === 'ExpressionStatement' && $this->rapidload_containsFunctionCall($rootStatement->node)) {
+                        $snippets .= $this->rapidload_wrapWithJavaScriptEvent($eventToBind, $inner_content) . "\n";
                     } else {
                         // Leave the declarations alone
                         $snippets .= $inner_content . "\n";
@@ -653,17 +657,17 @@ class RapidLoad_Javascript_Enqueue
             return $snippets;
 
         } catch (Exception $exception) {
-            return $this->wrapWithJavaScriptEvent($eventToBind, $jsSnippet);
+            return $this->rapidload_wrapWithJavaScriptEvent($eventToBind, $jsSnippet);
         }
     }
 
-    public function wrapWithJavaScriptEvent($event, $codeSnippet)
+    public function rapidload_wrapWithJavaScriptEvent($event, $codeSnippet)
     {
         // Wrap the given code snippet in a JavaScript event listener
         return "document.addEventListener('$event', function(){ " . $codeSnippet . "});";
     }
 
-    private function containsFunctionCall($node) {
+    private function rapidload_containsFunctionCall($node) {
         // Check if the node itself is a CallExpression
         if ($node->getType() === 'CallExpression') {
             //self::rapidload_util_debug_log('found CallExpression', $node->render(new PrettyPrint()));
@@ -673,7 +677,7 @@ class RapidLoad_Javascript_Enqueue
         // Manually traverse children if they exist
         if (method_exists($node, 'getExpression')) {
             $expression = $node->getExpression();
-            if ($expression && $this->containsFunctionCall($expression)) {
+            if ($expression && $this->rapidload_containsFunctionCall($expression)) {
                 //self::rapidload_util_debug_log('found getExpression', $expression->render(new PrettyPrint()));
                 return true;
             }
@@ -682,7 +686,7 @@ class RapidLoad_Javascript_Enqueue
         if (method_exists($node, 'getDeclarations')) {
             $declarations = $node->getDeclarations();
             foreach ($declarations as $declaration) {
-                if ($this->containsFunctionCall($declaration)) {
+                if ($this->rapidload_containsFunctionCall($declaration)) {
                     //self::rapidload_util_debug_log('found getDeclarations', $declaration->render(new PrettyPrint()));
                     return true;
                 }
@@ -692,7 +696,7 @@ class RapidLoad_Javascript_Enqueue
         if (method_exists($node, 'getArguments')) {
             $arguments = $node->getArguments();
             foreach ($arguments as $arg) {
-                if ($this->containsFunctionCall($arg)) {
+                if ($this->rapidload_containsFunctionCall($arg)) {
                     //self::rapidload_util_debug_log('found getArguments', $arg->render(new PrettyPrint()));
                     return true;
                 }
@@ -701,7 +705,7 @@ class RapidLoad_Javascript_Enqueue
 
         if (method_exists($node, 'getCallee')) {
             $callee = $node->getCallee();
-            if ($callee && $this->containsFunctionCall($callee)) {
+            if ($callee && $this->rapidload_containsFunctionCall($callee)) {
                 //self::rapidload_util_debug_log('found getCallee', $callee->render(new PrettyPrint()));
                 return true;
             }
@@ -711,7 +715,7 @@ class RapidLoad_Javascript_Enqueue
     }
 
 
-    public function assignWindow($node)
+    public function rapidload_assignWindow($node)
     {
         $id = null;
         $type = $node->getType();
