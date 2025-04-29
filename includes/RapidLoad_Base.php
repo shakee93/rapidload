@@ -89,7 +89,7 @@ class RapidLoad_Base
 
             self::rapidload_fetch_options();
 
-            add_filter('rapidload/options', [$this, 'merge_job_options']);
+            add_filter('rapidload/options', [$this, 'rapidload_merge_job_options']);
 
             self::rapidload_get_merged_options();
 
