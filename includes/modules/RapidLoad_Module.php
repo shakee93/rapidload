@@ -234,7 +234,7 @@ class RapidLoad_Module
                     }
 
                 }
-                RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+                RapidLoad_Base::update_option('rapidload_settings', $options);
                 break;
             }
             case 'cache': {

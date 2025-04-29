@@ -366,7 +366,7 @@ class RapidLoad_Admin
 
         $options['rapidload_test_mode'] = $status;
 
-        RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+        RapidLoad_Base::update_option('rapidload_settings', $options);
 
         wp_send_json_success([
             'status' => $options['rapidload_test_mode'] === "1"
@@ -977,7 +977,7 @@ class RapidLoad_Admin
             $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) === 'true' ? 1 : 0;
         }
 
-        RapidLoad_Base::update_option('autoptimize_uucss_settings',$options);
+        RapidLoad_Base::update_option('rapidload_settings',$options);
 
         wp_send_json_success(RapidLoad_Base::get()->modules()->active_modules());
     }
@@ -1182,7 +1182,7 @@ class RapidLoad_Admin
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $license_key;
 
-        RapidLoad_Base::update_option( 'autoptimize_uucss_settings', $options );
+        RapidLoad_Base::update_option( 'rapidload_settings', $options );
 
         wp_send_json_success([
             'success' => true,
@@ -1198,7 +1198,7 @@ class RapidLoad_Admin
             return;
         }
 
-        $options   = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
+        $options   = RapidLoad_Base::get_option( 'rapidload_settings' );
 
         if(!isset( $options['uucss_api_key_verified'] ) || $options['uucss_api_key_verified'] !== '1'){
             return;
@@ -1214,13 +1214,13 @@ class RapidLoad_Admin
 
         if($uucss_api->is_error($results)){
             $options['valid_domain'] = false;
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::update_option('rapidload_settings', $options);
             return;
         }
 
         if(!isset($options['valid_domain']) || !$options['valid_domain']){
             $options['valid_domain'] = true;
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::update_option('rapidload_settings', $options);
         }
     }
 
@@ -1228,7 +1228,7 @@ class RapidLoad_Admin
 
         self::verify_nonce();
 
-        $options = RapidLoad_Base::get_option( 'autoptimize_uucss_settings' );
+        $options = RapidLoad_Base::get_option( 'rapidload_settings' );
 
         $cache_key = 'pand-' . md5( 'first-uucss-job' );
         RapidLoad_Base::delete_option( $cache_key );
@@ -1246,7 +1246,7 @@ class RapidLoad_Admin
         unset( $options['uucss_api_key'] );
         unset( $options['whitelist_packs'] );
 
-        RapidLoad_Base::update_option( 'autoptimize_uucss_settings', $options );
+        RapidLoad_Base::update_option( 'rapidload_settings', $options );
 
         wp_send_json_success( true );
     }
@@ -1435,7 +1435,7 @@ class RapidLoad_Admin
 
     public function clear_cache_on_option_update( $option, $old_value, $value ) {
 
-        if ( $option === 'autoptimize_uucss_settings' ) {
+        if ( $option === 'rapidload_settings' ) {
 
             $needs_to_cleared = false;
 
@@ -1540,7 +1540,7 @@ class RapidLoad_Admin
             unset($options['uucss_api_key_verified']);
             unset($options['uucss_api_key']);
             unset($options['valid_domain']);
-            RapidLoad_Base::update_option('autoptimize_uucss_settings', $options);
+            RapidLoad_Base::update_option('rapidload_settings', $options);
             RapidLoad_Base::fetch_options(false);
 
             $cache_key = 'pand-' . md5( 'first-uucss-job' );
@@ -1619,7 +1619,7 @@ class RapidLoad_Admin
 
     public function update_cloudflare_settings( $option, $old_value, $value ){
 
-        if ( $option !== 'autoptimize_uucss_settings' ) {
+        if ( $option !== 'rapidload_settings' ) {
             return;
         }
 
@@ -1665,7 +1665,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-dev-mode">Enable Bot toggle mode</label>
                         </td>
                         <td>
-                            <input type="checkbox" name="autoptimize_uucss_settings[cf_bot_toggle_mode]" id="cf_bot_toggle_mode" value="1" <?php if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] === "1") : echo 'checked'; endif; ?>>
+                            <input type="checkbox" name="rapidload_settings[cf_bot_toggle_mode]" id="cf_bot_toggle_mode" value="1" <?php if(isset($options['cf_bot_toggle_mode']) && $options['cf_bot_toggle_mode'] === "1") : echo 'checked'; endif; ?>>
                         </td>
                     </tr>
                     <tr>
@@ -1673,7 +1673,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-api-key">Api Token</label>
                         </td>
                         <td>
-                            <input type="text" name='autoptimize_uucss_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo esc_attr($options['cf_token']); endif; ?>">
+                            <input type="text" name='rapidload_settings[cf_token]' id="cf_token" style="width: 450px" value="<?php if(isset($options['cf_token'])) : echo esc_attr($options['cf_token']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1681,7 +1681,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-account-email" >Account Email</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo esc_attr($options['cf_email']); endif; ?>">
+                            <input type="text" name="rapidload_settings[cf_email]" id="cf_email" style="width: 350px" value="<?php if(isset($options['cf_email'])) : echo esc_attr($options['cf_email']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1689,7 +1689,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-zone-id">Zone ID</label>
                         </td>
                         <td>
-                            <input type="text" name="autoptimize_uucss_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo esc_attr($options['cf_zone_id']); endif; ?>">
+                            <input type="text" name="rapidload_settings[cf_zone_id]" id="cf_zone_id" style="width: 350px" value="<?php if(isset($options['cf_zone_id'])) : echo esc_attr($options['cf_zone_id']); endif; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -1697,7 +1697,7 @@ class RapidLoad_Admin
                             <label for="cloudflare-dev-mode">Development Mode</label>
                         </td>
                         <td>
-                            <input type="checkbox" name="autoptimize_uucss_settings[cf_is_dev_mode]" id="cf_is_dev_mode" value="1" <?php if(isset($options['cf_is_dev_mode']) && $options['cf_is_dev_mode'] === "1") : echo 'checked'; endif; ?>>
+                            <input type="checkbox" name="rapidload_settings[cf_is_dev_mode]" id="cf_is_dev_mode" value="1" <?php if(isset($options['cf_is_dev_mode']) && $options['cf_is_dev_mode'] === "1") : echo 'checked'; endif; ?>>
                         </td>
                     </tr>
                 </table>

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <th scope="row"><?php esc_html_e( 'Enable Critical CSS', 'unusedcss' ); ?></th>
     <td>
         <label><input id='uucss_enable_cpcss' type='checkbox'
-                      name='autoptimize_uucss_settings[uucss_enable_cpcss]' <?php if ( ! empty( $options['uucss_enable_cpcss'] ) && '1' === $options['uucss_enable_cpcss'] ) {
+                      name='rapidload_settings[uucss_enable_cpcss]' <?php if ( ! empty( $options['uucss_enable_cpcss'] ) && '1' === $options['uucss_enable_cpcss'] ) {
                 echo 'checked="checked"';
             } ?> value='1' <?php if(!empty(RapidLoad_CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
             <i>
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <th scope="row"><?php esc_html_e( 'Mobile Critical CSS', 'unusedcss' ); ?></th>
     <td>
         <label><input id='uucss_enable_cpcss_mobile' type='checkbox'
-                      name='autoptimize_uucss_settings[uucss_enable_cpcss_mobile]' <?php if ( ! empty( $options['uucss_enable_cpcss_mobile'] ) && '1' === $options['uucss_enable_cpcss_mobile'] ) {
+                      name='rapidload_settings[uucss_enable_cpcss_mobile]' <?php if ( ! empty( $options['uucss_enable_cpcss_mobile'] ) && '1' === $options['uucss_enable_cpcss_mobile'] ) {
                 echo 'checked="checked"';
             } ?> value='1' <?php if(!empty(RapidLoad_CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
             <i>
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     <th scope="row"><?php esc_html_e( 'Additional CSS', 'unusedcss' ); ?></th>
     <td>
                                     <textarea style="max-width: 390px; width: 100%; height: 150px" id="uucss_additional_css"
-                                              name="autoptimize_uucss_settings[uucss_additional_css]" <?php if(!empty(RapidLoad_CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
+                                              name="rapidload_settings[uucss_additional_css]" <?php if(!empty(RapidLoad_CriticalCSS::$cpcss_other_plugins)) { echo 'disabled'; } ?>>
                                         <?php echo empty( $options['uucss_additional_css'] ) ? '' : esc_textarea($options['uucss_additional_css']) ?></textarea>
 
     </td>

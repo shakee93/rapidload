@@ -73,6 +73,8 @@ class RapidLoad_Base
 
             RapidLoad_DB::update_db_version();
 
+
+
             if (isset($_REQUEST['rapidload_preview'])) {
                 add_filter('determine_current_user', function (){
                     return 0;
@@ -433,11 +435,11 @@ class RapidLoad_Base
 
         if($is_multisite){
 
-            self::$options = get_blog_option(get_current_blog_id(), 'autoptimize_uucss_settings', self::get_default_options());
+            self::$options = get_blog_option(get_current_blog_id(), 'rapidload_settings', self::get_default_options());
 
         }else{
 
-            self::$options = get_site_option( 'autoptimize_uucss_settings', self::get_default_options() );
+            self::$options = get_site_option( 'rapidload_settings', self::get_default_options() );
         }
 
         foreach (self::$modules as $module){
@@ -563,10 +565,10 @@ class RapidLoad_Base
 
     public static function uucss_activate() {
 
-        $default_options = self::get_option('autoptimize_uucss_settings',self::get_default_options());
+        $default_options = self::get_option('rapidload_settings',self::get_default_options());
 
         if(!isset($default_options['uucss_api_key'])){
-            self::update_option('autoptimize_uucss_settings', $default_options);
+            self::update_option('rapidload_settings', $default_options);
         }
 
         add_option( 'rapidload_do_activation_redirect', true );
@@ -580,7 +582,7 @@ class RapidLoad_Base
 
         $token = sanitize_text_field( wp_unslash( $_REQUEST['rapidload_license'] ) );
 
-        $options = self::get_option( 'autoptimize_uucss_settings' , []);
+        $options = self::get_option( 'rapidload_settings' , []);
 
         if ( ! isset( $options ) || empty( $options ) || ! $options ) {
             $options = [];
@@ -595,7 +597,7 @@ class RapidLoad_Base
             $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $token;
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::update_option( 'rapidload_settings', $options );
 
             header( 'Location: ' . admin_url( 'admin.php?page=rapidload') );
             exit;
@@ -641,7 +643,7 @@ class RapidLoad_Base
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $token;
 
-        self::update_option( 'autoptimize_uucss_settings', $options );
+        self::update_option( 'rapidload_settings', $options );
 
         if(!isset($options['whitelist_packs']) || isset($options['whitelist_packs']) && empty($options['whitelist_packs'])){
 
@@ -653,7 +655,7 @@ class RapidLoad_Base
                 $options['whitelist_packs'][] = $white_pack->id . ':' . $white_pack->name;
             }
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::update_option( 'rapidload_settings', $options );
         }
 
         self::fetch_options(false);
@@ -685,7 +687,7 @@ class RapidLoad_Base
 
         if(isset($data) && isset($data->data) && is_array($data->data)){
             self::$options['suggested_whitelist_packs'] = $data->data;
-            self::update_option( 'autoptimize_uucss_settings', self::$options );
+            self::update_option( 'rapidload_settings', self::$options );
 
             if(wp_doing_ajax()){
                 wp_send_json_success( $data->data);

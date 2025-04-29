@@ -15,7 +15,7 @@ $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugi
 ?>
 
 <form id='ao_settings_form' action='<?php echo esc_url(admin_url( 'options.php' )); ?>' method='post'>
-    <?php settings_fields( 'autoptimize_uucss_settings' );
+    <?php settings_fields( 'rapidload_settings' );
 
     $api_key_verified = isset( $options['uucss_api_key_verified'] ) && ($options['uucss_api_key_verified'] === '1' || $options['uucss_api_key_verified'] === 1);
     $default_debug_mode = ! empty( $options['uucss_enable_debug'] ) && '1' === $options['uucss_enable_debug'];
@@ -28,9 +28,9 @@ $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugi
                    echo '1';
                } ?>">
         <input id='uucss_auto_refresh_frontend-hidden' type='hidden'
-               name='autoptimize_uucss_settings[uucss_auto_refresh_frontend]'  value="1">
+               name='rapidload_settings[uucss_auto_refresh_frontend]'  value="1">
         <input id='uucss_auto_refresh_frontend-hidden_rule' type='hidden'
-               name='autoptimize_uucss_settings[uucss_auto_refresh_frontend_rule]'  value="1">
+               name='rapidload_settings[uucss_auto_refresh_frontend_rule]'  value="1">
     </div>
     <div style="display: flex">
         <ul style="width: 78%" id="uucss-wrapper">

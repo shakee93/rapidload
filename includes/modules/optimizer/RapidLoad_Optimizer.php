@@ -871,7 +871,7 @@ class RapidLoad_Optimizer
                     self::$global_options[$key] = self::$options[$key];
                 }
             }
-            RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
+            RapidLoad_Base::update_option('rapidload_settings',self::$global_options);
         }
 
 
@@ -1779,23 +1779,23 @@ class RapidLoad_Optimizer
         if(isset(self::$options['rapidload_enable_cpcss_file_chunk']) && isset(self::$options['rapidload_cpcss_file_character_length'])){
             self::$global_options['rapidload_enable_cpcss_file_chunk'] = self::$options['rapidload_enable_cpcss_file_chunk'];
             self::$global_options['rapidload_cpcss_file_character_length'] = self::$options['rapidload_cpcss_file_character_length'];
-            RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
+            RapidLoad_Base::update_option('rapidload_settings',self::$global_options);
         }
 
         if(isset(self::$options['uucss_enable_cache'])){
             self::$global_options['uucss_enable_cache'] = self::$options['uucss_enable_cache'];
             RapidLoad_Base::update_option('rapidload_module_cache', self::$options['uucss_enable_cache']);
-            RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
+            RapidLoad_Base::update_option('rapidload_settings',self::$global_options);
         }
 
         if(isset(self::$options['enable_uucss_on_cpcss'])){
             self::$global_options['enable_uucss_on_cpcss'] = self::$options['enable_uucss_on_cpcss'];
-            RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
+            RapidLoad_Base::update_option('rapidload_settings',self::$global_options);
         }
 
         if(isset(self::$options['uucss_ignore_inlined_styles'])){
             self::$global_options['uucss_ignore_inlined_styles'] = self::$options['uucss_ignore_inlined_styles'];
-            RapidLoad_Base::update_option('autoptimize_uucss_settings',self::$global_options);
+            RapidLoad_Base::update_option('rapidload_settings',self::$global_options);
         }
 
         self::post_optimizer_function($result);
