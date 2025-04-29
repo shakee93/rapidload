@@ -1,7 +1,7 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
-class CriticalCSS_Enqueue
+class RapidLoad_CriticalCSS_Enqueue
 {
     use RapidLoad_Utils;
 
@@ -80,9 +80,9 @@ class CriticalCSS_Enqueue
             ];
         }
 
-        $data = CriticalCSS::extract_file_data($data);
+        $data = RapidLoad_CriticalCSS::extract_file_data($data);
 
-        $file_exist = $this->file_system->exists(CriticalCSS::$base_dir . '/' . $data['file_name']);
+        $file_exist = $this->file_system->exists(RapidLoad_CriticalCSS::$base_dir . '/' . $data['file_name']);
 
         if(!$file_exist &&
             ($this->job_data->attempts <=2 || (time() - strtotime($this->job_data->created_at)) > 86400)) {
@@ -184,8 +184,8 @@ class CriticalCSS_Enqueue
         for ($i = 1; $i <= $file_count; $i++) {
             $file_name = ($i === 1) ? $cpcss_file : str_replace(".css","-" . $i . ".css", $cpcss_file);
             $index = ($i === 1) ? "" : "-" . $i;
-            if($this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)){
-                $part = $this->file_system->get_contents(CriticalCSS::$base_dir . '/' . $file_name );
+            if($this->file_system->exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name)){
+                $part = $this->file_system->get_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name );
                 $part = apply_filters('rapidload/cpcss/minify', $part, $mode);
                 if(!empty($part)){
                     $critical_css_with_tag .= '<style id="rapidload-critical-css' . $index .'" data-mode="'. $mode .'">' . $part . '</style>';
@@ -201,7 +201,7 @@ class CriticalCSS_Enqueue
         }
 
         $_frontend_data['data-mode'] = $mode;
-        $_frontend_data['cpcss-file'] = CriticalCSS::$base_dir . '/' . $cpcss_file;
+        $_frontend_data['cpcss-file'] = RapidLoad_CriticalCSS::$base_dir . '/' . $cpcss_file;
 
         if(isset($this->dom->find( 'title' )[0])){
 

@@ -10,7 +10,7 @@ use Peast\Renderer;
 use Peast\Formatter\PrettyPrint;
 use Peast\Formatter\Compact;
 
-class Javascript_Enqueue
+class RapidLoad_Javascript_Enqueue
 {
     use RapidLoad_Utils;
 
@@ -317,7 +317,7 @@ class Javascript_Enqueue
             $filename = str_replace(".js","-{$version}.min.js", $filename);
         }
 
-        $minified_file = JavaScript::$base_dir . '/' . $filename;
+        $minified_file = RapidLoad_JavaScript::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/js-minified-url', $filename);
 
         $file_exist = $this->file_system->exists($minified_file);

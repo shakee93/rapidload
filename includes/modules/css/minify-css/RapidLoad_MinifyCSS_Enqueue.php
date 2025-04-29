@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class MinifyCSS_Enqueue
+class RapidLoad_MinifyCSS_Enqueue
 {
     use RapidLoad_Utils;
 
@@ -114,7 +114,7 @@ class MinifyCSS_Enqueue
             $filename = str_replace(".css","-{$version}.min.css", $filename);
         }
 
-        $minified_file = MinifyCSS::$base_dir . '/' . $filename;
+        $minified_file = RapidLoad_MinifyCSS::$base_dir . '/' . $filename;
         $minified_url = apply_filters('uucss/enqueue/css-minified-url', $filename);
 
         $file_exist = $this->file_system->exists($minified_file);

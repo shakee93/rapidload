@@ -470,12 +470,12 @@ trait RapidLoad_Utils {
         $uucss_size = 0;
         $cpcss_size = 0;
 
-        if ( $file_system->exists( UnusedCSS::$base_dir ) ) {
-            $uucss_size = $this->dirSize( UnusedCSS::$base_dir );
+        if ( $file_system->exists( RapidLoad_UnusedCSS::$base_dir ) ) {
+            $uucss_size = $this->dirSize( RapidLoad_UnusedCSS::$base_dir );
         }
 
-        if ( $file_system->exists( CriticalCSS::$base_dir ) ) {
-            $cpcss_size = $this->dirSize( CriticalCSS::$base_dir );
+        if ( $file_system->exists( RapidLoad_CriticalCSS::$base_dir ) ) {
+            $cpcss_size = $this->dirSize( RapidLoad_CriticalCSS::$base_dir );
         }
 
         return $this->human_file_size( $uucss_size + $cpcss_size );

@@ -1,7 +1,7 @@
 <?php
 
 defined( 'ABSPATH' ) or die();
-class CriticalCSS_Store
+class RapidLoad_CriticalCSS_Store
 {
     use RapidLoad_Utils;
 
@@ -189,13 +189,13 @@ class CriticalCSS_Store
 
         if($file_character_length === "0" || $file_character_length === 0){
             $file_name = 'cpcss-' . $this->encode($css) . $suffix . '.css';
-            if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $file_name)) {
-                $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $file_name, $css);
+            if (!$this->file_system->exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name)) {
+                $this->file_system->put_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $file_name, $css);
             }
             return $file_name;
         }
 
-        $parts = CriticalCSS::breakCSSIntoParts($css, $file_character_length);
+        $parts = RapidLoad_CriticalCSS::breakCSSIntoParts($css, $file_character_length);
         $file_count = count($parts);
         $file_suffix = $file_count > 1 ? "[$file_count]" : "";
 
@@ -204,8 +204,8 @@ class CriticalCSS_Store
 
         foreach ($parts as $index => $part) {
             $part_file_name = $index === 0 ? $file_name : str_replace('.css', '-' . ($index + 1) . '.css', $file_name);
-            if (!$this->file_system->exists(CriticalCSS::$base_dir . '/' . $part_file_name)) {
-                $this->file_system->put_contents(CriticalCSS::$base_dir . '/' . $part_file_name, $part);
+            if (!$this->file_system->exists(RapidLoad_CriticalCSS::$base_dir . '/' . $part_file_name)) {
+                $this->file_system->put_contents(RapidLoad_CriticalCSS::$base_dir . '/' . $part_file_name, $part);
             }
         }
 

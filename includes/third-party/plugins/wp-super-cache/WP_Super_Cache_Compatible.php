@@ -48,14 +48,14 @@ class WP_Super_Cache_Compatible extends RapidLoad_ThirdParty {
 
     public function add_css_files_to_protected_directories($args){
 
-        $path = UnusedCSS::$base_dir;
+        $path = RapidLoad_UnusedCSS::$base_dir;
 
         if ($handle = opendir($path)) {
             while (false !== ($file = readdir($handle))) {
                 if ('.' === $file) continue;
                 if ('..' === $file) continue;
 
-                $args[] = UnusedCSS::$base_dir . '/' . $file;
+                $args[] = RapidLoad_UnusedCSS::$base_dir . '/' . $file;
             }
             closedir($handle);
         }

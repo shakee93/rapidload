@@ -473,7 +473,7 @@ class RapidLoad_Admin_Frontend
 
     public function run_gpsi_test_for_all(){
 
-        $links = UnusedCSS_DB::get_data_for_gpsi_test();
+        $links = RapidLoad_UnusedCSS_DB::get_data_for_gpsi_test();
 
         if(!empty($links)){
 

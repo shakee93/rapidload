@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class MinifyCSS
+class RapidLoad_MinifyCSS
 {
     use RapidLoad_Utils;
 
@@ -59,7 +59,7 @@ class MinifyCSS
     }
 
     public function clean_minify_file_storage() {
-        $directory_path = MinifyCSS::$base_dir;
+        $directory_path = RapidLoad_MinifyCSS::$base_dir;
         $days_to_keep = 7;
         $current_time = time();
         $files = scandir($directory_path);
@@ -85,7 +85,7 @@ class MinifyCSS
             return false;
         }
 
-        new MinifyCSS_Enqueue($job);
+        new RapidLoad_MinifyCSS_Enqueue($job);
     }
 
     public function initFileSystem() {

@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class JavaScript
+class RapidLoad_JavaScript
 {
 
     use RapidLoad_Utils;
@@ -188,7 +188,7 @@ class JavaScript
             return false;
         }
 
-        new Javascript_Enqueue($job);
+        new RapidLoad_Javascript_Enqueue($job);
 
     }
 

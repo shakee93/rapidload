@@ -32,7 +32,7 @@ class RapidLoad_Module
             'description' => 'Removing render blocking and increase your page scores, you can boost your site with this option',
             'group' => 'css',
             'status' => 'on',
-            'class' => CriticalCSS::class,
+            'class' => RapidLoad_CriticalCSS::class,
             'global' => 'cpcss'
         ];
 
@@ -42,7 +42,7 @@ class RapidLoad_Module
             'description' => 'Removing unused css and increase your page scores, you can boost your site with this option',
             'group' => 'css',
             'status' => 'on',
-            'class' => UnusedCSS::class,
+            'class' => RapidLoad_UnusedCSS::class,
             'global' => 'uucss'
         ];
 
@@ -52,7 +52,7 @@ class RapidLoad_Module
             'description' => 'Minify CSS',
             'group' => 'css',
             'status' => 'on',
-            'class' => MinifyCSS::class,
+            'class' => RapidLoad_MinifyCSS::class,
             'global' => 'mincss'
         ];
 
@@ -62,7 +62,7 @@ class RapidLoad_Module
             'description' => 'Optimize Javascript',
             'group' => 'javascript',
             'status' => 'on',
-            'class' => JavaScript::class,
+            'class' => RapidLoad_JavaScript::class,
             'global' => 'javascript'
         ];
 

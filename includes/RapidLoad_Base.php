@@ -741,7 +741,7 @@ class RapidLoad_Base
     }
 
     public static function cache_file_count(){
-        $uucss_files = isset(UnusedCSS::$base_dir) && !empty(UnusedCSS::$base_dir) ? scandir(UnusedCSS::$base_dir) : [];
+        $uucss_files = isset(RapidLoad_UnusedCSS::$base_dir) && !empty(RapidLoad_UnusedCSS::$base_dir) ? scandir(RapidLoad_UnusedCSS::$base_dir) : [];
         if(is_array($uucss_files)){
             $uucss_files = array_filter($uucss_files, function ($file){
                 return false !== strpos($file, '.css');
@@ -749,7 +749,7 @@ class RapidLoad_Base
         }else{
             $uucss_files = [];
         }
-        $cpcss_files = isset(CriticalCSS::$base_dir) && !empty(CriticalCSS::$base_dir) ? scandir(CriticalCSS::$base_dir) : [];
+        $cpcss_files = isset(RapidLoad_CriticalCSS::$base_dir) && !empty(RapidLoad_CriticalCSS::$base_dir) ? scandir(RapidLoad_CriticalCSS::$base_dir) : [];
         if(is_array($cpcss_files)){
             $cpcss_files = array_filter($cpcss_files, function ($file){
                 return false !== strpos($file, '.css');

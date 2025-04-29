@@ -223,7 +223,7 @@ class RapidLoad_Optimizer
                 ]
             ],
             'js_cache_dir' => [
-                'path' => JavaScript::$base_dir,
+                'path' => RapidLoad_JavaScript::$base_dir,
                 'label' => 'JavaScript Cache',
                 'action' => [
                     'href' => wp_nonce_url( add_query_arg( array(
@@ -250,15 +250,15 @@ class RapidLoad_Optimizer
 
         $css_folders = [
             'cpcss_cache_dir' => [
-                'path' => CriticalCSS::$base_dir,
+                'path' => RapidLoad_CriticalCSS::$base_dir,
                 'label' => 'Critical CSS Cache'
             ],
             'uucss_cache_dir' => [
-                'path' => UnusedCSS::$base_dir,
+                'path' => RapidLoad_UnusedCSS::$base_dir,
                 'label' => 'Unused CSS Cache'
             ],
             'minified_css_cache_dir' => [
-                'path' => MinifyCSS::$base_dir,
+                'path' => RapidLoad_MinifyCSS::$base_dir,
                 'label' => 'Minified CSS Cache'
             ]
         ];
@@ -1484,7 +1484,7 @@ class RapidLoad_Optimizer
                 $input = $input_map[$key];
                 $input['key'] = $key;
                 if($input['key'] === "uucss_exclude_files_from_delay_js"){
-                    $input['control_values'] = JavaScript::get_dynamic_exclusion_list();
+                    $input['control_values'] = RapidLoad_JavaScript::get_dynamic_exclusion_list();
                     $input['value'] = "";
                     if(isset($options['uucss_dynamic_js_exclusion_list']) && !empty($options['uucss_dynamic_js_exclusion_list'])){
                         $input['value'] = $options['uucss_dynamic_js_exclusion_list'];

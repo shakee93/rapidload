@@ -43,7 +43,7 @@ class RapidLoad_Onboard{
             $job_data->save();
         }
 
-        $store = new UnusedCSS_Store($job_data, [ 'immediate' => true ]);
+        $store = new RapidLoad_UnusedCSS_Store($job_data, [ 'immediate' => true ]);
         $store->purge_css();
 
         $this->rapidload_configured();

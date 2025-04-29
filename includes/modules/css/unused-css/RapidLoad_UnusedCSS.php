@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS
+class RapidLoad_UnusedCSS
 {
     use RapidLoad_Utils;
 
@@ -38,7 +38,7 @@ class UnusedCSS
             define('RAPIDLOAD_UUCSS_ENABLED', true);
         }
 
-        new UnusedCSS_Queue();
+        new RapidLoad_UnusedCSS_Queue();
 
         add_action('rapidload/job/purge', [$this, 'cache_uucss'], 10, 2);
 
@@ -175,7 +175,7 @@ class UnusedCSS
             global $wp_query;
             $wp_query->is_404 = false;
 
-            $fallback_target = UnusedCSS_DB::get_original_file_name($original_request);
+            $fallback_target = RapidLoad_UnusedCSS_DB::get_original_file_name($original_request);
 
             if ( isset($fallback_target) ) {
 
@@ -286,7 +286,7 @@ class UnusedCSS
             $this->job_data = new RapidLoad_Job_Data($job, 'uucss');
         }
 
-        new UnusedCSS_Enqueue($this->job_data);
+        new RapidLoad_UnusedCSS_Enqueue($this->job_data);
 
     }
 
@@ -415,22 +415,22 @@ class UnusedCSS
                 }
                 case 'warnings':
                 {
-                    UnusedCSS_DB::requeue_where_status('success');
+                    RapidLoad_UnusedCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    UnusedCSS_DB::requeue_where_status('failed');
+                    RapidLoad_UnusedCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    UnusedCSS_DB::requeue_where_status('processing');
+                    RapidLoad_UnusedCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    UnusedCSS_DB::requeue_where_status('');
+                    RapidLoad_UnusedCSS_DB::requeue_where_status('');
                     break;
                 }
             }
@@ -493,7 +493,7 @@ class UnusedCSS
 
         }else{
 
-            UnusedCSS_DB::clear_data(isset($args['soft']));
+            RapidLoad_UnusedCSS_DB::clear_data(isset($args['soft']));
             $this->clear_files();
 
         }
@@ -508,7 +508,7 @@ class UnusedCSS
 
                 $files = isset($job_data->data) && !empty($job_data->data) ? unserialize($job_data->data) : [];
 
-                $used_files = UnusedCSS_DB::get_used_files_exclude($job_data->id);
+                $used_files = RapidLoad_UnusedCSS_DB::get_used_files_exclude($job_data->id);
 
                 foreach ($files as $file){
 
@@ -565,13 +565,13 @@ class UnusedCSS
 
     public function init_async_store($job_data, $args)
     {
-        $store = new UnusedCSS_Store($job_data, $args);
+        $store = new RapidLoad_UnusedCSS_Store($job_data, $args);
         $store->purge_css();
     }
 
     public function vanish() {
 
-        UnusedCSS_DB::clear_data();
+        RapidLoad_UnusedCSS_DB::clear_data();
 
         if ( $this->file_system->exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
