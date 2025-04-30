@@ -41,7 +41,7 @@ class RapidLoad_UnusedCSS_Enqueue
 
         if(isset($this->job_data->id) && $this->job_data->status === 'success' && !empty($this->files)){
 
-            wp_register_script( 'rapidload', false, [], UUCSS_VERSION , false);
+            wp_register_script( 'rapidload', false, [], RAPIDLOAD_VERSION , false);
             wp_localize_script( 'rapidload', 'rapidload', [
                 'files' => $this->files,
                 'do_not_load_original_css' => apply_filters('rapidload/frontend/do-not-load/original-css', false),

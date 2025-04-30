@@ -24,9 +24,9 @@ class RapidLoad_Feedback {
 
 		wp_enqueue_script( 'uucss_feedback', UUCSS_PLUGIN_URL . 'assets/js/utils/uucss_feedback.js', array(
 			'jquery'
-		),UUCSS_VERSION, false );
+		),RAPIDLOAD_VERSION, false );
 
-		wp_enqueue_style('uucss_feedback', UUCSS_PLUGIN_URL . 'assets/css/utils/uucss_feedback.css', null, UUCSS_VERSION);
+		wp_enqueue_style('uucss_feedback', UUCSS_PLUGIN_URL . 'assets/css/utils/uucss_feedback.css', null, RAPIDLOAD_VERSION);
 	}
 
 	function render_feedback_model(){

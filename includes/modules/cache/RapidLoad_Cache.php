@@ -746,7 +746,7 @@ class RapidLoad_Cache
 
         $settings = get_option( 'rapidload_cache' );
 
-        if ( $settings === false || ! isset( $settings['version'] ) || $settings['version'] !== UUCSS_VERSION ) {
+        if ( $settings === false || ! isset( $settings['version'] ) || $settings['version'] !== RAPIDLOAD_VERSION ) {
             if ( $update ) {
                 self::update();
                 $settings = self::get_settings( false );
@@ -905,7 +905,7 @@ class RapidLoad_Cache
     private static function get_default_system_settings() {
 
         $default_system_settings = array(
-            'version'              => (string) UUCSS_VERSION,
+            'version'              => (string) RAPIDLOAD_VERSION,
             'use_trailing_slashes' => (int) ( substr( get_option( 'permalink_structure' ), -1, 1 ) === '/' ),
             'permalink_structure'  => (string) self::get_permalink_structure(), // Deprecated in 1.8.0.
         );
@@ -1107,10 +1107,10 @@ class RapidLoad_Cache
     public static function update_disk() {
 
         if ( is_multisite() ) {
-            if ( get_site_transient( 'rapidload_cache_disk_updated' ) !== UUCSS_VERSION ) {
+            if ( get_site_transient( 'rapidload_cache_disk_updated' ) !== RAPIDLOAD_VERSION ) {
                 self::each_site( true, 'RapidLoad_Cash_Store::clean' );
                 RapidLoad_Cache_Store::setup();
-                set_site_transient( 'rapidload_cache_disk_updated', UUCSS_VERSION, HOUR_IN_SECONDS );
+                set_site_transient( 'rapidload_cache_disk_updated', RAPIDLOAD_VERSION, HOUR_IN_SECONDS );
             }
         } else {
             RapidLoad_Cache_Store::clean();

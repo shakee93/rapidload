@@ -24,8 +24,8 @@ if ( ! defined( 'RAPIDLOAD_INDEX_FILE' ) ) {
     define( 'RAPIDLOAD_INDEX_FILE', ABSPATH . 'index.php' );
 }
 
-if ( ! defined( 'UUCSS_VERSION' ) ) {
-    define( 'UUCSS_VERSION', '3.1.9' );
+if ( ! defined( 'RAPIDLOAD_VERSION' ) ) {
+    define( 'RAPIDLOAD_VERSION', '3.1.9' );
 }
 
 if ( ! defined( 'UUCSS_CACHE_CHILD_DIR' ) ) {

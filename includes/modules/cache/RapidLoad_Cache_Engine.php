@@ -180,7 +180,7 @@ class RapidLoad_Cache_Engine
         $cache_file = RapidLoad_Cache_Store::get_cache_file();
 
         if ( RapidLoad_Cache_Store::cache_exists( $cache_file ) && ! RapidLoad_Cache_Store::cache_expired( $cache_file ) && ! self::bypass_cache() ) {
-            header('X-Optimized-By: RapidLoad v' . UUCSS_VERSION);
+            header('X-Optimized-By: RapidLoad v' . RAPIDLOAD_VERSION);
             header( 'X-Cache-Status: HIT' );
 
             if ( strtotime( self::$request_headers['If-Modified-Since'] >= filemtime( $cache_file ) ) && isset( $_SERVER['SERVER_PROTOCOL'] ) ) {

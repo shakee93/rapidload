@@ -70,7 +70,7 @@ class RapidLoad_Admin_Bar {
             echo '<link id="rapidload-page-optimizer-css" rel="preload" href="' . esc_url($package . $indexCSS) . '" as="style" type="text/css"/>';
         });
 
-        wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
+        wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], RAPIDLOAD_VERSION, false);
 
         $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
 
@@ -99,7 +99,7 @@ class RapidLoad_Admin_Bar {
             'optimizer_url' => defined('RAPIDLOAD_OPTIMIZER_TEST_URL') ? RAPIDLOAD_OPTIMIZER_TEST_URL : $this->transform_url($current_url),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
             'timezone' => get_option('timezone_string', 'UTC'),
-            'rapidload_version' => UUCSS_VERSION,
+            'rapidload_version' => RAPIDLOAD_VERSION,
             'actions' => [
                 [
                     'tooltip' => 'Clear Site Cache',

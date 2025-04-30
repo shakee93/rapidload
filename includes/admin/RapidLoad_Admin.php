@@ -1507,7 +1507,7 @@ class RapidLoad_Admin
 
         $data = $api->get( 'license', [
             'url' => $this->transform_url(get_site_url()),
-            'version' => UUCSS_VERSION,
+            'version' => RAPIDLOAD_VERSION,
             'db_version' => RapidLoad_DB::$db_version,
             'db_version_exist' => RapidLoad_DB::$current_version
         ] );

@@ -143,7 +143,7 @@ class RapidLoad_Enqueue {
             }
 
             if(self::$frontend_debug){
-                header( 'uucss:' . 'v' . UUCSS_VERSION . ' [' . count( $inject->found_css_files ) . count( $inject->found_css_cache_files ) . count( $inject->injected_css_files ) . ']' );
+                header( 'uucss:' . 'v' . RAPIDLOAD_VERSION . ' [' . count( $inject->found_css_files ) . count( $inject->found_css_cache_files ) . count( $inject->injected_css_files ) . ']' );
             }
 
             $pattern = '/(?:href|src)=["\']?([^"\'>\s]+)/';
@@ -197,7 +197,7 @@ class RapidLoad_Enqueue {
             }
         }
 
-        header('X-Optimized-By: RapidLoad v' . UUCSS_VERSION);
+        header('X-Optimized-By: RapidLoad v' . RAPIDLOAD_VERSION);
 
         return apply_filters('uucss/enqueue/content/after', $html);
     }
