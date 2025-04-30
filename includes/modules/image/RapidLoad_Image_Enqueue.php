@@ -155,6 +155,15 @@ class RapidLoad_Image_Enqueue
                                         foreach ($matches as $match) {
                                             if(isset($match[1]) && isset($match[2])){
                                                 $url = $match[1];
+
+                                                if($this->is_file_excluded($url)){
+                                                    continue;
+                                                }
+                            
+                                                if($this->is_file_excluded($url, 'uucss_exclude_images_from_modern_images')){
+                                                    continue;
+                                                }
+
                                                 $width = intval($match[2]);
                                                 $_replaced = RapidLoad_Image::get_replaced_url($url,RapidLoad_Image::$image_indpoint, str_replace("w", "",$width), false, ['retina' => 'ret_img']);
                                                 $srcset->{$srcset_attribute['attr']} = str_replace($url . " " .  $width,$_replaced . " " . $width, $srcset->{$srcset_attribute['attr']});
