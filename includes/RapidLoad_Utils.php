@@ -190,7 +190,7 @@ trait RapidLoad_Utils {
                     <div class="notice-icon">
                         <div class="logo-wrapper">
                             <img
-                                    src="<?php echo esc_url(UUCSS_PLUGIN_URL . 'assets/images/logo-icon.svg') ?>" width="40"
+                                    src="<?php echo esc_url(RAPIDLOAD_PLUGIN_URL . 'assets/images/logo-icon.svg') ?>" width="40"
                                     alt="RapidLoad logo">
                         </div>
                     </div>

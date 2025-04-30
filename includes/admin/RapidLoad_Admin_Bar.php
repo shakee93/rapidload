@@ -49,7 +49,7 @@ class RapidLoad_Admin_Bar {
         }
 
 
-        $package = UUCSS_PLUGIN_URL . $optimizer_path;
+        $package = RAPIDLOAD_PLUGIN_URL . $optimizer_path;
 
         $asset_map_file = RAPIDLOAD_PLUGIN_DIR . '/' . $optimizer_path . '/asset-map.php';
         $indexJS = '/assets/index.js';
@@ -91,8 +91,8 @@ class RapidLoad_Admin_Bar {
             'titan_stylesheet_url' => $package .  $indexCSS,
             'load_optimizer' => true,
             'page_optimizer_package_base' => $package,
-            'page_optimizer_base' => UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
-            'plugin_url' => UUCSS_PLUGIN_URL,
+            'page_optimizer_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
+            'plugin_url' => RAPIDLOAD_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'admin_url' => admin_url(),
             'dashboard_url' => admin_url( 'admin.php?page=rapidload' ),
@@ -225,7 +225,7 @@ class RapidLoad_Admin_Bar {
                     'id'    => 'rapidload',
                     'title' => '<div id="rl-node-wrapper" class="'. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? 'rl-node-wrapper rl-test-mode-on' : 'rl-node-wrapper') .'" >
                                     <span class="rl-icon">
-                                        <img src="'. esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
+                                        <img src="'. esc_url(RAPIDLOAD_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
                                     </span>
                                     <span class="rl-label">'.__( 'RapidLoad', 'unusedcss' ) . '</span>
                                     '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',

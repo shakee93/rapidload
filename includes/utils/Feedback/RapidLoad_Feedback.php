@@ -22,11 +22,11 @@ class RapidLoad_Feedback {
 
 	function enqueue_feedback_scripts(){
 
-		wp_enqueue_script( 'uucss_feedback', UUCSS_PLUGIN_URL . 'assets/js/utils/uucss_feedback.js', array(
+		wp_enqueue_script( 'uucss_feedback', RAPIDLOAD_PLUGIN_URL . 'assets/js/utils/uucss_feedback.js', array(
 			'jquery'
 		),RAPIDLOAD_VERSION, false );
 
-		wp_enqueue_style('uucss_feedback', UUCSS_PLUGIN_URL . 'assets/css/utils/uucss_feedback.css', null, RAPIDLOAD_VERSION);
+		wp_enqueue_style('uucss_feedback', RAPIDLOAD_PLUGIN_URL . 'assets/css/utils/uucss_feedback.css', null, RAPIDLOAD_VERSION);
 	}
 
 	function render_feedback_model(){

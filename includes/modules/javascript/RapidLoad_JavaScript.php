@@ -133,11 +133,11 @@ class RapidLoad_JavaScript
 
                 if(isset($post->ID)){
 
-                    wp_enqueue_style( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
-                    wp_enqueue_style('rapidload-optimizer', UUCSS_PLUGIN_URL . 'includes/modules/javascript/assets/css/style.css', RAPIDLOAD_VERSION);
+                    wp_enqueue_style( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
+                    wp_enqueue_style('rapidload-optimizer', RAPIDLOAD_PLUGIN_URL . 'includes/modules/javascript/assets/css/style.css', RAPIDLOAD_VERSION);
 
-                    wp_enqueue_script( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
-                    wp_register_script( 'rapidload-js-optimizer', UUCSS_PLUGIN_URL . 'includes/modules/javascript/assets/js/js-core.js', array(
+                    wp_enqueue_script( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
+                    wp_register_script( 'rapidload-js-optimizer', RAPIDLOAD_PLUGIN_URL . 'includes/modules/javascript/assets/js/js-core.js', array(
                         'jquery',
                     ) , RAPIDLOAD_VERSION);
 

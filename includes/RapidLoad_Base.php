@@ -288,15 +288,15 @@ class RapidLoad_Base
                 }
             }
 
-            wp_enqueue_script( 'popper', UUCSS_PLUGIN_URL . 'assets/libs/tippy/popper.min.js', array( 'jquery' ) );
-            wp_enqueue_script( 'noty', UUCSS_PLUGIN_URL . 'assets/libs/noty/noty.js', array( 'jquery' ) );
-            wp_enqueue_script( 'tippy', UUCSS_PLUGIN_URL . 'assets/libs/tippy/tippy-bundle.umd.min.js', array( 'jquery' ) );
-            wp_enqueue_style( 'tippy', UUCSS_PLUGIN_URL . 'assets/libs/tippy/tippy.css' );
-            wp_enqueue_style( 'noty', UUCSS_PLUGIN_URL . 'assets/libs/noty/noty.css' );
-            wp_enqueue_style( 'noty-animate', UUCSS_PLUGIN_URL . 'assets/libs/noty/animate.css' );
-            wp_enqueue_style( 'noty-theme', UUCSS_PLUGIN_URL . 'assets/libs/noty/themes/mint.css' );
-            wp_enqueue_style( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
-            wp_enqueue_script( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
+            wp_enqueue_script( 'popper', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/popper.min.js', array( 'jquery' ) );
+            wp_enqueue_script( 'noty', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/noty.js', array( 'jquery' ) );
+            wp_enqueue_script( 'tippy', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/tippy-bundle.umd.min.js', array( 'jquery' ) );
+            wp_enqueue_style( 'tippy', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/tippy.css' );
+            wp_enqueue_style( 'noty', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/noty.css' );
+            wp_enqueue_style( 'noty-animate', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/animate.css' );
+            wp_enqueue_style( 'noty-theme', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/themes/mint.css' );
+            wp_enqueue_style( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
+            wp_enqueue_script( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
 
             $rapidload_license_data = get_option('rapidload_license_data', null);   
 
@@ -304,7 +304,7 @@ class RapidLoad_Base
                 $rapidload_license_data = unserialize($rapidload_license_data);
             }
 
-            wp_register_script( 'uucss_global_admin_script', UUCSS_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], RAPIDLOAD_VERSION );
+            wp_register_script( 'uucss_global_admin_script', RAPIDLOAD_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], RAPIDLOAD_VERSION );
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
                 'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
@@ -324,7 +324,7 @@ class RapidLoad_Base
             );
             wp_localize_script( 'uucss_global_admin_script', 'uucss_global', $data );
             wp_enqueue_script( 'uucss_global_admin_script' );
-            wp_enqueue_style( 'uucss_global_admin', UUCSS_PLUGIN_URL . 'assets/css/uucss_global.css', [], RAPIDLOAD_VERSION );
+            wp_enqueue_style( 'uucss_global_admin', RAPIDLOAD_PLUGIN_URL . 'assets/css/uucss_global.css', [], RAPIDLOAD_VERSION );
 
         }, apply_filters('uucss/scripts/global/priority', 90));
 

@@ -27,7 +27,7 @@ if(isset($_REQUEST['no_rapidload'])){
 require_once __DIR__ . '/constants.php';
 
 define( 'RAPIDLOAD_PLUGIN_FILE', __FILE__ );
-define('UUCSS_PLUGIN_URL', plugin_dir_url( __FILE__ ));
+define('RAPIDLOAD_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 define('UUCSS_ABSPATH', str_replace(wp_basename(WP_CONTENT_DIR), '', WP_CONTENT_DIR));
 define('RAPIDLOAD_BASE',  ( function_exists( 'wp_normalize_path' ) ) ? plugin_basename( __DIR__ . '/' . basename(__FILE__) ) : null);
 

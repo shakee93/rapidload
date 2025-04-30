@@ -850,12 +850,12 @@ class RapidLoad_Admin_Frontend
     public function load_scripts()
     {
 
-        wp_enqueue_style( 'rapidload_admin_frontend', UUCSS_PLUGIN_URL .  'includes/admin/frontend/dist/assets/index.css',[],RAPIDLOAD_VERSION);
+        wp_enqueue_style( 'rapidload_admin_frontend', RAPIDLOAD_PLUGIN_URL .  'includes/admin/frontend/dist/assets/index.css',[],RAPIDLOAD_VERSION);
 
-        wp_register_script( 'rapidload_admin_frontend', UUCSS_PLUGIN_URL .  'includes/admin/frontend/dist/assets/index.min.js',[], RAPIDLOAD_VERSION);
+        wp_register_script( 'rapidload_admin_frontend', RAPIDLOAD_PLUGIN_URL .  'includes/admin/frontend/dist/assets/index.min.js',[], RAPIDLOAD_VERSION);
 
         $data = array(
-            'frontend_base' => UUCSS_PLUGIN_URL .  'includes/admin/frontend/dist'
+            'frontend_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/frontend/dist'
         );
 
         wp_localize_script( 'rapidload_admin_frontend', 'rapidload_admin', $data );
@@ -869,13 +869,13 @@ class RapidLoad_Admin_Frontend
     public function load_optimizer_scripts()
     {
 
-        wp_enqueue_style( 'rapidload_page_optimizer', UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.css',[],RAPIDLOAD_VERSION);
+        wp_enqueue_style( 'rapidload_page_optimizer', RAPIDLOAD_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.css',[],RAPIDLOAD_VERSION);
 
-        wp_register_script( 'rapidload_page_optimizer', UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.js',[], RAPIDLOAD_VERSION);
+        wp_register_script( 'rapidload_page_optimizer', RAPIDLOAD_PLUGIN_URL .  'includes/admin/page-optimizer/dist/assets/index.js',[], RAPIDLOAD_VERSION);
 
         $data = array(
-            'page_optimizer_base' => UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
-            'plugin_url' => UUCSS_PLUGIN_URL,
+            'page_optimizer_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
+            'plugin_url' => RAPIDLOAD_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'optimizer_url' => $this->transform_url($this->get_current_url()),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
@@ -891,13 +891,13 @@ class RapidLoad_Admin_Frontend
 
     public function load_preview_scripts()
     {
-        wp_enqueue_style( 'rapidload_page_preview', UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.css',[],RAPIDLOAD_VERSION);
+        wp_enqueue_style( 'rapidload_page_preview', RAPIDLOAD_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.css',[],RAPIDLOAD_VERSION);
 
-        wp_register_script( 'rapidload_page_preview', UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.js',[], RAPIDLOAD_VERSION);
+        wp_register_script( 'rapidload_page_preview', RAPIDLOAD_PLUGIN_URL .  'includes/admin/rapidload-preview/dist/assets/index.js',[], RAPIDLOAD_VERSION);
 
         $data = array(
-            'page_preview_base' => UUCSS_PLUGIN_URL .  'includes/admin/rapidload-preview/dist',
-            'plugin_url' => UUCSS_PLUGIN_URL,
+            'page_preview_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/rapidload-preview/dist',
+            'plugin_url' => RAPIDLOAD_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
         );
@@ -912,12 +912,12 @@ class RapidLoad_Admin_Frontend
     public function load_on_board_scripts()
     {
 
-        wp_enqueue_style( 'rapidload_admin_on_board', UUCSS_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist/assets/index.css', null, '1.23');
+        wp_enqueue_style( 'rapidload_admin_on_board', RAPIDLOAD_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist/assets/index.css', null, '1.23');
 
-        wp_register_script( 'rapidload_admin_on_board', UUCSS_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist/assets/index.js', null, '1.23');
+        wp_register_script( 'rapidload_admin_on_board', RAPIDLOAD_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist/assets/index.js', null, '1.23');
 
         $data = array(
-            'on_board_base' => UUCSS_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist'
+            'on_board_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/on-board/on-board-view/dist'
         );
 
         wp_localize_script( 'rapidload_admin_on_board', 'rapidload_admin', $data );
@@ -939,20 +939,20 @@ class RapidLoad_Admin_Frontend
             }
         }
 
-        wp_enqueue_script( 'select2', UUCSS_PLUGIN_URL . 'assets/libs/select2/select2.min.js', array( 'jquery' ) );
+        wp_enqueue_script( 'select2', RAPIDLOAD_PLUGIN_URL . 'assets/libs/select2/select2.min.js', array( 'jquery' ) );
 
-        wp_enqueue_script( 'datatables', UUCSS_PLUGIN_URL . 'assets/libs/datatables/jquery.dataTables.min.js', array(
+        wp_enqueue_script( 'datatables', RAPIDLOAD_PLUGIN_URL . 'assets/libs/datatables/jquery.dataTables.min.js', array(
             'jquery',
             'uucss_admin'
         ) );
-        wp_enqueue_style( 'datatables', UUCSS_PLUGIN_URL . 'assets/libs/datatables/jquery.dataTables.min.css' );
+        wp_enqueue_style( 'datatables', RAPIDLOAD_PLUGIN_URL . 'assets/libs/datatables/jquery.dataTables.min.css' );
 
-        wp_register_script( 'uucss_admin', UUCSS_PLUGIN_URL . 'assets/js/uucss_admin.js', array(
+        wp_register_script( 'uucss_admin', RAPIDLOAD_PLUGIN_URL . 'assets/js/uucss_admin.js', array(
             'jquery',
             'wp-util'
         ), RAPIDLOAD_VERSION );
 
-        wp_register_script( 'uucss_log', UUCSS_PLUGIN_URL . 'assets/js/uucss_log.js', array(
+        wp_register_script( 'uucss_log', RAPIDLOAD_PLUGIN_URL . 'assets/js/uucss_log.js', array(
             'jquery',
             'wp-util'
         ), RAPIDLOAD_VERSION );
@@ -965,7 +965,7 @@ class RapidLoad_Admin_Frontend
             }
         }
 
-        wp_enqueue_style( 'uucss_admin', UUCSS_PLUGIN_URL . 'assets/css/uucss_admin.css', [], RAPIDLOAD_VERSION );
+        wp_enqueue_style( 'uucss_admin', RAPIDLOAD_PLUGIN_URL . 'assets/css/uucss_admin.css', [], RAPIDLOAD_VERSION );
 
         global $rapidload;
 
@@ -992,7 +992,7 @@ class RapidLoad_Admin_Frontend
         wp_enqueue_script( 'uucss_admin' );
         wp_enqueue_script( 'uucss_log' );
 
-        wp_enqueue_style( 'select2', UUCSS_PLUGIN_URL . 'assets/libs/select2/select2.min.css' );
+        wp_enqueue_style( 'select2', RAPIDLOAD_PLUGIN_URL . 'assets/libs/select2/select2.min.css' );
 
     }
 
@@ -1010,7 +1010,7 @@ class RapidLoad_Admin_Frontend
             'edit_posts',
             'rapidload-legacy-dashboard',
             [$this, 'page_legacy'],
-            UUCSS_PLUGIN_URL. 'assets/images/logo-icon-light.svg',
+            RAPIDLOAD_PLUGIN_URL. 'assets/images/logo-icon-light.svg',
             59
         );
 
@@ -1020,7 +1020,7 @@ class RapidLoad_Admin_Frontend
             'edit_posts',
             'rapidload',
             [$this, 'page'],
-            UUCSS_PLUGIN_URL. 'assets/images/logo-icon-light.svg',
+            RAPIDLOAD_PLUGIN_URL. 'assets/images/logo-icon-light.svg',
             59
         );
 
