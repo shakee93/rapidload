@@ -81,7 +81,7 @@ class RapidLoad_JavaScript
     public function initFileSystem() {
 
         // Todo cache base setup
-        /*$cache_base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR);
+        /*$cache_base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR);
 
         $cache_base_option = RapidLoad_Base::get_option('rapidload_cache_base', null);
 
@@ -93,7 +93,7 @@ class RapidLoad_JavaScript
 
         $this->base = RapidLoad_ThirdParty::plugin_exists('autoptimize') ? $cache_base_option . 'cpcss' : $cache_base . 'cpcss';*/
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'js';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'js';
 
         if ( ! $this->file_system ) {
             return false;

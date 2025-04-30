@@ -90,7 +90,7 @@ class RapidLoad_MinifyCSS
 
     public function initFileSystem() {
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'min-css';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'min-css';
 
         if ( ! $this->file_system ) {
             return false;

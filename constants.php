@@ -28,7 +28,7 @@ if ( ! defined( 'RAPIDLOAD_VERSION' ) ) {
     define( 'RAPIDLOAD_VERSION', '3.1.9' );
 }
 
-if ( ! defined( 'UUCSS_CACHE_CHILD_DIR' ) ) {
-    define( 'UUCSS_CACHE_CHILD_DIR', '/cache/rapidload/' );
+if ( ! defined( 'RAPIDLOAD_CACHE_CHILD_DIR' ) ) {
+    define( 'RAPIDLOAD_CACHE_CHILD_DIR', '/cache/rapidload/' );
 }
 
