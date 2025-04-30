@@ -1041,11 +1041,11 @@ class RapidLoad_Admin
 
         $file_system = new RapidLoad_FileSystem();
 
-        if(!$file_system->exists(UUCSS_LOG_DIR . 'debug.log')){
+        if(!$file_system->exists(RAPIDLOAD_LOG_DIR . 'debug.log')){
             wp_send_json_success([]);
         }
 
-        $data = $file_system->get_contents(UUCSS_LOG_DIR . 'debug.log');
+        $data = $file_system->get_contents(RAPIDLOAD_LOG_DIR . 'debug.log');
 
         if(empty($data)){
             wp_send_json_success([]);

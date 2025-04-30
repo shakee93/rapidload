@@ -111,11 +111,11 @@ trait RapidLoad_Utils {
 
         $log_instance = self::get_log_instance();
 
-        if($log_instance->exists(UUCSS_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(UUCSS_LOG_DIR .'debug.log'))){
+        if($log_instance->exists(RAPIDLOAD_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(RAPIDLOAD_LOG_DIR .'debug.log'))){
             $data = ",\n" . $data;
         }
 
-        $log_instance->put_contents(UUCSS_LOG_DIR .'debug.log', $data, FILE_APPEND);
+        $log_instance->put_contents(RAPIDLOAD_LOG_DIR .'debug.log', $data, FILE_APPEND);
 
 	    if ( $callee ) {
 
@@ -634,7 +634,7 @@ trait RapidLoad_Utils {
     {
         $file_relative_path = wp_parse_url($url, PHP_URL_PATH);
         $site_path = wp_parse_url(site_url(), PHP_URL_PATH);
-        $file_path = UUCSS_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
+        $file_path = RAPIDLOAD_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
         return str_replace("//","/", $file_path);
     }
 
