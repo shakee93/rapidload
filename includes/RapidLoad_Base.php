@@ -104,7 +104,7 @@ class RapidLoad_Base
 
             RapidLoad_ThirdParty::initialize();
 
-            register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'vanish' ] );
+            register_deactivation_hook( RAPIDLOAD_PLUGIN_FILE, [ $this, 'vanish' ] );
 
             add_filter('uucss/cache-base-dir', function ($dir){
 
@@ -128,7 +128,7 @@ class RapidLoad_Base
 
             add_filter('plugin_row_meta',[$this, 'add_plugin_row_meta_links'],10,4);
 
-            add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), [
+            add_filter( 'plugin_action_links_' . plugin_basename( RAPIDLOAD_PLUGIN_FILE ), [
                 $this,
                 'add_plugin_action_link'
             ] );
@@ -163,9 +163,9 @@ class RapidLoad_Base
     public function enqueue_diagnose_script(){
 
         if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE) {
-            $diagnose_script_content = file_get_contents(plugin_dir_path(UUCSS_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.js');
+            $diagnose_script_content = file_get_contents(plugin_dir_path(RAPIDLOAD_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.js');
         } else {
-            $diagnose_script_content = file_get_contents(plugin_dir_path(UUCSS_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.min.js');
+            $diagnose_script_content = file_get_contents(plugin_dir_path(RAPIDLOAD_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.min.js');
         }
 
         add_action('wp_enqueue_scripts', function() use ($diagnose_script_content) {
@@ -336,8 +336,8 @@ class RapidLoad_Base
 
         if ( 'plugins.php' === $pagenow )
         {
-            $file   = basename( UUCSS_PLUGIN_FILE );
-            $folder = basename( dirname( UUCSS_PLUGIN_FILE ) );
+            $file   = basename( RAPIDLOAD_PLUGIN_FILE );
+            $folder = basename( dirname( RAPIDLOAD_PLUGIN_FILE ) );
             $hook = "in_plugin_update_message-{$folder}/{$file}";
             add_action( $hook, [$this, 'render_update_message'], 20, 2 );
         }
@@ -771,7 +771,7 @@ class RapidLoad_Base
     }
 
     public static function display_get_start_link() {
-        add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), function ( $links ) {
+        add_filter( 'plugin_action_links_' . plugin_basename( RAPIDLOAD_PLUGIN_FILE ), function ( $links ) {
             $_links = array(
                 '<a href="' . admin_url( 'options-general.php?page=rapidload' ) . '">Get Started <span>⚡️</span> </a>',
             );

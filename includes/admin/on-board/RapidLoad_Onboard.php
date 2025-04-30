@@ -100,7 +100,7 @@ class RapidLoad_Onboard{
     }
 
     public static function display_get_start_link() {
-        add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), function ( $links ) {
+        add_filter( 'plugin_action_links_' . plugin_basename( RAPIDLOAD_PLUGIN_FILE ), function ( $links ) {
             $_links = array(
                 '<a href="' . admin_url( 'options-general.php?page=rapidload' ) . '">Get Started <span>⚡️</span> </a>',
             );

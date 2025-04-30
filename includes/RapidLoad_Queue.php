@@ -55,7 +55,7 @@ class RapidLoad_Queue
             'product',
         ));
 
-        register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'unschedule_cron' ] );
+        register_deactivation_hook( RAPIDLOAD_PLUGIN_FILE, [ $this, 'unschedule_cron' ] );
     }
 
     function unschedule_cron(){
