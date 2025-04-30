@@ -16,12 +16,12 @@ class RapidLoad_Api
      * RapidLoad_Api constructor.
      */
 	public function __construct() {
-		if ( defined( 'UUCSS_API_URL' ) ) {
-			self::$apiUrl = UUCSS_API_URL;
+		if ( defined( 'RAPIDLOAD_API_URL' ) ) {
+			self::$apiUrl = RAPIDLOAD_API_URL;
 		}
 
 		$key          = isset( RapidLoad_Base::fetch_options()['uucss_api_key'] ) ? RapidLoad_Base::fetch_options()['uucss_api_key'] : null;
-		$this->apiKey = defined( 'UUCSS_API_KEY' ) ? UUCSS_API_KEY : $key;
+		$this->apiKey = defined( 'RAPIDLOAD_API_KEY' ) ? RAPIDLOAD_API_KEY : $key;
 	}
 
 	static function get_key() {

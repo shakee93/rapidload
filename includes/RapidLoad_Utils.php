@@ -90,12 +90,12 @@ trait RapidLoad_Utils {
 
     public static function log( $object, $callee = false ) {
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::get_log_option() || (defined( 'RAPIDLOAD_DEBUG' ) && RAPIDLOAD_DEBUG === false)) {
 		    return false;
 	    }
 
 	    $data = is_string( $object ) ? $object : json_encode( $object, JSON_PRETTY_PRINT );
-	    //error_log( "[UUCSS_LOG] " . $data );
+	    //error_log( "[RAPIDLOAD_LOG] " . $data );
 
         $data = is_string( $object ) ? [ 'log' => $object] : $object;
 
@@ -119,7 +119,7 @@ trait RapidLoad_Utils {
 
 	    if ( $callee ) {
 
-		    error_log( "[UUCSS_LOG] " . json_encode( [
+		    error_log( "[RAPIDLOAD_LOG] " . json_encode( [
 				    "file" => debug_backtrace()[1]['file'],
 				    "function" => debug_backtrace()[1]['function'],
 				    "class" => debug_backtrace()[1]['class'],
@@ -133,12 +133,12 @@ trait RapidLoad_Utils {
 
     public static function uucss_log($object){
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::get_log_option() || (defined( 'RAPIDLOAD_DEBUG' ) && RAPIDLOAD_DEBUG === false)) {
 		    return false;
 	    }
 
 	    $data = is_string( $object ) ? $object : json_encode( $object, JSON_PRETTY_PRINT );
-	    error_log( "[UUCSS_LOG] " . $data );
+	    error_log( "[RAPIDLOAD_LOG] " . $data );
     }
 
     public static function add_admin_notice($message, $type='error') {
@@ -341,16 +341,16 @@ trait RapidLoad_Utils {
 
     public static function activation_url( $action, $to = 'options-general.php?page=rapidload' ) {
 
-	    if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
-		    define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+	    if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
+		    define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
 	    }
 
-	    return UUCSS_ACTIVATION_URL . '?' . build_query( [
+	    return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
 			    'action' => $action,
 			    'nonce'  => wp_create_nonce( 'uucss_activation' ),
 			    'site'   => trailingslashit(get_site_url()),
 			    'back'   => admin_url( $to ),
-			    'goto'   => UUCSS_ACTIVATION_URL,
+			    'goto'   => RAPIDLOAD_ACTIVATION_URL,
                 'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
 		        'utm_medium' => 'plugin'
             ] );
@@ -358,16 +358,16 @@ trait RapidLoad_Utils {
 
     public static function onboard_activation_url( $action, $to = 'options-general.php?page=rapidload-on-board' ) {
 
-        if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
-            define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+        if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
+            define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
         }
 
-        return UUCSS_ACTIVATION_URL . '?' . build_query( [
+        return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
                 'action' => $action,
                 'nonce'  => wp_create_nonce( 'uucss_activation' ),
                 'site'   => trailingslashit(get_site_url()),
                 'back'   => admin_url( $to ),
-                'goto'   => UUCSS_ACTIVATION_URL,
+                'goto'   => RAPIDLOAD_ACTIVATION_URL,
                 'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
                 'utm_medium' => 'plugin'
             ] );

@@ -316,7 +316,7 @@ class RapidLoad_Base
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::activation_url('authorize' ),
                 'onboard_activation_url' => self::onboard_activation_url('authorize' ),
-                'app_url' => defined('UUCSS_APP_URL') ? trailingslashit(UUCSS_APP_URL) : 'https://app.rapidload.io/',
+                'app_url' => defined('RAPIDLOAD_APP_URL') ? trailingslashit(RAPIDLOAD_APP_URL) : 'https://app.rapidload.io/',
                 'db_tobe_updated' => RapidLoad_DB::$current_version < 1.6,
                 "test_mode" => isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] === "1",
                 "uucss_disable_error_tracking" => isset(self::$options['uucss_disable_error_tracking']) && self::$options['uucss_disable_error_tracking'] === "1",
