@@ -1494,6 +1494,7 @@ class RapidLoad_Admin
             unset($options['uucss_api_key_verified']);
             unset($options['uucss_api_key']);
             unset($options['valid_domain']);
+            RapidLoad_Base::delete_option('rapidload_license_data');
             RapidLoad_Base::update_rapidload_core_settings($options);
             RapidLoad_Base::fetch_options(false);
 
