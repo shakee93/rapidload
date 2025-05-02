@@ -565,6 +565,8 @@ class RapidLoad_Base
 
     public static function uucss_activate() {
 
+        RapidLoad_DB::migrate_old_settings('autoptimize_uucss_settings', 'rapidload_settings');
+
         $default_options = self::get_option('rapidload_settings',self::get_default_options());
 
         if(!isset($default_options['uucss_api_key'])){
