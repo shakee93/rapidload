@@ -11,10 +11,10 @@
     'assets/inter-latin-ext-wght-normal.woff2' => 'assets/inter-latin-ext-wght-normal.woff2',
     'assets/inter-latin-wght-normal.woff2' => 'assets/inter-latin-wght-normal.woff2',
     'assets/index.css' => 'assets/index.Ct4fNtKh.css',
+    'assets/index.js' => 'assets/index.Dxo0-6JK.js',
     'assets/animations.js' => 'assets/animations.CVpoelRy.js',
     'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js',
     'assets/core-vendor.js' => 'assets/core-vendor.V80Ff32-.js',
-    'assets/InitTour.js' => 'assets/InitTour.c6k3Bjwp.js',
-    'assets/index.js' => 'assets/index.C_koie4b.js'
+    'assets/InitTour.js' => 'assets/InitTour.DjcXg3x4.js'
                     ]);
                     

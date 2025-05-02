@@ -130,6 +130,7 @@ const App = ({ popup, _showOptimizer = false }: {
         dispatch(setCommonState('testModeStatus', initialTestMode));
         dispatch(fetchPosts(options));
         dispatch(updateDiagnosticResults(options, headerUrl ? headerUrl : options.optimizer_url));
+        dispatch(updateLicense(options));
     }, [dispatch, activeReport]);
 
     const fetchRapidloadLicense = async () => {

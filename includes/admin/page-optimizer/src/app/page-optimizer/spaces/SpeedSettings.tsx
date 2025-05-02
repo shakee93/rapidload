@@ -319,6 +319,9 @@ const SpeedSettings = ({ }) => {
         }else if(!activeGearMode && activeGear){
             setActiveGearMode(activeGear);
             setTempGearMode(activeGear);
+        }else if(!activeGearMode && !activeGear){
+            setActiveGearMode('custom');
+            setTempGearMode('custom');
         }
        
         prevActiveGearRef.current = activeGear;
@@ -417,7 +420,7 @@ const SpeedSettings = ({ }) => {
                 </div>
 
 
-                <div>{JSON.stringify(activeGearMode)}</div>
+                {/* <div>{JSON.stringify(activeGearMode)}</div> */}
                 <div className={`flex gap-4 `} data-tour="settings-gear">
                     {modes.map((mode, index) => (
                         <TooltipText key={`tooltip-${mode}`} text={loading ? "Analyzing your site performance" : savingData || invalidatingCache ? "Please wait while applying optimizations" : null}>
