@@ -135,7 +135,7 @@ const LicenseWidget = () => {
             if (response.success) {
                 dispatch(updateLicense(options));
                 setLicenseInfo(null);
-               
+                dispatch(setCommonRootState('licenseConnected', false));
             }
         setLoading(false);
     };
