@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS_Store
+class RapidLoad_UnusedCSS_Store
 {
     use RapidLoad_Utils;
 
@@ -144,7 +144,7 @@ class UnusedCSS_Store
     }
 
     public function append_cache_file_dir( $file, $content ) {
-        return UnusedCSS::$base_dir . '/' . $this->hashed_file_name( $file, $content );
+        return RapidLoad_UnusedCSS::$base_dir . '/' . $this->hashed_file_name( $file, $content );
     }
 
     function cache_files($purged_files, $result = false){

@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <h2>Slash load times and boost PageSpeed scores by loading only CSS you need.</h2>
 <div class="content"
-     style="background-image: url('<?php echo esc_url(UUCSS_PLUGIN_URL . 'assets/images/intro.svg') ?>')">
+     style="background-image: url('<?php echo esc_url(RAPIDLOAD_PLUGIN_URL . 'assets/images/intro.svg') ?>')">
     <div class="uucss-row">
         <div class="left-section">
             <p>

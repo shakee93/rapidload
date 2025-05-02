@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class JavaScript
+class RapidLoad_JavaScript
 {
 
     use RapidLoad_Utils;
@@ -81,7 +81,7 @@ class JavaScript
     public function initFileSystem() {
 
         // Todo cache base setup
-        /*$cache_base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR);
+        /*$cache_base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR);
 
         $cache_base_option = RapidLoad_Base::get_option('rapidload_cache_base', null);
 
@@ -93,7 +93,7 @@ class JavaScript
 
         $this->base = RapidLoad_ThirdParty::plugin_exists('autoptimize') ? $cache_base_option . 'cpcss' : $cache_base . 'cpcss';*/
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'js';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'js';
 
         if ( ! $this->file_system ) {
             return false;
@@ -133,13 +133,13 @@ class JavaScript
 
                 if(isset($post->ID)){
 
-                    wp_enqueue_style( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
-                    wp_enqueue_style('rapidload-optimizer', UUCSS_PLUGIN_URL . 'includes/modules/javascript/assets/css/style.css', UUCSS_VERSION);
+                    wp_enqueue_style( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
+                    wp_enqueue_style('rapidload-optimizer', RAPIDLOAD_PLUGIN_URL . 'includes/modules/javascript/assets/css/style.css', RAPIDLOAD_VERSION);
 
-                    wp_enqueue_script( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
-                    wp_register_script( 'rapidload-js-optimizer', UUCSS_PLUGIN_URL . 'includes/modules/javascript/assets/js/js-core.js', array(
+                    wp_enqueue_script( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
+                    wp_register_script( 'rapidload-js-optimizer', RAPIDLOAD_PLUGIN_URL . 'includes/modules/javascript/assets/js/js-core.js', array(
                         'jquery',
-                    ) , UUCSS_VERSION);
+                    ) , RAPIDLOAD_VERSION);
 
                     wp_localize_script( 'rapidload-js-optimizer', 'rapidload_js_optimizer', [
                         'post_id' => $post->ID,
@@ -188,7 +188,7 @@ class JavaScript
             return false;
         }
 
-        new Javascript_Enqueue($job);
+        new RapidLoad_Javascript_Enqueue($job);
 
     }
 

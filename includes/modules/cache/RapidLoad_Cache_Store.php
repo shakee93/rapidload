@@ -392,7 +392,7 @@ class RapidLoad_Cache_Store
 
     public static function cache_expired( $cache_file ) {
 
-        if ( RapidLoad_Cache_Engine::$settings['cache_expiry_time'] === 0 ) {
+        if ( ((int)RapidLoad_Cache_Engine::$settings['cache_expiry_time']) === 0 ) {
             return false;
         }
 
@@ -884,7 +884,7 @@ class RapidLoad_Cache_Store
             }
         }
 
-        $outdated_settings = ( ! empty( $settings ) && ( ! defined( 'UUCSS_VERSION' ) || ! isset( $settings['version'] ) || $settings['version'] !== UUCSS_VERSION ) );
+        $outdated_settings = ( ! empty( $settings ) && ( ! defined( 'RAPIDLOAD_VERSION' ) || ! isset( $settings['version'] ) || $settings['version'] !== RAPIDLOAD_VERSION ) );
 
         if ( $outdated_settings ) {
             $settings = array();
@@ -1002,7 +1002,7 @@ class RapidLoad_Cache_Store
     public static function cache_page( $page_contents ) {
 
         $page_contents = (string) apply_filters( 'rapidload_page_contents_before_store', $page_contents );
-        $page_contents = (string) apply_filters_deprecated( 'rapidload_before_store', array( $page_contents ), UUCSS_VERSION, 'rapidload_page_contents_before_store' );
+        $page_contents = (string) apply_filters_deprecated( 'rapidload_before_store', array( $page_contents ), RAPIDLOAD_VERSION, 'rapidload_page_contents_before_store' );
 
         self::create_cache_file( $page_contents );
     }
@@ -1076,7 +1076,7 @@ class RapidLoad_Cache_Store
         }
 
         $ignore_tags = (array) apply_filters( 'rapidload_minify_html_ignore_tags', array( 'textarea', 'pre', 'code' ) );
-        $ignore_tags = (array) apply_filters_deprecated( 'cache_minify_ignore_tags', array( $ignore_tags ), UUCSS_VERSION, 'rapidload_minify_html_ignore_tags' );
+        $ignore_tags = (array) apply_filters_deprecated( 'cache_minify_ignore_tags', array( $ignore_tags ), RAPIDLOAD_VERSION, 'rapidload_minify_html_ignore_tags' );
 
         if ( ! RapidLoad_Cache_Engine::$settings['minify_inline_css_js'] ) {
             array_push( $ignore_tags, 'style', 'script' );
@@ -1138,7 +1138,7 @@ class RapidLoad_Cache_Store
         }
 
         $converted_page_contents = (string) apply_filters( 'rapidload_page_contents_after_webp_conversion', preg_replace_callback( $image_urls_regex, 'self::convert_webp', $page_contents ) );
-        $converted_page_contents = (string) apply_filters_deprecated( 'rapdiload_disk_webp_converted_data', array( $converted_page_contents ), UUCSS_VERSION, 'radpiload_page_contents_after_webp_conversion' );
+        $converted_page_contents = (string) apply_filters_deprecated( 'rapdiload_disk_webp_converted_data', array( $converted_page_contents ), RAPIDLOAD_VERSION, 'radpiload_page_contents_after_webp_conversion' );
 
         return $converted_page_contents;
     }

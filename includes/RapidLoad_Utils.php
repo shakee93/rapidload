@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) or die();
 
 /**
- * Class UnusedCSS
+ * Class RapidLoad_Utils
  */
 trait RapidLoad_Utils {
 
@@ -90,12 +90,12 @@ trait RapidLoad_Utils {
 
     public static function log( $object, $callee = false ) {
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::get_log_option() || (defined( 'RAPIDLOAD_DEBUG' ) && RAPIDLOAD_DEBUG === false)) {
 		    return false;
 	    }
 
 	    $data = is_string( $object ) ? $object : json_encode( $object, JSON_PRETTY_PRINT );
-	    //error_log( "[UUCSS_LOG] " . $data );
+	    //error_log( "[RAPIDLOAD_LOG] " . $data );
 
         $data = is_string( $object ) ? [ 'log' => $object] : $object;
 
@@ -111,15 +111,15 @@ trait RapidLoad_Utils {
 
         $log_instance = self::get_log_instance();
 
-        if($log_instance->exists(UUCSS_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(UUCSS_LOG_DIR .'debug.log'))){
+        if($log_instance->exists(RAPIDLOAD_LOG_DIR .'debug.log') && !empty($log_instance->get_contents(RAPIDLOAD_LOG_DIR .'debug.log'))){
             $data = ",\n" . $data;
         }
 
-        $log_instance->put_contents(UUCSS_LOG_DIR .'debug.log', $data, FILE_APPEND);
+        $log_instance->put_contents(RAPIDLOAD_LOG_DIR .'debug.log', $data, FILE_APPEND);
 
 	    if ( $callee ) {
 
-		    error_log( "[UUCSS_LOG] " . json_encode( [
+		    error_log( "[RAPIDLOAD_LOG] " . json_encode( [
 				    "file" => debug_backtrace()[1]['file'],
 				    "function" => debug_backtrace()[1]['function'],
 				    "class" => debug_backtrace()[1]['class'],
@@ -133,12 +133,12 @@ trait RapidLoad_Utils {
 
     public static function uucss_log($object){
 
-	    if ( ! self::get_log_option() || (defined( 'UUCSS_DEBUG' ) && UUCSS_DEBUG === false)) {
+	    if ( ! self::get_log_option() || (defined( 'RAPIDLOAD_DEBUG' ) && RAPIDLOAD_DEBUG === false)) {
 		    return false;
 	    }
 
 	    $data = is_string( $object ) ? $object : json_encode( $object, JSON_PRETTY_PRINT );
-	    error_log( "[UUCSS_LOG] " . $data );
+	    error_log( "[RAPIDLOAD_LOG] " . $data );
     }
 
     public static function add_admin_notice($message, $type='error') {
@@ -190,7 +190,7 @@ trait RapidLoad_Utils {
                     <div class="notice-icon">
                         <div class="logo-wrapper">
                             <img
-                                    src="<?php echo esc_url(UUCSS_PLUGIN_URL . 'assets/images/logo-icon.svg') ?>" width="40"
+                                    src="<?php echo esc_url(RAPIDLOAD_PLUGIN_URL . 'assets/images/logo-icon.svg') ?>" width="40"
                                     alt="RapidLoad logo">
                         </div>
                     </div>
@@ -341,16 +341,16 @@ trait RapidLoad_Utils {
 
     public static function activation_url( $action, $to = 'options-general.php?page=rapidload' ) {
 
-	    if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
-		    define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+	    if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
+		    define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
 	    }
 
-	    return UUCSS_ACTIVATION_URL . '?' . build_query( [
+	    return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
 			    'action' => $action,
 			    'nonce'  => wp_create_nonce( 'uucss_activation' ),
 			    'site'   => trailingslashit(get_site_url()),
 			    'back'   => admin_url( $to ),
-			    'goto'   => UUCSS_ACTIVATION_URL,
+			    'goto'   => RAPIDLOAD_ACTIVATION_URL,
                 'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
 		        'utm_medium' => 'plugin'
             ] );
@@ -358,16 +358,16 @@ trait RapidLoad_Utils {
 
     public static function onboard_activation_url( $action, $to = 'options-general.php?page=rapidload-on-board' ) {
 
-        if ( ! defined( 'UUCSS_ACTIVATION_URL' ) ) {
-            define( 'UUCSS_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+        if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
+            define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
         }
 
-        return UUCSS_ACTIVATION_URL . '?' . build_query( [
+        return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
                 'action' => $action,
                 'nonce'  => wp_create_nonce( 'uucss_activation' ),
                 'site'   => trailingslashit(get_site_url()),
                 'back'   => admin_url( $to ),
-                'goto'   => UUCSS_ACTIVATION_URL,
+                'goto'   => RAPIDLOAD_ACTIVATION_URL,
                 'utm_source' => RapidLoad_ThirdParty::plugin_exists('autoptimize') ? 'connect_autoptimize' : 'connect_rapidload',
                 'utm_medium' => 'plugin'
             ] );
@@ -470,12 +470,12 @@ trait RapidLoad_Utils {
         $uucss_size = 0;
         $cpcss_size = 0;
 
-        if ( $file_system->exists( UnusedCSS::$base_dir ) ) {
-            $uucss_size = $this->dirSize( UnusedCSS::$base_dir );
+        if ( $file_system->exists( RapidLoad_UnusedCSS::$base_dir ) ) {
+            $uucss_size = $this->dirSize( RapidLoad_UnusedCSS::$base_dir );
         }
 
-        if ( $file_system->exists( CriticalCSS::$base_dir ) ) {
-            $cpcss_size = $this->dirSize( CriticalCSS::$base_dir );
+        if ( $file_system->exists( RapidLoad_CriticalCSS::$base_dir ) ) {
+            $cpcss_size = $this->dirSize( RapidLoad_CriticalCSS::$base_dir );
         }
 
         return $this->human_file_size( $uucss_size + $cpcss_size );
@@ -634,7 +634,7 @@ trait RapidLoad_Utils {
     {
         $file_relative_path = wp_parse_url($url, PHP_URL_PATH);
         $site_path = wp_parse_url(site_url(), PHP_URL_PATH);
-        $file_path = UUCSS_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
+        $file_path = RAPIDLOAD_ABSPATH . preg_replace("$^$site_path$", '', $file_relative_path);
         return str_replace("//","/", $file_path);
     }
 

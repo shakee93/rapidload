@@ -73,6 +73,8 @@ class RapidLoad_Base
 
             RapidLoad_DB::update_db_version();
 
+
+
             if (isset($_REQUEST['rapidload_preview'])) {
                 add_filter('determine_current_user', function (){
                     return 0;
@@ -102,7 +104,7 @@ class RapidLoad_Base
 
             RapidLoad_ThirdParty::initialize();
 
-            register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'vanish' ] );
+            register_deactivation_hook( RAPIDLOAD_PLUGIN_FILE, [ $this, 'vanish' ] );
 
             add_filter('uucss/cache-base-dir', function ($dir){
 
@@ -126,7 +128,7 @@ class RapidLoad_Base
 
             add_filter('plugin_row_meta',[$this, 'add_plugin_row_meta_links'],10,4);
 
-            add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), [
+            add_filter( 'plugin_action_links_' . plugin_basename( RAPIDLOAD_PLUGIN_FILE ), [
                 $this,
                 'add_plugin_action_link'
             ] );
@@ -161,9 +163,9 @@ class RapidLoad_Base
     public function enqueue_diagnose_script(){
 
         if (defined('RAPIDLOAD_DEV_MODE') && RAPIDLOAD_DEV_MODE) {
-            $diagnose_script_content = file_get_contents(plugin_dir_path(UUCSS_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.js');
+            $diagnose_script_content = file_get_contents(plugin_dir_path(RAPIDLOAD_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.js');
         } else {
-            $diagnose_script_content = file_get_contents(plugin_dir_path(UUCSS_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.min.js');
+            $diagnose_script_content = file_get_contents(plugin_dir_path(RAPIDLOAD_PLUGIN_FILE) . 'assets/js/rapidload-diagnose-script.min.js');
         }
 
         add_action('wp_enqueue_scripts', function() use ($diagnose_script_content) {
@@ -251,17 +253,17 @@ class RapidLoad_Base
 
         $file_system = self::get_log_instance();
 
-        if ( $file_system->exists( UUCSS_LOG_DIR ) ) {
+        if ( $file_system->exists( RAPIDLOAD_LOG_DIR ) ) {
             return true;
         }
 
-        if( $file_system->is_writable( UUCSS_LOG_DIR ) ){
+        if( $file_system->is_writable( RAPIDLOAD_LOG_DIR ) ){
             return false;
         }
 
-        $created = $file_system->mkdir( UUCSS_LOG_DIR , 0755, !$file_system->exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
+        $created = $file_system->mkdir( RAPIDLOAD_LOG_DIR , 0755, !$file_system->exists( wp_get_upload_dir()['basedir'] . '/rapidload/' ));
 
-        if (!$created || ! $file_system->is_writable( UUCSS_LOG_DIR ) || ! $file_system->is_readable( UUCSS_LOG_DIR ) ) {
+        if (!$created || ! $file_system->is_writable( RAPIDLOAD_LOG_DIR ) || ! $file_system->is_readable( RAPIDLOAD_LOG_DIR ) ) {
             return false;
         }
 
@@ -286,15 +288,15 @@ class RapidLoad_Base
                 }
             }
 
-            wp_enqueue_script( 'popper', UUCSS_PLUGIN_URL . 'assets/libs/tippy/popper.min.js', array( 'jquery' ) );
-            wp_enqueue_script( 'noty', UUCSS_PLUGIN_URL . 'assets/libs/noty/noty.js', array( 'jquery' ) );
-            wp_enqueue_script( 'tippy', UUCSS_PLUGIN_URL . 'assets/libs/tippy/tippy-bundle.umd.min.js', array( 'jquery' ) );
-            wp_enqueue_style( 'tippy', UUCSS_PLUGIN_URL . 'assets/libs/tippy/tippy.css' );
-            wp_enqueue_style( 'noty', UUCSS_PLUGIN_URL . 'assets/libs/noty/noty.css' );
-            wp_enqueue_style( 'noty-animate', UUCSS_PLUGIN_URL . 'assets/libs/noty/animate.css' );
-            wp_enqueue_style( 'noty-theme', UUCSS_PLUGIN_URL . 'assets/libs/noty/themes/mint.css' );
-            wp_enqueue_style( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
-            wp_enqueue_script( 'featherlight', UUCSS_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
+            wp_enqueue_script( 'popper', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/popper.min.js', array( 'jquery' ) );
+            wp_enqueue_script( 'noty', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/noty.js', array( 'jquery' ) );
+            wp_enqueue_script( 'tippy', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/tippy-bundle.umd.min.js', array( 'jquery' ) );
+            wp_enqueue_style( 'tippy', RAPIDLOAD_PLUGIN_URL . 'assets/libs/tippy/tippy.css' );
+            wp_enqueue_style( 'noty', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/noty.css' );
+            wp_enqueue_style( 'noty-animate', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/animate.css' );
+            wp_enqueue_style( 'noty-theme', RAPIDLOAD_PLUGIN_URL . 'assets/libs/noty/themes/mint.css' );
+            wp_enqueue_style( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.css' );
+            wp_enqueue_script( 'featherlight', RAPIDLOAD_PLUGIN_URL . 'assets/libs/popup/featherlight.js' , array( 'jquery' ) );
 
             $rapidload_license_data = get_option('rapidload_license_data', null);   
 
@@ -302,7 +304,7 @@ class RapidLoad_Base
                 $rapidload_license_data = unserialize($rapidload_license_data);
             }
 
-            wp_register_script( 'uucss_global_admin_script', UUCSS_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], UUCSS_VERSION );
+            wp_register_script( 'uucss_global_admin_script', RAPIDLOAD_PLUGIN_URL . 'assets/js/uucss_global.js', [ 'jquery', 'wp-util' ], RAPIDLOAD_VERSION );
             $data = array(
                 'ajax_url'          => admin_url( 'admin-ajax.php' ),
                 'setting_url'       => admin_url( 'options-general.php?page=uucss_legacy' ),
@@ -314,7 +316,7 @@ class RapidLoad_Base
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::activation_url('authorize' ),
                 'onboard_activation_url' => self::onboard_activation_url('authorize' ),
-                'app_url' => defined('UUCSS_APP_URL') ? trailingslashit(UUCSS_APP_URL) : 'https://app.rapidload.io/',
+                'app_url' => defined('RAPIDLOAD_APP_URL') ? trailingslashit(RAPIDLOAD_APP_URL) : 'https://app.rapidload.io/',
                 'db_tobe_updated' => RapidLoad_DB::$current_version < 1.6,
                 "test_mode" => isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] === "1",
                 "uucss_disable_error_tracking" => isset(self::$options['uucss_disable_error_tracking']) && self::$options['uucss_disable_error_tracking'] === "1",
@@ -322,7 +324,7 @@ class RapidLoad_Base
             );
             wp_localize_script( 'uucss_global_admin_script', 'uucss_global', $data );
             wp_enqueue_script( 'uucss_global_admin_script' );
-            wp_enqueue_style( 'uucss_global_admin', UUCSS_PLUGIN_URL . 'assets/css/uucss_global.css', [], UUCSS_VERSION );
+            wp_enqueue_style( 'uucss_global_admin', RAPIDLOAD_PLUGIN_URL . 'assets/css/uucss_global.css', [], RAPIDLOAD_VERSION );
 
         }, apply_filters('uucss/scripts/global/priority', 90));
 
@@ -334,8 +336,8 @@ class RapidLoad_Base
 
         if ( 'plugins.php' === $pagenow )
         {
-            $file   = basename( UUCSS_PLUGIN_FILE );
-            $folder = basename( dirname( UUCSS_PLUGIN_FILE ) );
+            $file   = basename( RAPIDLOAD_PLUGIN_FILE );
+            $folder = basename( dirname( RAPIDLOAD_PLUGIN_FILE ) );
             $hook = "in_plugin_update_message-{$folder}/{$file}";
             add_action( $hook, [$this, 'render_update_message'], 20, 2 );
         }
@@ -433,11 +435,11 @@ class RapidLoad_Base
 
         if($is_multisite){
 
-            self::$options = get_blog_option(get_current_blog_id(), 'autoptimize_uucss_settings', self::get_default_options());
+            self::$options = get_blog_option(get_current_blog_id(), 'rapidload_settings', self::get_default_options());
 
         }else{
 
-            self::$options = get_site_option( 'autoptimize_uucss_settings', self::get_default_options() );
+            self::$options = get_site_option( 'rapidload_settings', self::get_default_options() );
         }
 
         foreach (self::$modules as $module){
@@ -563,10 +565,12 @@ class RapidLoad_Base
 
     public static function uucss_activate() {
 
-        $default_options = self::get_option('autoptimize_uucss_settings',self::get_default_options());
+        RapidLoad_DB::migrate_old_settings('autoptimize_uucss_settings', 'rapidload_settings');
+
+        $default_options = self::get_option('rapidload_settings',self::get_default_options());
 
         if(!isset($default_options['uucss_api_key'])){
-            self::update_option('autoptimize_uucss_settings', $default_options);
+            self::update_rapidload_core_settings($default_options);
         }
 
         add_option( 'rapidload_do_activation_redirect', true );
@@ -580,7 +584,7 @@ class RapidLoad_Base
 
         $token = sanitize_text_field( wp_unslash( $_REQUEST['rapidload_license'] ) );
 
-        $options = self::get_option( 'autoptimize_uucss_settings' , []);
+        $options = self::get_option( 'rapidload_settings' , []);
 
         if ( ! isset( $options ) || empty( $options ) || ! $options ) {
             $options = [];
@@ -595,7 +599,7 @@ class RapidLoad_Base
             $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $token;
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::update_rapidload_core_settings($options);
 
             header( 'Location: ' . admin_url( 'admin.php?page=rapidload') );
             exit;
@@ -641,7 +645,7 @@ class RapidLoad_Base
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $token;
 
-        self::update_option( 'autoptimize_uucss_settings', $options );
+        self::update_rapidload_core_settings($options);
 
         if(!isset($options['whitelist_packs']) || isset($options['whitelist_packs']) && empty($options['whitelist_packs'])){
 
@@ -653,7 +657,7 @@ class RapidLoad_Base
                 $options['whitelist_packs'][] = $white_pack->id . ':' . $white_pack->name;
             }
 
-            self::update_option( 'autoptimize_uucss_settings', $options );
+            self::update_rapidload_core_settings($options);
         }
 
         self::fetch_options(false);
@@ -685,7 +689,7 @@ class RapidLoad_Base
 
         if(isset($data) && isset($data->data) && is_array($data->data)){
             self::$options['suggested_whitelist_packs'] = $data->data;
-            self::update_option( 'autoptimize_uucss_settings', self::$options );
+            self::update_rapidload_core_settings(self::$options);
 
             if(wp_doing_ajax()){
                 wp_send_json_success( $data->data);
@@ -741,7 +745,7 @@ class RapidLoad_Base
     }
 
     public static function cache_file_count(){
-        $uucss_files = isset(UnusedCSS::$base_dir) && !empty(UnusedCSS::$base_dir) ? scandir(UnusedCSS::$base_dir) : [];
+        $uucss_files = isset(RapidLoad_UnusedCSS::$base_dir) && !empty(RapidLoad_UnusedCSS::$base_dir) ? scandir(RapidLoad_UnusedCSS::$base_dir) : [];
         if(is_array($uucss_files)){
             $uucss_files = array_filter($uucss_files, function ($file){
                 return false !== strpos($file, '.css');
@@ -749,7 +753,7 @@ class RapidLoad_Base
         }else{
             $uucss_files = [];
         }
-        $cpcss_files = isset(CriticalCSS::$base_dir) && !empty(CriticalCSS::$base_dir) ? scandir(CriticalCSS::$base_dir) : [];
+        $cpcss_files = isset(RapidLoad_CriticalCSS::$base_dir) && !empty(RapidLoad_CriticalCSS::$base_dir) ? scandir(RapidLoad_CriticalCSS::$base_dir) : [];
         if(is_array($cpcss_files)){
             $cpcss_files = array_filter($cpcss_files, function ($file){
                 return false !== strpos($file, '.css');
@@ -769,12 +773,23 @@ class RapidLoad_Base
     }
 
     public static function display_get_start_link() {
-        add_filter( 'plugin_action_links_' . plugin_basename( UUCSS_PLUGIN_FILE ), function ( $links ) {
+        add_filter( 'plugin_action_links_' . plugin_basename( RAPIDLOAD_PLUGIN_FILE ), function ( $links ) {
             $_links = array(
                 '<a href="' . admin_url( 'options-general.php?page=rapidload' ) . '">Get Started <span>⚡️</span> </a>',
             );
 
             return array_merge( $_links, $links );
         } );
+    }
+
+    public static function update_rapidload_core_settings($settings){
+
+        if(is_multisite()){
+
+            return update_blog_option(get_current_blog_id(), "rapidload_settings", $settings);
+
+        }
+        return update_site_option( "rapidload_settings", $settings );
+
     }
 }

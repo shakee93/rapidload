@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS_DB extends RapidLoad_DB{
+class RapidLoad_UnusedCSS_DB extends RapidLoad_DB{
 
     public static function requeue_where_status($status = ''){
 

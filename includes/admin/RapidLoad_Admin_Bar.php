@@ -49,7 +49,7 @@ class RapidLoad_Admin_Bar {
         }
 
 
-        $package = UUCSS_PLUGIN_URL . $optimizer_path;
+        $package = RAPIDLOAD_PLUGIN_URL . $optimizer_path;
 
         $asset_map_file = RAPIDLOAD_PLUGIN_DIR . '/' . $optimizer_path . '/asset-map.php';
         $indexJS = '/assets/index.js';
@@ -70,7 +70,7 @@ class RapidLoad_Admin_Bar {
             echo '<link id="rapidload-page-optimizer-css" rel="preload" href="' . esc_url($package . $indexCSS) . '" as="style" type="text/css"/>';
         });
 
-        wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], UUCSS_VERSION, false);
+        wp_register_script( 'rapidload_page_optimizer', esc_url($package . $indexJS),[], RAPIDLOAD_VERSION, false);
 
         $current_url = isset($_SERVER['REQUEST_URI']) ? home_url(sanitize_url(wp_unslash($_SERVER['REQUEST_URI']))) : $this->get_current_url();
 
@@ -91,15 +91,15 @@ class RapidLoad_Admin_Bar {
             'titan_stylesheet_url' => $package .  $indexCSS,
             'load_optimizer' => true,
             'page_optimizer_package_base' => $package,
-            'page_optimizer_base' => UUCSS_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
-            'plugin_url' => UUCSS_PLUGIN_URL,
+            'page_optimizer_base' => RAPIDLOAD_PLUGIN_URL .  'includes/admin/page-optimizer/dist',
+            'plugin_url' => RAPIDLOAD_PLUGIN_URL,
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'admin_url' => admin_url(),
             'dashboard_url' => admin_url( 'admin.php?page=rapidload' ),
             'optimizer_url' => defined('RAPIDLOAD_OPTIMIZER_TEST_URL') ? RAPIDLOAD_OPTIMIZER_TEST_URL : $this->transform_url($current_url),
             'nonce' => self::create_nonce( 'uucss_nonce' ),
             'timezone' => get_option('timezone_string', 'UTC'),
-            'rapidload_version' => UUCSS_VERSION,
+            'rapidload_version' => RAPIDLOAD_VERSION,
             'actions' => [
                 [
                     'tooltip' => 'Clear Site Cache',
@@ -127,7 +127,7 @@ class RapidLoad_Admin_Bar {
                     'icon' => 'clear_optimization'
                 ]
             ],
-            'api_root' => defined('UUCSS_API_URL') ? UUCSS_API_URL : 'https://api.rapidload.io/api/v1',
+            'api_root' => defined('RAPIDLOAD_API_URL') ? RAPIDLOAD_API_URL : 'https://api.rapidload.io/api/v1',
             'enable_entire_site' => RapidLoad_DB::get_optimization_count() < 2,
             'rest_url' => RapidLoadRestApi::rest_url(),
             'license_key' => RapidLoad_Base::get_license_key(),
@@ -225,7 +225,7 @@ class RapidLoad_Admin_Bar {
                     'id'    => 'rapidload',
                     'title' => '<div id="rl-node-wrapper" class="'. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? 'rl-node-wrapper rl-test-mode-on' : 'rl-node-wrapper') .'" >
                                     <span class="rl-icon">
-                                        <img src="'. esc_url(UUCSS_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
+                                        <img src="'. esc_url(RAPIDLOAD_PLUGIN_URL . '/assets/images/logo-icon-light.svg') .'" alt="" style="max-width: 100%">
                                     </span>
                                     <span class="rl-label">'.__( 'RapidLoad', 'unusedcss' ) . '</span>
                                     '. ( isset($options['rapidload_test_mode']) && $options['rapidload_test_mode'] === "1" ? ' <span class="rl-input-wrapper-test-mode"><span class="rl-input-test-mode">Test Mode</span></span>' : '' ) . '</div>',

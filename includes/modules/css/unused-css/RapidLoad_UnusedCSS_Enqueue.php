@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class UnusedCSS_Enqueue
+class RapidLoad_UnusedCSS_Enqueue
 {
     use RapidLoad_Utils;
 
@@ -41,7 +41,7 @@ class UnusedCSS_Enqueue
 
         if(isset($this->job_data->id) && $this->job_data->status === 'success' && !empty($this->files)){
 
-            wp_register_script( 'rapidload', false, [], UUCSS_VERSION , false);
+            wp_register_script( 'rapidload', false, [], RAPIDLOAD_VERSION , false);
             wp_localize_script( 'rapidload', 'rapidload', [
                 'files' => $this->files,
                 'do_not_load_original_css' => apply_filters('rapidload/frontend/do-not-load/original-css', false),
@@ -190,7 +190,7 @@ class UnusedCSS_Enqueue
                 $_frontend_data['href'] =  $sheet->href;
 
                 // check if we found a script index and the file exists
-                if ( is_numeric( $key ) && $this->file_system->exists( UnusedCSS::$base_dir . '/' . $this->files[ $key ]['uucss'] ) ) {
+                if ( is_numeric( $key ) && $this->file_system->exists( RapidLoad_UnusedCSS::$base_dir . '/' . $this->files[ $key ]['uucss'] ) ) {
 
                     $uucss_file = $this->files[ $key ]['uucss'];
 
@@ -412,7 +412,7 @@ class UnusedCSS_Enqueue
     private function get_inline_content( $file_name ) {
 
         $file = implode( '/', [
-            UnusedCSS::$base_dir,
+            RapidLoad_UnusedCSS::$base_dir,
             $file_name
         ] );
 

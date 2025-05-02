@@ -134,7 +134,7 @@ class RapidLoad_Font
 
     public function initFileSystem() {
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'font';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'font';
 
         if ( ! $this->file_system ) {
             return false;

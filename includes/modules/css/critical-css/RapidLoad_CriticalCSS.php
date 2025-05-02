@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class CriticalCSS
+class RapidLoad_CriticalCSS
 {
     use RapidLoad_Utils;
 
@@ -37,7 +37,7 @@ class CriticalCSS
             return;
         }
 
-        new CriticalCSS_Queue();
+        new RapidLoad_CriticalCSS_Queue();
 
         add_action('uucss/options/css', [$this, 'render_options']);
 
@@ -138,7 +138,7 @@ class CriticalCSS
 
     public function vanish() {
 
-        CriticalCSS_DB::clear_data();
+        RapidLoad_CriticalCSS_DB::clear_data();
 
         if ( $this->file_system->exists( self::$base_dir ) ){
             $this->file_system->delete( self::$base_dir, true );
@@ -229,7 +229,7 @@ class CriticalCSS
 
         }else{
 
-            CriticalCSS_DB::clear_data(isset($args['soft']));
+            RapidLoad_CriticalCSS_DB::clear_data(isset($args['soft']));
             $this->clear_files();
 
         }
@@ -277,22 +277,22 @@ class CriticalCSS
                 }
                 case 'warnings':
                 {
-                    CriticalCSS_DB::requeue_where_status('success');
+                    RapidLoad_CriticalCSS_DB::requeue_where_status('success');
                     break;
                 }
                 case 'failed':
                 {
-                    CriticalCSS_DB::requeue_where_status('failed');
+                    RapidLoad_CriticalCSS_DB::requeue_where_status('failed');
                     break;
                 }
                 case 'processing':
                 {
-                    CriticalCSS_DB::requeue_where_status('processing');
+                    RapidLoad_CriticalCSS_DB::requeue_where_status('processing');
                     break;
                 }
                 default:
                 {
-                    CriticalCSS_DB::requeue_where_status('');
+                    RapidLoad_CriticalCSS_DB::requeue_where_status('');
                     break;
                 }
             }
@@ -402,14 +402,14 @@ class CriticalCSS
             $this->job_data = new RapidLoad_Job_Data($job, 'cpcss');
         }
 
-        new CriticalCSS_Enqueue($this->job_data);
+        new RapidLoad_CriticalCSS_Enqueue($this->job_data);
 
     }
 
     public function initFileSystem() {
 
         // Todo cache base setup
-        /*$cache_base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR);
+        /*$cache_base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR);
 
         $cache_base_option = RapidLoad_Base::get_option('rapidload_cache_base', null);
 
@@ -421,7 +421,7 @@ class CriticalCSS
 
         $this->base = RapidLoad_ThirdParty::plugin_exists('autoptimize') ? $cache_base_option . 'cpcss' : $cache_base . 'cpcss';*/
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'cpcss';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'cpcss';
 
         if ( ! $this->file_system ) {
             return false;
@@ -455,13 +455,13 @@ class CriticalCSS
 
     public function init_async_store($job_data, $args)
     {
-        $store = new CriticalCSS_Store($job_data, $args);
+        $store = new RapidLoad_CriticalCSS_Store($job_data, $args);
         $store->purge_css();
     }
 
     public function cleanCacheFiles(){
 
-        $data = CriticalCSS_DB::get_success_data();
+        $data = RapidLoad_CriticalCSS_DB::get_success_data();
 
         $used_files = [];
 
@@ -478,14 +478,14 @@ class CriticalCSS
             }
         }
 
-        if($this->file_system->exists(CriticalCSS::$base_dir)){
-            if ($handle = opendir(CriticalCSS::$base_dir)) {
+        if($this->file_system->exists(RapidLoad_CriticalCSS::$base_dir)){
+            if ($handle = opendir(RapidLoad_CriticalCSS::$base_dir)) {
                 while (false !== ($file = readdir($handle))) {
                     if ('.' === $file) continue;
                     if ('..' === $file) continue;
 
-                    if(!in_array($file, $used_files) && $this->file_system->exists(CriticalCSS::$base_dir . '/' . $file)){
-                        $this->file_system->delete(CriticalCSS::$base_dir . '/' . $file);
+                    if(!in_array($file, $used_files) && $this->file_system->exists(RapidLoad_CriticalCSS::$base_dir . '/' . $file)){
+                        $this->file_system->delete(RapidLoad_CriticalCSS::$base_dir . '/' . $file);
                     }
                 }
                 closedir($handle);

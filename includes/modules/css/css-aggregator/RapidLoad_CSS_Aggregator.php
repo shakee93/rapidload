@@ -36,7 +36,7 @@ class RapidLoad_CSS_Aggregator
 
     public function initFileSystem() {
 
-        $this->base = apply_filters('uucss/cache-base-dir', UUCSS_CACHE_CHILD_DIR) . 'aggregated';
+        $this->base = apply_filters('uucss/cache-base-dir', RAPIDLOAD_CACHE_CHILD_DIR) . 'aggregated';
 
         if ( ! $this->file_system ) {
             return false;

@@ -154,6 +154,24 @@ abstract class RapidLoad_DB
 
     public static function update_db_version(){
         self::$current_version = RapidLoad_Base::get_option( self::$db_option , "0");
+        self::migrate_old_settings('autoptimize_uucss_settings', 'rapidload_settings');
+    }
+
+    public static function migrate_old_settings($old_settings_option_name, $new_settings_option_name){
+
+        $old_settings = RapidLoad_Base::get_option( $old_settings_option_name, null);
+
+        if ( $old_settings ) {
+
+            $new_settings = RapidLoad_Base::get_option( $new_settings_option_name , null);
+
+            if ( ! $new_settings ) {
+                RapidLoad_Base::update_rapidload_core_settings($old_settings);
+                RapidLoad_Base::update_option( $new_settings_option_name . "_migration", $old_settings );
+                RapidLoad_Base::delete_option( $old_settings_option_name );
+            }
+        }
+            
     }
 
     public static function check_db_updates(){
@@ -817,6 +835,7 @@ abstract class RapidLoad_DB
         $option_table = $table_prefix . "options";
 
         $options_to_delete = [
+            'rapidload_settings',
             'autoptimize_uucss_settings',
             'rapidload_cache',
             'rapidload_module_cache',

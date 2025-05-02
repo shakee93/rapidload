@@ -28,7 +28,7 @@ class RapidLoad_Queue
         }
 
         if(isset($options['uucss_jobs_per_queue'])){
-            self::$job_count = defined('UUCSS_JOB_COUNT_PER_QUEUE') ? UUCSS_JOB_COUNT_PER_QUEUE : (int) $options['uucss_jobs_per_queue'];
+            self::$job_count = defined('RAPIDLOAD_JOB_COUNT_PER_QUEUE') ? RAPIDLOAD_JOB_COUNT_PER_QUEUE : (int) $options['uucss_jobs_per_queue'];
 
             if(self::$job_count > 8){
                 self::$job_count = self::$job_count / count($rapidload->modules()->active_modules());
@@ -55,7 +55,7 @@ class RapidLoad_Queue
             'product',
         ));
 
-        register_deactivation_hook( UUCSS_PLUGIN_FILE, [ $this, 'unschedule_cron' ] );
+        register_deactivation_hook( RAPIDLOAD_PLUGIN_FILE, [ $this, 'unschedule_cron' ] );
     }
 
     function unschedule_cron(){

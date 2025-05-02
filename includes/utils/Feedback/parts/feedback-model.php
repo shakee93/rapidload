@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     you fill in this survey. Email address or IP addresses will not be sent.</p>
                 <ul>
                     <li><strong>Plugin version </strong> <code
-                                id="uucss_plugin_version"> <?php echo esc_html(UUCSS_VERSION) ?> </code></li>
+                                id="uucss_plugin_version"> <?php echo esc_html(RAPIDLOAD_VERSION) ?> </code></li>
                     <li><strong>Current website:</strong> <code> <?php echo esc_url(trailingslashit(get_site_url())) ?> </code></li>
                     <li><strong>Uninstall reason </strong> <i> Selected reason from the above survey </i></li>
                 </ul>
