@@ -143,6 +143,12 @@ RapidLoad accepts both broad and star(*) expressions and regular expression excl
 
 == Changelog ==
 
+= 3.1.10 - 02/05/2025 =
+ * fix: removed hidden files from archive
+ * fix: added non minified version of js files
+ * fix: improved coding standards
+ * fix: known bugs
+
 = 3.1.9 - 17/04/2025 =
  * fix: improved internationalization by removing variable text domains and dynamic strings
  * fix: added proper data sanitization and validation for POST/GET/REQUEST inputs
