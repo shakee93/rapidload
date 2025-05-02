@@ -11,17 +11,17 @@
     'assets/inter-latin-ext-wght-normal.woff2' => 'assets/inter-latin-ext-wght-normal.woff2',
     'assets/inter-latin-wght-normal.woff2' => 'assets/inter-latin-wght-normal.woff2',
     'assets/index.css' => 'assets/index.Ct4fNtKh.css',
-    'assets/animations.js' => 'assets/animations.CVpoelRy.js',
     'assets/core-vendor.js' => 'assets/core-vendor.V80Ff32-.js',
+    'assets/animations.js' => 'assets/animations.CVpoelRy.js',
+    'assets/index.js' => 'assets/index.CcULYrW6.js',
     'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js',
-    'assets/index.js' => 'assets/index.Dxo0-6JK.js',
-    'assets/InitTour.js' => 'assets/InitTour.DjcXg3x4.js',
-    'assets/animations.CVpoelRy.map' => 'assets/animations.CVpoelRy.js.map',
+    'assets/InitTour.js' => 'assets/InitTour.CyQZVK4T.js',
     'assets/core-vendor.V80Ff32-.map' => 'assets/core-vendor.V80Ff32-.js.map',
-    'assets/vendor.T3CYoFTJ.map' => 'assets/vendor.T3CYoFTJ.js.map',
-    'assets/index.C35QmP2s.map' => 'assets/index.C35QmP2s.js.map',
+    'assets/animations.CVpoelRy.map' => 'assets/animations.CVpoelRy.js.map',
     'assets/index.Be5yF97N.map' => 'assets/index.Be5yF97N.js.map',
-    'assets/InitTour.DjcXg3x4.map' => 'assets/InitTour.DjcXg3x4.js.map',
-    'assets/index.Dxo0-6JK.map' => 'assets/index.Dxo0-6JK.js.map'
+    'assets/vendor.T3CYoFTJ.map' => 'assets/vendor.T3CYoFTJ.js.map',
+    'assets/index.BfDekdUA.map' => 'assets/index.BfDekdUA.js.map',
+    'assets/InitTour.CyQZVK4T.map' => 'assets/InitTour.CyQZVK4T.js.map',
+    'assets/index.CcULYrW6.map' => 'assets/index.CcULYrW6.js.map'
                     ]);
                     
