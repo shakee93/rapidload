@@ -159,21 +159,16 @@ abstract class RapidLoad_DB
 
     public static function migrate_old_settings($old_settings_option_name, $new_settings_option_name){
 
-        $old_settings = null;
-
-        if(is_multisite()){
-            $old_settings = get_blog_option(get_current_blog_id(), $old_settings_option_name, null);
-        }else{
-            $old_settings = get_site_option($old_settings_option_name, null);
-        }
+        $old_settings = RapidLoad_Base::get_option( $old_settings_option_name, null);
 
         if ( $old_settings ) {
 
-            $new_settings = get_option( $new_settings_option_name , null);
+            $new_settings = RapidLoad_Base::get_option( $new_settings_option_name , null);
 
             if ( ! $new_settings ) {
-                update_option( $new_settings_option_name, $old_settings );
-                delete_option( $old_settings_option_name );
+                RapidLoad_Base::update_rapidload_core_settings($old_settings);
+                RapidLoad_Base::update_option( $new_settings_option_name . "_migration", $old_settings );
+                RapidLoad_Base::delete_option( $old_settings_option_name );
             }
         }
             
