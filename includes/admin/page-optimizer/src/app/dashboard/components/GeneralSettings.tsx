@@ -180,7 +180,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onClose }) => {
 
                 {renderCheckbox('Minify HTML', 'Minify the HTML output of your pages.', 'rapidload_minify_html')}
                 {renderCheckbox('Query String', 'Identify URLs with query strings as separate URLs.', 'uucss_query_string')}
-                {renderCheckbox('Preload Links', 'Preload internal links for faster navigation.', 'preload_internal_links')}
+                {/* {renderCheckbox('Preload Links', 'Preload internal links for faster navigation.', 'preload_internal_links')} */}
                 {renderCheckbox('Debug Mode', 'Enable debug logs for RapidLoad.', 'uucss_enable_debug')}
 
                 
