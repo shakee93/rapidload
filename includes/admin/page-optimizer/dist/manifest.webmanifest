@@ -1,8 +1,0 @@
-{
-  "name": "RapidLoad Titan Optimizer",
-  "short_name": "Titan",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "purple",
-  "theme_color": "purple"
-}
