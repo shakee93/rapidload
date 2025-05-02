@@ -130,12 +130,14 @@ const LicenseWidget = () => {
     );
 
     const deactivateLicense = async () => {
-
+        setLoading(true);
         const response = await dispatch(updateLicense(options, {disconnect: true}));
             if (response.success) {
                 dispatch(updateLicense(options));
                 setLicenseInfo(null);
+               
             }
+        setLoading(false);
     };
 
     return (
@@ -175,7 +177,7 @@ const LicenseWidget = () => {
                                 <div className='flex gap-2 justify-end '>
                                     <button className="cursor-pointer text-brand-500 py-1.5" onClick={() => window.open('https://app.rapidload.io/', 'blank')}>View My Account</button>
                                     <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => window.open('https://app.rapidload.io/subscription', 'blank')}>Upgrade</button>
-                                    <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => deactivateLicense()}>Deactivate</button>
+                                    <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => deactivateLicense()}> {loading ? <Loader className='w-4 animate-spin' /> : "Deactivate"}</button>
 
                                 </div>
                             ) : (
