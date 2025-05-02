@@ -5,7 +5,7 @@ Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 3.1.9
+Stable tag: 3.1.10
 Requires PHP: 5.4
 License: GPLv3
 License URI: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
