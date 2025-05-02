@@ -357,7 +357,7 @@ class RapidLoad_Admin
 
         $options['rapidload_test_mode'] = $status;
 
-        RapidLoad_Base::update_option('rapidload_settings', $options);
+        RapidLoad_Base::update_rapidload_core_settings($options);
 
         wp_send_json_success([
             'status' => $options['rapidload_test_mode'] === "1"
@@ -931,7 +931,7 @@ class RapidLoad_Admin
             $options['rapidload_test_mode'] = sanitize_text_field(wp_unslash($_REQUEST['rapidload_test_mode'])) === 'true' ? 1 : 0;
         }
 
-        RapidLoad_Base::update_option('rapidload_settings',$options);
+        RapidLoad_Base::update_rapidload_core_settings($options);
 
         wp_send_json_success(RapidLoad_Base::get()->modules()->active_modules());
     }
@@ -1136,7 +1136,7 @@ class RapidLoad_Admin
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $license_key;
 
-        RapidLoad_Base::update_option( 'rapidload_settings', $options );
+        RapidLoad_Base::update_rapidload_core_settings($options);
 
         wp_send_json_success([
             'success' => true,
@@ -1168,13 +1168,13 @@ class RapidLoad_Admin
 
         if($uucss_api->is_error($results)){
             $options['valid_domain'] = false;
-            RapidLoad_Base::update_option('rapidload_settings', $options);
+            RapidLoad_Base::update_rapidload_core_settings($options);
             return;
         }
 
         if(!isset($options['valid_domain']) || !$options['valid_domain']){
             $options['valid_domain'] = true;
-            RapidLoad_Base::update_option('rapidload_settings', $options);
+            RapidLoad_Base::update_rapidload_core_settings($options);
         }
     }
 
@@ -1200,7 +1200,7 @@ class RapidLoad_Admin
         unset( $options['uucss_api_key'] );
         unset( $options['whitelist_packs'] );
 
-        RapidLoad_Base::update_option( 'rapidload_settings', $options );
+        RapidLoad_Base::update_rapidload_core_settings($options);
 
         wp_send_json_success( true );
     }
@@ -1494,7 +1494,7 @@ class RapidLoad_Admin
             unset($options['uucss_api_key_verified']);
             unset($options['uucss_api_key']);
             unset($options['valid_domain']);
-            RapidLoad_Base::update_option('rapidload_settings', $options);
+            RapidLoad_Base::update_rapidload_core_settings($options);
             RapidLoad_Base::fetch_options(false);
 
             $cache_key = 'pand-' . md5( 'first-uucss-job' );

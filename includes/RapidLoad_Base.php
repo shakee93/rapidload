@@ -570,7 +570,7 @@ class RapidLoad_Base
         $default_options = self::get_option('rapidload_settings',self::get_default_options());
 
         if(!isset($default_options['uucss_api_key'])){
-            self::update_option('rapidload_settings', $default_options);
+            self::update_rapidload_core_settings($default_options);
         }
 
         add_option( 'rapidload_do_activation_redirect', true );
@@ -599,7 +599,7 @@ class RapidLoad_Base
             $options['uucss_api_key_verified'] = "1";
             $options['uucss_api_key']          = $token;
 
-            self::update_option( 'rapidload_settings', $options );
+            self::update_rapidload_core_settings($options);
 
             header( 'Location: ' . admin_url( 'admin.php?page=rapidload') );
             exit;
@@ -645,7 +645,7 @@ class RapidLoad_Base
         $options['uucss_api_key_verified'] = "1";
         $options['uucss_api_key']          = $token;
 
-        self::update_option( 'rapidload_settings', $options );
+        self::update_rapidload_core_settings($options);
 
         if(!isset($options['whitelist_packs']) || isset($options['whitelist_packs']) && empty($options['whitelist_packs'])){
 
@@ -657,7 +657,7 @@ class RapidLoad_Base
                 $options['whitelist_packs'][] = $white_pack->id . ':' . $white_pack->name;
             }
 
-            self::update_option( 'rapidload_settings', $options );
+            self::update_rapidload_core_settings($options);
         }
 
         self::fetch_options(false);
@@ -689,7 +689,7 @@ class RapidLoad_Base
 
         if(isset($data) && isset($data->data) && is_array($data->data)){
             self::$options['suggested_whitelist_packs'] = $data->data;
-            self::update_option( 'rapidload_settings', self::$options );
+            self::update_rapidload_core_settings(self::$options);
 
             if(wp_doing_ajax()){
                 wp_send_json_success( $data->data);
@@ -780,5 +780,16 @@ class RapidLoad_Base
 
             return array_merge( $_links, $links );
         } );
+    }
+
+    public static function update_rapidload_core_settings($settings){
+
+        if(is_multisite()){
+
+            return update_blog_option(get_current_blog_id(), "rapidload_settings", $settings);
+
+        }
+        return update_site_option( "rapidload_settings", $settings );
+
     }
 }
