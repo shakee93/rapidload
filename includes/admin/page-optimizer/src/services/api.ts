@@ -458,28 +458,39 @@ class ApiService {
 
     // async updateLicense(data?: any): Promise<any> {
     //     try {
-    //         this.baseURL.searchParams.append('action', data? 'uucss_connect': 'uucss_license');
-    //
+    //         const action = data? data.disconnect ? 'uucss_license': 'uucss_connect' : 'uucss_license';
+    //         this.baseURL.searchParams.append('action', action);
+
+    //         console.log(data)
     //         const formData = new FormData();
     //         formData.append('license_key', data);
-    //
+    //         data.disconnect && formData.append('disconnect', data.disconnect ? 'true' : 'false');
+
     //         const response = await fetch(this.baseURL, {
     //             method: 'POST',
     //             body: formData,
     //         });
-    //         return this.throwIfError(response);
+
+    //         const responseData = await response.json();
+    //         return responseData;
     //     } catch (error) {
-    //         console.error(error);
-    //         throw error;
+    //         console.error('Error in updateLicense:', error);
+    //         return { success: false, data: "An unknown error occurred" };
     //     }
     // }
 
     async updateLicense(data?: any): Promise<any> {
         try {
-            this.baseURL.searchParams.append('action', data ? 'uucss_connect' : 'uucss_license');
+            const action = data ? (data.disconnect ? 'uucss_license' : 'uucss_connect') : 'uucss_license';
+            this.baseURL.searchParams.append('action', action);
 
             const formData = new FormData();
-            formData.append('license_key', data);
+            if (data) {
+                formData.append('license_key', data.license_key || data);
+                if (data.disconnect) {
+                    formData.append('disconnect', 'true');
+                }
+            }
 
             const response = await fetch(this.baseURL, {
                 method: 'POST',

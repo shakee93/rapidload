@@ -12,6 +12,7 @@ import { Loader, PlugIcon } from "lucide-react";
 import { Button } from 'components/ui/button';
 import AppButton from 'components/ui/app-button';
 import { setCommonRootState } from '../../../store/common/commonActions';
+import ApiService from "../../../services/api";
 
 type InputChangeHandler = React.ChangeEventHandler<HTMLInputElement>;
 
@@ -128,6 +129,17 @@ const LicenseWidget = () => {
         </motion.div>
     );
 
+    const deactivateLicense = async () => {
+        setLoading(true);
+        const response = await dispatch(updateLicense(options, {disconnect: true}));
+            if (response.success) {
+                dispatch(updateLicense(options));
+                setLicenseInfo(null);
+                dispatch(setCommonRootState('licenseConnected', false));
+            }
+        setLoading(false);
+    };
+
     return (
         <AnimatePresence mode="wait">
             <div className="w-full flex flex-col gap-4">
@@ -165,6 +177,10 @@ const LicenseWidget = () => {
                                 <div className='flex gap-2 justify-end '>
                                     <button className="cursor-pointer text-brand-500 py-1.5" onClick={() => window.open('https://app.rapidload.io/', 'blank')}>View My Account</button>
                                     <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => window.open('https://app.rapidload.io/subscription', 'blank')}>Upgrade</button>
+                                    <button className="cursor-pointer flex gap-2 items-center bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => deactivateLicense()}>
+                                        {loading && <Loader className='w-4 animate-spin' />} Deactivate
+                                    </button>
+
                                 </div>
                             ) : (
                                 <div className='flex gap-4 justify-end '>

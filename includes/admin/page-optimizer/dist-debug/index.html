@@ -13,10 +13,10 @@
     window.rapidload_optimizer = {
       page_optimizer_package_base: window.location.origin,
       rapidload_version: '2.2.26',
-      optimizer_url: '%VITE_OPTIMIZER_URL%',
-      ajax_url: '%VITE_SERVER_ROOT%wp-admin/admin-ajax.php',
-      api_root: '%VITE_API_ROOT%/api/v1'.includes('VITE') ? 'https://api.rapidload.io/api/v1' : '%VITE_API_ROOT%/api/v1',
-      ai_root: '%VITE_AI_ROOT%/api'.includes('VITE') ? 'https://ai.rapidload.io/api' : '%VITE_AI_ROOT%/api'
+      optimizer_url: 'https://staging.rapidload.io/',
+      ajax_url: 'http://rapidloadai.local/wp-admin/admin-ajax.php',
+      api_root: 'https://api.rapidload.io/api/v1'.includes('VITE') ? 'https://api.rapidload.io/api/v1' : 'https://api.rapidload.io/api/v1',
+      ai_root: 'https://ai.rapidload.io/api'.includes('VITE') ? 'https://ai.rapidload.io/api' : 'https://ai.rapidload.io/api'
     };
 
 
@@ -122,7 +122,7 @@
   
   <script>
 (function(){
-var preloads = [{"parentTagName":"head","tagName":"link","attrs":{"rel":"manifest","href":"/manifest.webmanifest"}},{"parentTagName":"head","tagName":"script","attrs":{"type":"module","crossorigin":"","src":"/assets/index.BnKh7MEY.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/core-vendor.V80Ff32-.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/vendor.T3CYoFTJ.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/animations.CVpoelRy.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"stylesheet","crossorigin":"","href":"/assets/index.Ct4fNtKh.css"}}];
+var preloads = [{"parentTagName":"head","tagName":"link","attrs":{"rel":"manifest","href":"/manifest.webmanifest"}},{"parentTagName":"head","tagName":"script","attrs":{"type":"module","crossorigin":"","src":"/assets/index.BQBETMTj.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/core-vendor.V80Ff32-.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/vendor.T3CYoFTJ.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"modulepreload","crossorigin":"","href":"/assets/animations.CVpoelRy.js"}},{"parentTagName":"head","tagName":"link","attrs":{"rel":"stylesheet","crossorigin":"","href":"/assets/index.Ct4fNtKh.css"}}];
 function setAttribute(target, attrs) {
 for (var key in attrs) {
   target.setAttribute(key, attrs[key]);
@@ -173,7 +173,7 @@ document.getElementsByTagName(item.parentTagName)[0].appendChild(childNode);
       });
     }
 
-  </script>
+  </script>
 </body>
 
 </html>

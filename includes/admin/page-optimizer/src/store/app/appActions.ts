@@ -379,6 +379,7 @@ export const updateLicense = (options: WordPressOptions, data?: any): ThunkActio
 
         try {
             const connectLicense = await api.updateLicense(data);
+            
             if (connectLicense.success) {
                 dispatch({
                     type: LICENSE_INFORMATION,
