@@ -36,7 +36,7 @@ class RapidLoad_HTML_Minifier_Enqueue
             $this->options = $state['options'];
         }
 
-        $minifier = new WP_HTML_Compression($this->dom->__toString());
+        $minifier = new RapidLoad_WP_HTML_Compression($this->dom->__toString());
 
         $state['dom'] = $minifier->__toString();
 

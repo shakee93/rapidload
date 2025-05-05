@@ -143,6 +143,9 @@ RapidLoad accepts both broad and star(*) expressions and regular expression excl
 
 == Changelog ==
 
+= 3.1.11 - 05/05/2025 =
+ * fix: renamed PHP classes to follow RapidLoad naming convention
+
 = 3.1.10 - 02/05/2025 =
  * fix: remove bin files from wp.org repo
  * fix: added original version for non-minified files
