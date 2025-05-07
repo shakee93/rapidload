@@ -687,7 +687,11 @@ class RapidLoad_Optimizer
 
         self::$global = $global;
 
-        self::$options = self::$strategy === "desktop" ? isset(self::$job->id) ? self::$job->get_desktop_options() : self::$job->get_mobile_options() : self::$global_options;
+        if(isset(self::$job->id)){
+            self::$options = self::$strategy === "desktop" ? self::$job->get_desktop_options() : self::$job->get_mobile_options();
+        }else{
+            self::$options = self::$global_options;
+        }
 
         self::$previous_options = self::$options;
 
