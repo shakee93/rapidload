@@ -316,7 +316,7 @@ class RapidLoad_Base
                 'notifications' => apply_filters('uucss/notifications', []),
                 'activation_url' => self::activation_url('authorize' ),
                 'onboard_activation_url' => self::onboard_activation_url('authorize' ),
-                'app_url' => defined('RAPIDLOAD_APP_URL') ? trailingslashit(RAPIDLOAD_APP_URL) : 'https://app.rapidload.io/',
+                'app_url' => defined('RAPIDLOAD_APP_URL') ? trailingslashit(RAPIDLOAD_APP_URL) : 'https://app.rapidload.ai/',
                 'db_tobe_updated' => RapidLoad_DB::$current_version < 1.6,
                 "test_mode" => isset(self::$options['rapidload_test_mode']) && self::$options['rapidload_test_mode'] === "1",
                 "uucss_disable_error_tracking" => isset(self::$options['uucss_disable_error_tracking']) && self::$options['uucss_disable_error_tracking'] === "1",
@@ -404,7 +404,7 @@ class RapidLoad_Base
     function add_plugin_row_meta_links($plugin_meta, $plugin_file, $plugin_data, $status)
     {
         if(isset($plugin_data['TextDomain']) && $plugin_data['TextDomain'] === 'autoptimize-unusedcss'){
-            $plugin_meta[] = '<a href="https://docs.rapidload.io/" target="_blank">Documentation</a>';
+            $plugin_meta[] = '<a href="https://docs.rapidload.ai/" target="_blank">Documentation</a>';
             $plugin_meta[] = '<a href="https://rapidload.zendesk.com/hc/en-us/requests/new" target="_blank">Submit Ticket</a>';
         }
         return $plugin_meta;

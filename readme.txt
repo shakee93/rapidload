@@ -101,11 +101,11 @@ e.g.
 
 = How much does it cost to purchase a license of RapidLoad and where can I buy one? =
 
-You can purchase the license for as little as $10/m. Just sign up directly via [rapidload.io](https://rapidload.io) website.
+You can purchase the license for as little as $10/m. Just sign up directly via [rapidload.ai](https://rapidload.ai) website.
 
-= What are the Terms and Conditions of rapidload.io usage =
+= What are the Terms and Conditions of rapidload.ai usage =
 
-Read it here : [https://rapidload.io/terms-conditions/](https://rapidload.io/terms-conditions/)
+Read it here : [https://rapidload.ai/terms-conditions/](https://rapidload.ai/terms-conditions/)
 
 = How does this plugin speed up my site? =
 

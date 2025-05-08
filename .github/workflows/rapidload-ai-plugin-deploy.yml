@@ -49,7 +49,7 @@ jobs:
           echo "REQUIRES_PHP=$REQUIRES_PHP" >> $GITHUB_ENV
           echo "STABLE_TAG=$STABLE_TAG" >> $GITHUB_ENV
           echo "REQUIRES_AT_LEAST=$REQUIRES_AT_LEAST" >> $GITHUB_ENV
-          echo "HOMEPAGE=https://rapidload.io" >> $GITHUB_ENV
+          echo "HOMEPAGE=https://rapidload.ai" >> $GITHUB_ENV
 
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG" >> $GITHUB_ENV

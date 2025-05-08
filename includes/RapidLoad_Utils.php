@@ -342,7 +342,7 @@ trait RapidLoad_Utils {
     public static function activation_url( $action, $to = 'options-general.php?page=rapidload' ) {
 
 	    if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
-		    define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+		    define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.ai/activate' );
 	    }
 
 	    return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
@@ -359,7 +359,7 @@ trait RapidLoad_Utils {
     public static function onboard_activation_url( $action, $to = 'options-general.php?page=rapidload-on-board' ) {
 
         if ( ! defined( 'RAPIDLOAD_ACTIVATION_URL' ) ) {
-            define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.io/activate' );
+            define( 'RAPIDLOAD_ACTIVATION_URL', 'https://app.rapidload.ai/activate' );
         }
 
         return RAPIDLOAD_ACTIVATION_URL . '?' . build_query( [
