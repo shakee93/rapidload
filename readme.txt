@@ -1,6 +1,6 @@
 === RapidLoad AI - Optimize Web Vitals Automatically === 
 
-Contributors: shakee93, futtta
+Contributors: rapidload, futtta
 Donate link:
 Tags: ai, cache, speed, performance, images
 Requires at least: 5.0
