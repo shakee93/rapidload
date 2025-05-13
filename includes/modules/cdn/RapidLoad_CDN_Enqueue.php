@@ -44,6 +44,8 @@ class RapidLoad_CDN_Enqueue
 
         $links = $this->dom->find( 'link' );
 
+        $site_url = trailingslashit(apply_filters('rapidload/cdn/site_url', site_url()));
+
         foreach ($links as $link){
 
             if(isset($link->rel) && !in_array($link->rel, ['stylesheet', 'preload'])){
@@ -56,10 +58,10 @@ class RapidLoad_CDN_Enqueue
                 continue;
             }
 
-            if($this->str_contains($link->href, site_url())){
+            if($this->str_contains($link->href, $site_url)){
 
                 if($this->is_cdn_enabled()){
-                    $link->href = str_replace(trailingslashit(site_url()),trailingslashit($this->options['uucss_cdn_url']),$link->href);
+                    $link->href = str_replace($site_url, trailingslashit($this->options['uucss_cdn_url']),$link->href);
                 }
 
             }
@@ -70,10 +72,10 @@ class RapidLoad_CDN_Enqueue
 
         foreach ($scripts as $script){
 
-            if($this->str_contains($script->src, site_url())){
+            if($this->str_contains($script->src, $site_url)){
 
                 if($this->is_cdn_enabled()){
-                    $script->src = str_replace(trailingslashit(site_url()),trailingslashit($this->options['uucss_cdn_url']),$script->src);
+                    $script->src = str_replace($site_url, trailingslashit($this->options['uucss_cdn_url']),$script->src);
                 }
 
             }
