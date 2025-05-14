@@ -281,6 +281,20 @@ class RapidLoad_CriticalCSS_Store
 
         if(isset($result->completed) && $result->completed){
 
+            if(!isset($result->data) && !isset($result->data_mobile)){
+                error_log('Critical css content is empty');
+                $this->job_data->mark_as_failed([
+                    'code' => 500,
+                    'message' => 'Critical css content is empty'
+                ]);
+                $this->job_data->save();
+
+                do_action( 'uucss/cache_cleared', [
+                    'url' => $this->job_data->job->url
+                ]);
+
+                return;
+            }
             $this->cache_file($result->data, $result->data_mobile, $result);
 
         }

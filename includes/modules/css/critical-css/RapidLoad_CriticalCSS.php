@@ -325,7 +325,24 @@ class RapidLoad_CriticalCSS
 
                 if(isset($job_data->id)){
 
-                    $link['cpcss'] = (array) $job_data;
+                    $link['cpcss'] = [
+                        'attempts' => $job_data->attempts,
+                        'created_at' => $job_data->created_at,
+                        'time' => isset( $job_data->created_at ) ? strtotime( $job_data->created_at ) : null,
+                        'data' => $job_data->get_cpcss_data(),
+                        'hits' => $job_data->hits,
+                        'id' => $job_data->id,
+                        'job_id' => $job_data->job->id,
+                        'queue_job_id' => $job_data->queue_job_id,
+                        'status' => $job_data->status,
+                        'job' => (array) $job_data->job,
+                    ];
+                    $link['meta'] = [
+                        'error' => $job_data->get_error(),
+                        'stats' => $job_data->get_stats(),
+                        'warnings' => $job_data->get_warnings(),
+                    ];
+                    $link['attempts'] = $job_data->attempts;
                     if($job->rule !== 'is_url'){
                         $link['rule_status'] = $job_data->status;
                         $link['rule_hits'] = $job_data->hits;

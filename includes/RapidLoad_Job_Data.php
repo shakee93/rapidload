@@ -191,17 +191,14 @@ class RapidLoad_Job_Data{
         if(isset($this->stats) && !empty($this->stats)){
             return unserialize($this->stats);
         }
-        return [];
+        return null;
     }
 
     public function get_error(){
         if(isset($this->error) && !empty($this->error)){
             return unserialize($this->error);
         }
-        return [
-            'code' => null,
-            'message' => null
-        ];
+        return null;
     }
 
     public static function find_or_fail($id, $job_type){
