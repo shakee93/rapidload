@@ -174,14 +174,16 @@ const PageSpeedScore = ({ pagespeed, priority = true }: PageSpeedScoreProps) => 
 
                         <TooltipText text="Mobile">
                             <div onClick={() => dispatch(changeReport('mobile'))}
-                                className={`relative z-1 text-sm flex flex-column gap-2 pl-[18px] px-5 py-3 font-medium rounded-xl ${diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'}`}>
+                            //${diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'}
+                                className={`relative z-1 text-sm flex flex-column gap-2 pl-[18px] px-5 py-3 font-medium rounded-xl `}>
                                 <DevicePhoneMobileIcon className="w-4 font-medium dark:text-brand-500" />
                             </div>
                         </TooltipText>
 
                         <TooltipText text='Desktop'>
                             <div onClick={() => dispatch(changeReport('desktop'))}
-                                className={`relative z-1 text-sm flex flex-column gap-2 pl-2 px-5 py-1 font-medium rounded-xl ${diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'}`}>
+                            //${diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'}
+                                className={`relative z-1 text-sm flex flex-column gap-2 pl-2 px-5 py-1 font-medium rounded-xl `}>
                                 <Monitor className="w-4 font-medium dark:text-brand-500 " />
                             </div>
                         </TooltipText>

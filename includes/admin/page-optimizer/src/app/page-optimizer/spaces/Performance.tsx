@@ -131,7 +131,7 @@ const Performance = () => {
 
                         `whitespace-nowrap border-r rounded-[20px] cursor-pointer w-[170px]  flex items-center gap-2 px-5 py-3 text-sm font-medium`,
                         activeTab === 'configurations' ? "font-medium bg-brand-0 dark:bg-brand-950" : "dark:hover:text-brand-300",
-                        diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'
+                        // diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none'
                     )}
                     data-tour="speed-settings"> <BoltIcon className='w-4 rounded-[15px]' />  Speed Settings</div>
 
@@ -141,7 +141,7 @@ const Performance = () => {
                     className={cn(
 
                         `whitespace-nowrap border-r rounded-[20px] cursor-pointer w-[200px]  flex items-center gap-2 px-5 py-3 text-sm font-medium`,
-                        diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
+                        // diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
                         activeTab === 'insights' || activeTab === 'opportunities'  || activeTab === 'diagnostics' || activeTab === 'passed_audits' ? "font-medium bg-brand-0 dark:bg-brand-950" : "dark:hover:text-brand-300"
                     )}
                     data-tour="page-speed-insights"> <GaugeCircle className='w-4' />  Page Speed Insights </div>
@@ -152,7 +152,7 @@ const Performance = () => {
                     className={cn(
 
                         `whitespace-nowrap border-r rounded-[20px] cursor-pointer w-[160px]  flex items-center gap-2 px-5 py-3 text-sm font-medium`,
-                        diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
+                        // diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
                         activeTab === 'optimizations' ? "font-medium bg-brand-0 dark:bg-brand-950" : "dark:hover:text-brand-300"
                     )}
                     data-tour="optimizations"> <AIStarIcon cls='w-4 dark:text-brand-300' isDark={isDark} />  AI Diagnostic </div>

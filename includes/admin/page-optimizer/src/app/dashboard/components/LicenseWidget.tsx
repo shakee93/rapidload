@@ -52,7 +52,7 @@ const LicenseWidget = () => {
     };
 
     useEffect(() => {
-        if (license) {
+        if (license && typeof license === 'object') {
             setLicenseInfo(license);
         }
     }, [license]);

@@ -348,8 +348,7 @@ const App = ({ popup, _showOptimizer = false }: {
                                                 className='select-none relative flex dark:bg-brand-800/40 py-0.5 pl-[2px] pr-[8px] rounded-2xl overflow-hidden'
                                             >
                                                 <div
-                                                    className={`absolute top-1 bottom-1 left-1 bg-brand-200/60 border dark:bg-brand-950 rounded-xl transition-all duration-300 ease-in-out transform ${activeRoute === routes[1].id ? "translate-x-[115%] w-[45%]" : "translate-x-0 w-[55%]"
-                                                        }`}
+                                                    className={`absolute top-1 bottom-1 left-1 bg-brand-200/60 border dark:bg-brand-950 rounded-xl transition-all duration-300 ease-in-out transform ${activeRoute === routes[1].id ? "translate-x-[115%] w-[45%]" : "translate-x-0 w-[55%]"}`}
                                                 >
 
                                                 </div>
@@ -364,7 +363,7 @@ const App = ({ popup, _showOptimizer = false }: {
                                                             onClick={() => setActiveRoute(route.id)}
                                                             className={cn(
                                                                 'flex h-10 text-sm z-10 font-medium items-center px-3 gap-2 cursor-pointer',
-                                                                diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
+                                                                // diagnosticLoading && 'cursor-not-allowed opacity-90 pointer-events-none',
                                                                 activeRoute === route.id ? 'text-black dark:text-white  dark:text-brand-300' : 'text-gray-500'
                                                             )}
                                                         >
