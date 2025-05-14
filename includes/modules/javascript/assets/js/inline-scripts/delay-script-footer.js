@@ -37,49 +37,73 @@
     }
 
     function prepareScripts() {
-        var scripts = Array.from(document.querySelectorAll('[data-rapidload-src]'));
+        // Get all script elements at once
+        var allScripts = Array.from(document.querySelectorAll('[data-rapidload-src], noscript[data-rapidload-delayed]'));
 
-        return scripts.map(function (script, index) {
+        return allScripts.map(function (script, index) {
+            // Check if it's an inline script (noscript element)
+            if (script.tagName.toLowerCase() === 'noscript') {
+                return {
+                    id: `script-${index}`,
+                    scriptElement: script,
+                    loaded: null,
+                    success: false,
+                    content: script.innerHTML,
+                    type: 'inline'
+                };
+            }
+            
+            // It's an external script
             var scriptId = script.getAttribute('id');
             var src = script.getAttribute('data-rapidload-src');
-
+            
             return {
-                id: scriptId || index,
+                id: scriptId || `script-${index}`,
                 scriptElement: script,
                 loaded: null,
                 success: false,
-                src: src
-            }
-        });;
+                src: src,
+                type: 'external'
+            };
+        });
     }
 
     function loadScript(script) {
         return new Promise((resolve, reject)=>{
             var scriptElement = script.scriptElement;
-            scriptElement.addEventListener('load', () => onScriptLoad(script));
-            scriptElement.addEventListener('error', () => onScriptLoad(script, false));
+            scriptElement.addEventListener('load', () => {
+                onScriptLoad(script)
+                rpDebug('info', 'loaded', script.src)
+                resolve()
+            });
+            scriptElement.addEventListener('error', () => {
+                onScriptLoad(script, false)
+                rpDebug('info', 'error', script.src)
+                resolve()
+            });
 
             setTimeout(() => {
                 if (script.src) {
                     scriptElement.setAttribute('src', script.src);
                     scriptElement.removeAttribute('data-rapidload-src');
                 }
-                resolve(); // Resolve the promise after setting the src attribute
+                //resolve(); // Resolve the promise after setting the src attribute
             }, 0); // 1000 milliseconds = 1 second
 
         })
     }
 
-    async function preloadScripts(totalScripts) {
+    async function preloadScripts(scripts) {
+        const externalScripts = scripts.filter(script => script.type === 'external');
         const preloadPromises = [];
 
-        totalScripts.forEach((script) => {
+        externalScripts.forEach((script) => {
             const link = document.createElement('link');
             link.rel = 'preload';
             link.as = 'script';
             link.fetchpriority = 'high';
             link.href = script.src;
-            let promise = null
+            let promise = null;
 
             try {
                 promise = new Promise((resolve, reject) => {
@@ -92,11 +116,11 @@
                         resolve(script);
                     };
                 });
-            }catch (e){
-                console.log(e)
+            } catch (e) {
+                console.log(e);
             }
 
-            if(promise){
+            if (promise) {
                 preloadPromises.push(promise);
             }
 
@@ -106,14 +130,30 @@
         await Promise.all(preloadPromises);
     }
 
+    function loadInlineScript(script) {
+        return new Promise((resolve) => {
+            const newScript = document.createElement('script');
+            const inlineScript = document.createTextNode(script.content);
+            newScript.appendChild(inlineScript);
+            script.scriptElement.parentNode.insertBefore(newScript, script.scriptElement);
+            script.scriptElement.parentNode.removeChild(script.scriptElement);
+            onScriptLoad(script, true);
+            rpDebug('info', 'loaded inline script', script.content)
+            resolve();
+        });
+    }
+
     async function loadScriptsInDependencyOrder() {
+        // First preload external scripts
+        await preloadScripts(totalScripts);
 
-        await preloadScripts(totalScripts)
-
-        load_inline_delayed();
-
+        // Load all scripts in sequence
         for (const script of totalScripts) {
-            loadScript(script);
+            if (script.type === 'inline') {
+                await loadInlineScript(script);
+            } else {
+                await loadScript(script);
+            }
         }
     }
 
