@@ -13,6 +13,12 @@ import { Button } from 'components/ui/button';
 import AppButton from 'components/ui/app-button';
 import { setCommonRootState } from '../../../store/common/commonActions';
 import ApiService from "../../../services/api";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "components/ui/dialog";
 
 type InputChangeHandler = React.ChangeEventHandler<HTMLInputElement>;
 
@@ -21,6 +27,7 @@ const LicenseWidget = () => {
     const [licenseMessage, setLicenseMessage] = useState("");
     const { license } = useSelector(optimizerData);
     const { options, uucssGlobal } = useAppContext();
+    const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
 
     const [licenseInfo, setLicenseInfo] = useState<License | null>(() => options.rapidload_license_data || null);
     const [inputLicense, setInputLicense] = useState("");
@@ -138,6 +145,7 @@ const LicenseWidget = () => {
                 dispatch(setCommonRootState('licenseConnected', false));
             }
         setLoading(false);
+        setShowDeactivateDialog(false);
     };
 
     return (
@@ -177,9 +185,40 @@ const LicenseWidget = () => {
                                 <div className='flex gap-2 justify-end '>
                                     <button className="cursor-pointer text-brand-500 py-1.5" onClick={() => window.open('https://app.rapidload.io/', 'blank')}>View My Account</button>
                                     <button className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => window.open('https://app.rapidload.io/subscription', 'blank')}>Upgrade</button>
-                                    <button className="cursor-pointer flex gap-2 items-center bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" onClick={() => deactivateLicense()}>
+                                    <button 
+                                        className="cursor-pointer flex gap-2 items-center bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all" 
+                                        onClick={() => setShowDeactivateDialog(true)}
+                                    >
                                         {loading && <Loader className='w-4 animate-spin' />} Deactivate
                                     </button>
+
+                                    <Dialog open={showDeactivateDialog} onOpenChange={setShowDeactivateDialog}>
+                                        <DialogContent className="sm:max-w-[425px] p-6">
+                                            <DialogHeader>
+                                                <DialogTitle>Deactivate License</DialogTitle>
+                                            </DialogHeader>
+                                            <div className="py-4">
+                                                <p className="text-sm text-gray-500 dark:text-brand-300">
+                                                    Are you sure you want to deactivate your RapidLoad license? This will disable all premium features.
+                                                </p>
+                                            </div>
+                                            <div className="flex justify-end gap-3 pt-4">
+                                                <button 
+                                                    onClick={() => setShowDeactivateDialog(false)}
+                                                    className="cursor-pointer bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button 
+                                                    onClick={deactivateLicense}
+                                                    className="cursor-pointer flex gap-2 items-center bg-brand-100/90 text-brand-950 py-1.5 px-4 rounded-lg dark:text-brand-300 dark:bg-brand-800 dark:border-brand-600 dark:border dark:hover:bg-brand-600/40 transition-all"
+                                                >
+                                                    {loading && <Loader className='w-4 animate-spin' />}
+                                                    Yes
+                                                </button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
 
                                 </div>
                             ) : (
