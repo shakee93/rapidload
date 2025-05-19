@@ -12,9 +12,9 @@
     'assets/inter-latin-wght-normal.woff2' => 'assets/inter-latin-wght-normal.woff2',
     'assets/index.css' => 'assets/index.Ct4fNtKh.css',
     'assets/core-vendor.js' => 'assets/core-vendor.V80Ff32-.js',
-    'assets/index.js' => 'assets/index.Bb2X_k_t.js',
+    'assets/index.js' => 'assets/index.QCFK3l9e.js',
+    'assets/InitTour.js' => 'assets/InitTour.CU2aGXrG.js',
     'assets/animations.js' => 'assets/animations.CVpoelRy.js',
-    'assets/InitTour.js' => 'assets/InitTour.C-FqCs5y.js',
     'assets/vendor.js' => 'assets/vendor.T3CYoFTJ.js'
                     ]);
                     
