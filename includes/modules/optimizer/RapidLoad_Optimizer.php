@@ -1833,7 +1833,7 @@ class RapidLoad_Optimizer
         $url = sanitize_url(wp_unslash($_REQUEST['url']));
 
         if(self::$global_options['rapidload_test_mode'] && self::$global_options['rapidload_test_mode'] === "1"){
-            $url = add_query_arg('rapidload_preview', 'true', $url);
+            $url = add_query_arg('rapidload_preview', '', $url);
         }
 
         $agent = isset($_REQUEST['user_agent']) ? sanitize_text_field(wp_unslash($_REQUEST['user_agent'])) : null;
