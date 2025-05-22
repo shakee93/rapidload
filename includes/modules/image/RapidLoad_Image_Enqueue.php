@@ -379,7 +379,7 @@ class RapidLoad_Image_Enqueue
 
     public function preload_images(){
 
-        $preloaded_images = $this->dom->find('link[as*=image]');
+        /*$preloaded_images = $this->dom->find('link[as*=image]');
 
         foreach ($preloaded_images as $preloaded_image){
 
@@ -395,7 +395,7 @@ class RapidLoad_Image_Enqueue
 
             }
 
-        }
+        }*/
 
         $preloaded_files = isset($this->options['uucss_preload_lcp_image']) && !empty($this->options['uucss_preload_lcp_image']) ? explode("\n", $this->options['uucss_preload_lcp_image']) : [];
 
@@ -407,7 +407,7 @@ class RapidLoad_Image_Enqueue
 
             $preloaded_file = str_replace("\r", "", $preloaded_file);
             if(filter_var($preloaded_file, FILTER_VALIDATE_URL)){
-                $preload_image = '<link rel="preload" href="' . RapidLoad_Image::get_replaced_url($preloaded_file, null, null, null, ['retina' => 'ret_img']) .'" as="image" > ';
+                $preload_image = '<link rel="preload" href="' . $preloaded_file .'" as="image" > ';
                 $title_content = $this->dom->find( 'title' )[0]->outertext;
                 $this->dom->find( 'title' )[0]->__set('outertext', $title_content . $preload_image);
             }
