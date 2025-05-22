@@ -25,7 +25,7 @@ if ( ! defined( 'RAPIDLOAD_INDEX_FILE' ) ) {
 }
 
 if ( ! defined( 'RAPIDLOAD_VERSION' ) ) {
-    define( 'RAPIDLOAD_VERSION', '3.1.11' );
+    define( 'RAPIDLOAD_VERSION', '3.1.12' );
 }
 
 if ( ! defined( 'RAPIDLOAD_CACHE_CHILD_DIR' ) ) {
