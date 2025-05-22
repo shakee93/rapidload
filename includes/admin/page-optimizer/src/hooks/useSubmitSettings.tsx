@@ -121,7 +121,7 @@ const useSubmitSettings = () => {
                     })
                 }
 
-                dispatch(fetchReport(options, url, true));
+              //  dispatch(fetchReport(options, url, true));
                 
 
             }else if(!analyze){

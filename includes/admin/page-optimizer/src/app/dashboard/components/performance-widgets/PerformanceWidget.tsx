@@ -46,9 +46,9 @@ const PerformanceWidget: React.FC<PerformanceWidgetProps> = ({ className }) => {
                 <div className="flex justify-center p-4 max-w-xl mx-auto w-full relative ">
                     {/* Before Results */}
 
-
+                    {homePerformance.first_entry && homePerformance.last_entry > homePerformance.first_entry ? <>
                     <div className="flex flex-col items-center gap-2 px-10 py-4 rounded-2xl w-[230px]" >
-                        <div className="text-lg font-semibold">{homePerformance.last_entry && homePerformance.last_entry > homePerformance.first_entry ? 'Before Results' : 'Current Score'}</div>
+                        <div className="text-lg font-semibold">Before Results</div>
                         <div className="">
                             {homePerformance.first_entry < 1 ? (
                                 <Skeleton className="w-[140px] h-[140px] rounded-full" />
@@ -72,21 +72,26 @@ const PerformanceWidget: React.FC<PerformanceWidgetProps> = ({ className }) => {
                             )}
                         </div>
                     </div>
+                   
 
 
-                    {homePerformance.last_entry && homePerformance.last_entry > homePerformance.first_entry ? <>
+                    
                         {/* Divider with BoltIcon */}
                         <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 p-2 rounded-full text-white z-10`}
                             style={{ background: `linear-gradient(to right, ${progressbarColor}, ${lighterColor})` }}
                         >
                             <BoltIcon className="h-6 w-6 text-white" />
                         </div>
+                        </>
+                    : <></>}
+
 
                         {/* Optimized Score */}
                         {/*<div className="flex flex-col items-center gap-2 px-10 py-4 rounded-2xl w-[230px]"*/}
                         {/*     style={{ background: progressbarBg}}>*/}
                         <div className="flex flex-col items-center gap-2 px-10 py-4 rounded-2xl w-[230px]">
-                            <div className="text-lg font-semibold">Optimized Score</div>
+                        <div className="text-lg font-semibold">{homePerformance.last_entry && homePerformance.last_entry > homePerformance.first_entry ? 'Optimized Score' : 'Current Score'}</div>
+                            {/* <div className="text-lg font-semibold">Optimized Score</div> */}
                             <div className="">
                                 {homePerformance.last_entry < 1 ? (
                                     <Skeleton className="w-[140px] h-[140px] rounded-full" />
@@ -110,7 +115,7 @@ const PerformanceWidget: React.FC<PerformanceWidgetProps> = ({ className }) => {
                                 )}
                             </div>
                         </div>
-                    </> : <></>}
+                   
 
 
 

@@ -109,6 +109,16 @@ const Optimizations = ({ }) => {
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [showDialog, setShowDialog] = useState(false);
 
+    // Add cleanup effect to log component unmount
+    useEffect(() => {
+        return () => {
+            setDiagnosticError(null);
+            dispatch(setCommonState('diagnosticLoading', false));
+            setAiLoading(false);
+            setDiagnosticData(null);
+        };
+    }, []);
+
     // Consolidated progress state
     const [progressState, setProgressState] = useState<ProgressState>({
         isFlushingProgress: 0,
