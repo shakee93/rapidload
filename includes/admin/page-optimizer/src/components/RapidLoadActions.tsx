@@ -7,6 +7,7 @@ import AppButton from "components/ui/app-button";
 import TooltipText from './ui/tooltip-text';
 import { toast } from './ui/use-toast';
 import { useAppContext } from '../context/app';
+import ApiService from "../services/api";
 
 interface ActionItem {
     id: string;
@@ -56,7 +57,15 @@ const RapidLoadActions: React.FC = () => {
                 } : a
             ))
 
-            let result = await fetch(action.action.replace(/&amp;/g, '&'));
+            if (action.control_label === 'Flush Cache') {
+                const api = new ApiService(options);
+                const url = options.optimizer_url;
+                await api.post('clear_page_cache', {
+                    url
+                });
+            } else {
+                let result = await fetch(action.action.replace(/&amp;/g, '&'));
+            }
 
             toast({
                 duration: 10,
