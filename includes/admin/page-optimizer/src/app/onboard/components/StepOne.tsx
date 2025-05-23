@@ -7,7 +7,7 @@ import { changeReport, fetchReport, getAiPrediction } from "../../../store/app/a
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
 import { Loader, Monitor, RefreshCw } from "lucide-react";
 import useCommonDispatch from "hooks/useCommonDispatch";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { optimizerData } from "../../../store/app/appSelector";
 import PerformanceProgressBar from "components/performance-progress-bar";
 import usePerformanceColors from "hooks/usePerformanceColors";
@@ -17,6 +17,8 @@ import { setCommonRootState } from '../../../store/common/commonActions';
 import ErrorFetch from 'components/ErrorFetch';
 import AppButton from "components/ui/app-button";
 import { AnimatedLogo } from 'components/animated-logo';
+import { FETCH_REPORT_FAILURE, AppAction, RootState } from '../../../store/app/appTypes';
+import { ThunkDispatch } from 'redux-thunk';
 
 interface StepOneProps {
     onNext: () => void;
@@ -31,6 +33,7 @@ interface AIPredictionResult {
 const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
     const { options } = useAppContext()
     const { dispatch } = useCommonDispatch()
+    const appDispatch: ThunkDispatch<RootState, unknown, AppAction> = useDispatch();
     const { activeReport, data, error, loading } = useSelector(optimizerData);
     const [predictedLoading, setPredictedLoading] = useState(true)
     const [aiPredictionResult, setAiPredictionResult] = useState<AIPredictionResult | null>(null)
@@ -59,6 +62,10 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
 
     useEffect(() => {
         if (!loading && data) {
+            if (data.performance === 0) {
+                appDispatch({ type: FETCH_REPORT_FAILURE, error: 'Unable to analyze performance. Please try again.' });
+                return;
+            }
             // Short delay before showing optimized score
             setTimeout(() => {
                 setShowOptimizedScore(true);
@@ -189,7 +196,8 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
                                         :
                                         <PerformanceProgressBar
                                             className={cn('max-h-44')}
-                                            performance={data ? data?.performance : 90}
+                                            //data?.performance
+                                             performance={data ? data?.performance : 90}
                                             loading={loading}
                                         />
                                     }
@@ -266,7 +274,7 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
                                 predictedLoading  && 'pointer-events-none cursor-default opacity-30')}
                                 onClick={onNext}
                             >
-                                Let’s improve this score
+                                Let's improve this score
                                 <ArrowLongRightIcon className="w-6 h-6" />
                             </button>
                     </>
