@@ -196,7 +196,6 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
                                         :
                                         <PerformanceProgressBar
                                             className={cn('max-h-44')}
-                                            //data?.performance
                                              performance={data ? data?.performance : 90}
                                             loading={loading}
                                         />
