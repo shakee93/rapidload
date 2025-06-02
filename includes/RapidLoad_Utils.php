@@ -491,7 +491,7 @@ trait RapidLoad_Utils {
 
     protected function is_mobile(){
 
-        return $this->source_is_mobile();
+        return apply_filters('rapidload/utils/is-mobile', $this->source_is_mobile());
     }
 
     function source_is_mobile() {
