@@ -132,6 +132,7 @@ class RapidLoad_Admin_Frontend
             add_action("wp_ajax_rapidload_purge_all", [$this, 'rapidload_purge_all']);
             add_action("wp_ajax_uucss_test_url", [ $this, 'uucss_test_url' ] );
             add_action("wp_ajax_uucss_data", [ $this, 'uucss_data' ] );
+            add_action("wp_ajax_rapidload_job_data", [ $this, 'rapidload_job_data' ] );
             add_action( 'wp_ajax_rapidload_notifications', [$this, 'rapidload_notifications']);
             add_action( "wp_ajax_uucss_update_rule", [ $this, 'uucss_update_rule' ] );
             add_action('wp_ajax_mark_faqs_read', [$this, 'mark_faqs_read']);
@@ -466,6 +467,35 @@ class RapidLoad_Admin_Frontend
             "draw" => (int)$draw,
             "recordsTotal" => RapidLoad_DB::get_total_job_count($type === "path" ? " where rule = 'is_url' and regex = '/'" : " where rule !== 'is_url'"),
             "recordsFiltered" => RapidLoad_DB::get_total_job_count($where_clause),
+            "success" => true
+        ]);
+
+    }
+
+    public function rapidload_job_data(){
+        //self::verify_nonce();
+        
+        $table_type = isset($_REQUEST['table_type']) ? sanitize_text_field(wp_unslash($_REQUEST['table_type'])) : 'url';
+
+        $start = isset($_REQUEST['start']) ? absint($_REQUEST['start']) : 0;
+
+        $length = isset($_REQUEST['length']) ? absint($_REQUEST['length']) : 5;
+
+        $draw = isset($_REQUEST['draw']) ? absint($_REQUEST['draw']) : 1;
+
+        $url = isset($_REQUEST['url']) ? sanitize_url(wp_unslash($_REQUEST['url'])) : false;
+
+        if($url){
+            $data = RapidLoad_DB::get_merged_jobs_data($start, $length, $table_type, $url);
+        }else{
+            $data = RapidLoad_DB::get_merged_jobs_data($start, $length, $table_type);
+        }
+
+        wp_send_json_success([
+            'data' => $data,
+            "draw" => (int)$draw,
+            "recordsTotal" => RapidLoad_DB::get_total_job_count(false),
+            "recordsFiltered" => RapidLoad_DB::get_total_job_count(false),
             "success" => true
         ]);
 

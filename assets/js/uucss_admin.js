@@ -571,23 +571,6 @@
             bSort: false,
             columns: [
                 {
-                    "data": "status",
-                    title: "Status",
-                    width: '50px',
-                    className: 'dt-body-center dt-head-center',
-                    render: function (data, type, row, meta) {
-                        if(!data && row.cpcss){
-                            data = row.cpcss.status
-                        }
-                        var classNames = 'status ';
-                        if(data === 'queued' || data === 'processing'){
-                            classNames += 'refresh ';
-                        }
-                        classNames += data + ' ';
-                        return '<span class="job-status ' + classNames +'">'+ data +'</span>'
-                    },
-                },
-                {
                     "data": "url",
                     title: "URL",
                     className: "url",
@@ -613,8 +596,8 @@
                 {
                     data: "url",
                     className: 'dt-body-center dt-head-center stats th-reduction',
-                    title: "File Size Reduction",
-                    width: '145px',
+                    title: "UUCSS",
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         if ((row.meta && row.meta.stats) && (row.status === 'success' || row.rule_status === 'success')) {
                             return row.meta.stats.reduction + '%'
@@ -817,6 +800,30 @@
                         }
 
                     }
+                },
+                {
+                    data: "url",
+                    className: 'dt-body-center dt-head-center stats th-reduction',
+                    title: "CPCSS",
+                    width: '50px',
+                    render: function (data, type, row, meta) {
+                        if(row.cpcss){
+                            if(row.cpcss.status === 'success'){
+                                $content = $('<span></span>')
+                                if(row.cpcss.data.desktop){
+                                    $content.append('<span class="dashicons dashicons-desktop"></span>')
+                                }
+                                if(row.cpcss.data.mobile){  
+                                    $content.append('<span class="dashicons dashicons-smartphone"></span>')
+                                }
+                                return $content.wrap('<div></div>').parent().html()
+                            }else if(row.cpcss.status === 'failed'){
+                                return '<span><span class="dashicons dashicons-info error"></span></span>'
+                            }
+                        }
+
+                        return '-'
+                    },
                 },
                 {
                     "data": "url",
@@ -1232,23 +1239,6 @@
             bSort: false,
             columns: [
                 {
-                    "data": "status",
-                    title: "Status",
-                    width: '50px',
-                    className: 'dt-body-center dt-head-center',
-                    render: function (data, type, row, meta) {
-                        if(!data && row.cpcss){
-                            data = row.cpcss.status
-                        }
-                        var classNames = 'status ';
-                        if(data === 'queued' || data === 'processing'){
-                            classNames += 'refresh ';
-                        }
-                        classNames += data + ' ';
-                        return '<span class="job-status ' + classNames +'">'+ data +'</span>'
-                    },
-                },
-                {
                     "data": "url",
                     title: "Base",
                     className: "url",
@@ -1302,8 +1292,8 @@
                 {
                     data: "url",
                     className: 'dt-body-center dt-head-center stats th-reduction',
-                    title: "File Size Reduction",
-                    width: '145px',
+                    title: "UUCSS",
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         if (row.meta && row.meta.stats && row.meta.stats.reduction && row.status === 'success') {
                             return row.meta.stats.reduction + '%'
