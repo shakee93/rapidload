@@ -612,7 +612,11 @@ class RapidLoad_Admin_Frontend
                     RapidLoad_DB::clear_jobs($job_type, [
                         'url' => $url
                     ]);
-                }else{
+                }elseif($job_type === "rule"){
+                    RapidLoad_DB::clear_job_data($job_type);
+                    RapidLoad_DB::clear_jobs($job_type);
+                }
+                else{
                     //RapidLoad_DB::clear_job_data($job_type);
                     RapidLoad_DB::clear_jobs($job_type);
                     do_action('rapidload/vanish');
