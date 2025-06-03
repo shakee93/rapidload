@@ -413,54 +413,7 @@ class RapidLoad_Admin_Frontend
         isset($_REQUEST['columns'][1]['search']['regex']) ?
             sanitize_text_field(wp_unslash($_REQUEST['columns'][1]['search']['regex'])) : false;
 
-        $filters = [];
-
-        if($status_filter){
-
-            if($status_filter === 'warning'){
-
-                $filters[] = " warnings IS NOT NULL ";
-
-            }else{
-
-                $filters[] = " status = '". $status_filter . "' AND warnings IS NULL ";
-            }
-
-        }else{
-
-            $filters[] = " status !== 'rule-based' ";
-
-        }
-
-        if($url_regex === 'true' && $url_filter){
-
-            $filters[] = " url = '". $url_filter . "' ";
-
-        }
-
-        if($url_regex === 'false' && $url_filter){
-
-            $filters[] = " url LIKE '%%". $url_filter . "%%' ";
-
-        }
-
-        $where_clause = '';
-
-        foreach ($filters as $key => $filter){
-
-            if($key === 0){
-
-                $where_clause = " WHERE ";
-                $where_clause .= $filter;
-            }else{
-
-                $where_clause .= " AND ";
-                $where_clause .= $filter;
-            }
-
-        }
-
-        $data  = RapidLoad_DB::get_merged_data($type === "rule", $start, $length);
+        $data  = RapidLoad_DB::get_merged_data($type === "rule", $start, $length, $url_filter);
 
         wp_send_json([
             'data' => $data,
