@@ -571,23 +571,6 @@
             bSort: false,
             columns: [
                 {
-                    "data": "status",
-                    title: "Status",
-                    width: '50px',
-                    className: 'dt-body-center dt-head-center',
-                    render: function (data, type, row, meta) {
-                        if(!data && row.cpcss){
-                            data = row.cpcss.status
-                        }
-                        var classNames = 'status ';
-                        if(data === 'queued' || data === 'processing'){
-                            classNames += 'refresh ';
-                        }
-                        classNames += data + ' ';
-                        return '<span class="job-status ' + classNames +'">'+ data +'</span>'
-                    },
-                },
-                {
                     "data": "url",
                     title: "URL",
                     className: "url",
@@ -613,8 +596,8 @@
                 {
                     data: "url",
                     className: 'dt-body-center dt-head-center stats th-reduction',
-                    title: "File Size Reduction",
-                    width: '145px',
+                    title: "UUCSS",
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         if ((row.meta && row.meta.stats) && (row.status === 'success' || row.rule_status === 'success')) {
                             return row.meta.stats.reduction + '%'
@@ -622,7 +605,7 @@
                             return '<span class="job-file-size">-</span>';
                         }
 
-                        return '-'
+                        return ''
                     },
                     createdCell: function (td, cellData, rowData) {
 
@@ -690,12 +673,6 @@
                             attemptsString = 'Hits : ' + rowData.success_count + '/' + rowData.attempts
                         }else if(rowData.meta && rowData.meta.stats && rowData.meta.stats.success_count > 0){
                             attemptsString = 'Hits : ' + rowData.meta.stats.success_count + '/' + rowData.attempts
-                        }else if(rowData.cpcss){
-                            if(rowData.cpcss.status === 'success' && rowData.cpcss.hits > 0){
-                                attemptsString = 'Hits : ' + rowData.cpcss.hits + '/' + rowData.cpcss.attempts
-                            }else if(Number(rowData.attempts) !== 0) {
-                                attemptsString = 'Attempts : ' + rowData.attempts
-                            }
                         }else if(Number(rowData.attempts) !== 0) {
                             attemptsString = 'Attempts : ' + rowData.attempts
                         }
@@ -806,16 +783,61 @@
                         } else if(rowData.status === 'failed'){
                             stat.find('span').append('<span class="dashicons dashicons-info error"></span>');
                             tippy(stat.find('span')[0], tippyOptions);
-                        } else if (rowData.cpcss){
-                            if(rowData.cpcss.status === 'success'){
-                                stat.find('span').append('<span class="dashicons dashicons-yes-alt"></span>');
-                                tippy(stat.find('span')[0], tippyOptions);
-                            }else if(rowData.cpcss.status === 'failed'){
-                                stat.find('span').append('<span class="dashicons dashicons-info error"></span>');
-                                tippy(stat.find('span')[0], tippyOptions);
+                        } 
+
+                    }
+                },
+                {
+                    data: "url",
+                    className: 'dt-body-center dt-head-center stats th-reduction',
+                    title: "CPCSS",
+                    width: '50px',
+                    render: function (data, type, row, meta) {
+                        if(row.cpcss){
+                            if(row.cpcss.status === 'success'){
+                                let stat = $('<span></span>');
+                                if(row.cpcss.data.desktop){
+                                    stat.append('<span class="dashicons dashicons-desktop"></span>')
+                                }
+                                if(row.cpcss.data.mobile){  
+                                    stat.append('<span class="dashicons dashicons-smartphone"></span>')
+                                }
+                                return stat.wrap('<div></div>').parent().html()
+                            }else if(row.cpcss.status === 'failed'){
+                                return '<span><span class="dashicons dashicons-info error"></span></span>'
                             }
                         }
 
+                        return '-'
+                    },
+                    createdCell: function (td, cellData, rowData) {
+
+                        if(rowData.cpcss && rowData.cpcss.status === 'failed'){
+
+                            let stat = $(td).wrapInner($('<span></span>'));
+                            let tippyOptions = {
+                                theme: 'light',
+                                triggerTarget: stat.find('span')[0],
+                                placement: 'left',
+                                //trigger: 'click',
+                                interactive: true,
+                                allowHTML: true,
+                                animation: "shift-toward-extreme",
+                                appendTo: "parent",
+                            }
+    
+                            tippyOptions.onShow = function () {
+                            }
+                            tippyOptions.onHide = function () {
+                            }
+    
+                            var code = (rowData.meta && rowData.meta.error && rowData.meta.error.code) ? rowData.meta.error.code : 500;
+                            var message = (rowData.meta && rowData.meta.error && rowData.meta.error.message) ? rowData.meta.error.message : 'Unknown Error Occurred';
+                            tippyOptions.content = '<div class="error-tooltip"><h5>Error</h5> <span><strong>CODE :</strong> ' + code + '</span> <br><span>' + message + '</span></div>';
+    
+                            //tippyOptions.triggerTarget = $(td).closest('tr')[0]
+                            tippy(stat.find('span')[0], tippyOptions);
+                        }
                     }
                 },
                 {
@@ -1232,23 +1254,6 @@
             bSort: false,
             columns: [
                 {
-                    "data": "status",
-                    title: "Status",
-                    width: '50px',
-                    className: 'dt-body-center dt-head-center',
-                    render: function (data, type, row, meta) {
-                        if(!data && row.cpcss){
-                            data = row.cpcss.status
-                        }
-                        var classNames = 'status ';
-                        if(data === 'queued' || data === 'processing'){
-                            classNames += 'refresh ';
-                        }
-                        classNames += data + ' ';
-                        return '<span class="job-status ' + classNames +'">'+ data +'</span>'
-                    },
-                },
-                {
                     "data": "url",
                     title: "Base",
                     className: "url",
@@ -1302,8 +1307,8 @@
                 {
                     data: "url",
                     className: 'dt-body-center dt-head-center stats th-reduction',
-                    title: "File Size Reduction",
-                    width: '145px',
+                    title: "UUCSS",
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         if (row.meta && row.meta.stats && row.meta.stats.reduction && row.status === 'success') {
                             return row.meta.stats.reduction + '%'
@@ -1311,7 +1316,7 @@
                             return '<span class="job-file-size">-</span>';
                         }
 
-                        return '-'
+                        return ''
                     },
                     createdCell: function (td, cellData, rowData) {
 
@@ -1364,12 +1369,6 @@
                             attemptsString = 'Hits : ' + rowData.success_count + '/' + rowData.attempts;
                         }else if(rowData.meta && rowData.meta.stats && rowData.meta.stats.success_count){
                             attemptsString = 'Hits : ' + rowData.meta.stats.success_count + '/' + rowData.attempts;
-                        }else if(rowData.cpcss){
-                            if(rowData.cpcss.status === 'success' && rowData.cpcss.hits > 0){
-                                attemptsString = 'Hits : ' + rowData.cpcss.hits + '/' + rowData.cpcss.attempts
-                            }else if(Number(rowData.attempts) !== 0) {
-                                attemptsString = 'Attempts : ' + rowData.attempts
-                            }
                         }else if(Number(rowData.attempts) !== 0){
                             attemptsString = 'Attempts : ' + rowData.attempts
                         }
@@ -1479,16 +1478,61 @@
                         } else if(rowData.status === 'failed'){
                             stat.find('span').append('<span class="dashicons dashicons-info error"></span>');
                             tippy(stat.find('span')[0], tippyOptions);
-                        } else if (rowData.cpcss){
-                            if(rowData.cpcss.status === 'success'){
-                                stat.find('span').append('<span class="dashicons dashicons-yes-alt"></span>');
-                                tippy(stat.find('span')[0], tippyOptions);
-                            }else if(rowData.cpcss.status === 'failed'){
-                                stat.find('span').append('<span class="dashicons dashicons-info error"></span>');
-                                tippy(stat.find('span')[0], tippyOptions);
+                        }
+
+                    }
+                },
+                {
+                    data: "url",
+                    className: 'dt-body-center dt-head-center stats th-reduction',
+                    title: "CPCSS",
+                    width: '50px',
+                    render: function (data, type, row, meta) {
+                        if(row.cpcss){
+                            if(row.cpcss.status === 'success'){
+                                let stat = $('<span></span>');
+                                if(row.cpcss.data.desktop){
+                                    stat.append('<span class="dashicons dashicons-desktop"></span>')
+                                }
+                                if(row.cpcss.data.mobile){  
+                                    stat.append('<span class="dashicons dashicons-smartphone"></span>')
+                                }
+                                return stat.wrap('<div></div>').parent().html()
+                            }else if(row.cpcss.status === 'failed'){
+                                return '<span><span class="dashicons dashicons-info error"></span></span>'
                             }
                         }
 
+                        return '-'
+                    },
+                    createdCell: function (td, cellData, rowData) {
+
+                        if(rowData.cpcss && rowData.cpcss.status === 'failed'){
+
+                            let stat = $(td).wrapInner($('<span></span>'));
+                            let tippyOptions = {
+                                theme: 'light',
+                                triggerTarget: stat.find('span')[0],
+                                placement: 'left',
+                                //trigger: 'click',
+                                interactive: true,
+                                allowHTML: true,
+                                animation: "shift-toward-extreme",
+                                appendTo: "parent",
+                            }
+    
+                            tippyOptions.onShow = function () {
+                            }
+                            tippyOptions.onHide = function () {
+                            }
+    
+                            var code = (rowData.meta && rowData.meta.error && rowData.meta.error.code) ? rowData.meta.error.code : 500;
+                            var message = (rowData.meta && rowData.meta.error && rowData.meta.error.message) ? rowData.meta.error.message : 'Unknown Error Occurred';
+                            tippyOptions.content = '<div class="error-tooltip"><h5>Error</h5> <span><strong>CODE :</strong> ' + code + '</span> <br><span>' + message + '</span></div>';
+    
+                            //tippyOptions.triggerTarget = $(td).closest('tr')[0]
+                            tippy(stat.find('span')[0], tippyOptions);
+                        }
                     }
                 },
                 {

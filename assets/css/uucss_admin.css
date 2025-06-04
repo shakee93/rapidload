@@ -1543,15 +1543,9 @@ table#uucss-options tbody tr td{
     padding: 20px 20px;
     border-bottom: 0;
 }
-#uucss-history_wrapper .dataTables_paginate{
+#uucss-history_wrapper select.status, #uucss-rule-history_wrapper select.status{
     display: none;
 }
-#uucss-history_info{
-    display: none;
-}
-#uucss-rule-history_wrapper .dataTables_paginate{
-    display: none;
-}
-#uucss-rule-history_info{
+#uucss-history_wrapper input.uucss_search_exact, #uucss-rule-history_wrapper input.uucss_search_exact{
     display: none;
 }

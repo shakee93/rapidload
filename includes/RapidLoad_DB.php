@@ -538,7 +538,7 @@ abstract class RapidLoad_DB
         return (int)$count;
     }
 
-    public static function get_merged_data($rules = false, $start_from = 0, $limit = 10) {
+    public static function get_merged_data($rules = false, $start_from = 0, $limit = 10, $url = null) {
 
         global $wpdb;
 
@@ -548,43 +548,86 @@ abstract class RapidLoad_DB
             $status_column = 'cpcss';
         }
 
-        $data = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM (
-            SELECT 
-                job.id, job.job_id, job.url, job.rule, job.regex, job.rule_id, job.rule_note, job.status AS job_status, job.created_at AS job_created_at,
-                (CASE WHEN job.rule = 'is_url' THEN 0 ELSE (
-                    SELECT COUNT(id) 
-                    FROM {$wpdb->prefix}rapidload_job 
-                    WHERE rule_id = job.id AND rule = 'is_url'
-                ) END) AS applied_successful_links,
-                uucss.data AS files, uucss.stats, uucss.warnings, uucss.attempts, uucss.hits, 
-                CASE 
-                    WHEN job.rule = 'is_url' AND job.rule_id IS NOT NULL THEN 'rule-based'
-                    WHEN %5s.status IS NULL THEN 'queued'  
-                    ELSE %5s.status 
-                END AS status,
-                cpcss.data AS cpcss, cpcss.stats AS cpcss_stats, cpcss.warnings AS cpcss_warnings, cpcss.attempts AS cpcss_attempts, cpcss.hits AS cpcss_hits, cpcss.status AS cpcss_status 
-            FROM (
+        $data = [];
+
+        if($url){
+            $data = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM (
                 SELECT 
-                    (CASE WHEN rule_id IS NOT NULL THEN rule_id ELSE id END) AS id,
-                    id AS job_id, url, rule, regex, rule_id, rule_note, status, created_at 
-                FROM {$wpdb->prefix}rapidload_job
-            ) AS job
-            LEFT JOIN (
-                SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'
-            ) AS uucss ON job.id = uucss.job_id
-            LEFT JOIN (
-                SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'
-            ) AS cpcss ON job.id = cpcss.job_id
-        ) AS derived_table where rule %5s 'is_url'
-        ORDER BY id
-        LIMIT %d, %d", 
-        $status_column, 
-        $status_column, 
-        $rules ? '!=' : '=',
-        $start_from, 
-        $limit
-        ), OBJECT);
+                    job.id, job.job_id, job.url, job.rule, job.regex, job.rule_id, job.rule_note, job.status AS job_status, job.created_at AS job_created_at,
+                    (CASE WHEN job.rule = 'is_url' THEN 0 ELSE (
+                        SELECT COUNT(id) 
+                        FROM {$wpdb->prefix}rapidload_job 
+                        WHERE rule_id = job.id AND rule = 'is_url'
+                    ) END) AS applied_successful_links,
+                    uucss.data AS files, uucss.stats, uucss.warnings, uucss.attempts, uucss.hits, 
+                    CASE 
+                        WHEN job.rule = 'is_url' AND job.rule_id IS NOT NULL THEN 'rule-based'
+                        WHEN %5s.status IS NULL THEN 'queued'  
+                        ELSE %5s.status 
+                    END AS status,
+                    cpcss.data AS cpcss, cpcss.stats AS cpcss_stats, cpcss.warnings AS cpcss_warnings, cpcss.attempts AS cpcss_attempts, cpcss.hits AS cpcss_hits, cpcss.status AS cpcss_status 
+                FROM (
+                    SELECT 
+                        (CASE WHEN rule_id IS NOT NULL THEN rule_id ELSE id END) AS id,
+                        id AS job_id, url, rule, regex, rule_id, rule_note, status, created_at 
+                    FROM {$wpdb->prefix}rapidload_job
+                ) AS job
+                LEFT JOIN (
+                    SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'
+                ) AS uucss ON job.id = uucss.job_id
+                LEFT JOIN (
+                    SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'
+                ) AS cpcss ON job.id = cpcss.job_id
+            ) AS derived_table where rule %5s 'is_url' and url = %s
+            ORDER BY id
+            LIMIT %d, %d", 
+            $status_column, 
+            $status_column, 
+            $rules ? '!=' : '=',
+            $url,
+            $start_from, 
+            $limit
+            ), OBJECT);
+        }else{
+            $data = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM (
+                SELECT 
+                    job.id, job.job_id, job.url, job.rule, job.regex, job.rule_id, job.rule_note, job.status AS job_status, job.created_at AS job_created_at,
+                    (CASE WHEN job.rule = 'is_url' THEN 0 ELSE (
+                        SELECT COUNT(id) 
+                        FROM {$wpdb->prefix}rapidload_job 
+                        WHERE rule_id = job.id AND rule = 'is_url'
+                    ) END) AS applied_successful_links,
+                    uucss.data AS files, uucss.stats, uucss.warnings, uucss.attempts, uucss.hits, 
+                    CASE 
+                        WHEN job.rule = 'is_url' AND job.rule_id IS NOT NULL THEN 'rule-based'
+                        WHEN %5s.status IS NULL THEN 'queued'  
+                        ELSE %5s.status 
+                    END AS status,
+                    cpcss.data AS cpcss, cpcss.stats AS cpcss_stats, cpcss.warnings AS cpcss_warnings, cpcss.attempts AS cpcss_attempts, cpcss.hits AS cpcss_hits, cpcss.status AS cpcss_status 
+                FROM (
+                    SELECT 
+                        (CASE WHEN rule_id IS NOT NULL THEN rule_id ELSE id END) AS id,
+                        id AS job_id, url, rule, regex, rule_id, rule_note, status, created_at 
+                    FROM {$wpdb->prefix}rapidload_job
+                ) AS job
+                LEFT JOIN (
+                    SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'uucss'
+                ) AS uucss ON job.id = uucss.job_id
+                LEFT JOIN (
+                    SELECT * FROM {$wpdb->prefix}rapidload_job_data WHERE job_type = 'cpcss'
+                ) AS cpcss ON job.id = cpcss.job_id
+            ) AS derived_table where rule %5s 'is_url'
+            ORDER BY id
+            LIMIT %d, %d", 
+            $status_column, 
+            $status_column, 
+            $rules ? '!=' : '=',
+            $start_from, 
+            $limit
+            ), OBJECT);
+        }
 
         $data = array_map(function ($job) {
             return self::transform_link($job);
