@@ -36,36 +36,17 @@
         }
     }
 
-    function prepareScripts() {
-        // Get all script elements at once
-        var allScripts = Array.from(document.querySelectorAll('[data-rapidload-src], noscript[data-rapidload-delayed]'));
-
-        return allScripts.map(function (script, index) {
-            // Check if it's an inline script (noscript element)
-            if (script.tagName.toLowerCase() === 'noscript') {
-                return {
-                    id: `script-${index}`,
-                    scriptElement: script,
-                    loaded: null,
-                    success: false,
-                    content: script.innerHTML,
-                    type: 'inline'
-                };
+    function prepareScripts(){
+        var allScripts=Array.from(document.querySelectorAll('[data-rapidload-src], noscript[data-rapidload-delayed]'));
+        var scriptIndex=0;
+        return allScripts.map(function(script){
+            if(script.tagName.toLowerCase()==='noscript'){
+                return{id:'script-'+(scriptIndex++),scriptElement:script,loaded:null,success:false,content:script.innerHTML,type:'inline'}
             }
-            
-            // It's an external script
-            var scriptId = script.getAttribute('id');
-            var src = script.getAttribute('data-rapidload-src');
-            
-            return {
-                id: scriptId || `script-${index}`,
-                scriptElement: script,
-                loaded: null,
-                success: false,
-                src: src,
-                type: 'external'
-            };
-        });
+            var scriptId=script.getAttribute('id');
+            var src=script.getAttribute('data-rapidload-src');
+            return{id:scriptId||'script-'+(scriptIndex++),scriptElement:script,loaded:null,success:false,src:src,type:'external'}
+        })
     }
 
     function loadScript(script) {
