@@ -41,10 +41,6 @@ try {
         throw new Exception('WordPress database object not available');
     }
 
-    // Get uploads directory for logging
-    $upload_dir = wp_upload_dir();
-    $log_file_path = $upload_dir['basedir'] . '/rapidload_cron.log';
-
 } catch (Exception $e) {
     die('Error loading WordPress: ' . $e->getMessage() . "\n");
 }
@@ -56,7 +52,12 @@ if (!class_exists('RapidLoad_Base')) {
 
 // Log function
 function rapidload_cron_log($message) {
-    global $log_file_path;
+    if (!defined('RAPIDLOAD_CRON_LOGS') || !RAPIDLOAD_CRON_LOGS) {
+        return; // Logging disabled if constant is not defined or is false
+    }
+    // Use uploads directory as default log location
+    $upload_dir = wp_upload_dir();
+    $log_file_path = $upload_dir['basedir'] . '/rapidload_cron.log';
     $timestamp = date('Y-m-d H:i:s');
     $log_message = "[$timestamp] $message\n";
     echo $log_message;
@@ -67,7 +68,6 @@ try {
     // Log start of process
     rapidload_cron_log('Starting RapidLoad optimization process');
     rapidload_cron_log('WordPress loaded from: ' . ABSPATH);
-    rapidload_cron_log('Database prefix: ' . $wpdb->prefix);
 
     // Trigger the optimization process
     do_action('uucss/queue/task');
