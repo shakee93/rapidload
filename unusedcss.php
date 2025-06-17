@@ -3,7 +3,7 @@
 Plugin Name: RapidLoad AI - Optimize Web Vitals Automatically
 Plugin URI:  https://rapidload.ai/
 Description: Supercharge your website with RapidLoad AI, featuring cutting-edge AI to automate optimizing CSS, JavaScript, images, fonts, and caching.
-Version:     3.1.14
+Version:     3.1.15
 Author:      RapidLoad 
 Author URI:  https://rapidload.ai/
 License:     GPLv3
