@@ -734,7 +734,7 @@ class RapidLoad_Optimizer
                             ], [
                                 'titan' => true,
                                 'options' => [
-                                    'strategy' => self::$strategy === 'desktop' ? 'desktop' : 'mobile'
+                                    'strategy' => self::$strategy === 'desktop' ? 'mobile' : 'desktop'
                                 ]
                             ]);
                         }
