@@ -647,6 +647,10 @@ class RapidLoad_Cache_Store
             $url = 'http://' . RapidLoad_Cache_Engine::$request_headers['Host'] . RapidLoad_Cache_Engine::sanitize_server_input( $_SERVER['REQUEST_URI'], false );
         }
 
+        if(empty($url)){
+            $url = site_url();
+        }
+
         $url = filter_var($url, FILTER_SANITIZE_URL);
 
         $url_host = parse_url( $url, PHP_URL_HOST );
