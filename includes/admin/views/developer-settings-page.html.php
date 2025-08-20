@@ -14,7 +14,7 @@ $third_party_cache_plugins = array_filter($third_party_plugins, function ($plugi
 
 ?>
 
-<form id='ao_settings_form' action='<?php echo esc_url(admin_url( 'options.php' )); ?>' method='post'>
+<form id='ao_settings_form'>
     <?php settings_fields( 'rapidload_settings' );
 
     $api_key_verified = isset( $options['uucss_api_key_verified'] ) && ($options['uucss_api_key_verified'] === '1' || $options['uucss_api_key_verified'] === 1);
