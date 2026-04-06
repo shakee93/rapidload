@@ -76,6 +76,8 @@ class HtmlDocument
 		'span' => 1,
 		'table' => 1
 	);
+	protected $optional_closing_array;
+
 	protected $optional_closing_tags = array(
 		// Not optional, see
 		// https://www.w3.org/TR/html/textlevel-semantics.html#the-b-element
